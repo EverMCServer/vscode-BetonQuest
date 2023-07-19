@@ -1,7 +1,7 @@
 {
-  "name": "vscode-BetonQuest",
-  "displayName": "vscode-BetonQuest",
-  "description": "vscode-BetonQuest",
+  "name": "betonquest",
+  "displayName": "BetonQuest",
+  "description": "BetonQuest",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.80.0"
@@ -9,7 +9,9 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "*"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
