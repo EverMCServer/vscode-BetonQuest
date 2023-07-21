@@ -12,7 +12,7 @@ import ReactFlow, {
   getTransformForBounds,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { toPng } from 'html-to-image';
+import { toJpeg } from 'html-to-image';
 
 import ConditionNode from './nodes/ConditionNode';
 import NoteNode from './nodes/NoteNode';
@@ -40,7 +40,7 @@ const nodeTypes = {
 function downloadImage(dataUrl) {
   const a = document.createElement('a');
 
-  a.setAttribute('download', 'reactflow.png');
+  a.setAttribute('download', 'reactflow.jpg');
   a.setAttribute('href', dataUrl);
   a.click();
 }
@@ -179,14 +179,15 @@ const SaveRestore = () => {
     // we then overwrite the transform of the `.react-flow__viewport` element
     // with the style option of the html-to-image library
     const nodesBounds = getRectOfNodes(getNodes());
-    const targetScale = 2
+    const targetScale = 1
     const targetWidth = nodesBounds.width*targetScale
     const targetHeight = nodesBounds.height*targetScale
 
     const transform = getTransformForBounds(nodesBounds, targetWidth, targetHeight, 0.5, 2);
     console.log(transform[2])
-    toPng(document.querySelector('.react-flow__viewport'), {
-      backgroundColor: '#1a365d',
+    toJpeg(document.querySelector('.react-flow__viewport'), {
+      backgroundColor: '#ffffff',
+      quality: 0.95,
       width: targetWidth,
       height: targetHeight,
       style: {
