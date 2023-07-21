@@ -13,6 +13,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { toJpeg } from 'html-to-image';
+import { encodeYaml, parseYaml } from './parseYaml';
 
 import ConditionNode from './nodes/ConditionNode';
 import NoteNode from './nodes/NoteNode';
@@ -51,6 +52,18 @@ function downloadJSON(json) {
   const link = document.createElement('a');
   link.href = url;
   link.download = 'data.json';
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadYML(result) {
+  let name = result[0];
+  let yml = result[1];
+  const blob = new Blob([yml], { type: 'application/yml' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${name}.yml`;
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -132,6 +145,15 @@ const SaveRestore = () => {
     }
   }, [reactFlowInstance]);
 
+  const onDownloadYML = useCallback(() => {
+    if (reactFlowInstance) {
+      const flow = reactFlowInstance.toObject();
+      // console.log(flow)
+      // console.log(encodeYaml(flow))
+      downloadYML(encodeYaml(flow));
+    }
+  }, [reactFlowInstance]);
+
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
       const flow = JSON.parse(localStorage.getItem(flowKey));
@@ -174,14 +196,35 @@ const SaveRestore = () => {
     reader.readAsText(file);
   };
 
+  const onUploadYML = () => {
+    document.getElementById('yml-upload').click();
+  };
+
+  const uploadYML = (event) => {
+    const file = event.target.files[0];
+
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      const text = event.target.result;
+      const data = parseYaml(text);
+      if (data) {
+        console.log(data);
+        const test = data['quester']
+        console.log(test);
+      }
+    };
+
+    reader.readAsText(file);
+  };
+
   const onScreenshot = () => {
     // we calculate a transform for the nodes so that all nodes are visible
     // we then overwrite the transform of the `.react-flow__viewport` element
     // with the style option of the html-to-image library
     const nodesBounds = getRectOfNodes(getNodes());
     const targetScale = 1
-    const targetWidth = nodesBounds.width*targetScale
-    const targetHeight = nodesBounds.height*targetScale
+    const targetWidth = nodesBounds.width * targetScale
+    const targetHeight = nodesBounds.height * targetScale
 
     const transform = getTransformForBounds(nodesBounds, targetWidth, targetHeight, 0.5, 2);
     console.log(transform[2])
@@ -197,6 +240,29 @@ const SaveRestore = () => {
       },
     }).then(downloadImage);
   };
+
+  // test ------------------------
+
+  const onTest = useCallback(() => {
+    const restoreFlow = async () => {
+      const flow = JSON.parse(localStorage.getItem(flowKey));
+
+      if (flow) {
+        const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+        setNodes(flow.nodes || []);
+        setEdges(flow.edges || []);
+        setViewport({ x, y, zoom });
+
+      }
+    };
+
+    restoreFlow();
+  }, [setNodes, setViewport]);
+
+  useEffect(() => {
+    onTest();
+    // testyml();
+  }, [reactFlowInstance]);
 
   return (
     <div className="dndflow">
@@ -243,6 +309,19 @@ const SaveRestore = () => {
                 style={{ display: 'none' }}
               />
               <button onClick={onUploadJSON} className="download-btn">upload-json</button>
+            </div>
+            <div>
+              <button onClick={onDownloadYML} className="download-btn">download-yml</button>
+            </div>
+            <div>
+              <input
+                type="file"
+                id="yml-upload"
+                onChange={uploadYML}
+                className="download-btn"
+                style={{ display: 'none' }}
+              />
+              <button onClick={onUploadYML} className="download-btn">upload-yml</button>
             </div>
           </Panel>
         </ReactFlow>
