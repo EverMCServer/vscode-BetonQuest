@@ -5,27 +5,43 @@ import { Node, NodeProps } from 'reactflow';
 
 
 export default memo(({ data, isConnectable }) => {
+    const [getTrigger, setTrigger] = useState(false);
+    const trigger = () => {
+        setTrigger(!getTrigger);
+    }
 
-    const [getText, setText] = useState('');
-    const handleChange = (event) => {
-        setText(event.target.value);
+
+    const getText = () => {
+        return data['text'] || '';
     };
 
-    const [inputValues, setInputValues] = useState([]);
+    const getItems = () => {
+        return data['items'] || [];
+    };
+
+    const handleChange = (event) => {
+        data['text'] = event.target.value;
+        trigger();
+    };
+
     const handleAdd = () => {
-        const newInputValues = [...inputValues, ''];
-        setInputValues(newInputValues);
+        const newInputValues = [...getItems(), ''];
+        data['items'] = newInputValues;
+        trigger();
     };
     const handleDel = () => {
-        const newInputValues = [...inputValues];
+        const newInputValues = [...getItems()];
         newInputValues.pop();
-        setInputValues(newInputValues);
+        data['items'] = newInputValues;
+        trigger();
     };
     const handleUpdate = (index, value) => {
-        const newInputValues = [...inputValues];
+        const newInputValues = [...getItems()];
         newInputValues[index] = value;
-        setInputValues(newInputValues);
+        data['items'] = newInputValues;
+        trigger();
     };
+
 
     return (
         <>
@@ -35,7 +51,7 @@ export default memo(({ data, isConnectable }) => {
 
             <textarea
                 className="nodrag"
-                value={getText}
+                value={getText()}
                 onChange={handleChange}
                 style={{
                     width: 170,
@@ -51,7 +67,7 @@ export default memo(({ data, isConnectable }) => {
                 <button onClick={handleAdd}>+</button>
             </div>
 
-            {inputValues.map((value, index) => (
+            {getItems().map((value, index) => (
                 <input
                     key={index}
                     type="text"

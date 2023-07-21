@@ -2,12 +2,12 @@ html,
 body,
 #root,
 .App {
-  height: 100%;
+    height: 100%;
 }
 
 .App {
-  font-family: sans-serif;
-  text-align: center;
+    font-family: sans-serif;
+    text-align: center;
 }
 
 
@@ -16,20 +16,20 @@ body,
     display: flex;
     flex-grow: 1;
     height: 100%;
-  }
-  
-  .dndflow aside {
+}
+
+.dndflow aside {
     border-right: 1px solid #eee;
     padding: 10px 10px;
     font-size: 12px;
     background: #fcfcfc;
-  }
-  
-  .dndflow aside .description {
+}
+
+.dndflow aside .description {
     margin-bottom: 10px;
-  }
-  
-  .dndflow .dndnode {
+}
+
+.dndflow .dndnode {
     height: 20px;
     padding: 4px;
     border: 1px solid #1a192b;
@@ -39,33 +39,41 @@ body,
     justify-content: center;
     align-items: center;
     cursor: grab;
-  }
-  
-  .dndflow .dndnode.input {
+}
+
+.dndflow .dndnode.input {
     border-color: #0041d0;
-  }
-  
-  .dndflow .dndnode.output {
+}
+
+.dndflow .dndnode.output {
     border-color: #ff0072;
-  }
-  
-  .dndflow .reactflow-wrapper {
+}
+
+.dndflow .reactflow-wrapper {
     flex-grow: 1;
     height: 100%;
-  }
-  
-  .dndflow .selectall {
+}
+
+.dndflow .selectall {
     margin-top: 10px;
-  }
-  
-  @media screen and (min-width: 768px) {
+}
+
+@media screen and (min-width: 768px) {
     .dndflow {
-      flex-direction: row;
+        flex-direction: row;
     }
-  
+
     .dndflow aside {
-      width: 20%;
-      max-width: 200px;
+        width: 20%;
+        max-width: 200px;
     }
-  }
-  
+}
+
+.download-btn {
+    border: 1px solid #eee;
+    background: #ebf8ff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 700;
+    cursor: pointer;
+}

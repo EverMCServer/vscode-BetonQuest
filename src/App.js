@@ -7,9 +7,12 @@ import ReactFlow, {
   Controls,
   MiniMap,
   Panel,
-  useReactFlow
+  useReactFlow,
+  getRectOfNodes,
+  getTransformForBounds,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import { toPng } from 'html-to-image';
 
 import ConditionNode from './nodes/ConditionNode';
 import NoteNode from './nodes/NoteNode';
@@ -23,6 +26,9 @@ const initBgColor = '#1A192B';
 
 const flowKey = 'bq-flow';
 
+const imageWidth = 1024;
+const imageHeight = 768;
+
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
@@ -34,12 +40,32 @@ const nodeTypes = {
   startNode: StartNode,
 };
 
+function downloadImage(dataUrl) {
+  const a = document.createElement('a');
+
+  a.setAttribute('download', 'reactflow.png');
+  a.setAttribute('href', dataUrl);
+  a.click();
+}
+
+function downloadJSON(json) {
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'data.json';
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+
+
 const SaveRestore = () => {
   const reactFlowWrapper = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const { setViewport } = useReactFlow();
+  const { setViewport, getNodes } = useReactFlow();
 
   const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
 
@@ -94,8 +120,18 @@ const SaveRestore = () => {
   const onSave = useCallback(() => {
     if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
-      console.log(JSON.stringify(flow))
-      localStorage.setItem(flowKey, JSON.stringify(flow));
+      const json = JSON.stringify(flow);
+      console.log(json)
+      localStorage.setItem(flowKey, json);
+      // downloadJSON(json);
+    }
+  }, [reactFlowInstance]);
+
+  const onDownload = useCallback(() => {
+    if (reactFlowInstance) {
+      const flow = reactFlowInstance.toObject();
+      const json = JSON.stringify(flow);
+      downloadJSON(json);
     }
   }, [reactFlowInstance]);
 
@@ -114,39 +150,86 @@ const SaveRestore = () => {
     restoreFlow();
   }, [setNodes, setViewport]);
 
+  const uploadJSON = (event) => {
+    const file = event.target.files[0];
+
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      const text = event.target.result;
+      try {
+        const flow = JSON.parse(text);
+        if (flow) {
+          const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+          setNodes(flow.nodes || []);
+          setEdges(flow.edges || []);
+          setViewport({ x, y, zoom });
+        }
+        console.log(flow);
+      } catch (error) {
+        console.error('Error parsing JSON:', error);
+      }
+    };
+
+    reader.readAsText(file);
+  };
+
+  const onScreenshot = () => {
+    // we calculate a transform for the nodes so that all nodes are visible
+    // we then overwrite the transform of the `.react-flow__viewport` element
+    // with the style option of the html-to-image library
+    const nodesBounds = getRectOfNodes(getNodes());
+    const transform = getTransformForBounds(nodesBounds, imageWidth, imageHeight, 0.5, 2);
+
+    toPng(document.querySelector('.react-flow__viewport'), {
+      backgroundColor: '#1a365d',
+      width: imageWidth,
+      height: imageHeight,
+      style: {
+        width: imageWidth,
+        height: imageHeight,
+        transform: `translate(${transform[0]}px, ${transform[1]}px) scale(${transform[2]})`,
+      },
+    }).then(downloadImage);
+  };
+
   return (
     <div className="dndflow">
       <Sidebar />
 
-        <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            nodeTypes={nodeTypes}
-            onInit={setReactFlowInstance}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            fitView
-          >
-            <MiniMap
-              nodeStrokeColor={(n) => {
-                return '#0041d0';
-              }}
-              nodeColor={(n) => {
-                return '#fff';
-              }}
-            />
-            <Panel position="top-right">
-              <button onClick={onSave}>save</button>
-              <button onClick={onRestore}>restore</button>
-            </Panel>
-          </ReactFlow>
-        </div>
+      <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          nodeTypes={nodeTypes}
+          onInit={setReactFlowInstance}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          fitView
+        >
+          <MiniMap
+            nodeStrokeColor={(n) => {
+              return '#0041d0';
+            }}
+            nodeColor={(n) => {
+              return '#fff';
+            }}
+          />
+          <Panel position="top-right">
+            <button onClick={onSave} className="download-btn">save</button>
+            <button onClick={onRestore} className="download-btn">restore</button>
+            <button onClick={onScreenshot} className="download-btn">screenshot</button>
+            <button onClick={onDownload} className="download-btn">download-json</button>
+            <div>
+              <input type="file" onChange={uploadJSON} />
+            </div>
+          </Panel>
+        </ReactFlow>
+      </div>
 
-    </div>
+    </div >
   );
 };
 
