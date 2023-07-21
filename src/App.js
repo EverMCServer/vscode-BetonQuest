@@ -148,7 +148,7 @@ const SaveRestore = () => {
   const onDownloadYML = useCallback(() => {
     if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
-      // console.log(flow)
+      // encodeYaml(flow)
       // console.log(encodeYaml(flow))
       downloadYML(encodeYaml(flow));
     }
