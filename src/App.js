@@ -26,9 +26,6 @@ const initBgColor = '#1A192B';
 
 const flowKey = 'bq-flow';
 
-const imageWidth = 1024;
-const imageHeight = 768;
-
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
@@ -182,15 +179,19 @@ const SaveRestore = () => {
     // we then overwrite the transform of the `.react-flow__viewport` element
     // with the style option of the html-to-image library
     const nodesBounds = getRectOfNodes(getNodes());
-    const transform = getTransformForBounds(nodesBounds, imageWidth, imageHeight, 0.5, 2);
+    const targetScale = 2
+    const targetWidth = nodesBounds.width*targetScale
+    const targetHeight = nodesBounds.height*targetScale
 
+    const transform = getTransformForBounds(nodesBounds, targetWidth, targetHeight, 0.5, 2);
+    console.log(transform[2])
     toPng(document.querySelector('.react-flow__viewport'), {
       backgroundColor: '#1a365d',
-      width: imageWidth,
-      height: imageHeight,
+      width: targetWidth,
+      height: targetHeight,
       style: {
-        width: imageWidth,
-        height: imageHeight,
+        width: targetWidth,
+        height: targetHeight,
         transform: `translate(${transform[0]}px, ${transform[1]}px) scale(${transform[2]})`,
       },
     }).then(downloadImage);
