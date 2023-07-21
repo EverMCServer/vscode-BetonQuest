@@ -1,45 +1,42 @@
 import React, { memo, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import './styles.css'
-import { Node, NodeProps } from 'reactflow';
 
 
-export default memo(({ data, isConnectable }) => {
+export default memo(({ data }) => {
     const [getTrigger, setTrigger] = useState(false);
-    const trigger = () => {
+    const refreshUI = () => {
         setTrigger(!getTrigger);
     }
 
 
-    const getText = () => {
+    const textGet = () => {
         return data['text'] || '';
     };
-
-    const getItems = () => {
-        return data['items'] || [];
+    const textUpdate = (value) => {
+        data['text'] = value;
+        refreshUI();
     };
 
-    const handleChange = (event) => {
-        data['text'] = event.target.value;
-        trigger();
+    const eventsGet = () => {
+        return data['events'] || [];
     };
-
-    const handleAdd = () => {
-        const newInputValues = [...getItems(), ''];
-        data['items'] = newInputValues;
-        trigger();
+    const eventAdd = () => {
+        const arr = [...eventsGet(), ''];
+        data['events'] = arr;
+        refreshUI();
     };
-    const handleDel = () => {
-        const newInputValues = [...getItems()];
-        newInputValues.pop();
-        data['items'] = newInputValues;
-        trigger();
+    const eventDel = () => {
+        const arr = [...eventsGet()];
+        arr.pop();
+        data['events'] = arr;
+        refreshUI();
     };
-    const handleUpdate = (index, value) => {
-        const newInputValues = [...getItems()];
-        newInputValues[index] = value;
-        data['items'] = newInputValues;
-        trigger();
+    const eventUpdate = (index, value) => {
+        const arr = [...eventsGet()];
+        arr[index] = value;
+        data['events'] = arr;
+        refreshUI();
     };
 
 
@@ -51,8 +48,8 @@ export default memo(({ data, isConnectable }) => {
 
             <textarea
                 className="nodrag"
-                value={getText()}
-                onChange={handleChange}
+                value={textGet()}
+                onChange={(e) => textUpdate(e.target.value)}
                 style={{
                     width: 170,
                     minHeight: 50,
@@ -63,17 +60,17 @@ export default memo(({ data, isConnectable }) => {
 
             <div style={{ display: 'flex', gap: 20 }}>
                 <label>Events:</label>
-                <button onClick={handleDel}>-</button>
-                <button onClick={handleAdd}>+</button>
+                <button onClick={eventDel}>-</button>
+                <button onClick={eventAdd}>+</button>
             </div>
 
-            {getItems().map((value, index) => (
+            {eventsGet().map((value, index) => (
                 <input
                     key={index}
                     type="text"
                     placeholder={`event ${index + 1}`}
                     value={value}
-                    onChange={(e) => handleUpdate(index, e.target.value)}
+                    onChange={(e) => eventUpdate(index, e.target.value)}
                     style={{
                         width: 170,
                         height: 15,
@@ -87,7 +84,6 @@ export default memo(({ data, isConnectable }) => {
                 position={Position.Top}
                 style={{ background: '#555' }}
                 onConnect={(params) => console.log('handle onConnect', params)}
-                isConnectable={isConnectable}
             />
             <Handle
                 id='handleOut'
@@ -95,7 +91,6 @@ export default memo(({ data, isConnectable }) => {
                 position={Position.Bottom}
                 style={{ background: '#555' }}
                 onConnect={(params) => console.log('handle onConnect', params)}
-                isConnectable={isConnectable}
             />
         </>
     );

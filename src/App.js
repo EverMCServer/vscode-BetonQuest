@@ -150,6 +150,11 @@ const SaveRestore = () => {
     restoreFlow();
   }, [setNodes, setViewport]);
 
+  const onUploadJSON = () => {
+    // 当用户点击按钮时，触发 input 元素的点击事件
+    document.getElementById('json-upload').click();
+  };
+
   const uploadJSON = (event) => {
     const file = event.target.files[0];
 
@@ -218,12 +223,25 @@ const SaveRestore = () => {
             }}
           />
           <Panel position="top-right">
-            <button onClick={onSave} className="download-btn">save</button>
-            <button onClick={onRestore} className="download-btn">restore</button>
-            <button onClick={onScreenshot} className="download-btn">screenshot</button>
-            <button onClick={onDownload} className="download-btn">download-json</button>
             <div>
-              <input type="file" onChange={uploadJSON} />
+              <button onClick={onSave} className="download-btn">save</button>
+            </div>
+            <button onClick={onRestore} className="download-btn">restore</button>
+            <div>
+              <button onClick={onScreenshot} className="download-btn">screenshot</button>
+            </div>
+            <div>
+              <button onClick={onDownload} className="download-btn">download-json</button>
+            </div>
+            <div>
+              <input
+                type="file"
+                id="json-upload"
+                onChange={uploadJSON}
+                className="download-btn"
+                style={{ display: 'none' }}
+              />
+              <button onClick={onUploadJSON} className="download-btn">upload-json</button>
             </div>
           </Panel>
         </ReactFlow>
