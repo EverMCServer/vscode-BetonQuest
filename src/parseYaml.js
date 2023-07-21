@@ -15,7 +15,6 @@ export function parseYaml(text) {
 export function solveLine(line, allNodes, conditions, inFirst, startNode, lastConversation) {
     let targetID = line['target']
     let targetHandle = line['targetHandle']
-
     // console.log('solveLine', line);
 
     let targetNode = allNodes[targetID]
@@ -112,7 +111,7 @@ export function solveNodes(obj) {
         const targetHandle = edge['targetHandle'];
 
         let node = allNodes[source]
-        node[sourceHandle] = Object.assign([], node[sourceHandle] || [], [{ 'target': target, 'targetHandle': targetHandle }]);
+        node[sourceHandle] = [...node[sourceHandle] || [], { 'target': target, 'targetHandle': targetHandle }]
     }
 
     let startNodesKeys = Object.keys(startNodes);
