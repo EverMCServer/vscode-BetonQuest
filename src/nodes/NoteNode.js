@@ -1,12 +1,19 @@
 import React, { memo, useState } from 'react';
 import './styles.css'
 
-export default memo(() => {
-
-    const [getText, setText] = useState('');
-
-    const handleChange = (event) => {
-        setText(event.target.value);
+export default memo(({ data }) => {
+    const [getTrigger, setTrigger] = useState(false);
+    const refreshUI = () => {
+      setTrigger(!getTrigger);
+    }
+  
+  
+    const textGet = () => {
+      return data['text'] || '';
+    };
+    const textUpdate = (value) => {
+      data['text'] = value;
+      refreshUI();
     };
 
     return (
@@ -17,8 +24,8 @@ export default memo(() => {
 
             <textarea
                 className="nodrag"
-                value={getText}
-                onChange={handleChange}
+                value={textGet()}
+                onChange={(e) => textUpdate(e.target.value)}
                 style={{
                     width: 170,
                     minHeight: 50,

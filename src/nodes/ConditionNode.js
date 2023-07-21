@@ -3,10 +3,18 @@ import { Handle, Position } from 'reactflow';
 import './styles.css'
 
 export default memo(({ data, isConnectable }) => {
-
-    const [getText, setText] = useState('');
-    const handleChange = (event) => {
-        setText(event.target.value);
+    const [getTrigger, setTrigger] = useState(false);
+    const refreshUI = () => {
+      setTrigger(!getTrigger);
+    }
+  
+  
+    const textGet = () => {
+      return data['text'] || '';
+    };
+    const textUpdate = (value) => {
+      data['text'] = value;
+      refreshUI();
     };
 
     return (
@@ -15,7 +23,7 @@ export default memo(({ data, isConnectable }) => {
                 Condition
             </div>
 
-            <input type="text" className="nodrag" value={getText} onChange={handleChange} style={{
+            <input type="text" className="nodrag" value={textGet()} onChange={(e) => textUpdate(e.target.value)} style={{
                 width: 170,
                 height: 15,
             }} />
