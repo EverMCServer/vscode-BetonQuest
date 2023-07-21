@@ -32,7 +32,7 @@ export default memo(({ data }) => {
       </div>
 
       <div style={{ display: 'flex', gap: 10, justifyContent: 'space-between' }}>
-        <label>NPC ID</label>
+        <label>File Name</label>
         <input type="text" className="nodrag" value={textGet()} onChange={(e) => textUpdate(e.target.value)} style={{
           width: 150,
           height: 15,
@@ -53,7 +53,6 @@ export default memo(({ data }) => {
         position={Position.Bottom}
         style={{ background: '#555' }}
         onConnect={(params) => console.log('handle onConnect', params)}
-        isConnectable={isConnectable}
       />
     </>
   );

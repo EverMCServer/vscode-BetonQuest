@@ -2,7 +2,7 @@ import React, { memo, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import './styles.css'
 
-export default memo(({ data, isConnectable }) => {
+export default memo(({ data }) => {
     const [getTrigger, setTrigger] = useState(false);
     const refreshUI = () => {
       setTrigger(!getTrigger);
@@ -34,7 +34,6 @@ export default memo(({ data, isConnectable }) => {
                 position={Position.Top}
                 style={{ background: '#555' }}
                 onConnect={(params) => console.log('handle onConnect', params)}
-                isConnectable={isConnectable}
             />
             <Handle
                 id='handleY'
@@ -42,7 +41,6 @@ export default memo(({ data, isConnectable }) => {
                 position={Position.Bottom}
                 style={{ background: '#00ff00' }}
                 onConnect={(params) => console.log('handle onConnect', params)}
-                isConnectable={isConnectable}
             />
             <Handle
                 id='handleN'
@@ -50,7 +48,6 @@ export default memo(({ data, isConnectable }) => {
                 position={Position.Right}
                 style={{ background: '#ff0000' }}
                 onConnect={(params) => console.log('handle onConnect', params)}
-                isConnectable={isConnectable}
             />
         </>
     );
