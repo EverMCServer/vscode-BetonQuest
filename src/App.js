@@ -7,7 +7,7 @@ import ReactFlow, {
   Controls,
   MiniMap,
   Panel,
-  // useReactFlow,
+  useReactFlow
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
@@ -21,6 +21,8 @@ import Sidebar from './Sidebar';
 
 const initBgColor = '#1A192B';
 
+const flowKey = 'bq-flow';
+
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
@@ -32,12 +34,12 @@ const nodeTypes = {
   startNode: StartNode,
 };
 
-const DnDFlow = () => {
+const SaveRestore = () => {
   const reactFlowWrapper = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  // const { setViewport } = useReactFlow();
+  const { setViewport } = useReactFlow();
 
   const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
 
@@ -89,32 +91,33 @@ const DnDFlow = () => {
     [reactFlowInstance]
   );
 
-  // const onSave = useCallback(() => {
-    // if (reactFlowInstance) {
-    //   const flow = reactFlowInstance.toObject();
-    //   localStorage.setItem(flowKey, JSON.stringify(flow));
-    // }
-  // }, [reactFlowInstance]);
+  const onSave = useCallback(() => {
+    if (reactFlowInstance) {
+      const flow = reactFlowInstance.toObject();
+      console.log(JSON.stringify(flow))
+      localStorage.setItem(flowKey, JSON.stringify(flow));
+    }
+  }, [reactFlowInstance]);
 
-  // const onRestore = useCallback(() => {
-    // const restoreFlow = async () => {
-    //   const flow = JSON.parse(localStorage.getItem(flowKey));
+  const onRestore = useCallback(() => {
+    const restoreFlow = async () => {
+      const flow = JSON.parse(localStorage.getItem(flowKey));
 
-    //   if (flow) {
-    //     const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-    //     setNodes(flow.nodes || []);
-    //     setEdges(flow.edges || []);
-    //     setViewport({ x, y, zoom });
-    //   }
-    // };
+      if (flow) {
+        const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+        setNodes(flow.nodes || []);
+        setEdges(flow.edges || []);
+        setViewport({ x, y, zoom });
+      }
+    };
 
-    // restoreFlow();
-  // }, [setNodes, setViewport]);
+    restoreFlow();
+  }, [setNodes, setViewport]);
 
   return (
     <div className="dndflow">
       <Sidebar />
-      <ReactFlowProvider>
+
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
           <ReactFlow
             nodes={nodes}
@@ -136,16 +139,19 @@ const DnDFlow = () => {
                 return '#fff';
               }}
             />
-            {/* <Panel position="top-right">
+            <Panel position="top-right">
               <button onClick={onSave}>save</button>
               <button onClick={onRestore}>restore</button>
-              <button onClick={onAdd}>add node</button>
-            </Panel> */}
+            </Panel>
           </ReactFlow>
         </div>
-      </ReactFlowProvider>
+
     </div>
   );
 };
 
-export default DnDFlow;
+export default () => (
+  <ReactFlowProvider>
+    <SaveRestore />
+  </ReactFlowProvider>
+);

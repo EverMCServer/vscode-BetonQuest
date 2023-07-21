@@ -1,6 +1,8 @@
 import React, { memo, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import './styles.css'
+import { Node, NodeProps } from 'reactflow';
+
 
 export default memo(({ data, isConnectable }) => {
 
@@ -8,7 +10,6 @@ export default memo(({ data, isConnectable }) => {
     const handleChange = (event) => {
         setText(event.target.value);
     };
-
 
     const [inputValues, setInputValues] = useState([]);
     const handleAdd = () => {
