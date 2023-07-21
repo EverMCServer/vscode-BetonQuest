@@ -33,21 +33,18 @@ export default memo(({ data }) => {
                 type="target"
                 position={Position.Top}
                 style={{ background: '#555' }}
-                onConnect={(params) => console.log('handle onConnect', params)}
             />
             <Handle
                 id='handleY'
                 type="source"
                 position={Position.Bottom}
                 style={{ background: '#00ff00' }}
-                onConnect={(params) => console.log('handle onConnect', params)}
             />
             <Handle
                 id='handleN'
                 type="source"
                 position={Position.Right}
                 style={{ background: '#ff0000' }}
-                onConnect={(params) => console.log('handle onConnect', params)}
             />
         </>
     );

@@ -83,14 +83,12 @@ export default memo(({ data }) => {
                 type="target"
                 position={Position.Top}
                 style={{ background: '#555' }}
-                onConnect={(params) => console.log('handle onConnect', params)}
             />
             <Handle
                 id='handleOut'
                 type="source"
                 position={Position.Bottom}
                 style={{ background: '#555' }}
-                onConnect={(params) => console.log('handle onConnect', params)}
             />
         </>
     );

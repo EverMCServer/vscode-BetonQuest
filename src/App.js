@@ -151,7 +151,6 @@ const SaveRestore = () => {
   }, [setNodes, setViewport]);
 
   const onUploadJSON = () => {
-    // 当用户点击按钮时，触发 input 元素的点击事件
     document.getElementById('json-upload').click();
   };
 

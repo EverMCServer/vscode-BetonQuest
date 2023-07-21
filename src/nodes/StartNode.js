@@ -52,7 +52,6 @@ export default memo(({ data }) => {
         type="source"
         position={Position.Bottom}
         style={{ background: '#555' }}
-        onConnect={(params) => console.log('handle onConnect', params)}
       />
     </>
   );
