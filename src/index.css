@@ -1,3 +1,16 @@
+html,
+body,
+#root,
+.App {
+  height: 100%;
+}
+
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+
 .dndflow {
     flex-direction: column;
     display: flex;
@@ -7,7 +20,7 @@
   
   .dndflow aside {
     border-right: 1px solid #eee;
-    padding: 15px 10px;
+    padding: 10px 10px;
     font-size: 12px;
     background: #fcfcfc;
   }
@@ -52,7 +65,7 @@
   
     .dndflow aside {
       width: 20%;
-      max-width: 250px;
+      max-width: 200px;
     }
   }
   

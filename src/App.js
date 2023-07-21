@@ -1,40 +1,63 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
   useNodesState,
   useEdgesState,
   Controls,
+  MiniMap,
+  Panel,
+  // useReactFlow,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
+import ConditionNode from './nodes/ConditionNode';
+import NoteNode from './nodes/NoteNode';
+import NPCNode from './nodes/NPCNode';
+import PlayerNode from './nodes/PlayerNode';
+import StartNode from './nodes/StartNode';
+
 import Sidebar from './Sidebar';
 
-import './index.css';
-
-const initialNodes = [
-  {
-    id: '1',
-    type: 'input',
-    data: { label: 'input node' },
-    position: { x: 250, y: 5 },
-  },
-];
+const initBgColor = '#1A192B';
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
+const nodeTypes = {
+  conditionNode: ConditionNode,
+  noteNode: NoteNode,
+  npcNode: NPCNode,
+  playerNode: PlayerNode,
+  startNode: StartNode,
+};
+
 const DnDFlow = () => {
   const reactFlowWrapper = useRef(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  // const { setViewport } = useReactFlow();
 
   const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
+  }, []);
+
+  useEffect(() => {
+    setNodes([
+      {
+        id: '2',
+        type: 'npcNode',
+        data: { color: initBgColor },
+        style: { padding: 5 },
+        position: { x: 300, y: 50 },
+      },
+    ]);
+
+
   }, []);
 
   const onDrop = useCallback(
@@ -57,6 +80,7 @@ const DnDFlow = () => {
         id: getId(),
         type,
         position,
+        style: { padding: 5 },
         data: { label: `${type} node` },
       };
 
@@ -65,8 +89,31 @@ const DnDFlow = () => {
     [reactFlowInstance]
   );
 
+  // const onSave = useCallback(() => {
+    // if (reactFlowInstance) {
+    //   const flow = reactFlowInstance.toObject();
+    //   localStorage.setItem(flowKey, JSON.stringify(flow));
+    // }
+  // }, [reactFlowInstance]);
+
+  // const onRestore = useCallback(() => {
+    // const restoreFlow = async () => {
+    //   const flow = JSON.parse(localStorage.getItem(flowKey));
+
+    //   if (flow) {
+    //     const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+    //     setNodes(flow.nodes || []);
+    //     setEdges(flow.edges || []);
+    //     setViewport({ x, y, zoom });
+    //   }
+    // };
+
+    // restoreFlow();
+  // }, [setNodes, setViewport]);
+
   return (
     <div className="dndflow">
+      <Sidebar />
       <ReactFlowProvider>
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
           <ReactFlow
@@ -75,15 +122,27 @@ const DnDFlow = () => {
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
+            nodeTypes={nodeTypes}
             onInit={setReactFlowInstance}
             onDrop={onDrop}
             onDragOver={onDragOver}
             fitView
           >
-            <Controls />
+            <MiniMap
+              nodeStrokeColor={(n) => {
+                return '#0041d0';
+              }}
+              nodeColor={(n) => {
+                return '#fff';
+              }}
+            />
+            {/* <Panel position="top-right">
+              <button onClick={onSave}>save</button>
+              <button onClick={onRestore}>restore</button>
+              <button onClick={onAdd}>add node</button>
+            </Panel> */}
           </ReactFlow>
         </div>
-        <Sidebar />
       </ReactFlowProvider>
     </div>
   );

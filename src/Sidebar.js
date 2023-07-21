@@ -8,15 +8,21 @@ export default () => {
 
   return (
     <aside>
-      <div className="description">You can drag these nodes to the pane on the right.</div>
-      <div className="dndnode input" onDragStart={(event) => onDragStart(event, 'input')} draggable>
-        Input Node
+      <div className="description">Drag these nodes to right.</div>
+      <div className="dndnode" onDragStart={(event) => onDragStart(event, 'startNode')} draggable>
+        Start
       </div>
-      <div className="dndnode" onDragStart={(event) => onDragStart(event, 'default')} draggable>
-        Default Node
+      <div className="dndnode" onDragStart={(event) => onDragStart(event, 'conditionNode')} draggable>
+        Condition
       </div>
-      <div className="dndnode output" onDragStart={(event) => onDragStart(event, 'output')} draggable>
-        Output Node
+      <div className="dndnode" onDragStart={(event) => onDragStart(event, 'npcNode')} draggable>
+        NPC
+      </div>
+      <div className="dndnode" onDragStart={(event) => onDragStart(event, 'playerNode')} draggable>
+        Player
+      </div>
+      <div className="dndnode" onDragStart={(event) => onDragStart(event, 'noteNode')} draggable>
+        Note
       </div>
     </aside>
   );
