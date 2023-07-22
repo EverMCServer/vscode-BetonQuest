@@ -26,6 +26,7 @@ import Sidebar from './Sidebar';
 const initBgColor = '#1A192B';
 
 const flowKey = 'bq-flow';
+const testKey = 'bq-test';
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -57,6 +58,9 @@ function downloadJSON(json) {
 }
 
 function downloadYML(result) {
+  if (!result) {
+    return;
+  }
   let name = result[0];
   let yml = result[1];
   const blob = new Blob([yml], { type: 'application/yml' });
@@ -206,6 +210,10 @@ const SaveRestore = () => {
     const reader = new FileReader();
     reader.onload = function (event) {
       const text = event.target.result;
+
+      localStorage.setItem(testKey, text);
+
+
       const data = parseYaml(text);
       if (data) {
         console.log(data);
@@ -244,25 +252,20 @@ const SaveRestore = () => {
   // test ------------------------
 
   const onTest = useCallback(() => {
-    const restoreFlow = async () => {
-      const flow = JSON.parse(localStorage.getItem(flowKey));
 
-      if (flow) {
-        const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-        setNodes(flow.nodes || []);
-        setEdges(flow.edges || []);
-        setViewport({ x, y, zoom });
+    const text = localStorage.getItem(testKey);
+    const data = parseYaml(text);
+    if (data) {
+      console.log(data);
+      const test = data['quester']
+      console.log(test);
+    }
 
-      }
-    };
-
-    restoreFlow();
   }, [setNodes, setViewport]);
 
   useEffect(() => {
     onTest();
-    // testyml();
-  }, [reactFlowInstance]);
+  }, []);
 
   return (
     <div className="dndflow">

@@ -121,24 +121,30 @@ export function solveNodes(obj) {
     }
 
     let startNode = startNodes[startNodesKeys[0]];
+    if (!startNode) {
+        return;
+    }
     let nextLines = startNode['handleOut'] || []
     for (let i = 0; i < nextLines.length; i++) {
         let nextLine = nextLines[i];
         solveLine(nextLine, allNodes, [], true, startNode, null)
     }
 
-    // const json = JSON.stringify(allNodes);
-    // console.log(json)
+    const json = JSON.stringify(allNodes);
+    console.log(json)
     return [startNodes, npcNodes, playerNodes]
 }
 
 export function encodeYaml(obj) {
     let allNodes = solveNodes(obj);
+    if (!allNodes) {
+        return;
+    }
     let startNodes = allNodes[0];
     let npcNodes = allNodes[1];
     let playerNodes = allNodes[2];
 
-    
+
     let startNodesKeys = Object.keys(startNodes);
     const startNodesKey = startNodesKeys[0];
     const startNode = startNodes[startNodesKey];
