@@ -74,85 +74,60 @@ export function readFromYaml(yaml) {
         playerNodes[key] = dict
     }
 
-    let allNodes = Object.assign({}, startNodes, npcNodes, playerNodes);
+    let allNodesNOCondition = Object.assign({}, startNodes, npcNodes, playerNodes);
 
-    let conditionsPriority = {}
+    let lines = {}
+    let historyNode = []
+    let conditionNodes = {}
+    let vars = [0,0]// lineID conditionID
     for (let i = 0; i < firstList.length; i++) {
         let firstKey = firstList[i]
-        let firstNode = allNodes[firstKey]
-        let firstConditions = firstNode['conditions']
-        for (let j = 0; j < firstConditions.length; j++) {
-            let cond = firstConditions[j]
-            if (cond.startsWith('!')) {
-                cond = cond.slice(1);
-            }
-            conditionsPriority[cond] = (conditionsPriority[cond] || 0) + Math.pow(2, firstList.length - i - 1);
-        }
+        linkIn('start', firstKey, lines, historyNode, vars, conditionNodes, allNodesNOCondition)
     }
-    const sortConditionNames = Object.entries(conditionsPriority)
-        .sort((a, b) => b[1] - a[1])
-        .map(item => item[0]);
+    console.log(lines)
+}
 
-    /* ports
-    [
-    {
-        cond: [con1,con2,con3]
-        portHandle: handleName
-        fromNode: nodeName
-    }
-    {
-        
-    }
-        ]
-    */
-    let ports = []
-    let conditionNodes = {}
-    if (sortConditionNames.length > 0) {
-        let firstConditionName = sortConditionNames[0]
+export function linkIn(fromNodeID, toNodeID, lines, historyNode, vars, conditionNodes, allNodesNOCondition) {
+    let node = allNodesNOCondition[toNodeID]
+
+    let fromHandle = 'handleOut'
+    let conditions = node['conditions'] || []
+
+    if (conditions.length > 0) {
+        let conditionKey = `con_${vars[1]++}`
         let dict = {}
-        dict['text'] = firstConditionName
         dict['type'] = 'conditionNode'
-        let nodeName = `cond_${Object.keys(conditionNodes).length + 1}`
-        conditionNodes[nodeName] = dict
+        dict['data'] = dict['data'] || {}
+        dict['data']['conditions'] = conditions
+        conditionNodes[conditionKey] = conditions
 
-        let portY = {}
-        portY['cond'] = [`${firstConditionName}`]
-        portY['portHandle'] = 'handleY'
-        portY['fromNode'] = startNode
-        let portN = {}
-        portN['cond'] = [`!${firstConditionName}`]
-        portN['portHandle'] = 'handleN'
-        portN['fromNode'] = startNode
-        ports = [...ports || [], portY, portN]
-    }
-
-
-
-
-    for (let i = 0; i < firstList.length; i++) {
-        let nodeKey = firstList[i]
-        let node = allNodes[nodeKey]
-        let conditions = node['conditions']
-
-        let conditionSort = []
-        for (let j = 0; j < sortConditionNames.length; j++) {
-            let sortConditionName = sortConditionNames[j]
-            if (conditions.includes(sortConditionName)) {
-                conditionSort.push(sortConditionName)
-            }
-            let sortConditionNameN = `!${sortConditionName}`
-            if (conditions.includes(sortConditionNameN)) {
-                conditionSort.push(sortConditionNameN)
-            }
+        let line = {
+            'source': fromNodeID,
+            'sourceHandle': fromHandle,
+            'target': conditionKey,
+            'targetHandle': 'handleIn',
         }
-
-        for (let j = 0; j < conditionSort.length; j++) {
-            let condition = conditionSort[j]
-
-
-        }
-        console.log(conditionSort)
+        lines[`line_${vars[0]++}`] = line
+        fromNodeID = conditionKey
+        fromHandle = 'handleY'
     }
+    let line = {
+        'source': fromNodeID,
+        'sourceHandle': fromHandle,
+        'target': toNodeID,
+        'targetHandle': 'handleIn',
+    }
+    lines[`line_${vars[0]++}`] = line
 
+    if (historyNode.includes(toNodeID)) {
+        console.log('double link from a node')
+        return
+    }
+    historyNode.push[toNodeID]
 
+    let pointers = node['pointers']
+    for (let i = 0; i < pointers.length; i++) {
+        let pointer = pointers[i]
+        linkIn(toNodeID, pointer, lines, historyNode, vars, conditionNodes, allNodesNOCondition)
+    }
 }

@@ -12,8 +12,14 @@ export function solveLine(line, allNodes, conditions, inFirst, startNode, lastCo
         let newConditionsN = []
         let newConditions = targetNode['conditions']
         for (let i = 0; i < newConditions.length; i++) {
-            newConditionsY.push(newConditions[i])
-            newConditionsN.push(`!${newConditions[i]}`)
+            let v = newConditions[i]
+            newConditionsY.push(v)
+            if (v.startsWith('!')) {
+                v = v.slice(1);
+                newConditionsN.push(v)
+            }else{
+                newConditionsN.push(`!${v}`)
+            }
         }
         let conditionsY = [...conditions, ...newConditionsY]
         let conditionsN = [...conditions, ...newConditionsN]
