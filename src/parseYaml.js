@@ -99,9 +99,9 @@ export function readFromYaml(yaml) {
         one.data = node.data
         outputNodes.push(one)
     }
-    let output = { 'nodes': outputNodes }
+    let output = { 'nodes': outputNodes, 'edges': Object.values(lines) }
     // console.log('------')
-    // console.log(conditionNodes)
+    // console.log(lines)
     // console.log('------')
     return output
 }
@@ -121,23 +121,28 @@ export function linkIn(fromNodeID, toNodeID, lines, historyNode, vars, condition
         dict['id'] = conditionKey
         conditionNodes[conditionKey] = dict
 
+        let lineID = `line_${vars[0]++}`
         let line = {
             'source': fromNodeID,
             'sourceHandle': fromHandle,
             'target': conditionKey,
             'targetHandle': 'handleIn',
+            'id': lineID,
         }
-        lines[`line_${vars[0]++}`] = line
+        lines[lineID] = line
         fromNodeID = conditionKey
         fromHandle = 'handleY'
     }
+
+    let lineID = `line_${vars[0]++}`
     let line = {
         'source': fromNodeID,
         'sourceHandle': fromHandle,
         'target': toNodeID,
         'targetHandle': 'handleIn',
+        'id': lineID,
     }
-    lines[`line_${vars[0]++}`] = line
+    lines[lineID] = line
 
     if (historyNode.includes(toNodeID)) {
         console.log('double link from a node')
