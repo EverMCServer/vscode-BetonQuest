@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
@@ -12,6 +12,7 @@ import ReactFlow, {
   getTransformForBounds,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import ELK from 'elkjs/lib/elk.bundled.js';
 import { toJpeg } from 'html-to-image';
 import { parseYaml } from './parseYaml';
 import { encodeYaml } from './writeYaml';
@@ -23,6 +24,15 @@ import PlayerNode from './nodes/PlayerNode';
 import StartNode from './nodes/StartNode';
 
 import Sidebar from './Sidebar';
+
+const elk = new ELK();
+
+const elkOptions = {
+  'elk.algorithm': 'layered',
+  'elk.layered.spacing.nodeNodeBetweenLayers': '50',
+  'elk.spacing.nodeNode': '50',
+  'elk.direction': 'DOWN',
+};
 
 const initBgColor = '#1A192B';
 
@@ -38,6 +48,35 @@ const nodeTypes = {
   npcNode: NPCNode,
   playerNode: PlayerNode,
   startNode: StartNode,
+};
+
+const getLayoutedElements = async (nodes, edges, options = {}) => {
+  const graph = {
+    id: 'root',
+    layoutOptions: options,
+    children: nodes.map((node) => ({
+      ...node,
+
+      targetPosition: 'top',
+      sourcePosition: 'bottom',
+
+      width: node.width,
+      height: node.height,
+    })),
+    edges: edges,
+  };
+
+  return elk
+    .layout(graph)
+    .then((layoutedGraph) => ({
+      nodes: layoutedGraph.children.map((node) => ({
+        ...node,
+        position: { x: node.x, y: node.y },
+      })),
+
+      edges: layoutedGraph.edges,
+    }))
+    .catch(console.error);
 };
 
 function downloadImage(dataUrl) {
@@ -80,7 +119,7 @@ const SaveRestore = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const { setViewport, getNodes } = useReactFlow();
+  const { setViewport, getNodes, fitView } = useReactFlow();
 
   const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
 
@@ -88,6 +127,8 @@ const SaveRestore = () => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   }, []);
+
+  const [needsLayout, setNeedsLayout] = useState(false);
 
   useEffect(() => {
     setNodes([
@@ -135,7 +176,6 @@ const SaveRestore = () => {
     if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
       const json = JSON.stringify(flow);
-      console.log(json)
       localStorage.setItem(flowKey, json);
       // downloadJSON(json);
     }
@@ -191,7 +231,7 @@ const SaveRestore = () => {
           setEdges(flow.edges || []);
           setViewport({ x, y, zoom });
         }
-        console.log(flow);
+        // console.log(flow);
       } catch (error) {
         console.error('Error parsing JSON:', error);
       }
@@ -210,21 +250,27 @@ const SaveRestore = () => {
     const reader = new FileReader();
     reader.onload = function (event) {
       const text = event.target.result;
+      const flow = parseYaml(text);
 
-      localStorage.setItem(testKey, text);
-
-
-      const data = parseYaml(text);
-      if (data) {
-        console.log(data);
-        const test = data['quester']
-        console.log(test);
+      if (flow) {
+        setNodes(flow.nodes || []);
+        setEdges(flow.edges || []);
       }
+      setTimeout(() => {
+        setNeedsLayout(true)
+      }, 0);
+      
+
     };
 
     reader.readAsText(file);
   };
-
+  useEffect(() => {
+    if (needsLayout) {
+      onELKLayout();
+      setNeedsLayout(false);
+    }
+  }, [needsLayout]);
   const onScreenshot = () => {
     // we calculate a transform for the nodes so that all nodes are visible
     // we then overwrite the transform of the `.react-flow__viewport` element
@@ -235,7 +281,7 @@ const SaveRestore = () => {
     const targetHeight = nodesBounds.height * targetScale
 
     const transform = getTransformForBounds(nodesBounds, targetWidth, targetHeight, 0.5, 2);
-    console.log(transform[2])
+    // console.log(transform[2])
     toJpeg(document.querySelector('.react-flow__viewport'), {
       backgroundColor: '#ffffff',
       quality: 0.95,
@@ -251,27 +297,17 @@ const SaveRestore = () => {
 
   // test ------------------------
 
-  const onTest = useCallback(() => {
+  const onELKLayout = () => {
+    getLayoutedElements(nodes, edges, elkOptions).then(({ nodes: layoutedNodes, edges: layoutedEdges }) => {
+      setNodes(layoutedNodes);
+      setEdges(layoutedEdges);
 
-    const text = localStorage.getItem(testKey);
-    const flow = parseYaml(text);
-
-    if (flow) {
-
-      // const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-      setNodes(flow['nodes'] || []);
-      setEdges(flow.edges || []);
-      // setViewport({ x, y, zoom });
-      // console.log(data);
-      // const test = data['quester']
-      // console.log(test);
-    }
-
-  }, [setNodes, setViewport]);
-
-  useEffect(() => {
-    onTest();
-  }, []);
+      setTimeout(() => {
+        window.requestAnimationFrame(() => fitView());
+      }, 0);
+      
+    });
+  };
 
   return (
     <div className="dndflow">
@@ -331,6 +367,9 @@ const SaveRestore = () => {
                 style={{ display: 'none' }}
               />
               <button onClick={onUploadYML} className="download-btn">upload-yml</button>
+            </div>
+            <div>
+              <button onClick={onELKLayout} className="download-btn">ELKLayout</button>
             </div>
           </Panel>
         </ReactFlow>

@@ -133,7 +133,7 @@ export function solveNodes(obj) {
     }
 
     const json = JSON.stringify(allNodes);
-    console.log(json)
+    // console.log('???',json)
     return [startNodes, npcNodes, playerNodes]
 }
 
