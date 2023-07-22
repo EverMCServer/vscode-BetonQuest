@@ -13,7 +13,8 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { toJpeg } from 'html-to-image';
-import { encodeYaml, parseYaml } from './parseYaml';
+import { parseYaml } from './parseYaml';
+import { encodeYaml } from './writeYaml';
 
 import ConditionNode from './nodes/ConditionNode';
 import NoteNode from './nodes/NoteNode';
@@ -255,10 +256,12 @@ const SaveRestore = () => {
 
     const text = localStorage.getItem(testKey);
     const data = parseYaml(text);
+    
     if (data) {
-      console.log(data);
-      const test = data['quester']
-      console.log(test);
+      
+      // console.log(data);
+      // const test = data['quester']
+      // console.log(test);
     }
 
   }, [setNodes, setViewport]);
