@@ -60,8 +60,8 @@ export default memo(({ data }) => {
 
             <div style={{ display: 'flex', gap: 20 }}>
                 <label>Events:</label>
-                <button onClick={eventDel}>-</button>
-                <button onClick={eventAdd}>+</button>
+                <button onClick={eventDel} className="actionButton">-</button>
+                <button onClick={eventAdd} className="actionButton">+</button>
             </div>
 
             {eventsGet().map((value, index) => (

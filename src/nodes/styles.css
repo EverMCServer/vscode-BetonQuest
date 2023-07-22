@@ -51,3 +51,14 @@
   text-align: center;
   width: 250px;
 }
+
+.actionButton {
+  border: 1px solid #000000;
+  /* background: #ebf8ff; */
+  padding: 0px 0px;
+  width: 16px;
+  height: 16px;
+  border-radius: 10px;
+  /* font-weight: 700; */
+  /* cursor: pointer; */
+}

@@ -8,8 +8,15 @@ export function solveLine(line, allNodes, conditions, inFirst, startNode, lastCo
 
     let targetNode = allNodes[targetID]
     if (targetNode['type'] == 'conditionNode') {
-        let conditionsY = [...conditions, targetNode['text']]
-        let conditionsN = [...conditions, `!${targetNode['text']}`]
+        let newConditionsY = []
+        let newConditionsN = []
+        let newConditions = targetNode['conditions']
+        for (let i = 0; i < newConditions.length; i++) {
+            newConditionsY.push(newConditions[i])
+            newConditionsN.push(`!${newConditions[i]}`)
+        }
+        let conditionsY = [...conditions, ...newConditionsY]
+        let conditionsN = [...conditions, ...newConditionsN]
 
         let nextLinesY = targetNode['handleY'] || []
         let nextLinesN = targetNode['handleN'] || []
@@ -87,7 +94,7 @@ export function solveNodes(obj) {
             playerNodes[id] = dict
         } else if (type == 'conditionNode') {
             let id = node['id'];
-            dict['text'] = node['data']['text']
+            dict['conditions'] = node['data']['conditions']
             conditionNodes[id] = dict
         }
     }
