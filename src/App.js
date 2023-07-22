@@ -22,6 +22,7 @@ import NoteNode from './nodes/NoteNode';
 import NPCNode from './nodes/NPCNode';
 import PlayerNode from './nodes/PlayerNode';
 import StartNode from './nodes/StartNode';
+import ButtonEdge from './nodes/ButtonEdge';
 
 import Sidebar from './Sidebar';
 
@@ -32,6 +33,10 @@ const elkOptions = {
   'elk.layered.spacing.nodeNodeBetweenLayers': '50',
   'elk.spacing.nodeNode': '50',
   'elk.direction': 'DOWN',
+};
+
+const edgeTypes = {
+  buttonedge: ButtonEdge,
 };
 
 const initBgColor = '#1A192B';
@@ -50,6 +55,48 @@ const nodeTypes = {
   startNode: StartNode,
 };
 
+const initialNodes = [
+  {
+    id: '1',
+    type: 'input',
+    data: {
+      label: (
+        <>
+          Node <strong>A</strong>
+        </>
+      ),
+    },
+    position: { x: 250, y: 0 },
+  },
+  {
+    id: '3',
+    data: {
+      label: (
+        <>
+          Node <strong>C</strong>
+        </>
+      ),
+    },
+    position: { x: 400, y: 100 },
+    style: {
+      background: '#D6D5E6',
+      color: '#333',
+      border: '1px solid #222138',
+      width: 180,
+    },
+  },
+];
+
+const initialEdges = [
+  {
+    id: 'e1-3',
+    source: '1',
+    target: '3',
+    label: 'This edge can only be updated from source',
+    updatable: 'source',
+  },
+];
+
 const getLayoutedElements = async (nodes, edges, options = {}) => {
   const graph = {
     id: 'root',
@@ -65,7 +112,7 @@ const getLayoutedElements = async (nodes, edges, options = {}) => {
     })),
     edges: edges,
   };
-  
+
   return elk
     .layout(graph)
     .then((layoutedGraph) => ({
@@ -116,8 +163,8 @@ function downloadYML(result) {
 
 const SaveRestore = () => {
   const reactFlowWrapper = useRef(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const { setViewport, getNodes, fitView } = useReactFlow();
 
@@ -130,19 +177,19 @@ const SaveRestore = () => {
 
   const [needsLayout, setNeedsLayout] = useState(false);
 
-  useEffect(() => {
-    setNodes([
-      {
-        id: '2',
-        type: 'npcNode',
-        data: { color: initBgColor },
-        style: { padding: 5 },
-        position: { x: 300, y: 50 },
-      },
-    ]);
+  // useEffect(() => {
+  //   setNodes([
+  //     {
+  //       id: '2',
+  //       type: 'npcNode',
+  //       data: { color: initBgColor },
+  //       style: { padding: 5 },
+  //       position: { x: 300, y: 50 },
+  //     },
+  //   ]);
 
 
-  }, []);
+  // }, []);
 
   const onDrop = useCallback(
     (event) => {
@@ -193,7 +240,7 @@ const SaveRestore = () => {
     if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
       // encodeYaml(flow)
-      // console.log(encodeYaml(flow))
+      // console.log(window.myGlobalVariable)
       downloadYML(encodeYaml(flow));
     }
   }, [reactFlowInstance]);
@@ -253,6 +300,7 @@ const SaveRestore = () => {
       const flow = parseYaml(text);
 
       if (flow) {
+        console.log(flow)
         setNodes(flow.nodes || []);
         setEdges(flow.edges || []);
       }
@@ -325,6 +373,7 @@ const SaveRestore = () => {
           onInit={setReactFlowInstance}
           onDrop={onDrop}
           onDragOver={onDragOver}
+          edgeTypes={edgeTypes}
           fitView
         >
           <MiniMap

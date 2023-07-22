@@ -139,6 +139,7 @@ export function solveNodes(obj) {
 
 export function encodeYaml(obj) {
     let allNodes = solveNodes(obj);
+    window.myGlobalVariable = allNodes;
     if (!allNodes) {
         return;
     }

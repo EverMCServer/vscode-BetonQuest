@@ -1,5 +1,7 @@
 // parseYaml.js
 import yaml from 'js-yaml';
+import React, { createContext, useContext } from 'react';
+
 
 export function parseYaml(text) {
 
@@ -141,6 +143,7 @@ export function linkIn(fromNodeID, toNodeID, lines, historyNode, vars, condition
         'target': toNodeID,
         'targetHandle': 'handleIn',
         'id': lineID,
+        'type': 'buttonedge',
     }
     lines[lineID] = line
 
