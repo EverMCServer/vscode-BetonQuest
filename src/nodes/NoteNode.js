@@ -17,7 +17,7 @@ export default memo(({ data }) => {
     };
 
     return (
-        <>
+        <div style={{padding: 5}}>
             <div>
                 Note
             </div>
@@ -33,6 +33,6 @@ export default memo(({ data }) => {
                     resize: 'vertical',
                 }}
             />
-        </>
+        </div>
     );
 });

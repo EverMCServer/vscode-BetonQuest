@@ -35,7 +35,7 @@ export default memo(({ data }) => {
     };
 
     return (
-        <>
+        <div style={{padding: 5}}>
             <div style={{ display: 'flex', gap: 20 }}>
                 <label>Conditions:</label>
                 <button onClick={conditionDel} className="actionButton">-</button>
@@ -74,6 +74,6 @@ export default memo(({ data }) => {
                 position={Position.Right}
                 style={{ background: '#ff0000' }}
             />
-        </>
+        </div>
     );
 });

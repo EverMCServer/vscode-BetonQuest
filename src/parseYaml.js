@@ -5,8 +5,7 @@ export function parseYaml(text) {
 
     try {
         const data = yaml.load(text);
-        readFromYaml(data);
-        return data;
+        return readFromYaml(data)
     } catch (error) {
         console.error('Error parsing YAML:', error);
         return null;
@@ -25,9 +24,9 @@ export function readFromYaml(yaml) {
 
     let startNode = {}
     startNode['type'] = 'startNode'
-    startNode['text'] = 'fileName'
-    startNode['text2'] = yaml['quester']
+    startNode['data'] = { 'text': 'fileName', 'text2': yaml['quester'] }
     startNode['first'] = firstList
+    startNode['id'] = 'start'
     let startNodes = { 'start': startNode }
 
     let npcNodes = {}
@@ -37,8 +36,8 @@ export function readFromYaml(yaml) {
         let option = NPC_options[key]
 
         let dict = {}
-        dict['text'] = option['text']
         dict['type'] = 'npcNode'
+        dict['id'] = key
 
         const conditions = option['conditions'] || option['condition'] || ''
         dict['conditions'] = stringSplitToArray(conditions);
@@ -46,9 +45,8 @@ export function readFromYaml(yaml) {
         const pointers = option['pointers'] || option['pointer'] || ''
         dict['pointers'] = stringSplitToArray(pointers);
 
-        const evnets = option['evnets'] || option['evnet'] || ''
-        dict['evnets'] = stringSplitToArray(evnets);
-
+        const events = option['events'] || option['event'] || ''
+        dict['data'] = { 'text': option['text'], 'events': stringSplitToArray(events) }
         npcNodes[key] = dict
     }
 
@@ -59,8 +57,9 @@ export function readFromYaml(yaml) {
         let option = player_options[key]
 
         let dict = {}
-        dict['text'] = option['text']
+
         dict['type'] = 'playerNode'
+        dict['id'] = key
 
         const conditions = option['conditions'] || option['condition'] || ''
         dict['conditions'] = stringSplitToArray(conditions);
@@ -68,9 +67,8 @@ export function readFromYaml(yaml) {
         const pointers = option['pointers'] || option['pointer'] || ''
         dict['pointers'] = stringSplitToArray(pointers);
 
-        const evnets = option['evnets'] || option['evnet'] || ''
-        dict['evnets'] = stringSplitToArray(evnets);
-
+        const events = option['events'] || option['event'] || ''
+        dict['data'] = { 'text': option['text'], 'events': stringSplitToArray(events) }
         playerNodes[key] = dict
     }
 
@@ -79,12 +77,33 @@ export function readFromYaml(yaml) {
     let lines = {}
     let historyNode = []
     let conditionNodes = {}
-    let vars = [0,0]// lineID conditionID
+    let vars = [0, 0]// lineID conditionID
     for (let i = 0; i < firstList.length; i++) {
         let firstKey = firstList[i]
         linkIn('start', firstKey, lines, historyNode, vars, conditionNodes, allNodesNOCondition)
     }
-    console.log(lines)
+
+    let allNodes = Object.assign({}, allNodesNOCondition, conditionNodes);
+
+    let outputNodes = []
+    let allNodesKeys = Object.keys(allNodes)
+    for (let i = 0; i < allNodesKeys.length; i++) {
+        let key = allNodesKeys[i]
+        let node = allNodes[key]
+
+        let one = {}
+        one.id = node.id
+        one.position = { x: i * 200, y: 0 }
+        one.positionAbsolute = { x: 0, y: 0 }
+        one.type = node.type
+        one.data = node.data
+        outputNodes.push(one)
+    }
+    let output = { 'nodes': outputNodes }
+    // console.log('------')
+    // console.log(conditionNodes)
+    // console.log('------')
+    return output
 }
 
 export function linkIn(fromNodeID, toNodeID, lines, historyNode, vars, conditionNodes, allNodesNOCondition) {
@@ -98,8 +117,9 @@ export function linkIn(fromNodeID, toNodeID, lines, historyNode, vars, condition
         let dict = {}
         dict['type'] = 'conditionNode'
         dict['data'] = dict['data'] || {}
-        dict['data']['conditions'] = conditions
-        conditionNodes[conditionKey] = conditions
+        dict['data'] = { 'conditions': conditions }
+        dict['id'] = conditionKey
+        conditionNodes[conditionKey] = dict
 
         let line = {
             'source': fromNodeID,

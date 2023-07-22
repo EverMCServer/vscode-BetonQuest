@@ -41,7 +41,7 @@ export default memo(({ data }) => {
 
 
     return (
-        <>
+        <div style={{padding: 5}}>
             <div>
                 Player
             </div>
@@ -90,6 +90,6 @@ export default memo(({ data }) => {
                 position={Position.Bottom}
                 style={{ background: '#555' }}
             />
-        </>
+        </div>
     );
 });

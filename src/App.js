@@ -123,8 +123,7 @@ const SaveRestore = () => {
         id: getId(),
         type,
         position,
-        style: { padding: 5 },
-        data: { label: `${type} node` },
+        data: {},
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -255,10 +254,14 @@ const SaveRestore = () => {
   const onTest = useCallback(() => {
 
     const text = localStorage.getItem(testKey);
-    const data = parseYaml(text);
-    
-    if (data) {
-      
+    const flow = parseYaml(text);
+
+    if (flow) {
+
+      // const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+      setNodes(flow['nodes'] || []);
+      // setEdges(flow.edges || []);
+      // setViewport({ x, y, zoom });
       // console.log(data);
       // const test = data['quester']
       // console.log(test);
