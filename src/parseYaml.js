@@ -17,7 +17,7 @@ export function stringSplitToArray(text) {
 }
 
 export function readFromYaml(yaml) {
-    console.log('-----------')
+    // console.log('-----------')
     let NPC_options = yaml['NPC_options']
     let player_options = yaml['player_options']
     let firstList = stringSplitToArray(yaml['first'])

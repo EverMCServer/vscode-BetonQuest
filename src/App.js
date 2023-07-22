@@ -65,7 +65,7 @@ const getLayoutedElements = async (nodes, edges, options = {}) => {
     })),
     edges: edges,
   };
-
+  
   return elk
     .layout(graph)
     .then((layoutedGraph) => ({
@@ -259,11 +259,12 @@ const SaveRestore = () => {
       setTimeout(() => {
         setNeedsLayout(true)
       }, 0);
-      
+
 
     };
-
-    reader.readAsText(file);
+    if (file) {
+      reader.readAsText(file);
+    }
   };
   useEffect(() => {
     if (needsLayout) {
@@ -305,7 +306,7 @@ const SaveRestore = () => {
       setTimeout(() => {
         window.requestAnimationFrame(() => fitView());
       }, 0);
-      
+
     });
   };
 
