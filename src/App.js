@@ -33,6 +33,7 @@ const elkOptions = {
   'elk.layered.spacing.nodeNodeBetweenLayers': '50',
   'elk.spacing.nodeNode': '50',
   'elk.direction': 'DOWN',
+  'elk.layered.crossingMinimization.strategy': 'INTERACTIVE'
 };
 
 const edgeTypes = {
@@ -250,10 +251,18 @@ const SaveRestore = () => {
       const flow = JSON.parse(localStorage.getItem(flowKey));
 
       if (flow) {
-        const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-        setNodes(flow.nodes || []);
-        setEdges(flow.edges || []);
-        setViewport({ x, y, zoom });
+        setEdges([])
+        setNodes([])
+
+        setTimeout(() => {
+          // window.requestAnimationFrame(() => fitView());
+
+          const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+          setNodes(flow.nodes || []);
+          setEdges(flow.edges || []);
+          setViewport({ x, y, zoom });
+        }, 0);
+
       }
     };
 
@@ -301,12 +310,21 @@ const SaveRestore = () => {
 
       if (flow) {
         console.log(flow)
-        setNodes(flow.nodes || []);
-        setEdges(flow.edges || []);
+        setEdges([]);
+        setNodes([]);
+        window.requestAnimationFrame(() => fitView());
+
+        setTimeout(() => {
+          setNodes(flow.nodes || []);
+          setEdges(flow.edges || []);
+          // setTimeout(() => {
+          //   setNeedsLayout(true)
+          // }, 100);
+        }, 100);
       }
-      setTimeout(() => {
-        setNeedsLayout(true)
-      }, 0);
+      // setTimeout(() => {
+      //   setNeedsLayout(true)
+      // }, 1000);
 
 
     };
@@ -346,17 +364,25 @@ const SaveRestore = () => {
 
   // test ------------------------
 
-  const onELKLayout = () => {
-    getLayoutedElements(nodes, edges, elkOptions).then(({ nodes: layoutedNodes, edges: layoutedEdges }) => {
+  const onELKLayout = useCallback(() => {
+    console.log(getNodes())
+    window.requestAnimationFrame(() => fitView());
+
+    getLayoutedElements(getNodes(), edges, elkOptions).then(({ nodes: layoutedNodes, edges: layoutedEdges }) => {
       setNodes(layoutedNodes);
       setEdges(layoutedEdges);
+      const p = {}
+      p.x = 0
+      p.y = 0
+      p.zoom = 1
+      setViewport(p);
 
       setTimeout(() => {
         window.requestAnimationFrame(() => fitView());
       }, 0);
 
     });
-  };
+  }, [nodes, edges]);
 
   return (
     <div className="dndflow">

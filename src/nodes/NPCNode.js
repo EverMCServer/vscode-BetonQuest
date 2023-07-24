@@ -9,6 +9,26 @@ export default memo(({ data }) => {
         setTrigger(!getTrigger);
     }
 
+    const conditionsGet = () => {
+        return data['conditions'] || [];
+    };
+    const conditionAdd = () => {
+        const arr = [...conditionsGet(), ''];
+        data['conditions'] = arr;
+        refreshUI();
+    };
+    const conditionDel = () => {
+        const arr = [...conditionsGet()];
+        arr.pop();
+        data['conditions'] = arr;
+        refreshUI();
+    };
+    const conditionUpdate = (index, value) => {
+        const arr = [...conditionsGet()];
+        arr[index] = value;
+        data['conditions'] = arr;
+        refreshUI();
+    };
 
     const textGet = () => {
         return data['text'] || '';
@@ -41,11 +61,34 @@ export default memo(({ data }) => {
 
 
     return (
-        <div style={{padding: 5}}>
+        <div style={{ padding: 5 }}>
             <div>
                 NPC
             </div>
 
+            <div style={{ display: 'flex', gap: 20 }}>
+                <label>Conditions:</label>
+                <button onClick={conditionDel} className="actionButton">-</button>
+                <button onClick={conditionAdd} className="actionButton">+</button>
+            </div>
+
+            {conditionsGet().map((value, index) => (
+                <input
+                    key={index}
+                    type="text"
+                    placeholder={`condition ${index + 1}`}
+                    value={value}
+                    onChange={(e) => conditionUpdate(index, e.target.value)}
+                    style={{
+                        width: 170,
+                        height: 15,
+                    }}
+                />
+            ))}
+
+            <div style={{ display: 'flex', gap: 20 }}>
+                <label>Text:</label>
+            </div>
             <textarea
                 className="nodrag"
                 value={textGet()}
@@ -89,6 +132,12 @@ export default memo(({ data }) => {
                 type="source"
                 position={Position.Bottom}
                 style={{ background: '#555' }}
+            />
+            <Handle
+                id='handleN'
+                type="source"
+                position={Position.Right}
+                style={{ background: '#ff0000' }}
             />
         </div>
     );

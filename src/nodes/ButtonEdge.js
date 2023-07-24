@@ -47,9 +47,9 @@ export default function CustomEdge(props) {
           }}
           className="nodrag nopan"
         >
-          <button className="edgebutton" onClick={(event) => onEdgeClick(event, id)}>
+          {/* <button className="edgebutton" onClick={(event) => onEdgeClick(event, id)}>
             ×
-          </button>
+          </button> */}
         </div>
       </EdgeLabelRenderer>
     </>
