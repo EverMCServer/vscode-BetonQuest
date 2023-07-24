@@ -1,140 +1,78 @@
 import yaml from 'js-yaml';
 
+export function solveNodes(obj) {
+    const nodes = obj['nodes']
+    const edges = obj['edges']
 
-export function solveLine(line, allNodes, conditions, inFirst, startNode, lastConversation) {
-    let targetID = line
-    // let targetHandle = line['targetHandle']
-    // console.log('solveLine', line);
+    let startNodes = []
+    let npcNodes = []
+    let playerNodes = []
+    let allNodesDict = {}
+    for (let i = 0; i < nodes.length; i++) {
+        let node = nodes[i]
+        let type = node['type']
+        let id = node['id']
+        node['pointers'] = []
 
-    let targetNode = allNodes[targetID]
-    if (targetNode['type'] == 'conditionNode') {
-        let newConditionsY = []
-        let newConditionsN = []
-        let newConditions = targetNode['conditions']
-        for (let i = 0; i < newConditions.length; i++) {
-            let v = newConditions[i]
-            newConditionsY.push(v)
-            if (v.startsWith('!')) {
-                v = v.slice(1);
-                newConditionsN.push(v)
-            }else{
-                newConditionsN.push(`!${v}`)
-            }
-        }
-        let conditionsY = [...conditions, ...newConditionsY]
-        let conditionsN = [...conditions, ...newConditionsN]
-
-        let nextLinesY = targetNode['handleY'] || []
-        let nextLinesN = targetNode['handleN'] || []
-
-        for (let i = 0; i < nextLinesY.length; i++) {
-            let nextLine = nextLinesY[i];
-            solveLine(nextLine, allNodes, conditionsY, inFirst, startNode, lastConversation)
-        }
-        for (let i = 0; i < nextLinesN.length; i++) {
-            let nextLine = nextLinesN[i];
-            solveLine(nextLine, allNodes, conditionsN, inFirst, startNode, lastConversation)
-        }
-    } else if (targetNode['type'] == 'npcNode') {
-        targetNode['conditions'] = conditions;
-
-        if (inFirst) {
-            startNode['first'] = [...startNode['first'] || [], targetID]
-        }
-        if (lastConversation) {
-            lastConversation['pointers'] = [...lastConversation['pointers'] || [], targetID]
-        }
-
-        let nextLines = targetNode['handleOut'] || []
-        for (let i = 0; i < nextLines.length; i++) {
-            let nextLine = nextLines[i];
-            solveLine(nextLine, allNodes, [], false, startNode, targetNode)
-        }
-    } else {
-        targetNode['conditions'] = conditions;
-
-        if (inFirst) {
-            console.log('start can not connect player');
-            return;
-        }
-        if (lastConversation) {
-            lastConversation['pointers'] = [...lastConversation['pointers'] || [], targetID]
-        }
-
-        let nextLines = targetNode['handleOut'] || []
-        for (let i = 0; i < nextLines.length; i++) {
-            let nextLine = nextLines[i];
-            solveLine(nextLine, allNodes, [], false, startNode, targetNode)
+        allNodesDict[id] = node
+        if (type == 'startNode') {
+            startNodes = [...startNodes || [], node]
+        } else if (type == 'npcNode') {
+            npcNodes = [...npcNodes || [], node]
+        } else if (type == 'playerNode') {
+            playerNodes = [...playerNodes || [], node]
         }
     }
+    let linesDict = {}
+    for (let i = 0; i < edges.length; i++) {
+        let edge = edges[i]
+        let source = edge['source']
+        linesDict[source] = [...linesDict[source] || [], edge]
+    }
 
+
+    if (startNodes.length != 1) {
+        console.log('error: start should be only one');
+        return;
+    }
+    let startNode = startNodes[0];
+    let startNodeID = startNode['id']
+    let historyNodes = []
+
+    let lines = linesDict[startNodeID]
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i]
+        let targetNodeID = line['target']
+        solveLine(targetNodeID, allNodesDict, historyNodes, startNode, linesDict)
+    }
+
+    console.log(startNodes)
+
+    return [startNodes, npcNodes, playerNodes]
 }
 
-export function solveNodes(obj) {
-    const nodes = obj['nodes'];
-    const edges = obj['edges'];
+export function solveLine(targetNodeID, allNodesDict, historyNodes, lastLevelNode, linesDict) {
 
-    let startNodes = {}
-    let npcNodes = {}
-    let playerNodes = {}
-    let conditionNodes = {}
-    for (let i = 0; i < nodes.length; i++) {
-        const node = nodes[i];
-        const type = node['type'];
+    let targetNode = allNodesDict[targetNodeID];
+    lastLevelNode['pointers'] = [...lastLevelNode['pointers'] || [], targetNode['data']['name']]
 
-        let dict = { 'type': type }
-        if (type == 'startNode') {
-            let id = node['id'];
-            dict['text'] = node['data']['text']
-            dict['text2'] = node['data']['text2']
-            startNodes[id] = dict
-        } else if (type == 'npcNode') {
-            let id = node['id'];
-            dict['text'] = node['data']['text']
-            dict['events'] = node['data']['events']
-            npcNodes[id] = dict
-        } else if (type == 'playerNode') {
-            let id = node['id'];
-            dict['text'] = node['data']['text']
-            dict['events'] = node['data']['events']
-            playerNodes[id] = dict
-        } else if (type == 'conditionNode') {
-            let id = node['id'];
-            dict['conditions'] = node['data']['conditions']
-            conditionNodes[id] = dict
+    
+    let lines = linesDict[targetNodeID]
+    if (!lines) {
+        return
+    }
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i]
+        let from2Handle = line['sourceHandle']
+        let target2NodeID = line['target']
+        let levelNode = lastLevelNode
+
+        if (from2Handle == 'handleOut') {
+            levelNode = targetNode
         }
-    }
-    let allNodes = Object.assign({}, startNodes, npcNodes, playerNodes, conditionNodes);
-    for (let i = 0; i < edges.length; i++) {
-        const edge = edges[i];
-        const source = edge['source'];
-        const sourceHandle = edge['sourceHandle'];
-        const target = edge['target'];
-        const targetHandle = edge['targetHandle'];
 
-        let node = allNodes[source]
-        node[sourceHandle] = [...node[sourceHandle] || [], target ]
+        solveLine(target2NodeID, allNodesDict, historyNodes, levelNode, linesDict)
     }
-
-    let startNodesKeys = Object.keys(startNodes);
-    if (startNodesKeys.length > 1) {
-        console.log('start should be only one');
-        return;
-    }
-
-    let startNode = startNodes[startNodesKeys[0]];
-    if (!startNode) {
-        return;
-    }
-    let nextLines = startNode['handleOut'] || []
-    for (let i = 0; i < nextLines.length; i++) {
-        let nextLine = nextLines[i];
-        solveLine(nextLine, allNodes, [], true, startNode, null)
-    }
-
-    const json = JSON.stringify(allNodes);
-    // console.log('???',json)
-    return [startNodes, npcNodes, playerNodes]
 }
 
 export function encodeYaml(obj) {
@@ -148,21 +86,18 @@ export function encodeYaml(obj) {
     let playerNodes = allNodes[2];
 
 
-    let startNodesKeys = Object.keys(startNodes);
-    const startNodesKey = startNodesKeys[0];
-    const startNode = startNodes[startNodesKey];
+    const startNode = startNodes[0];
     // console.log(startNodes)
 
     let npcYaml = {}
-    let npcNodesKeys = Object.keys(npcNodes);
-    for (let i = 0; i < npcNodesKeys.length; i++) {
-        const npcNodesKey = npcNodesKeys[i];
-        const node = npcNodes[npcNodesKey];
-        const conditions = node['conditions']
-        const pointers = node['pointers']
-        const events = node['events']
+    for (let i = 0; i < npcNodes.length; i++) {
+        let node = npcNodes[i];
+        let conditions = node['data']['conditions']
+        let pointers = node['pointers']
+        let events = node['data']['events']
+        let name = node['data']['name']
         let conversation = {}
-        conversation['text'] = node['text'];
+        conversation['text'] = node['data']['text'];
 
         if (conditions && conditions.length) {
             conversation['conditions'] = conditions;
@@ -173,19 +108,19 @@ export function encodeYaml(obj) {
         if (events && events.length) {
             conversation['events'] = events;
         }
-        npcYaml[npcNodesKey] = conversation
+        npcYaml[name] = conversation
     }
+    console.log(npcNodes)
 
     let playerYaml = {}
-    let playerNodesKeys = Object.keys(playerNodes);
-    for (let i = 0; i < playerNodesKeys.length; i++) {
-        const playerNodesKey = playerNodesKeys[i];
-        const node = playerNodes[playerNodesKey];
-        const conditions = node['conditions']
-        const pointers = node['pointers']
-        const events = node['events']
+    for (let i = 0; i < playerNodes.length; i++) {
+        let node = playerNodes[i];
+        let conditions = node['data']['conditions']
+        let pointers = node['pointers']
+        let events = node['data']['events']
+        let name = node['data']['name']
         let conversation = {}
-        conversation['text'] = node['text'];
+        conversation['text'] = node['data']['text'];
 
         if (conditions && conditions.length) {
             conversation['conditions'] = conditions;
@@ -196,14 +131,14 @@ export function encodeYaml(obj) {
         if (events && events.length) {
             conversation['events'] = events;
         }
-        playerYaml[playerNodesKey] = conversation
+        playerYaml[name] = conversation
     }
 
     let fullYaml = {}
 
-    const fileName = startNode['text'];
-    const quester = startNode['text2'];
-    const first = startNode['first'];
+    const fileName = startNode['data']['text'];
+    const quester = startNode['data']['text2'];
+    const first = startNode['pointers'];
 
     fullYaml['quester'] = quester;
     fullYaml['NPC_options'] = npcYaml;

@@ -65,12 +65,12 @@ export function customLayout(nodes, edges) {
         heightSum += h
         yArray = [...yArray, heightSum]
     }
-    console.log('------------------')
-    console.log(widthMaxDict)
-    console.log(heightMaxDict)
-    console.log(xArray)
-    console.log(yArray)
-    console.log('------------------')
+    // console.log('------------------')
+    // console.log(widthMaxDict)
+    // console.log(heightMaxDict)
+    // console.log(xArray)
+    // console.log(yArray)
+    // console.log('------------------')
 
     for (let i = 0; i < nodes.length; i++) {
         let node = nodes[i]
@@ -83,7 +83,6 @@ export function customLayout(nodes, edges) {
     }
 
 
-    console.log(locationDict)
     return [nodes, edges]
 
 }
@@ -106,7 +105,6 @@ export function customLayoutSub(fromNodeID, lineDict, vars, y, locationDict) {
 
             vars['maxX'] = maxX
             locationDict[lineTarget] = { 'x': maxX, 'y': y + 1 }
-            console.log('bbbb',fromNodeID, lineTarget, maxX, y + 1)
             customLayoutSub(lineTarget, lineDict, vars, y + 1, locationDict)
         }
     }
@@ -121,7 +119,6 @@ export function customLayoutSub(fromNodeID, lineDict, vars, y, locationDict) {
             vars['maxX'] = maxX
 
             locationDict[lineTarget] = { 'x': maxX, 'y': y }
-            console.log('aaaa',fromNodeID, lineTarget, maxX, y)
             customLayoutSub(lineTarget, lineDict, vars, y, locationDict)
         }
     }
