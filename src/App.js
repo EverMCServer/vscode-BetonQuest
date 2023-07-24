@@ -33,7 +33,8 @@ const elkOptions = {
   'elk.layered.spacing.nodeNodeBetweenLayers': '50',
   'elk.spacing.nodeNode': '50',
   'elk.direction': 'DOWN',
-  'elk.layered.crossingMinimization.strategy': 'INTERACTIVE'
+  'elk.layered.crossingMinimization.strategy': 'INTERACTIVE',
+  'elk.layered.nodePlacement.bk.fixedAlignment': 'RIGHTDOWN'
 };
 
 const edgeTypes = {
