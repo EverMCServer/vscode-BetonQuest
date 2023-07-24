@@ -16,7 +16,6 @@ import { toJpeg } from 'html-to-image';
 import { parseYaml, customLayout } from './parseYaml';
 import { encodeYaml } from './writeYaml';
 
-import ConditionNode from './nodes/ConditionNode';
 import NoteNode from './nodes/NoteNode';
 import NPCNode from './nodes/NPCNode';
 import PlayerNode from './nodes/PlayerNode';
@@ -38,7 +37,6 @@ let id = 0;
 const getId = () => `dndnode_${id++}`;
 
 const nodeTypes = {
-  conditionNode: ConditionNode,
   noteNode: NoteNode,
   npcNode: NPCNode,
   playerNode: PlayerNode,
