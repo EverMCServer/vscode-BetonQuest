@@ -14,7 +14,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import ELK from 'elkjs/lib/elk.bundled.js';
 import { toJpeg } from 'html-to-image';
-import { parseYaml } from './parseYaml';
+import { parseYaml, customLayout } from './parseYaml';
 import { encodeYaml } from './writeYaml';
 
 import ConditionNode from './nodes/ConditionNode';
@@ -209,11 +209,12 @@ const SaveRestore = () => {
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,
       });
+      let id = getId()
       const newNode = {
-        id: getId(),
+        id: id,
         type,
         position,
-        data: {},
+        data: { 'name': `${id}` },
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -335,7 +336,7 @@ const SaveRestore = () => {
   };
   useEffect(() => {
     if (needsLayout) {
-      onELKLayout();
+      onAutoLayout();
       setNeedsLayout(false);
     }
   }, [needsLayout]);
@@ -365,24 +366,43 @@ const SaveRestore = () => {
 
   // test ------------------------
 
-  const onELKLayout = useCallback(() => {
-    console.log(getNodes())
-    window.requestAnimationFrame(() => fitView());
+  const onAutoLayout = useCallback(() => {
+    // console.log(getNodes())
+    // window.requestAnimationFrame(() => fitView());
 
-    getLayoutedElements(getNodes(), edges, elkOptions).then(({ nodes: layoutedNodes, edges: layoutedEdges }) => {
-      setNodes(layoutedNodes);
-      setEdges(layoutedEdges);
+    // getLayoutedElements(getNodes(), edges, elkOptions).then(({ nodes: layoutedNodes, edges: layoutedEdges }) => {
+    //   setNodes(layoutedNodes);
+    //   setEdges(layoutedEdges);
+      // const p = {}
+      // p.x = 0
+      // p.y = 0
+      // p.zoom = 1
+      // setViewport(p);
+
+    //   setTimeout(() => {
+    //     window.requestAnimationFrame(() => fitView());
+    //   }, 0);
+
+    // });
+    let arr = customLayout(nodes, edges)
+    if (arr && arr.length == 2) {
+      let newNodes = arr[0]
+      let newEdges = arr[1]
+
+      ;
+      setNodes(JSON.parse(JSON.stringify(newNodes)));
+      setEdges(newEdges);
       const p = {}
       p.x = 0
       p.y = 0
       p.zoom = 1
-      setViewport(p);
+      setViewport(p)
+      console.log(newNodes)
+      window.requestAnimationFrame(() => fitView());
+    }
 
-      setTimeout(() => {
-        window.requestAnimationFrame(() => fitView());
-      }, 0);
 
-    });
+
   }, [nodes, edges]);
 
   return (
@@ -446,7 +466,7 @@ const SaveRestore = () => {
               <button onClick={onUploadYML} className="download-btn">upload-yml</button>
             </div>
             <div>
-              <button onClick={onELKLayout} className="download-btn">ELKLayout</button>
+              <button onClick={onAutoLayout} className="download-btn">AutoLayout</button>
             </div>
           </Panel>
         </ReactFlow>

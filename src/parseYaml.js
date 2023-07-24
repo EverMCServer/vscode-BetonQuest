@@ -2,6 +2,130 @@
 import yaml from 'js-yaml';
 import React, { createContext, useContext } from 'react';
 
+export function customLayout(nodes, edges) {
+    let startNode = null
+    for (let i = 0; i < nodes.length; i++) {
+        let node = nodes[i]
+        if (node.type == 'startNode') {
+            if (!startNode) {
+                startNode = node
+            } else {
+                console.log('error: startNode need only one')
+                return
+            }
+        }
+    }
+    if (!startNode) {
+        console.log('error: startNode not found')
+        return
+    }
+
+    let lineDict = {}
+    for (let i = 0; i < edges.length; i++) {
+        let edge = edges[i]
+        let source = edge['source']
+        lineDict[source] = [...lineDict[source] || [], edge]
+    }
+
+    let maxX = 0
+    let y = 0
+
+    let startNodeID = startNode['id']
+
+
+    let locationDict = {}
+    locationDict[startNodeID] = { 'x': maxX, 'y': y }
+    let vars = { 'maxX': maxX }
+
+    customLayoutSub(startNodeID, lineDict, vars, y, locationDict)
+
+    let space = 30
+    let widthMaxDict = {}
+    let heightMaxDict = {}
+    for (let i = 0; i < nodes.length; i++) {
+        let node = nodes[i]
+        let layoutPosition = locationDict[node['id']]
+
+        widthMaxDict[layoutPosition.x] = Math.max(widthMaxDict[layoutPosition.x] || 0, node.width + space)
+        heightMaxDict[layoutPosition.y] = Math.max(heightMaxDict[layoutPosition.y] || 0, node.height + space)
+        node.position = { 'x': layoutPosition.x * 200, 'y': layoutPosition.y * 400 }
+    }
+
+    let xArray = [0]
+    let widthSum = 0
+    for (let i = 0; i < Object.keys(widthMaxDict).length; i++) {
+        let w = widthMaxDict[i]
+        widthSum += w
+        xArray = [...xArray, widthSum]
+    }
+    let yArray = [0]
+    let heightSum = 0
+    for (let i = 0; i < Object.keys(heightMaxDict).length; i++) {
+        let h = heightMaxDict[i]
+        heightSum += h
+        yArray = [...yArray, heightSum]
+    }
+    console.log('------------------')
+    console.log(widthMaxDict)
+    console.log(heightMaxDict)
+    console.log(xArray)
+    console.log(yArray)
+    console.log('------------------')
+
+    for (let i = 0; i < nodes.length; i++) {
+        let node = nodes[i]
+        let layoutPosition = locationDict[node['id']]
+
+        node.position = { 'x': xArray[layoutPosition.x], 'y': yArray[layoutPosition.y] }
+        // node.positionAbsolute = {'x': layoutPosition.x*200, 'y': layoutPosition.y*2000}
+        // node.x = layoutPosition.x*200
+        // node.y = layoutPosition.y*2000
+    }
+
+
+    console.log(locationDict)
+    return [nodes, edges]
+
+}
+
+export function customLayoutSub(fromNodeID, lineDict, vars, y, locationDict) {
+    let fromNodeLines = lineDict[fromNodeID]
+    if (!fromNodeLines) {
+        return
+    }
+    for (let i = 0; i < fromNodeLines.length; i++) {
+        let line = fromNodeLines[i]
+        let lineSourceHandle = line['sourceHandle']
+        if (lineSourceHandle == 'handleOut') {
+            let lineTarget = line['target']
+
+            let maxX = vars['maxX']
+            if (i != 0) {
+                maxX += 1
+            }
+
+            vars['maxX'] = maxX
+            locationDict[lineTarget] = { 'x': maxX, 'y': y + 1 }
+            console.log('bbbb',fromNodeID, lineTarget, maxX, y + 1)
+            customLayoutSub(lineTarget, lineDict, vars, y + 1, locationDict)
+        }
+    }
+    for (let i = 0; i < fromNodeLines.length; i++) {
+        let line = fromNodeLines[i]
+        let lineSourceHandle = line['sourceHandle']
+        if (lineSourceHandle == 'handleN') {
+            let lineTarget = line['target']
+
+            let maxX = vars['maxX']
+            maxX += 1
+            vars['maxX'] = maxX
+
+            locationDict[lineTarget] = { 'x': maxX, 'y': y }
+            console.log('aaaa',fromNodeID, lineTarget, maxX, y)
+            customLayoutSub(lineTarget, lineDict, vars, y, locationDict)
+        }
+    }
+}
 
 export function parseYaml(text) {
 
@@ -29,7 +153,7 @@ export function readFromYaml(yaml) {
 
     let startNode = {}
     startNode['type'] = 'startNode'
-    startNode['data'] = { 'text': 'fileName', 'text2': yaml['quester'] }
+    startNode['data'] = { 'name': 'start', 'text': 'fileName', 'text2': yaml['quester'] }
     startNode['id'] = 'start'
     let startNodes = { 'start': startNode }
 
@@ -53,7 +177,7 @@ export function readFromYaml(yaml) {
 
         const conditions = option['conditions'] || option['condition'] || ''
         const events = option['events'] || option['event'] || ''
-        dict['data'] = { 'text': option['text'], 'events': stringSplitToArray(events), 'conditions': stringSplitToArray(conditions) }
+        dict['data'] = { 'name': key, 'text': option['text'], 'events': stringSplitToArray(events), 'conditions': stringSplitToArray(conditions) }
         npcNodes[newKey] = dict
     }
 
@@ -77,7 +201,7 @@ export function readFromYaml(yaml) {
 
         const conditions = option['conditions'] || option['condition'] || ''
         const events = option['events'] || option['event'] || ''
-        dict['data'] = { 'text': option['text'], 'events': stringSplitToArray(events), 'conditions': stringSplitToArray(conditions) }
+        dict['data'] = { 'name': key, 'text': option['text'], 'events': stringSplitToArray(events), 'conditions': stringSplitToArray(conditions) }
         playerNodes[newKey] = dict
     }
 
@@ -159,12 +283,13 @@ export function linkIn(fromNodeID, fromHandle, toNodeID, allNodes, lines, histor
     for (let i = 0; i < pointers.length; i++) {
         let toNodeID2 = pointers[i]
         let toNode2 = allNodes[toNodeID2]
-        let toNode2IsPlayer = toNode2['type'] == 'playerNode'
+        let toNodeIsNPC = toNode['type'] == 'npcNode'
+        let toNode2IsNPC = toNode2['type'] == 'npcNode'
 
-        if (i == 0 || toNode2IsPlayer) {
-            linkIn(toNodeID, 'handleOut', toNodeID2, allNodes, lines, historyNodesRef)
-        } else {
+        if (toNodeIsNPC && toNode2IsNPC) {
             linkIn(lastToNodeID2, 'handleN', toNodeID2, allNodes, lines, historyNodesRef)
+        } else {
+            linkIn(toNodeID, 'handleOut', toNodeID2, allNodes, lines, historyNodesRef)
         }
         lastToNodeID2 = toNodeID
     }
