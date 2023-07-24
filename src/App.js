@@ -12,7 +12,6 @@ import ReactFlow, {
   getTransformForBounds,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import ELK from 'elkjs/lib/elk.bundled.js';
 import { toJpeg } from 'html-to-image';
 import { parseYaml, customLayout } from './parseYaml';
 import { encodeYaml } from './writeYaml';
@@ -25,17 +24,6 @@ import StartNode from './nodes/StartNode';
 import ButtonEdge from './nodes/ButtonEdge';
 
 import Sidebar from './Sidebar';
-
-const elk = new ELK();
-
-const elkOptions = {
-  'elk.algorithm': 'layered',
-  'elk.layered.spacing.nodeNodeBetweenLayers': '50',
-  'elk.spacing.nodeNode': '50',
-  'elk.direction': 'DOWN',
-  'elk.layered.crossingMinimization.strategy': 'INTERACTIVE',
-  'elk.layered.nodePlacement.bk.fixedAlignment': 'RIGHTDOWN'
-};
 
 const edgeTypes = {
   buttonedge: ButtonEdge,
@@ -98,35 +86,6 @@ const initialEdges = [
     updatable: 'source',
   },
 ];
-
-const getLayoutedElements = async (nodes, edges, options = {}) => {
-  const graph = {
-    id: 'root',
-    layoutOptions: options,
-    children: nodes.map((node) => ({
-      ...node,
-
-      targetPosition: 'top',
-      sourcePosition: 'bottom',
-
-      width: node.width,
-      height: node.height,
-    })),
-    edges: edges,
-  };
-
-  return elk
-    .layout(graph)
-    .then((layoutedGraph) => ({
-      nodes: layoutedGraph.children.map((node) => ({
-        ...node,
-        position: { x: node.x, y: node.y },
-      })),
-
-      edges: layoutedGraph.edges,
-    }))
-    .catch(console.error);
-};
 
 function downloadImage(dataUrl) {
   const a = document.createElement('a');
