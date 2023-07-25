@@ -86,10 +86,10 @@ function downloadYML(result) {
 
 const SaveRestore = () => {
   const reactFlowWrapper = useRef(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const { setViewport, getNodes, fitView } = useReactFlow();
+  const { setViewport, getNode, getNodes, fitView } = useReactFlow();
 
   const onConnect = useCallback((params) => {
     params['type'] = 'step',
@@ -135,6 +135,9 @@ const SaveRestore = () => {
         y: event.clientY - reactFlowBounds.top,
       });
       let id = getId()
+      while(getNode(id)) {
+        id = getId()
+      }
       const newNode = {
         id: id,
         type,

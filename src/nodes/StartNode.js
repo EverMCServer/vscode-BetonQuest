@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import { Handle, Position } from 'reactflow';
+import { Handle, Position, useReactFlow } from 'reactflow';
 import './styles.css'
 
 export default memo(({ data }) => {
@@ -23,6 +23,27 @@ export default memo(({ data }) => {
   const text2Update = (value) => {
     data['text2'] = value;
     refreshUI();
+  };
+
+  const { getNode } = useReactFlow();
+  const isConnectable = (line) => {
+      let source = getNode(line['source'])
+      let sourceType = source['type']
+      let sourceHandle = line['sourceHandle']
+      let target = getNode(line['target'])
+      let targetType = target['type']
+      let targetHandle = line['targetHandle']
+
+      if (sourceType == 'startNode' && sourceHandle == 'handleOut' && targetType == 'npcNode' && targetHandle == 'handleIn') {
+          return true
+      } else if (sourceType == 'npcNode' && sourceHandle == 'handleOut' && targetType == 'playerNode' && targetHandle == 'handleIn') {
+          return true
+      } else if (sourceType == 'playerNode' && sourceHandle == 'handleOut' && targetType == 'npcNode' && targetHandle == 'handleIn') {
+          return true
+      } else if (sourceType == 'npcNode' && sourceHandle == 'handleN' && targetType == 'npcNode' && targetHandle == 'handleIn') {
+          return true
+      }
+      return false
   };
 
   return (
@@ -58,6 +79,7 @@ export default memo(({ data }) => {
         type="source"
         position={Position.Bottom}
         style={{ background: '#555' }}
+        isValidConnection={(e) => isConnectable(e)}
       />
     </div>
   );
