@@ -9,6 +9,7 @@ import ReactFlow, {
   useReactFlow,
   getRectOfNodes,
   getTransformForBounds,
+  MarkerType,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
@@ -33,7 +34,7 @@ const edgeTypes = {
 const flowKey = 'bq-flow';
 
 let id = 0;
-const getId = () => `dndnode_${id++}`;
+const getId = () => `node_${id++}`;
 
 const nodeTypes = {
   noteNode: NoteNode,
@@ -43,45 +44,9 @@ const nodeTypes = {
 };
 
 const initialNodes = [
-  {
-    id: '1',
-    type: 'input',
-    data: {
-      label: (
-        <>
-          Node <strong>A</strong>
-        </>
-      ),
-    },
-    position: { x: 250, y: 0 },
-  },
-  {
-    id: '3',
-    data: {
-      label: (
-        <>
-          Node <strong>C</strong>
-        </>
-      ),
-    },
-    position: { x: 400, y: 100 },
-    style: {
-      background: '#D6D5E6',
-      color: '#333',
-      border: '1px solid #222138',
-      width: 180,
-    },
-  },
 ];
 
 const initialEdges = [
-  {
-    id: 'e1-3',
-    source: '1',
-    target: '3',
-    label: 'This edge can only be updated from source',
-    updatable: 'source',
-  },
 ];
 
 function downloadImage(dataUrl) {
@@ -126,7 +91,11 @@ const SaveRestore = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const { setViewport, getNodes, fitView } = useReactFlow();
 
-  const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
+  const onConnect = useCallback((params) => {
+    params['type'] = 'step',
+      params['markerEnd'] = { type: MarkerType.ArrowClosed }
+    setEdges((eds) => addEdge(params, eds))
+  }, []);
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
@@ -177,6 +146,12 @@ const SaveRestore = () => {
     },
     [reactFlowInstance]
   );
+
+  const onClear = useCallback(() => {
+    setEdges([]);
+    setNodes([]);
+    window.requestAnimationFrame(() => fitView());
+  }, [reactFlowInstance]);
 
   const onSave = useCallback(() => {
     if (reactFlowInstance) {
@@ -267,7 +242,7 @@ const SaveRestore = () => {
       const flow = readYaml(text);
 
       if (flow) {
-        console.log(flow)
+        console.log(flow);
         setEdges([]);
         setNodes([]);
         window.requestAnimationFrame(() => fitView());
@@ -329,11 +304,11 @@ const SaveRestore = () => {
     // getLayoutedElements(getNodes(), edges, elkOptions).then(({ nodes: layoutedNodes, edges: layoutedEdges }) => {
     //   setNodes(layoutedNodes);
     //   setEdges(layoutedEdges);
-      // const p = {}
-      // p.x = 0
-      // p.y = 0
-      // p.zoom = 1
-      // setViewport(p);
+    // const p = {}
+    // p.x = 0
+    // p.y = 0
+    // p.zoom = 1
+    // setViewport(p);
 
     //   setTimeout(() => {
     //     window.requestAnimationFrame(() => fitView());
@@ -345,7 +320,7 @@ const SaveRestore = () => {
       let newNodes = arr[0]
       let newEdges = arr[1]
 
-      ;
+        ;
       setNodes(JSON.parse(JSON.stringify(newNodes)));
       setEdges(newEdges);
       const p = {}
@@ -388,6 +363,9 @@ const SaveRestore = () => {
             }}
           />
           <Panel position="top-right">
+            <div>
+              <button onClick={onClear} className="download-btn">clear</button>
+            </div>
             <div>
               <button onClick={onSave} className="download-btn">save</button>
             </div>

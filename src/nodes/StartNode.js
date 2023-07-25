@@ -26,23 +26,29 @@ export default memo(({ data }) => {
   };
 
   return (
-    <div style={{padding: 5}}>
+    <div style={{ padding: 5 }}>
       <div>
         Start
       </div>
 
       <div style={{ display: 'flex', gap: 10, justifyContent: 'space-between' }}>
-        <label>File Name</label>
+        <label>File Name:</label>
+
+      </div>
+      <div>
         <input type="text" className="nodrag" value={textGet()} onChange={(e) => textUpdate(e.target.value)} style={{
-          width: 150,
+          width: 170,
           height: 15,
         }} />
       </div>
 
       <div style={{ display: 'flex', gap: 10, justifyContent: 'space-between' }}>
-        <label>NPC Name</label>
+        <label>NPC Name:</label>
+
+      </div>
+      <div>
         <input type="text" className="nodrag" value={text2Get()} onChange={(e) => text2Update(e.target.value)} style={{
-          width: 150,
+          width: 170,
           height: 15,
         }} />
       </div>

@@ -12,17 +12,11 @@ export default () => {
       <div className="dndnode" onDragStart={(event) => onDragStart(event, 'startNode')} draggable>
         Start
       </div>
-      <div className="dndnode" onDragStart={(event) => onDragStart(event, 'conditionNode')} draggable>
-        Condition
-      </div>
       <div className="dndnode" onDragStart={(event) => onDragStart(event, 'npcNode')} draggable>
         NPC
       </div>
       <div className="dndnode" onDragStart={(event) => onDragStart(event, 'playerNode')} draggable>
         Player
-      </div>
-      <div className="dndnode" onDragStart={(event) => onDragStart(event, 'noteNode')} draggable>
-        Note
       </div>
     </aside>
   );

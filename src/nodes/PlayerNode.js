@@ -64,7 +64,7 @@ export default memo(({ data }) => {
     return (
         <div style={{padding: 5}}>
             <div>
-                Player {data.name}
+                Player ({data.name})
             </div>
 
             <div style={{ display: 'flex', gap: 20 }}>

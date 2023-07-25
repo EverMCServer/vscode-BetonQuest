@@ -1,4 +1,5 @@
 import yaml from 'js-yaml';
+import { MarkerType } from 'reactflow';
 
 export function readYaml(text) {
 
@@ -138,7 +139,8 @@ export function linkIn(fromNodeID, fromHandle, toNodeID, allNodes, lines, histor
         'target': toNodeID,
         'targetHandle': 'handleIn',
         'id': lineID,
-        'type': 'smoothstep',
+        'type': 'step',
+        'markerEnd': { type: MarkerType.ArrowClosed }
     }
     lines[lineID] = line
 

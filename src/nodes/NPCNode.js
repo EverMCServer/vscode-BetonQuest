@@ -63,7 +63,7 @@ export default memo(({ data }) => {
     return (
         <div style={{ padding: 5 }}>
             <div>
-                NPC {data.name}
+                NPC ({data.name})
             </div>
 
             <div style={{ display: 'flex', gap: 20 }}>
@@ -117,6 +117,7 @@ export default memo(({ data }) => {
                     style={{
                         width: 170,
                         height: 15,
+                        marginBottom: "-1px",
                     }}
                 />
             ))}
