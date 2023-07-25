@@ -52,6 +52,7 @@ body,
 .dndflow .reactflow-wrapper {
     flex-grow: 1;
     height: 100%;
+    border-color: #ff0072;
 }
 
 .dndflow .selectall {
