@@ -25,17 +25,28 @@ export function autoLayout(nodes, edges) {
         lineDict[source] = [...lineDict[source] || [], edge]
     }
 
-    let maxX = 0
-    let y = 0
-
     let startNodeID = startNode['id']
 
 
     let locationDict = {}
-    locationDict[startNodeID] = { 'x': maxX, 'y': y }
-    let vars = { 'maxX': maxX }
+    locationDict[startNodeID] = { 'x': 0, 'y': 0 }
+    let vars = { 'maxX': 0, 'freeMaxX': 0 }
 
-    customLayoutSub(startNodeID, lineDict, vars, y, locationDict)
+    customLayoutSub(startNodeID, lineDict, vars, 0, locationDict)
+
+    // free nodes
+    let maxX = 1
+    let freeNodes = []
+    for (let i = 0; i < nodes.length; i++) {
+        let node = nodes[i]
+        let nodeID = node['id']
+        let exist = locationDict[nodeID] 
+        if (!exist) {
+            locationDict[nodeID] = { 'x': maxX, 'y': 0 }
+            freeNodes = [...freeNodes, node]
+            maxX++
+        }
+    }
 
     let space = 50
     let widthMaxDict = {}
@@ -48,6 +59,7 @@ export function autoLayout(nodes, edges) {
         heightMaxDict[layoutPosition.y] = Math.max(heightMaxDict[layoutPosition.y] || 0, node.height + space)
         node.position = { 'x': layoutPosition.x * 200, 'y': layoutPosition.y * 400 }
     }
+
 
     let xArray = [0]
     let widthSum = 0
