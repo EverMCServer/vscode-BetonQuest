@@ -92,10 +92,23 @@ const SaveRestore = () => {
   const { setViewport, getNode, getNodes, fitView } = useReactFlow();
 
   const onConnect = useCallback((params) => {
-    params['type'] = 'step',
-      params['markerEnd'] = { type: MarkerType.ArrowClosed }
-    setEdges((eds) => addEdge(params, eds))
-  }, []);
+    params['type'] = 'step'
+    params['markerEnd'] = { type: MarkerType.ArrowClosed }
+    let source = params['source']
+    let node = getNode(source)
+    let edges2 = edges
+    if (node.type == 'startNode') {
+
+      edges2 = edges.filter((item, i) => {
+        console.log(item, source)
+        return item['source'] != source
+      });
+
+    }
+
+    edges2 = addEdge(params, edges2)
+    setEdges(edges2)
+  }, [edges]);
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
@@ -135,7 +148,7 @@ const SaveRestore = () => {
         y: event.clientY - reactFlowBounds.top,
       });
       let id = getId()
-      while(getNode(id)) {
+      while (getNode(id)) {
         id = getId()
       }
       const newNode = {
