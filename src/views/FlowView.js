@@ -263,6 +263,7 @@ const SaveRestore = () => {
         window.requestAnimationFrame(() => fitView());
 
         setTimeout(() => {
+          // let obj = autoLayout(flow.nodes, flow.edges)
           setNodes(flow.nodes || []);
           setEdges(flow.edges || []);
           // setTimeout(() => {
@@ -330,22 +331,22 @@ const SaveRestore = () => {
     //   }, 0);
 
     // });
-    let arr = autoLayout(nodes, edges)
-    if (arr && arr.length == 2) {
-      let newNodes = arr[0]
-      let newEdges = arr[1]
+    let obj = autoLayout(nodes, edges)
 
-        ;
-      setNodes(JSON.parse(JSON.stringify(newNodes)));
-      setEdges(newEdges);
-      const p = {}
-      p.x = 0
-      p.y = 0
-      p.zoom = 1
-      setViewport(p)
-      // console.log(newNodes)
-      window.requestAnimationFrame(() => fitView());
-    }
+    let newNodes = obj.nodes
+    let newEdges = obj.edges
+
+
+    setNodes(JSON.parse(JSON.stringify(newNodes)));
+    setEdges(newEdges);
+    const p = {}
+    p.x = 0
+    p.y = 0
+    p.zoom = 1
+    setViewport(p)
+    // console.log(newNodes)
+    window.requestAnimationFrame(() => fitView());
+
 
 
 

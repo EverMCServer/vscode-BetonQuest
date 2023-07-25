@@ -93,7 +93,7 @@ export function autoLayout(nodes, edges) {
     }
 
 
-    return [nodes, edges]
+    return {'nodes':nodes, 'edges':edges}
 
 }
 
