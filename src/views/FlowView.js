@@ -100,7 +100,6 @@ const SaveRestore = () => {
     if (node.type == 'startNode') {
 
       edges2 = edges.filter((item, i) => {
-        console.log(item, source)
         return item['source'] != source
       });
 
@@ -258,7 +257,7 @@ const SaveRestore = () => {
       const flow = readYaml(text);
 
       if (flow) {
-        console.log(flow);
+        // console.log(flow);
         setEdges([]);
         setNodes([]);
         window.requestAnimationFrame(() => fitView());
@@ -344,7 +343,7 @@ const SaveRestore = () => {
       p.y = 0
       p.zoom = 1
       setViewport(p)
-      console.log(newNodes)
+      // console.log(newNodes)
       window.requestAnimationFrame(() => fitView());
     }
 

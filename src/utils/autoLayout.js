@@ -40,7 +40,7 @@ export function autoLayout(nodes, edges) {
     for (let i = 0; i < nodes.length; i++) {
         let node = nodes[i]
         let nodeID = node['id']
-        let exist = locationDict[nodeID] 
+        let exist = locationDict[nodeID]
         if (!exist) {
             locationDict[nodeID] = { 'x': maxX, 'y': 0 }
             freeNodes = [...freeNodes, node]
@@ -64,14 +64,14 @@ export function autoLayout(nodes, edges) {
     let xArray = [0]
     let widthSum = 0
     for (let i = 0; i < Object.keys(widthMaxDict).length; i++) {
-        let w = widthMaxDict[i]
+        let w = widthMaxDict[i] || 0
         widthSum += w
         xArray = [...xArray, widthSum]
     }
     let yArray = [0]
     let heightSum = 0
     for (let i = 0; i < Object.keys(heightMaxDict).length; i++) {
-        let h = heightMaxDict[i]
+        let h = heightMaxDict[i] || 0
         heightSum += h
         yArray = [...yArray, heightSum]
     }
@@ -107,6 +107,9 @@ export function customLayoutSub(fromNodeID, lineDict, vars, y, locationDict) {
         let lineSourceHandle = line['sourceHandle']
         if (lineSourceHandle == 'handleOut') {
             let lineTarget = line['target']
+            if (locationDict[lineTarget]) {
+                continue
+            }
 
             let maxX = vars['maxX']
             if (i != 0) {
@@ -123,6 +126,9 @@ export function customLayoutSub(fromNodeID, lineDict, vars, y, locationDict) {
         let lineSourceHandle = line['sourceHandle']
         if (lineSourceHandle == 'handleN') {
             let lineTarget = line['target']
+            if (locationDict[lineTarget]) {
+                continue
+            }
 
             let maxX = vars['maxX']
             maxX += 1
