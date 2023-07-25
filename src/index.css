@@ -79,3 +79,13 @@ body,
     cursor: pointer;
     width: 150px;
 }
+
+.download-btn2 {
+    border: 1px solid #eee;
+    background: #eebb64;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 150px;
+}

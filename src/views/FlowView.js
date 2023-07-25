@@ -379,31 +379,32 @@ const SaveRestore = () => {
             }}
           />
           <Panel position="top-right">
+            
             <div>
-              <button onClick={onClear} className="download-btn">clear</button>
+              {/* <button onClick={onSave} className="download-btn2">save</button> */}
+            </div>
+            {/* <button onClick={onRestore} className="download-btn2">restore</button> */}
+            <div>
+              <button onClick={onScreenshot} className="download-btn2">screenshot</button>
             </div>
             <div>
-              <button onClick={onSave} className="download-btn">save</button>
-            </div>
-            <button onClick={onRestore} className="download-btn">restore</button>
-            <div>
-              <button onClick={onScreenshot} className="download-btn">screenshot</button>
-            </div>
-            <div>
-              <button onClick={onDownload} className="download-btn">download-json</button>
+              <button onClick={onDownload} className="download-btn2">debug-download</button>
             </div>
             <div>
               <input
                 type="file"
                 id="json-upload"
                 onChange={uploadJSON}
-                className="download-btn"
+                className="download-btn2"
                 style={{ display: 'none' }}
               />
-              <button onClick={onUploadJSON} className="download-btn">upload-json</button>
+              {/* <button onClick={onUploadJSON} className="download-btn2">upload-json</button> */}
             </div>
             <div>
-              <button onClick={onDownloadYML} className="download-btn">download-yml</button>
+              <button onClick={onClear} className="download-btn">clear</button>
+            </div>
+            <div>
+              <button onClick={onDownloadYML} className="download-btn">yml-download</button>
             </div>
             <div>
               <input
@@ -413,7 +414,7 @@ const SaveRestore = () => {
                 className="download-btn"
                 style={{ display: 'none' }}
               />
-              <button onClick={onUploadYML} className="download-btn">upload-yml</button>
+              <button onClick={onUploadYML} className="download-btn">yml-upload</button>
             </div>
             <div>
               <button onClick={onAutoLayout} className="download-btn">AutoLayout</button>

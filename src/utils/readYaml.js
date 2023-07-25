@@ -131,6 +131,9 @@ export function readFromYaml(yaml) {
 
 export function linkIn(fromNodeID, fromHandle, toNodeID, allNodes, lines, historyNodesRef) {
     let toNode = allNodes[toNodeID]
+    if (!toNode) {
+        return
+    }
 
     let lineID = `line_${Object.values(lines).length}`
     let line = {
@@ -158,6 +161,9 @@ export function linkIn(fromNodeID, fromHandle, toNodeID, allNodes, lines, histor
     for (let i = 0; i < pointers.length; i++) {
         let toNodeID2 = pointers[i]
         let toNode2 = allNodes[toNodeID2]
+        if (!toNode2) {
+            return
+        }
         let toNodeIsNPC = toNode['type'] == 'npcNode'
         let toNode2IsNPC = toNode2['type'] == 'npcNode'
 
