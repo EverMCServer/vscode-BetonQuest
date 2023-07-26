@@ -1,177 +1,178 @@
-import yaml from 'js-yaml';
 import { MarkerType } from 'reactflow';
+import yaml from 'js-yaml';
+import { arrayAppend, logError, logWarning, stringSplitToArray } from './commonUtils';
 
-export function readYaml(text) {
-
+export function readYaml(fileName, text) {
     try {
-        const data = yaml.load(text);
-        return readFromYaml(data)
+        const data = yaml.load(text)
+        return parseYaml(fileName, data)
     } catch (error) {
-        console.error('Error parsing YAML:', error);
-        return null;
+        logError(`Parsing Yaml ${error}`)
+        return null
     }
 }
 
-export function stringSplitToArray(text) {
-    return text.split(',').map(item => item.trim()).filter(item => item.length > 0);
-}
-
-export function readFromYaml(yaml) {
-    let NPC_options = yaml['NPC_options']
-    let player_options = yaml['player_options']
-    let firstString = yaml['first']
-    let firstKeys = stringSplitToArray(firstString)
+export function parseYaml(fileName, yaml) {
+    // Load
+    const NPC_options = yaml['NPC_options']
+    const player_options = yaml['player_options']
+    const firstString = yaml['first']
+    const firstKeys = stringSplitToArray(firstString)
     for (let i = 0; i < firstKeys.length; i++) {
         firstKeys[i] = `npc_${firstKeys[i]}`
     }
 
-    let startNode = {}
-    startNode['type'] = 'startNode'
-    startNode['data'] = { 'name': 'start', 'text': 'fileName', 'text2': yaml['quester'] }
-    startNode['id'] = 'start'
-    let startNodes = { 'start': startNode }
+    // StartNodes
+    const startNode = {
+        'id': 'start',
+        'type': 'startNode',
+        'data': { 'name': 'start', 'text': fileName, 'text2': yaml['quester'] },
+    }
+    const startNodes = { 'start': startNode }
 
-    let npcNodes = {}
-    let NPC_optionKeys = Object.keys(NPC_options)
+    // NPC Nodes
+    const npcNodes = {}
+    const NPC_optionKeys = Object.keys(NPC_options)
     for (let i = 0; i < NPC_optionKeys.length; i++) {
-        let key = NPC_optionKeys[i]
-        let option = NPC_options[key]
-        let newKey = `npc_${key}`
-
-        let dict = {}
-        dict['type'] = 'npcNode'
-        dict['id'] = newKey
-
-        let pointersString = option['pointers'] || option['pointer'] || ''
-        let pointers = stringSplitToArray(pointersString)
+        const key = NPC_optionKeys[i]
+        const option = NPC_options[key]
+        const idKey = `npc_${key}`
+        const pointersString = option['pointers'] || option['pointer'] || ''
+        const pointers = stringSplitToArray(pointersString)
         for (let i = 0; i < pointers.length; i++) {
             pointers[i] = `player_${pointers[i]}`
         }
-        dict['pointers'] = pointers
+
+        const dict = {
+            'id': idKey,
+            'type': 'npcNode',
+            'pointers': pointers
+        }
 
         const conditions = option['conditions'] || option['condition'] || ''
         const events = option['events'] || option['event'] || ''
         dict['data'] = { 'name': key, 'text': option['text'], 'events': stringSplitToArray(events), 'conditions': stringSplitToArray(conditions) }
-        npcNodes[newKey] = dict
+        npcNodes[idKey] = dict
     }
 
-    let playerNodes = {}
-    let player_optionKeys = Object.keys(player_options);
+    // Player Nodes
+    const playerNodes = {}
+    const player_optionKeys = Object.keys(player_options);
     for (let i = 0; i < player_optionKeys.length; i++) {
-        let key = player_optionKeys[i]
-        let option = player_options[key]
-        let newKey = `player_${key}`
-
-        let dict = {}
-        dict['type'] = 'playerNode'
-        dict['id'] = newKey
-
-        let pointersString = option['pointers'] || option['pointer'] || ''
-        let pointers = stringSplitToArray(pointersString)
+        const key = player_optionKeys[i]
+        const option = player_options[key]
+        const idKey = `player_${key}`
+        const pointersString = option['pointers'] || option['pointer'] || ''
+        const pointers = stringSplitToArray(pointersString)
         for (let i = 0; i < pointers.length; i++) {
             pointers[i] = `npc_${pointers[i]}`
         }
-        dict['pointers'] = pointers
+
+        const dict = {
+            'id': idKey,
+            'type': 'playerNode',
+            'pointers': pointers
+        }
 
         const conditions = option['conditions'] || option['condition'] || ''
         const events = option['events'] || option['event'] || ''
         dict['data'] = { 'name': key, 'text': option['text'], 'events': stringSplitToArray(events), 'conditions': stringSplitToArray(conditions) }
-        playerNodes[newKey] = dict
+        playerNodes[idKey] = dict
     }
 
-    let allNodes = Object.assign({}, startNodes, npcNodes, playerNodes)
+    // All Nodes
+    const allNodes = Object.assign({}, startNodes, npcNodes, playerNodes)
 
-    let lines = {}
-    let historyNodesRef = { nodes: [] }
-    let lastToNodeID = ''
+    // Lines
+    const lines = {}
+    const linkedNodesRef = { nodes: [] }
+    let lastTargetNodeID = ''
     for (let i = 0; i < firstKeys.length; i++) {
-        let toNodeID = firstKeys[i]
+        const toNodeID = firstKeys[i]
         if (i == 0) {
-            linkIn('start', 'handleOut', toNodeID, allNodes, lines, historyNodesRef)
+            linkIn('start', 'handleOut', toNodeID, allNodes, lines, linkedNodesRef)
         } else {
-            linkIn(lastToNodeID, 'handleN', toNodeID, allNodes, lines, historyNodesRef)
+            linkIn(lastTargetNodeID, 'handleN', toNodeID, allNodes, lines, linkedNodesRef)
         }
-        lastToNodeID = toNodeID
+        lastTargetNodeID = toNodeID
     }
 
-
-    let historyNodes = historyNodesRef.nodes
+    // Linked Nodes
+    const linkedNodes = linkedNodesRef.nodes
     let orderdNodes = []
-    for (let i = 0; i < historyNodes.length; i++) {
-        let key = historyNodes[i]
+    for (let i = 0; i < linkedNodes.length; i++) {
+        let key = linkedNodes[i]
         let node = allNodes[key]
         node.position = { x: i * 200, y: 0 }
         node.positionAbsolute = { x: 0, y: 0 }
         node.width = 0
         node.height = 0
 
-        orderdNodes = [...orderdNodes, node]
+        orderdNodes = arrayAppend(orderdNodes, node)
         delete allNodes[key];
     }
 
-    let unusedNodeKeys = Object.keys(allNodes)
+    // Unlinked Nodes
+    const unusedNodeKeys = Object.keys(allNodes)
     for (let i = 0; i < unusedNodeKeys.length; i++) {
-        let key = unusedNodeKeys[i]
-        let node = allNodes[key]
+        const key = unusedNodeKeys[i]
+        const node = allNodes[key]
 
-        node.position = { x: i * 200, y: 0 }
+        node.position = { x: i * 200, y: 400 }
         node.positionAbsolute = { x: 0, y: 0 }
         node.width = 0
         node.height = 0
 
-        orderdNodes = [...orderdNodes, node]
+        orderdNodes = arrayAppend(orderdNodes, node)
         delete allNodes[key];
     }
-    let output = { 'nodes': orderdNodes, 'edges': Object.values(lines) }
-    // console.log('------')
-    // console.log(orderdNodes)
-    // console.log('------')
-    return output
+    return { 'nodes': orderdNodes, 'edges': Object.values(lines) }
 }
 
-export function linkIn(fromNodeID, fromHandle, toNodeID, allNodes, lines, historyNodesRef) {
-    let toNode = allNodes[toNodeID]
-    if (!toNode) {
+export function linkIn(sourceNodeID, sourceHandle, targetNodeID, allNodes, lines, linkedNodesRef) {
+    const targetNode = allNodes[targetNodeID]
+    if (!targetNode) {
         return
     }
 
-    let lineID = `line_${Object.values(lines).length}`
-    let line = {
-        'source': fromNodeID,
-        'sourceHandle': fromHandle,
-        'target': toNodeID,
-        'targetHandle': 'handleIn',
+    // Create new line
+    const lineID = `line_${Object.values(lines).length}`
+    const line = {
         'id': lineID,
+        'source': sourceNodeID,
+        'sourceHandle': sourceHandle,
+        'target': targetNodeID,
+        'targetHandle': 'handleIn',
         'type': 'step',
         'markerEnd': { type: MarkerType.ArrowClosed }
     }
     lines[lineID] = line
 
-    let historyNodes = historyNodesRef.nodes
-    if (historyNodes.includes(toNodeID)) {
-        console.log('warning: double link from a node')
+    // Check if node has resolved
+    const linkedNodes = linkedNodesRef.nodes
+    if (linkedNodes.includes(targetNodeID)) {
+        logWarning('Multiple links to a node.')
         return
     }
-    historyNodes = [...historyNodes, toNodeID];
-    historyNodesRef.nodes = historyNodes
+    linkedNodesRef.nodes = arrayAppend(linkedNodes, targetNodeID)
 
-    let pointers = toNode['pointers']
-    let lastToNodeID2 = ''
+    const pointers = targetNode['pointers']
+    let lastNextNodeID = ''
 
     for (let i = 0; i < pointers.length; i++) {
-        let toNodeID2 = pointers[i]
-        let toNode2 = allNodes[toNodeID2]
-        if (!toNode2) {
+        const nextNodeID = pointers[i]
+        const nextNode = allNodes[nextNodeID]
+        if (!nextNode) {
             return
         }
-        let toNodeIsNPC = toNode['type'] == 'npcNode'
-        let toNode2IsNPC = toNode2['type'] == 'npcNode'
+        const targetNodeIsNPC = targetNode['type'] == 'npcNode'
+        const nextNodeIsNPC = nextNode['type'] == 'npcNode'
 
-        if (toNodeIsNPC && toNode2IsNPC) {
-            linkIn(lastToNodeID2, 'handleN', toNodeID2, allNodes, lines, historyNodesRef)
+        if (targetNodeIsNPC && nextNodeIsNPC) {
+            linkIn(lastNextNodeID, 'handleN', nextNodeID, allNodes, lines, linkedNodesRef)
         } else {
-            linkIn(toNodeID, 'handleOut', toNodeID2, allNodes, lines, historyNodesRef)
+            linkIn(targetNodeID, 'handleOut', nextNodeID, allNodes, lines, linkedNodesRef)
         }
-        lastToNodeID2 = toNodeID
+        lastNextNodeID = targetNodeID
     }
 }

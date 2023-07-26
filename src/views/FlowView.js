@@ -275,11 +275,12 @@ const SaveRestore = () => {
 
   const uploadYML = (event) => {
     const file = event.target.files[0];
+    let fileName = file.name.split('.').slice(0, -1).join('.');
 
     const reader = new FileReader();
     reader.onload = function (event) {
       const text = event.target.result;
-      const flow = readYaml(text);
+      const flow = readYaml(fileName, text);
 
       if (flow) {
         setEdges([]);
