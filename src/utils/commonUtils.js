@@ -22,6 +22,9 @@ export function logWarning(str) {
 }
 
 export function arrayAppend(arr, obj) {
+    if (!obj) {
+        return arr
+    }
     return [...arr || [], obj]
 }
 

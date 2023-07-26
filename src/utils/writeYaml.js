@@ -1,29 +1,34 @@
 import yaml from 'js-yaml';
+import { arrayAppend, logError } from './commonUtils';
 
 export function writeYaml(obj) {
-    let allNodes = solveNodes(obj);
-    // window.myGlobalVariable = allNodes;
+    // Solve
+    const allNodes = solveNodes(obj);
     if (!allNodes) {
+        logError('Cannot solve nodes.')
         return;
     }
-    let startNodes = allNodes[0];
-    let npcNodes = allNodes[1];
-    let playerNodes = allNodes[2];
 
-
+    // Get data
+    const startNodes = allNodes.startNodes;
+    const npcNodes = allNodes.npcNodes;
+    const playerNodes = allNodes.playerNodes;
     const startNode = startNodes[0];
-    // console.log(startNodes)
 
-    let npcYaml = {}
+    // NPC Yaml
+    const npcYaml = {}
     for (let i = 0; i < npcNodes.length; i++) {
-        let node = npcNodes[i];
-        let conditions = node['data']['conditions']
-        let pointers = node['pointers']
-        let events = node['data']['events']
-        let name = node['data']['name']
-        let conversation = {}
-        conversation['text'] = node['data']['text'];
+        const node = npcNodes[i];
+        const pointers = node['pointers']
+        const conditions = node['data']['conditions']
+        const events = node['data']['events']
+        const name = node['data']['name']
+        const text = node['data']['text'];
 
+        const conversation = {}
+        if (text && text.length) {
+            conversation['text'] = text;
+        }
         if (conditions && conditions.length) {
             conversation['conditions'] = conditions;
         }
@@ -35,18 +40,21 @@ export function writeYaml(obj) {
         }
         npcYaml[name] = conversation
     }
-    console.log(npcNodes)
 
-    let playerYaml = {}
+    // Player Yaml
+    const playerYaml = {}
     for (let i = 0; i < playerNodes.length; i++) {
-        let node = playerNodes[i];
-        let conditions = node['data']['conditions']
-        let pointers = node['pointers']
-        let events = node['data']['events']
-        let name = node['data']['name']
-        let conversation = {}
-        conversation['text'] = node['data']['text'];
+        const node = playerNodes[i];
+        const pointers = node['pointers']
+        const conditions = node['data']['conditions']
+        const events = node['data']['events']
+        const name = node['data']['name']
+        const text = node['data']['text'];
 
+        const conversation = {}
+        if (text && text.length) {
+            conversation['text'] = text;
+        }
         if (conditions && conditions.length) {
             conversation['conditions'] = conditions;
         }
@@ -59,19 +67,19 @@ export function writeYaml(obj) {
         playerYaml[name] = conversation
     }
 
-    let fullYaml = {}
+    // Full Yaml
 
-    const fileName = startNode['data']['text'];
-    const quester = startNode['data']['text2'];
+    const fileName = startNode['data']['text'] || 'conversation';
+    const quester = startNode['data']['text2'] || 'npcName';
     const first = startNode['pointers'];
+    const fullYaml = {
+        'quester': quester,
+        'NPC_options': npcYaml,
+        'player_options': playerYaml,
+        'first': first,
+    }
 
-    fullYaml['quester'] = quester;
-    fullYaml['NPC_options'] = npcYaml;
-    fullYaml['player_options'] = playerYaml;
-    fullYaml['first'] = first;
-
-
-
+    // Encode
     try {
         const replacer = (key, value) => {
             if (Array.isArray(value)) {
@@ -84,11 +92,9 @@ export function writeYaml(obj) {
         const jsonData = JSON.parse(text);
         const yamlText = yaml.dump(jsonData, { quotes: '"' });
 
-
-        // console.log(yamlText);
         return [fileName, yamlText];
     } catch (error) {
-        console.error('Error encoding YAML:', error);
+        logError(`Encoding Yaml ${error}`)
         return null;
     }
 }
@@ -97,73 +103,76 @@ export function solveNodes(obj) {
     const nodes = obj['nodes']
     const edges = obj['edges']
 
+    // Nodes to array
     let startNodes = []
     let npcNodes = []
     let playerNodes = []
-    let allNodesDict = {}
+    const allNodesDict = {}
     for (let i = 0; i < nodes.length; i++) {
-        let node = nodes[i]
-        let type = node['type']
-        let id = node['id']
+        const node = nodes[i]
+        const type = node['type']
+        const id = node['id']
         node['pointers'] = []
 
         allNodesDict[id] = node
         if (type == 'startNode') {
-            startNodes = [...startNodes || [], node]
+            startNodes = arrayAppend(startNodes, node)
         } else if (type == 'npcNode') {
-            npcNodes = [...npcNodes || [], node]
+            npcNodes = arrayAppend(npcNodes, node)
         } else if (type == 'playerNode') {
-            playerNodes = [...playerNodes || [], node]
+            playerNodes = arrayAppend(playerNodes, node)
         }
     }
-    let linesDict = {}
+
+    // Lines to dict
+    const linesDict = {}
     for (let i = 0; i < edges.length; i++) {
-        let edge = edges[i]
-        let source = edge['source']
-        linesDict[source] = [...linesDict[source] || [], edge]
+        const edge = edges[i]
+        const source = edge['source']
+        linesDict[source] = arrayAppend(linesDict[source], edge)
     }
 
-
+    // Check results
     if (startNodes.length != 1) {
-        console.log('error: start should be only one');
+        logError('Cannot solve nodes.')
         return;
     }
-    let startNode = startNodes[0];
-    let startNodeID = startNode['id']
-    let historyNodes = []
 
-    let lines = linesDict[startNodeID]
-    for (let i = 0; i < lines.length; i++) {
-        let line = lines[i]
-        let targetNodeID = line['target']
-        solveLine(targetNodeID, allNodesDict, historyNodes, startNode, linesDict)
-    }
-
-    console.log(startNodes)
-
-    return [startNodes, npcNodes, playerNodes]
-}
-
-export function solveLine(targetNodeID, allNodesDict, historyNodes, lastLevelNode, linesDict) {
-
-    let targetNode = allNodesDict[targetNodeID];
-    lastLevelNode['pointers'] = [...lastLevelNode['pointers'] || [], targetNode['data']['name']]
-
-    
-    let lines = linesDict[targetNodeID]
+    // Make lines
+    const startNode = startNodes[0];
+    const startNodeID = startNode['id']
+    const lines = linesDict[startNodeID]
     if (!lines) {
         return
     }
     for (let i = 0; i < lines.length; i++) {
-        let line = lines[i]
-        let from2Handle = line['sourceHandle']
-        let target2NodeID = line['target']
+        const line = lines[i]
+        const targetNodeID = line['target']
+        solveLine(targetNodeID, startNode, allNodesDict, linesDict)
+    }
+
+    return { 'startNodes': startNodes, 'npcNodes': npcNodes, 'playerNodes': playerNodes }
+}
+
+export function solveLine(targetNodeID, lastLevelNode, allNodesDict, linesDict) {
+
+    const targetNode = allNodesDict[targetNodeID];
+    lastLevelNode['pointers'] = arrayAppend(lastLevelNode['pointers'], targetNode['data']['name'])
+
+    const lines = linesDict[targetNodeID]
+    if (!lines) {
+        return
+    }
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i]
+        const targetHandle = line['sourceHandle']
+        const nextNodeID = line['target']
         let levelNode = lastLevelNode
 
-        if (from2Handle == 'handleOut') {
+        if (targetHandle == 'handleOut') {
             levelNode = targetNode
         }
 
-        solveLine(target2NodeID, allNodesDict, historyNodes, levelNode, linesDict)
+        solveLine(nextNodeID, levelNode, allNodesDict, linesDict)
     }
 }
