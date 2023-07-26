@@ -7,11 +7,8 @@
     flex-grow: 1;
 }
 
-.flow-container .aside {
-    border-right: 1px solid #eee;
-    padding: 10px 10px;
-    font-size: 12px;
-    background: #fcfcfc;
+.flow-container .minimap {
+    margin-bottom: 45px;
 }
 
 .flow-container .panel {

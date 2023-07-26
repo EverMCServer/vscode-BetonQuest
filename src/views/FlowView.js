@@ -511,6 +511,7 @@ const SaveRestore = () => {
             nodeColor={(n) => {
               return '#fff';
             }}
+            className='minimap'
           />
 
           <Panel position="top-right" className='panel'>
