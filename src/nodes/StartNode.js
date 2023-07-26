@@ -78,7 +78,7 @@ export default memo(({ data }) => {
         id='handleOut'
         type="source"
         position={Position.Bottom}
-        style={{ background: '#555' }}
+        className='handleOut'
         isValidConnection={(e) => isConnectable(e)}
       />
     </div>

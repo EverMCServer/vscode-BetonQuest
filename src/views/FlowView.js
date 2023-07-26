@@ -10,6 +10,7 @@ import ReactFlow, {
   getRectOfNodes,
   getTransformForBounds,
   MarkerType,
+  Background,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import './styles.css'
@@ -44,11 +45,17 @@ const nodeTypes = {
   startNode: StartNode,
 };
 
-const initialNodes = [
-];
+function initialNodes() {
+  let id = getId()
 
-const initialEdges = [
-];
+  const newNode = {
+    id: id,
+    type: 'startNode',
+    position: { x: 0, y: 0 },
+    data: { 'name': `${id}` },
+  };
+  return [newNode]
+};
 
 function downloadImage(dataUrl) {
   const a = document.createElement('a');
@@ -87,10 +94,10 @@ function downloadYML(result) {
 
 const SaveRestore = () => {
   const flowWrapper = useRef(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes());
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const { setViewport, getNode, getNodes, fitView } = useReactFlow();
+  const { setViewport, getNode, getNodes, fitView, project } = useReactFlow();
 
   const onConnect = useCallback((params) => {
     params['type'] = 'step'
@@ -165,7 +172,7 @@ const SaveRestore = () => {
 
   const onClear = useCallback(() => {
     setEdges([]);
-    setNodes([]);
+    setNodes(initialNodes());
     window.requestAnimationFrame(() => fitView());
   }, [reactFlowInstance]);
 
@@ -333,7 +340,9 @@ const SaveRestore = () => {
 
     // });
     let obj = autoLayout(nodes, edges)
-
+    if (!obj) {
+      return
+    }
     let newNodes = obj.nodes
     let newEdges = obj.edges
 
@@ -353,6 +362,98 @@ const SaveRestore = () => {
 
   }, [nodes, edges]);
 
+
+  let connectingParams = useRef(null);
+
+  const onConnectStart = useCallback((_, params) => {
+    connectingParams.nodeId = params.nodeId;
+    connectingParams.handleId = params.handleId;
+  }, []);
+
+  const onConnectEnd = useCallback(
+    (event) => {
+      const targetIsPane = event.target.classList.contains('react-flow__pane');
+      const { top, left } = flowWrapper.current.getBoundingClientRect();
+
+      if (!targetIsPane) {
+        return
+      }
+
+      let hitPosition = project({ x: event.clientX - left, y: event.clientY - top })
+      let safeSpace = 10
+      for (let i = 0; i < nodes.length; i++) {
+        let node = nodes[i]
+        if (hitPosition.x > node.position.x - safeSpace &&
+          hitPosition.y > node.position.y - safeSpace &&
+          hitPosition.x < node.position.x + node.width + safeSpace &&
+          hitPosition.y < node.position.y + node.height + safeSpace) {
+
+          return
+        }
+      }
+
+
+      const fromNode = getNode(connectingParams.nodeId)
+      if (!fromNode) {
+        return
+      }
+      // console.log(fromNode, connectingParams)
+      let type = 'npcNode';
+      if (fromNode['type'] == 'startNode') {
+        type = 'npcNode';
+      } else if (fromNode['type'] == 'npcNode') {
+        if (connectingParams.handleId == 'handleOut') {
+          type = 'playerNode'
+        } else {
+          type = 'npcNode'
+        }
+      } else {
+        type = 'npcNode';
+      }
+
+
+
+      let id = getId()
+      while (getNode(id)) {
+        id = getId()
+      }
+      const newNode = {
+        id: id,
+        type,
+        position: { x: hitPosition.x - 100, y: hitPosition.y },
+        data: { 'name': `${id}` },
+      };
+
+      setNodes((nds) => nds.concat(newNode));
+
+
+      while (getNode(id)) {
+        id = getId()
+      }
+      let edge = {}
+      edge['id'] = id
+      edge['type'] = 'step'
+      edge['markerEnd'] = { type: MarkerType.ArrowClosed }
+      edge['source'] = connectingParams.nodeId
+      edge['sourceHandle'] = connectingParams.handleId
+      edge['target'] = id
+      edge['targetHandle'] = 'handleIn'
+
+      let edges2 = edges
+      if (fromNode.type == 'startNode') {
+
+        edges2 = edges.filter((item, i) => {
+          return item['source'] != connectingParams.nodeId
+        });
+
+      }
+
+      edges2 = addEdge(edge, edges2)
+      setEdges(edges2)
+    },
+    [project, nodes, flowWrapper, edges]
+  );
+
   return (
     <div className="flow-container">
 
@@ -370,14 +471,14 @@ const SaveRestore = () => {
         style={{ display: 'none' }}
       />
 
-      <Sidebar />
-
       <div className="flow-wrapper" ref={flowWrapper}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
+          onConnectStart={onConnectStart}
+          onConnectEnd={onConnectEnd}
           onConnect={onConnect}
           nodeTypes={nodeTypes}
           onInit={setReactFlowInstance}
@@ -396,7 +497,7 @@ const SaveRestore = () => {
           />
 
           <Panel position="top-right" className='panel'>
-          <button onClick={onRestore} className="debug-button">Cache: Restore</button>
+            <button onClick={onRestore} className="debug-button">Cache: Restore</button>
             <button onClick={onSave} className="debug-button">Cache: Save</button>
             <button onClick={onUploadJSON} className="debug-button">DEBUG: Upload</button>
             <button onClick={onDownload} className="debug-button">DEBUG: Download</button>
@@ -406,6 +507,8 @@ const SaveRestore = () => {
             <button onClick={onUploadYML} className="user-button">yml: Upload</button>
             <button onClick={onDownloadYML} className="user-button">yml: Download</button>
           </Panel>
+
+          <Background variant="lines" />
         </ReactFlow>
       </div>
 

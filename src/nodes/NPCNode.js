@@ -147,21 +147,21 @@ export default memo(({ data }) => {
                 id='handleIn'
                 type="target"
                 position={Position.Top}
-                style={{ background: '#555' }}
+                className='handleIn'
                 isValidConnection={(e) => isConnectable(e)}
             />
             <Handle
                 id='handleOut'
                 type="source"
                 position={Position.Bottom}
-                style={{ background: '#555' }}
+                className='handleOut'
                 isValidConnection={(e) => isConnectable(e)}
             />
             <Handle
                 id='handleN'
                 type="source"
                 position={Position.Right}
-                style={{ background: '#ff0000' }}
+                className='handleN'
                 isValidConnection={(e) => isConnectable(e)}
             />
         </div>
