@@ -22,7 +22,6 @@ import { autoLayout } from '../utils/autoLayout';
 import { readYaml } from '../utils/readYaml';
 import { writeYaml } from '../utils/writeYaml';
 
-import NoteNode from '../nodes/NoteNode';
 import NPCNode from '../nodes/NPCNode';
 import PlayerNode from '../nodes/PlayerNode';
 import StartNode from '../nodes/StartNode';
@@ -34,7 +33,6 @@ let id = 0;
 const getId = () => `node_${id++}`;
 
 const nodeTypes = {
-  noteNode: NoteNode,
   npcNode: NPCNode,
   playerNode: PlayerNode,
   startNode: StartNode,

@@ -19,32 +19,25 @@
   background: #f00;
 }
 
-.react-flow__node-selectorNode {
-  font-size: 12px;
-  background: #eee;
-  border: 1px solid #555;
-  border-radius: 5px;
-  text-align: center;
-  width: 200px;
-}
 
-.react-flow__node-conditionNode {
-  font-size: 12px;
-  background: #eee;
-  border: 1px solid #555;
-  border-radius: 5px;
-  text-align: center;
-  width: 200px;
-}
 
-.react-flow__node-noteNode {
-  font-size: 12px;
-  background: #eee;
-  border: 1px solid #555;
-  border-radius: 5px;
-  text-align: center;
-  width: 200px;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .react-flow__node-npcNode {
   font-size: 12px;
@@ -74,12 +67,9 @@
 }
 
 .actionButton {
-  border: 1px solid #000000;
-  /* background: #ebf8ff; */
+  border: 1px solid #a7a7a7;
   padding: 0px 0px;
   width: 16px;
   height: 16px;
   border-radius: 10px;
-  /* font-weight: 700; */
-  /* cursor: pointer; */
 }

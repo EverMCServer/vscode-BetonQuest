@@ -1,7 +1,7 @@
 import React, { memo, useState } from 'react';
 import { Handle, Position, useReactFlow } from 'reactflow';
+import { connectionAvaliable } from '../utils/commonUtils';
 import './styles.css'
-
 
 export default memo(({ data }) => {
     const [getTrigger, setTrigger] = useState(false);
@@ -9,6 +9,7 @@ export default memo(({ data }) => {
         setTrigger(!getTrigger);
     }
 
+    // Conditions
     const conditionsGet = () => {
         return data['conditions'] || [];
     };
@@ -30,7 +31,7 @@ export default memo(({ data }) => {
         refreshUI();
     };
 
-
+    // Text
     const textGet = () => {
         return data['text'] || '';
     };
@@ -39,6 +40,7 @@ export default memo(({ data }) => {
         refreshUI();
     };
 
+    // Events
     const eventsGet = () => {
         return data['events'] || [];
     };
@@ -60,29 +62,16 @@ export default memo(({ data }) => {
         refreshUI();
     };
 
+    // Connect
     const { getNode } = useReactFlow();
     const isConnectable = (line) => {
         let source = getNode(line['source'])
-        let sourceType = source['type']
-        let sourceHandle = line['sourceHandle']
         let target = getNode(line['target'])
-        let targetType = target['type']
-        let targetHandle = line['targetHandle']
-
-        if (sourceType == 'startNode' && sourceHandle == 'handleOut' && targetType == 'npcNode' && targetHandle == 'handleIn') {
-            return true
-        } else if (sourceType == 'npcNode' && sourceHandle == 'handleOut' && targetType == 'playerNode' && targetHandle == 'handleIn') {
-            return true
-        } else if (sourceType == 'playerNode' && sourceHandle == 'handleOut' && targetType == 'npcNode' && targetHandle == 'handleIn') {
-            return true
-        } else if (sourceType == 'npcNode' && sourceHandle == 'handleN' && targetType == 'npcNode' && targetHandle == 'handleIn') {
-            return true
-        }
-        return false
+        return connectionAvaliable(source['type'], line['sourceHandle'], target['type'], line['targetHandle'])
     };
 
     return (
-        <div style={{padding: 5}}>
+        <div style={{ padding: 5 }}>
             <div>
                 Player ({data.name})
             </div>

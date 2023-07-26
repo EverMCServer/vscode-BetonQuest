@@ -1,5 +1,5 @@
 import React from 'react';
-import { getSmoothStepPath,Position } from 'reactflow';
+import { getSmoothStepPath, Position } from 'reactflow';
 
 export default ({
     fromX,
@@ -7,8 +7,6 @@ export default ({
     fromPosition,
     toX,
     toY,
-    toPosition,
-    connectionLineType,
     connectionLineStyle,
 }) => {
 
@@ -20,7 +18,6 @@ export default ({
         targetY: toY,
         targetPosition: Position.Top,
     };
-// console.log(pathParams)
 
     let dAttr = getSmoothStepPath({
         ...pathParams,

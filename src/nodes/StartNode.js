@@ -1,5 +1,6 @@
 import React, { memo, useState } from 'react';
 import { Handle, Position, useReactFlow } from 'reactflow';
+import { connectionAvaliable } from '../utils/commonUtils';
 import './styles.css'
 
 export default memo(({ data }) => {
@@ -8,7 +9,7 @@ export default memo(({ data }) => {
     setTrigger(!getTrigger);
   }
 
-
+  // Text
   const textGet = () => {
     return data['text'] || '';
   };
@@ -16,7 +17,6 @@ export default memo(({ data }) => {
     data['text'] = value;
     refreshUI();
   };
-
   const text2Get = () => {
     return data['text2'] || '';
   };
@@ -25,25 +25,12 @@ export default memo(({ data }) => {
     refreshUI();
   };
 
+  // Connect
   const { getNode } = useReactFlow();
   const isConnectable = (line) => {
-      let source = getNode(line['source'])
-      let sourceType = source['type']
-      let sourceHandle = line['sourceHandle']
-      let target = getNode(line['target'])
-      let targetType = target['type']
-      let targetHandle = line['targetHandle']
-
-      if (sourceType == 'startNode' && sourceHandle == 'handleOut' && targetType == 'npcNode' && targetHandle == 'handleIn') {
-          return true
-      } else if (sourceType == 'npcNode' && sourceHandle == 'handleOut' && targetType == 'playerNode' && targetHandle == 'handleIn') {
-          return true
-      } else if (sourceType == 'playerNode' && sourceHandle == 'handleOut' && targetType == 'npcNode' && targetHandle == 'handleIn') {
-          return true
-      } else if (sourceType == 'npcNode' && sourceHandle == 'handleN' && targetType == 'npcNode' && targetHandle == 'handleIn') {
-          return true
-      }
-      return false
+    let source = getNode(line['source'])
+    let target = getNode(line['target'])
+    return connectionAvaliable(source['type'], line['sourceHandle'], target['type'], line['targetHandle'])
   };
 
   return (
