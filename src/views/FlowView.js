@@ -26,13 +26,7 @@ import NoteNode from '../nodes/NoteNode';
 import NPCNode from '../nodes/NPCNode';
 import PlayerNode from '../nodes/PlayerNode';
 import StartNode from '../nodes/StartNode';
-import ButtonEdge from '../nodes/ButtonEdge';
-
-import ConnectionLine from '../utils/ConnectionLine.js';
-
-const edgeTypes = {
-  buttonedge: ButtonEdge,
-};
+import ConnectionLine from '../nodes/ConnectionLine.js';
 
 const flowKey = 'bq-flow';
 
@@ -226,8 +220,6 @@ const SaveRestore = () => {
   const onDownloadYML = useCallback(() => {
     if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
-      // encodeYaml(flow)
-      // console.log(window.myGlobalVariable)
       downloadYML(writeYaml(flow));
     }
   }, [reactFlowInstance]);
@@ -241,8 +233,6 @@ const SaveRestore = () => {
         setNodes([])
 
         setTimeout(() => {
-          // window.requestAnimationFrame(() => fitView());
-
           const { x = 0, y = 0, zoom = 1 } = flow.viewport;
           setNodes(flow.nodes || []);
           setEdges(flow.edges || []);
@@ -273,7 +263,6 @@ const SaveRestore = () => {
           setEdges(flow.edges || []);
           setViewport({ x, y, zoom });
         }
-        // console.log(flow);
       } catch (error) {
         console.error('Error parsing JSON:', error);
       }
@@ -295,24 +284,15 @@ const SaveRestore = () => {
       const flow = readYaml(text);
 
       if (flow) {
-        // console.log(flow);
         setEdges([]);
         setNodes([]);
         window.requestAnimationFrame(() => fitView());
 
         setTimeout(() => {
-          // let obj = autoLayout(flow.nodes, flow.edges)
           setNodes(flow.nodes || []);
           setEdges(flow.edges || []);
-          // setTimeout(() => {
-          //   setNeedsLayout(true)
-          // }, 100);
         }, 100);
       }
-      // setTimeout(() => {
-      //   setNeedsLayout(true)
-      // }, 1000);
-
 
     };
     if (file) {
@@ -326,9 +306,6 @@ const SaveRestore = () => {
     }
   }, [needsLayout]);
   const onScreenshot = () => {
-    // we calculate a transform for the nodes so that all nodes are visible
-    // we then overwrite the transform of the `.react-flow__viewport` element
-    // with the style option of the html-to-image library
     const nodesBounds = getRectOfNodes(getNodes());
     const targetScale = 1
     const targetWidth = nodesBounds.width * targetScale
@@ -352,23 +329,6 @@ const SaveRestore = () => {
   // test ------------------------
 
   const onAutoLayout = useCallback(() => {
-    // console.log(getNodes())
-    // window.requestAnimationFrame(() => fitView());
-
-    // getLayoutedElements(getNodes(), edges, elkOptions).then(({ nodes: layoutedNodes, edges: layoutedEdges }) => {
-    //   setNodes(layoutedNodes);
-    //   setEdges(layoutedEdges);
-    // const p = {}
-    // p.x = 0
-    // p.y = 0
-    // p.zoom = 1
-    // setViewport(p);
-
-    //   setTimeout(() => {
-    //     window.requestAnimationFrame(() => fitView());
-    //   }, 0);
-
-    // });
     let obj = autoLayout(nodes, edges)
     if (!obj) {
       return
@@ -384,12 +344,8 @@ const SaveRestore = () => {
     p.y = 0
     p.zoom = 1
     setViewport(p)
-    // console.log(newNodes)
+
     window.requestAnimationFrame(() => fitView());
-
-
-
-
   }, [nodes, edges]);
 
 
@@ -496,10 +452,6 @@ const SaveRestore = () => {
     [project, nodes, flowWrapper, edges]
   );
 
-  const connectionLineComponent = (e) => {
-    return React.Component()
-  }
-
   return (
     <div className="flow-container">
 
@@ -530,7 +482,6 @@ const SaveRestore = () => {
           onInit={setReactFlowInstance}
           onDrop={onDrop}
           onDragOver={onDragOver}
-          edgeTypes={edgeTypes}
           connectionLineComponent={ConnectionLine}
           fitView
         >
