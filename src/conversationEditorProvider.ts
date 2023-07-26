@@ -66,7 +66,11 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
 		webviewPanel.webview.onDidReceiveMessage(e => {
 			switch (e.type) {
 				case 'edit':
-					console.log(document);
+					console.log(e.content);
+
+                    // update editted yml
+                    this.updateTextDocument(document, e.content);
+
 					return;
 
 				case 'save':
@@ -82,6 +86,17 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
 		});
 
 		updateWebview();
+    }
+
+    // function to edit vscode.document
+    private updateTextDocument(document: vscode.TextDocument, content: string) {
+        const edit = new vscode.WorkspaceEdit();
+        edit.replace(
+            document.uri,
+            new vscode.Range(0, 0, document.lineCount, 0),
+            content
+        );
+        vscode.workspace.applyEdit(edit);
     }
 
     // render html content

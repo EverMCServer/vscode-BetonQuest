@@ -1,27 +1,17 @@
 import * as React from "react";
 
-export default function testView() {
+interface TestViewProps {
+    yml: string;
+}
+
+export default function testView({yml} : TestViewProps) {
     // debug
     console.log("hi");
-
-    const [doc, setDoc] = React.useState("");
-
-    React.useEffect(()=>{
-        // listen from extension message (document update etc)
-        window.addEventListener('message', event => {
-            const message = event.data; // JSON
-
-            switch (message.type) {
-                case 'update':
-                    setDoc(message.text);
-            }
-        });
-    }, []);
 
     return (
         <div>
             <div>A TestView here.</div>
-            <div>{doc}</div>
+            <div>{yml}</div>
         </div>
     );
 }

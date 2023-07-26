@@ -1,31 +1,33 @@
 import * as React from "react";
-import { WebviewApi } from "vscode-webview";
+import { vscode } from "./vscode";
 
 interface TestButtonProps {
-    test?: string;
-    vscode?: WebviewApi<unknown>;
+    yml: string;
 }
 
 // export default function testButton(vscode: undefined) {
-export default function testButton({
-    test, vscode
-}: TestButtonProps) {
+export default function testButton({yml} : TestButtonProps) {
+
+    let updatedYml:string = yml!;
+    updatedYml = updatedYml + "\n\n# test";
+    console.log("updated yml:", updatedYml);
 
     return (
         <>
         <script>
-        {/* (function() {}), 100);
-        }()) */}
         </script>
-        <button onClick={()=>{onClick(vscode!);}}>Send message from React to VSCode</button>
+        {/* test send message to vscode */}
+        <button onClick={()=>{sendMsgToVscode("test-from-webview", "hi");}}>Send message from React to VSCode</button>
+        {/* update editted yml file to vscode */}
+        <button onClick={()=>{sendMsgToVscode("edit", updatedYml);}}>Update file</button>
         </>
     );
 }
 
-function onClick(vscode: WebviewApi<unknown>) {
+function sendMsgToVscode( type: string, message: string) {
     console.log("button clicked");
     vscode.postMessage({
-        type: "test-from-webview",
-        message: "hi"
+        type: type,
+        message: message
     });
 }
