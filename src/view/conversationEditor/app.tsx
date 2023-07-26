@@ -3,11 +3,19 @@ import * as React from "react";
 import TestButton from './testbutton';
 import TestView from './testview';
 
+declare global {
+    // acquireVsCodeApi(): WebviewApi<unknown>;
+    var initialData: string;
+}
+
 export default function app() {
 
-    // get document's content from vscode
-    const [yml, setDoc] = React.useState("");
+    // get initial content data from vscode
+    const [yml, setYml] = React.useState(window.globalThis.initialData);
 
+    console.log("initDate:", yml);
+
+    // get document's content update from vscode
     React.useEffect(()=>{
         // listen from extension message (document update etc)
         window.addEventListener('message', event => {
@@ -17,7 +25,7 @@ export default function app() {
                 case 'update':
                     if (message.text !== yml) {
                         console.log("update yml ...\nyml was:", yml, "\ndoc now:", message.text);
-                        setDoc(message.text);
+                        setYml(message.text);
                         break;
                     }
                     console.log("nothing changed ...\nyml:", yml, "\ndoc now:", message.text);

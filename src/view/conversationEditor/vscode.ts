@@ -1,3 +1,3 @@
+import { WebviewApi } from "vscode-webview";
 
-
-export const vscode = acquireVsCodeApi();
+export const vscode : WebviewApi<unknown> = window.acquireVsCodeApi();

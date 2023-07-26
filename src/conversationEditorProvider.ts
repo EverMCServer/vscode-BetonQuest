@@ -33,7 +33,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
         };
 
         // fill html into Webview
-        webviewPanel.webview.html = this.getWebviewContent(webviewPanel.webview);
+        webviewPanel.webview.html = this.getWebviewContent(webviewPanel.webview, document);
 
         // Define a method to update Webview
         function updateWebview() {
@@ -100,10 +100,12 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
     }
 
     // render html content
-    private getWebviewContent(webview: vscode.Webview): string {
+    private getWebviewContent(webview: vscode.Webview, document: vscode.TextDocument): string {
 
         // get root.js url for React-JS
         const reactAppPathOnDisk = vscode.Uri.joinPath(this.context.extensionUri, "dist", "conversationEditor.js");
+
+        let initialData = document.getText().replace("\`", "\\\`");
         
         return `<!DOCTYPE html>
         <html lang="en">
@@ -121,6 +123,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
     
             <script>
               window.acquireVsCodeApi = acquireVsCodeApi;
+              window.globalThis.initialData = \`${initialData}\`;
             </script>
         </head>
         <body>
