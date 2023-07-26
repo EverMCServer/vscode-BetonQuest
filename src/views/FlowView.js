@@ -222,26 +222,29 @@ const SaveRestore = () => {
     }
   }, [reactFlowInstance]);
 
-  const onRestore = useCallback(() => {
-    const restoreFlow = async () => {
-      const flow = JSON.parse(localStorage.getItem(flowKey));
+  const resetFlow = async (nodes, edges, viewport) => {
+    setEdges([])
+    setNodes([])
+    setViewport({ x: 0, y: 0, zoom: 1 })
 
-      if (flow) {
-        setEdges([])
-        setNodes([])
-
-        setTimeout(() => {
-          const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-          setNodes(flow.nodes || []);
-          setEdges(flow.edges || []);
-          setViewport({ x, y, zoom });
-        }, 0);
-
+    setTimeout(() => {
+      setNodes(nodes || []);
+      setEdges(edges || []);
+      if (viewport) {
+        setViewport(viewport);
+      } else {
+        window.requestAnimationFrame(() => fitView());
       }
-    };
+    }, 0);
+  }
 
-    restoreFlow();
-  }, [setNodes, setViewport]);
+  const onRestore = useCallback(() => {
+    const flow = JSON.parse(localStorage.getItem(flowKey));
+    if (!flow) {
+      return
+    }
+    resetFlow(flow.nodes, flow.edges, flow.viewport)
+  }, []);
 
   const onUploadJSON = () => {
     document.getElementById('json-upload').click();
@@ -276,28 +279,23 @@ const SaveRestore = () => {
   const uploadYML = (event) => {
     const file = event.target.files[0];
     let fileName = file.name.split('.').slice(0, -1).join('.');
-
     const reader = new FileReader();
     reader.onload = function (event) {
+      console.log('reader.onload')
       const text = event.target.result;
       const flow = readYaml(fileName, text);
 
-      if (flow) {
-        setEdges([]);
-        setNodes([]);
-        window.requestAnimationFrame(() => fitView());
-
-        setTimeout(() => {
-          setNodes(flow.nodes || []);
-          setEdges(flow.edges || []);
-        }, 100);
+      if (!flow) {
+        return
       }
-
+      resetFlow(flow.nodes, flow.edges)
     };
     if (file) {
       reader.readAsText(file);
     }
+    event.target.value = '';
   };
+
   useEffect(() => {
     if (needsLayout) {
       onAutoLayout();
