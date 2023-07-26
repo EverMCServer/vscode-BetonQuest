@@ -149,6 +149,25 @@ const SaveRestore = () => {
     deleteSelectedNodes();
   }, [cmdAndSPressed]);
 
+  useEffect(() => {
+    let nodesStart = nodes.filter((item, i) => {
+      return item.type === 'startNode'
+    });
+    if (!nodesStart || nodesStart.length == 0) {
+      let id = getId()
+      while (getNode(id)) {
+        id = getId()
+      }
+      const newNode = {
+        id: id,
+        type: 'startNode',
+        position: { x: 0, y: 0 },
+        data: { 'name': `${id}` },
+      };
+      setNodes([...nodes, newNode])
+    }
+  }, [nodes]);
+
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
