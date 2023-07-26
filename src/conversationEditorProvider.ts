@@ -88,7 +88,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
     private getWebviewContent(webview: vscode.Webview): string {
 
         // get root.js url for React-JS
-        const reactAppPathOnDisk = vscode.Uri.joinPath(this.context.extensionUri, "dist", "conversationeditor.js");
+        const reactAppPathOnDisk = vscode.Uri.joinPath(this.context.extensionUri, "dist", "conversationEditor.js");
         
         return `<!DOCTYPE html>
         <html lang="en">

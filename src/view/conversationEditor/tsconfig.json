@@ -1,13 +1,13 @@
 {
     "compilerOptions": {
-        "module": "esnext",
-        "moduleResolution": "node",
-        "target": "ES2020",
-        "outDir": "configViewer",
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "target": "ES5",
+        "outDir": "conversationEditor",
         "lib": [
-            "ES2020",
-            "dom"
-        ],  
+            "ES5",
+            "DOM"
+        ],
         "jsx": "react",
         "sourceMap": true,
         "rootDir": "..",

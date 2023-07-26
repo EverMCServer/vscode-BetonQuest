@@ -26,8 +26,8 @@
 				"webpack://?:*/*": "${workspaceFolder}/*"
 			},
 			"outFiles": [
-				"${workspaceFolder}/out/**/*.js",
-				"${workspaceFolder}/dist/**/*.js"
+				"${workspaceFolder}/dist/**/*.js",
+				"${workspaceFolder}/out/**/*.js"
 			],
 			"pauseForSourceMap": true,
 			"preLaunchTask": "npm: watch"
@@ -42,8 +42,8 @@
 			],
 			"sourceMaps": true,
 			"outFiles": [
-				"${workspaceFolder}/out/**/*.js",
-				"${workspaceFolder}/dist/**/*.js"
+				"${workspaceFolder}/dist/**/*.js",
+				"${workspaceFolder}/out/**/*.js"
 			],
 			"preLaunchTask": "tasks: watch-tests"
 		}

@@ -1,10 +1,10 @@
 {
 	"compilerOptions": {
-		"module": "commonjs",
-		"target": "ES2020",
+		"module": "CommonJS",
+		"target": "ES5",
 		"outDir": "out",
 		"lib": [
-			"ES2020",
+            "ES5",
             "dom"
 		],
 		"sourceMap": true,

@@ -10,7 +10,7 @@ interface AppProps {
 }
 
 export default function app({vscode}: AppProps) {
-    
+    console.log("hi");
     return (
         <>
         <h1>Hello, World!</h1>
