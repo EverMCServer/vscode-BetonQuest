@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
@@ -11,6 +11,7 @@ import ReactFlow, {
   getTransformForBounds,
   MarkerType,
   Background,
+  useKeyPress,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import './styles.css'
@@ -27,7 +28,7 @@ import PlayerNode from '../nodes/PlayerNode';
 import StartNode from '../nodes/StartNode';
 import ButtonEdge from '../nodes/ButtonEdge';
 
-import Sidebar from '../views/Sidebar';
+import ConnectionLine from '../utils/ConnectionLine.js';
 
 const edgeTypes = {
   buttonedge: ButtonEdge,
@@ -90,8 +91,6 @@ function downloadYML(result) {
   URL.revokeObjectURL(url);
 }
 
-
-
 const SaveRestore = () => {
   const flowWrapper = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes());
@@ -106,11 +105,14 @@ const SaveRestore = () => {
     let node = getNode(source)
     let edges2 = edges
     if (node.type == 'startNode') {
-
       edges2 = edges.filter((item, i) => {
         return item['source'] != source
       });
-
+    }
+    if (node.type == 'playerNode') {
+      edges2 = edges.filter((item, i) => {
+        return item['source'] != connectingParams.nodeId
+      });
     }
 
     edges2 = addEdge(params, edges2)
@@ -124,19 +126,22 @@ const SaveRestore = () => {
 
   const [needsLayout, setNeedsLayout] = useState(false);
 
-  // useEffect(() => {
-  //   setNodes([
-  //     {
-  //       id: '2',
-  //       type: 'npcNode',
-  //       data: { color: initBgColor },
-  //       style: { padding: 5 },
-  //       position: { x: 300, y: 50 },
-  //     },
-  //   ]);
+  const cmdAndSPressed = useKeyPress(['Delete']);
 
+  const deleteSelectedNodes = useCallback(() => {
+    let nodes2 = nodes.filter((item, i) => {
+      return item.selected != true
+    });
+    let edges2 = edges.filter((item, i) => {
+      return item.selected != true
+    });
+    setNodes(nodes2)
+    setEdges(edges2)
+  }, [nodes, edges]);
 
-  // }, []);
+  useEffect(() => {
+    deleteSelectedNodes();
+  }, [cmdAndSPressed]);
 
   const onDrop = useCallback(
     (event) => {
@@ -378,6 +383,9 @@ const SaveRestore = () => {
       if (!targetIsPane) {
         return
       }
+      if (connectingParams.handleId == 'handleIn') {
+        return
+      }
 
       let hitPosition = project({ x: event.clientX - left, y: event.clientY - top })
       let safeSpace = 10
@@ -441,18 +449,26 @@ const SaveRestore = () => {
 
       let edges2 = edges
       if (fromNode.type == 'startNode') {
-
         edges2 = edges.filter((item, i) => {
           return item['source'] != connectingParams.nodeId
         });
-
       }
+      if (fromNode.type == 'playerNode') {
+        edges2 = edges.filter((item, i) => {
+          return item['source'] != connectingParams.nodeId
+        });
+      }
+
 
       edges2 = addEdge(edge, edges2)
       setEdges(edges2)
     },
     [project, nodes, flowWrapper, edges]
   );
+
+  const connectionLineComponent = (e) => {
+    return React.Component()
+  }
 
   return (
     <div className="flow-container">
@@ -485,6 +501,7 @@ const SaveRestore = () => {
           onDrop={onDrop}
           onDragOver={onDragOver}
           edgeTypes={edgeTypes}
+          connectionLineComponent={ConnectionLine}
           fitView
         >
           <MiniMap
