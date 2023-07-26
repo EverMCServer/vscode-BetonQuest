@@ -102,6 +102,7 @@ const SaveRestore = () => {
     params['type'] = 'step'
     params['markerEnd'] = { type: MarkerType.ArrowClosed }
     let source = params['source']
+    let sourceHandle = params['sourceHandle']
     let node = getNode(source)
     let edges2 = edges
     if (node.type == 'startNode') {
@@ -112,6 +113,11 @@ const SaveRestore = () => {
     if (node.type == 'playerNode') {
       edges2 = edges.filter((item, i) => {
         return item['source'] != connectingParams.nodeId
+      });
+    }
+    if (node.type == 'npcNode' && sourceHandle == 'handleN') {
+      edges2 = edges.filter((item, i) => {
+        return item['source'] != connectingParams.nodeId || item['sourceHandle'] != 'handleN'
       });
     }
 
@@ -456,6 +462,11 @@ const SaveRestore = () => {
       if (fromNode.type == 'playerNode') {
         edges2 = edges.filter((item, i) => {
           return item['source'] != connectingParams.nodeId
+        });
+      }
+      if (fromNode.type == 'npcNode' && connectingParams.handleId == 'handleN') {
+        edges2 = edges.filter((item, i) => {
+          return item['source'] != connectingParams.nodeId || item['sourceHandle'] != 'handleN'
         });
       }
 
