@@ -12,6 +12,7 @@ import ReactFlow, {
   MarkerType,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import './styles.css'
 
 import { toJpeg } from 'html-to-image';
 import { autoLayout } from '../utils/autoLayout';
@@ -85,7 +86,7 @@ function downloadYML(result) {
 
 
 const SaveRestore = () => {
-  const reactFlowWrapper = useRef(null);
+  const flowWrapper = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -134,7 +135,7 @@ const SaveRestore = () => {
     (event) => {
       event.preventDefault();
 
-      const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+      const reactFlowBounds = flowWrapper.current.getBoundingClientRect();
       const type = event.dataTransfer.getData('application/reactflow');
 
       // check if the dropped element is valid
@@ -353,10 +354,25 @@ const SaveRestore = () => {
   }, [nodes, edges]);
 
   return (
-    <>
+    <div className="flow-container">
+
+      <input
+        type="file"
+        id="json-upload"
+        onChange={uploadJSON}
+        style={{ display: 'none' }}
+      />
+      <input
+        type="file"
+        id="yml-upload"
+        onChange={uploadYML}
+        className="download-btn"
+        style={{ display: 'none' }}
+      />
+
       <Sidebar />
 
-      <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+      <div className="flow-wrapper" ref={flowWrapper}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -378,52 +394,22 @@ const SaveRestore = () => {
               return '#fff';
             }}
           />
-          <Panel position="top-right">
-            
-            <div>
-              {/* <button onClick={onSave} className="download-btn2">save</button> */}
-            </div>
-            {/* <button onClick={onRestore} className="download-btn2">restore</button> */}
-            <div>
-              <button onClick={onScreenshot} className="download-btn2">screenshot</button>
-            </div>
-            <div>
-              <button onClick={onDownload} className="download-btn2">debug-download</button>
-            </div>
-            <div>
-              <input
-                type="file"
-                id="json-upload"
-                onChange={uploadJSON}
-                className="download-btn2"
-                style={{ display: 'none' }}
-              />
-              {/* <button onClick={onUploadJSON} className="download-btn2">upload-json</button> */}
-            </div>
-            <div>
-              <button onClick={onClear} className="download-btn">clear</button>
-            </div>
-            <div>
-              <button onClick={onDownloadYML} className="download-btn">yml-download</button>
-            </div>
-            <div>
-              <input
-                type="file"
-                id="yml-upload"
-                onChange={uploadYML}
-                className="download-btn"
-                style={{ display: 'none' }}
-              />
-              <button onClick={onUploadYML} className="download-btn">yml-upload</button>
-            </div>
-            <div>
-              <button onClick={onAutoLayout} className="download-btn">AutoLayout</button>
-            </div>
+
+          <Panel position="top-right" className='panel'>
+          <button onClick={onRestore} className="debug-button">Cache: Restore</button>
+            <button onClick={onSave} className="debug-button">Cache: Save</button>
+            <button onClick={onUploadJSON} className="debug-button">DEBUG: Upload</button>
+            <button onClick={onDownload} className="debug-button">DEBUG: Download</button>
+            <button onClick={onClear} className="user-button">Clear all</button>
+            <button onClick={onAutoLayout} className="user-button">Auto Layout</button>
+            <button onClick={onScreenshot} className="user-button">Screenshot</button>
+            <button onClick={onUploadYML} className="user-button">yml: Upload</button>
+            <button onClick={onDownloadYML} className="user-button">yml: Download</button>
           </Panel>
         </ReactFlow>
       </div>
 
-    </>
+    </div>
   );
 };
 

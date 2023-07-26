@@ -7,7 +7,7 @@ export default () => {
   };
 
   return (
-    <aside>
+    <aside className='aside'>
       <div className="description">Drag these nodes to right.</div>
       <div className="dndnode" onDragStart={(event) => onDragStart(event, 'startNode')} draggable>
         Start

@@ -1,0 +1,86 @@
+.flow-container {
+    display: flex;
+    height: 100%;
+}
+
+.flow-container .flow-wrapper {
+    flex-grow: 1;
+}
+
+.flow-container .aside {
+    border-right: 1px solid #eee;
+    padding: 10px 10px;
+    font-size: 12px;
+    background: #fcfcfc;
+}
+
+.flow-container .panel {
+    display: grid;
+    grid-auto-flow: row;
+}
+
+.debug-button {
+    width: 130px;
+    background: #eebb64;
+    border: 1px solid #75c1ea;
+    border-radius: 5px;
+    padding: 10px 10px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.user-button {
+    width: 130px;
+    background: #ebf8ff;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    padding: 10px 10px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: left;
+}
+
+
+
+
+
+.flow-container .dndnode {
+    height: 20px;
+    padding: 4px;
+    border: 1px solid #1a192b;
+    border-radius: 2px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: grab;
+}
+
+.flow-container .dndnode.input {
+    border-color: #0041d0;
+}
+
+.flow-container .dndnode.output {
+    border-color: #ff0072;
+}
+
+
+
+.flow-container .selectall {
+    margin-top: 10px;
+}
+
+@media screen and (min-width: 768px) {
+    .flow-container {
+        flex-direction: row;
+    }
+
+    .flow-container aside {
+        width: 20%;
+        max-width: 200px;
+    }
+}
+
