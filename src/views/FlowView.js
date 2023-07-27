@@ -14,11 +14,10 @@ import ReactFlow, {
   useKeyPress,
 } from "reactflow";
 import "reactflow/dist/style.css";
+import { toJpeg } from "html-to-image";
 import "./styles.css";
 
-import { toJpeg } from "html-to-image";
 import { autoLayout } from "../utils/autoLayout";
-
 import { readYaml } from "../utils/readYaml";
 import { writeYaml } from "../utils/writeYaml";
 
@@ -26,11 +25,13 @@ import NPCNode from "../nodes/NPCNode";
 import PlayerNode from "../nodes/PlayerNode";
 import StartNode from "../nodes/StartNode";
 import ConnectionLine from "../nodes/ConnectionLine.js";
+import {
+  downloadFile,
+  downloadImage,
+  removeLinesOnConnect,
+} from "../utils/commonUtils";
 
-const flowKey = "bq-flow";
-
-let id = 0;
-const getId = () => `node_${id++}`;
+const cacheKey = "bq-flow";
 
 const nodeTypes = {
   npcNode: NPCNode,
@@ -38,195 +39,40 @@ const nodeTypes = {
   startNode: StartNode,
 };
 
-function initialNodes() {
-  let id = getId();
+const initialNode = {
+  id: "startNodeID",
+  type: "startNode",
+  position: { x: 0, y: 0 },
+  data: { name: "startNode" },
+};
 
-  const newNode = {
-    id: id,
-    type: "startNode",
-    position: { x: 0, y: 0 },
-    data: { name: `${id}` },
-  };
-  return [newNode];
-}
-
-function downloadImage(dataUrl) {
-  const a = document.createElement("a");
-
-  a.setAttribute("download", "reactflow.jpg");
-  a.setAttribute("href", dataUrl);
-  a.click();
-}
-
-function downloadJSON(json) {
-  const blob = new Blob([json], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "data.json";
-  link.click();
-  URL.revokeObjectURL(url);
-}
-
-function downloadYML(result) {
-  if (!result) {
-    return;
-  }
-  let name = result[0];
-  let yml = result[1];
-  const blob = new Blob([yml], { type: "application/yml" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `${name}.yml`;
-  link.click();
-  URL.revokeObjectURL(url);
-}
-
-const SaveRestore = () => {
+const MyFlowView = () => {
   const flowWrapper = useRef(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes());
+  const [nodes, setNodes, onNodesChange] = useNodesState([initialNode]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const { setViewport, getNode, getNodes, fitView, project } = useReactFlow();
+  const { setViewport, getNode, getNodes, getEdge, fitView, project } =
+    useReactFlow();
 
-  const onConnect = useCallback(
-    (params) => {
-      params["type"] = "step";
-      params["markerEnd"] = { type: MarkerType.ArrowClosed };
-      let source = params["source"];
-      let sourceHandle = params["sourceHandle"];
-      let node = getNode(source);
-      let edges2 = edges;
-      if (node.type == "startNode") {
-        edges2 = edges.filter((item, i) => {
-          return item["source"] != source;
-        });
-      }
-      if (node.type == "playerNode") {
-        edges2 = edges.filter((item, i) => {
-          return item["source"] != connectingParams.nodeId;
-        });
-      }
-      if (node.type == "npcNode" && sourceHandle == "handleN") {
-        edges2 = edges.filter((item, i) => {
-          return (
-            item["source"] != connectingParams.nodeId ||
-            item["sourceHandle"] != "handleN"
-          );
-        });
-      }
+  /* ID counter */
 
-      edges2 = addEdge(params, edges2);
-      setEdges(edges2);
-    },
-    [edges]
-  );
-
-  const onDragOver = useCallback((event) => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = "move";
-  }, []);
-
-  const [needsLayout, setNeedsLayout] = useState(false);
-
-  const cmdAndSPressed = useKeyPress(["Delete"]);
-
-  const deleteSelectedNodes = useCallback(() => {
-    let nodes2 = nodes.filter((item, i) => {
-      return item.selected != true;
-    });
-    let edges2 = edges.filter((item, i) => {
-      return item.selected != true;
-    });
-    setNodes(nodes2);
-    setEdges(edges2);
-  }, [nodes, edges]);
-
-  useEffect(() => {
-    deleteSelectedNodes();
-  }, [cmdAndSPressed]);
-
-  useEffect(() => {
-    let nodesStart = nodes.filter((item, i) => {
-      return item.type === "startNode";
-    });
-    if (!nodesStart || nodesStart.length == 0) {
-      let id = getId();
-      while (getNode(id)) {
-        id = getId();
-      }
-      const newNode = {
-        id: id,
-        type: "startNode",
-        position: { x: 0, y: 0 },
-        data: { name: `${id}` },
-      };
-      setNodes([...nodes, newNode]);
+  let lineID = 1;
+  const getNewLineID = useCallback(() => {
+    while (getEdge(`line_${lineID}`)) {
+      lineID++;
     }
-  }, [nodes]);
+    return `line_${lineID}`;
+  }, [getEdge]);
 
-  const onDrop = useCallback(
-    (event) => {
-      event.preventDefault();
-
-      const reactFlowBounds = flowWrapper.current.getBoundingClientRect();
-      const type = event.dataTransfer.getData("application/reactflow");
-
-      // check if the dropped element is valid
-      if (typeof type === "undefined" || !type) {
-        return;
-      }
-
-      const position = reactFlowInstance.project({
-        x: event.clientX - reactFlowBounds.left,
-        y: event.clientY - reactFlowBounds.top,
-      });
-      let id = getId();
-      while (getNode(id)) {
-        id = getId();
-      }
-      const newNode = {
-        id: id,
-        type,
-        position,
-        data: { name: `${id}` },
-      };
-
-      setNodes((nds) => nds.concat(newNode));
-    },
-    [reactFlowInstance]
-  );
-
-  const onClear = useCallback(() => {
-    setEdges([]);
-    setNodes(initialNodes());
-    window.requestAnimationFrame(() => fitView());
-  }, [reactFlowInstance]);
-
-  const onSave = useCallback(() => {
-    if (reactFlowInstance) {
-      const flow = reactFlowInstance.toObject();
-      const json = JSON.stringify(flow);
-      localStorage.setItem(flowKey, json);
-      // downloadJSON(json);
+  let nodeID = 1;
+  const getNewNodeID = useCallback(() => {
+    while (getNode(`node_${nodeID}`)) {
+      nodeID++;
     }
-  }, [reactFlowInstance]);
+    return `node_${nodeID}`;
+  }, [getNode]);
 
-  const onDownload = useCallback(() => {
-    if (reactFlowInstance) {
-      const flow = reactFlowInstance.toObject();
-      const json = JSON.stringify(flow);
-      downloadJSON(json);
-    }
-  }, [reactFlowInstance]);
-
-  const onDownloadYML = useCallback(() => {
-    if (reactFlowInstance) {
-      const flow = reactFlowInstance.toObject();
-      downloadYML(writeYaml(flow));
-    }
-  }, [reactFlowInstance]);
+  /* Tools */
 
   const resetFlow = async (nodes, edges, viewport) => {
     setEdges([]);
@@ -244,53 +90,139 @@ const SaveRestore = () => {
     }, 0);
   };
 
+  const [needsLayout, setNeedsLayout] = useState(false);
+
+  useEffect(() => {
+    if (needsLayout) {
+      onAutoLayout();
+      setNeedsLayout(false);
+    }
+  }, [needsLayout]);
+
+  /* Remove unsupport lines */
+
+  const onConnect = useCallback(
+    (params) => {
+      params["type"] = "step";
+      params["markerEnd"] = { type: MarkerType.ArrowClosed };
+      const sourceID = params["source"];
+      const newEdges = removeLinesOnConnect(
+        getNode(sourceID),
+        edges,
+        sourceID,
+        params["sourceHandle"]
+      );
+
+      setEdges(addEdge(params, newEdges));
+    },
+    [edges, getNode]
+  );
+
+  /* DEL keyboard button event */
+
+  const deleteButtonPressed = useKeyPress(["Delete"]);
+  const deleteSelectedNodes = useCallback(() => {
+    const nodes2 = nodes.filter((item, i) => {
+      return item.selected != true;
+    });
+    const edges2 = edges.filter((item, i) => {
+      return item.selected != true;
+    });
+    setNodes(nodes2);
+    setEdges(edges2);
+  }, [nodes, edges]);
+
+  useEffect(() => {
+    deleteSelectedNodes();
+  }, [deleteButtonPressed]);
+
+  /* Clear event */
+
+  const onClear = useCallback(() => {
+    setEdges([]);
+    setNodes([initialNode]);
+    window.requestAnimationFrame(() => fitView());
+  }, [fitView]);
+
+  /* Create startNode if not exist */
+
+  useEffect(() => {
+    const nodesStart = getNode("startNodeID");
+    if (!nodesStart || nodesStart.length == 0) {
+      setNodes([...nodes, initialNode]);
+    }
+  }, [nodes, getNode]);
+
+  /* DEBUG Save/Restore event */
+
+  const onSave = useCallback(() => {
+    if (reactFlowInstance) {
+      const flow = reactFlowInstance.toObject();
+      const json = JSON.stringify(flow);
+      localStorage.setItem(cacheKey, json);
+    }
+  }, [reactFlowInstance]);
+
   const onRestore = useCallback(() => {
-    const flow = JSON.parse(localStorage.getItem(flowKey));
+    const flow = JSON.parse(localStorage.getItem(cacheKey));
     if (!flow) {
       return;
     }
     resetFlow(flow.nodes, flow.edges, flow.viewport);
   }, []);
 
-  const onUploadJSON = () => {
+  /* DEBUG Download/Upload event */
+
+  const onDownloadJSON = useCallback(() => {
+    if (reactFlowInstance) {
+      const flow = reactFlowInstance.toObject();
+      const json = JSON.stringify(flow);
+      downloadFile("debug.json", json, "json");
+    }
+  }, [reactFlowInstance]);
+
+  const onUploadJSON = useCallback(() => {
     document.getElementById("json-upload").click();
-  };
+  }, []);
 
-  const uploadJSON = (event) => {
+  const uploadJSON = useCallback((event) => {
     const file = event.target.files[0];
-
     const reader = new FileReader();
     reader.onload = function (event) {
       const text = event.target.result;
-      try {
-        const flow = JSON.parse(text);
-        if (flow) {
-          const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-          setNodes(flow.nodes || []);
-          setEdges(flow.edges || []);
-          setViewport({ x, y, zoom });
-        }
-      } catch (error) {
-        console.error("Error parsing JSON:", error);
+      const flow = JSON.parse(text);
+      if (!flow) {
+        return;
       }
+      resetFlow(flow.nodes, flow.edges, flow.viewport);
     };
+    if (file) {
+      reader.readAsText(file);
+    }
+    event.target.value = "";
+  }, []);
 
-    reader.readAsText(file);
-  };
+  /* YML Download/Upload event */
 
-  const onUploadYML = () => {
+  const onDownloadYML = useCallback(() => {
+    if (reactFlowInstance) {
+      const flow = reactFlowInstance.toObject();
+      const data = writeYaml(flow);
+      downloadFile(data.fileName, data.text, "yml");
+    }
+  }, [reactFlowInstance]);
+
+  const onUploadYML = useCallback((event) => {
     document.getElementById("yml-upload").click();
-  };
+  }, []);
 
-  const uploadYML = (event) => {
+  const uploadYML = useCallback((event) => {
     const file = event.target.files[0];
     let fileName = file.name.split(".").slice(0, -1).join(".");
     const reader = new FileReader();
     reader.onload = function (event) {
-      console.log("reader.onload");
       const text = event.target.result;
       const flow = readYaml(fileName, text);
-
       if (!flow) {
         return;
       }
@@ -300,15 +232,11 @@ const SaveRestore = () => {
       reader.readAsText(file);
     }
     event.target.value = "";
-  };
+  }, []);
 
-  useEffect(() => {
-    if (needsLayout) {
-      onAutoLayout();
-      setNeedsLayout(false);
-    }
-  }, [needsLayout]);
-  const onScreenshot = () => {
+  /* Screenshot */
+
+  const onScreenshot = useCallback(() => {
     const nodesBounds = getRectOfNodes(getNodes());
     const targetScale = 1;
     const targetWidth = nodesBounds.width * targetScale;
@@ -321,7 +249,6 @@ const SaveRestore = () => {
       0.5,
       2
     );
-    // console.log(transform[2])
     toJpeg(document.querySelector(".react-flow__viewport"), {
       backgroundColor: "#ffffff",
       quality: 0.95,
@@ -333,28 +260,20 @@ const SaveRestore = () => {
         transform: `translate(${transform[0]}px, ${transform[1]}px) scale(${transform[2]})`,
       },
     }).then(downloadImage);
-  };
+  }, []);
 
-  // test ------------------------
+  /* Auto Layout */
 
   const onAutoLayout = useCallback(() => {
-    let obj = autoLayout(nodes, edges);
+    const obj = autoLayout(nodes, edges);
     if (!obj) {
       return;
     }
-    let newNodes = obj.nodes;
-    let newEdges = obj.edges;
-
-    setNodes(JSON.parse(JSON.stringify(newNodes)));
-    setEdges(newEdges);
-    const p = {};
-    p.x = 0;
-    p.y = 0;
-    p.zoom = 1;
-    setViewport(p);
-
-    window.requestAnimationFrame(() => fitView());
+    const objCopy = JSON.parse(JSON.stringify(obj));
+    resetFlow(objCopy.nodes, objCopy.edges);
   }, [nodes, edges]);
+
+  /* Auto create new node and edge */
 
   let connectingParams = useRef(null);
 
@@ -375,11 +294,11 @@ const SaveRestore = () => {
         return;
       }
 
-      let hitPosition = project({
+      const hitPosition = project({
         x: event.clientX - left,
         y: event.clientY - top,
       });
-      let safeSpace = 10;
+      const safeSpace = 20;
       for (let i = 0; i < nodes.length; i++) {
         let node = nodes[i];
         if (
@@ -396,7 +315,6 @@ const SaveRestore = () => {
       if (!fromNode) {
         return;
       }
-      // console.log(fromNode, connectingParams)
       let type = "npcNode";
       if (fromNode["type"] == "startNode") {
         type = "npcNode";
@@ -410,58 +328,36 @@ const SaveRestore = () => {
         type = "npcNode";
       }
 
-      let id = getId();
-      while (getNode(id)) {
-        id = getId();
-      }
+      const newNodeID = getNewNodeID();
       const newNode = {
-        id: id,
+        id: newNodeID,
         type,
         position: { x: hitPosition.x - 100, y: hitPosition.y },
-        data: { name: `${id}` },
+        data: { name: `${newNodeID}` },
       };
 
       setNodes((nds) => nds.concat(newNode));
 
-      while (getNode(id)) {
-        id = getId();
-      }
+      const newLineID = getNewLineID();
       let edge = {};
-      edge["id"] = id;
+      edge["id"] = newLineID;
       edge["type"] = "step";
       edge["markerEnd"] = { type: MarkerType.ArrowClosed };
       edge["source"] = connectingParams.nodeId;
       edge["sourceHandle"] = connectingParams.handleId;
-      edge["target"] = id;
+      edge["target"] = newNodeID;
       edge["targetHandle"] = "handleIn";
 
-      let edges2 = edges;
-      if (fromNode.type == "startNode") {
-        edges2 = edges.filter((item, i) => {
-          return item["source"] != connectingParams.nodeId;
-        });
-      }
-      if (fromNode.type == "playerNode") {
-        edges2 = edges.filter((item, i) => {
-          return item["source"] != connectingParams.nodeId;
-        });
-      }
-      if (
-        fromNode.type == "npcNode" &&
-        connectingParams.handleId == "handleN"
-      ) {
-        edges2 = edges.filter((item, i) => {
-          return (
-            item["source"] != connectingParams.nodeId ||
-            item["sourceHandle"] != "handleN"
-          );
-        });
-      }
-
-      edges2 = addEdge(edge, edges2);
-      setEdges(edges2);
+      const newEdges = removeLinesOnConnect(
+        fromNode,
+        edges,
+        connectingParams.nodeId,
+        connectingParams.nodeId,
+        connectingParams.handleId
+      );
+      setEdges(addEdge(edge, newEdges));
     },
-    [project, nodes, flowWrapper, edges]
+    [project, nodes, getNode, flowWrapper, edges]
   );
 
   return (
@@ -491,8 +387,6 @@ const SaveRestore = () => {
           onConnect={onConnect}
           nodeTypes={nodeTypes}
           onInit={setReactFlowInstance}
-          onDrop={onDrop}
-          onDragOver={onDragOver}
           connectionLineComponent={ConnectionLine}
           fitView
         >
@@ -516,10 +410,10 @@ const SaveRestore = () => {
             <button onClick={onUploadJSON} className="debug-button">
               DEBUG: Upload
             </button>
-            <button onClick={onDownload} className="debug-button">
+            <button onClick={onDownloadJSON} className="debug-button">
               DEBUG: Download
             </button>
-            <button onClick={onClear} className="user-button">
+            <button onClick={onClear} className="clear-button">
               Clear all
             </button>
             <button onClick={onAutoLayout} className="user-button">
@@ -545,6 +439,6 @@ const SaveRestore = () => {
 
 export default () => (
   <ReactFlowProvider>
-    <SaveRestore />
+    <MyFlowView />
   </ReactFlowProvider>
 );

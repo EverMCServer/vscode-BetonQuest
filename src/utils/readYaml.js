@@ -29,7 +29,7 @@ export function parseYaml(fileName, yaml) {
 
   // StartNodes
   const startNode = {
-    id: "start",
+    id: "startNodeID",
     type: "startNode",
     data: { name: "start", text: fileName, text2: yaml["quester"] },
   };

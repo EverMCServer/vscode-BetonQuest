@@ -92,7 +92,7 @@ export function writeYaml(obj) {
     const jsonData = JSON.parse(text);
     const yamlText = yaml.dump(jsonData, { quotes: '"' });
 
-    return [fileName, yamlText];
+    return { fileName: fileName, data: yamlText };
   } catch (error) {
     logError(`Encoding Yaml ${error}`);
     return null;

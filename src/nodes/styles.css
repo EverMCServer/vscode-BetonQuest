@@ -1,25 +1,33 @@
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: #4ea9ff;
+}
+
+
 .react-flow .handleIn {
   width: 15px;
   height: 8px;
+  top: -5px;
   border-radius: 3px;
   background: #fff;
-  border: 2px solid #cacaca;
+  border: 1px solid #999;
 }
 
 .react-flow .handleOut {
   width: 15px;
   height: 8px;
+  bottom: -5px;
   border-radius: 3px;
   background: #fff;
-  border: 2px solid #cacaca;
+  border: 1px solid #999;
 }
 
 .react-flow .handleN {
   width: 8px;
   height: 15px;
+  top: 53px;
   border-radius: 3px;
-  background: #f00;
-  border: 2px solid #cacaca;
+  background: rgb(255, 123, 123);
+  border: 1px solid #999;
 }
 
 .react-flow__node {
@@ -84,7 +92,7 @@
   display: flex;
   justify-content: space-between;
   gap: 5px;
-  padding-right: 2px;
+  padding-right: 60px;
 }
 
 .box .line {

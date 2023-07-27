@@ -81,9 +81,9 @@ export default memo(({ data }) => {
         Player<div className="nodeName">({data.name})</div>
       </div>
       <div className="box">
-        <div class="container">
+        <div className="container">
           conditions:
-          <div class="buttons">
+          <div className="buttons">
             <button onClick={conditionDel} className="actionButton">
               -
             </button>
@@ -107,12 +107,12 @@ export default memo(({ data }) => {
           className="nodrag textArea"
           value={textGet()}
           onChange={(e) => textUpdate(e.target.value)}
-          spellcheck="false"
+          spellCheck="false"
         />
         <hr className="line"></hr>
-        <div class="container">
+        <div className="container">
           events:
-          <div class="buttons">
+          <div className="buttons">
             <button onClick={eventDel} className="actionButton">
               -
             </button>
