@@ -13,7 +13,7 @@ export default function app() {
     // get initial content data from vscode
     const [yml, setYml] = React.useState(window.globalThis.initialData);
 
-    console.log("initDate:", yml);
+    console.log("initialize yml Data.");
 
     // get document's content update from vscode
     React.useEffect(()=>{
@@ -23,12 +23,12 @@ export default function app() {
 
             switch (message.type) {
                 case 'update':
-                    if (message.text !== yml) {
-                        console.log("update yml ...\nyml was:", yml, "\ndoc now:", message.text);
-                        setYml(message.text);
+                    if (message.content !== yml) {
+                        console.log("update yml ...");
+                        setYml(message.content);
                         break;
                     }
-                    console.log("nothing changed ...\nyml:", yml, "\ndoc now:", message.text);
+                    console.log("update yml ... nothing changed.");
                     break;
             }
         });

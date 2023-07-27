@@ -10,7 +10,6 @@ export default function testButton({yml} : TestButtonProps) {
 
     let updatedYml:string = yml!;
     updatedYml = updatedYml + "\n\n# test";
-    console.log("updated yml:", updatedYml);
 
     return (
         <>
@@ -24,10 +23,10 @@ export default function testButton({yml} : TestButtonProps) {
     );
 }
 
-function sendMsgToVscode( type: string, message: string) {
+function sendMsgToVscode( type: string, content: string) {
     console.log("button clicked");
     vscode.postMessage({
         type: type,
-        message: message
+        content: content
     });
 }

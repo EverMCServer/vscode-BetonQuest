@@ -6,7 +6,7 @@ interface TestViewProps {
 
 export default function testView({yml} : TestViewProps) {
     // debug
-    console.log("hi");
+    console.log("re-rendering view...");
 
     return (
         <div>

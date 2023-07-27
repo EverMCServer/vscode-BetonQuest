@@ -39,7 +39,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
         function updateWebview() {
             webviewPanel.webview.postMessage({
                 type: 'update',
-                text: document.getText()
+                content: document.getText()
             });
         }
 
