@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
@@ -12,22 +12,22 @@ import ReactFlow, {
   MarkerType,
   Background,
   useKeyPress,
-} from 'reactflow';
-import 'reactflow/dist/style.css';
-import './styles.css'
+} from "reactflow";
+import "reactflow/dist/style.css";
+import "./styles.css";
 
-import { toJpeg } from 'html-to-image';
-import { autoLayout } from '../utils/autoLayout';
+import { toJpeg } from "html-to-image";
+import { autoLayout } from "../utils/autoLayout";
 
-import { readYaml } from '../utils/readYaml';
-import { writeYaml } from '../utils/writeYaml';
+import { readYaml } from "../utils/readYaml";
+import { writeYaml } from "../utils/writeYaml";
 
-import NPCNode from '../nodes/NPCNode';
-import PlayerNode from '../nodes/PlayerNode';
-import StartNode from '../nodes/StartNode';
-import ConnectionLine from '../nodes/ConnectionLine.js';
+import NPCNode from "../nodes/NPCNode";
+import PlayerNode from "../nodes/PlayerNode";
+import StartNode from "../nodes/StartNode";
+import ConnectionLine from "../nodes/ConnectionLine.js";
 
-const flowKey = 'bq-flow';
+const flowKey = "bq-flow";
 
 let id = 0;
 const getId = () => `node_${id++}`;
@@ -39,31 +39,31 @@ const nodeTypes = {
 };
 
 function initialNodes() {
-  let id = getId()
+  let id = getId();
 
   const newNode = {
     id: id,
-    type: 'startNode',
+    type: "startNode",
     position: { x: 0, y: 0 },
-    data: { 'name': `${id}` },
+    data: { name: `${id}` },
   };
-  return [newNode]
-};
+  return [newNode];
+}
 
 function downloadImage(dataUrl) {
-  const a = document.createElement('a');
+  const a = document.createElement("a");
 
-  a.setAttribute('download', 'reactflow.jpg');
-  a.setAttribute('href', dataUrl);
+  a.setAttribute("download", "reactflow.jpg");
+  a.setAttribute("href", dataUrl);
   a.click();
 }
 
 function downloadJSON(json) {
-  const blob = new Blob([json], { type: 'application/json' });
+  const blob = new Blob([json], { type: "application/json" });
   const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
+  const link = document.createElement("a");
   link.href = url;
-  link.download = 'data.json';
+  link.download = "data.json";
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -74,9 +74,9 @@ function downloadYML(result) {
   }
   let name = result[0];
   let yml = result[1];
-  const blob = new Blob([yml], { type: 'application/yml' });
+  const blob = new Blob([yml], { type: "application/yml" });
   const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
+  const link = document.createElement("a");
   link.href = url;
   link.download = `${name}.yml`;
   link.click();
@@ -90,51 +90,57 @@ const SaveRestore = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const { setViewport, getNode, getNodes, fitView, project } = useReactFlow();
 
-  const onConnect = useCallback((params) => {
-    params['type'] = 'step'
-    params['markerEnd'] = { type: MarkerType.ArrowClosed }
-    let source = params['source']
-    let sourceHandle = params['sourceHandle']
-    let node = getNode(source)
-    let edges2 = edges
-    if (node.type == 'startNode') {
-      edges2 = edges.filter((item, i) => {
-        return item['source'] != source
-      });
-    }
-    if (node.type == 'playerNode') {
-      edges2 = edges.filter((item, i) => {
-        return item['source'] != connectingParams.nodeId
-      });
-    }
-    if (node.type == 'npcNode' && sourceHandle == 'handleN') {
-      edges2 = edges.filter((item, i) => {
-        return item['source'] != connectingParams.nodeId || item['sourceHandle'] != 'handleN'
-      });
-    }
+  const onConnect = useCallback(
+    (params) => {
+      params["type"] = "step";
+      params["markerEnd"] = { type: MarkerType.ArrowClosed };
+      let source = params["source"];
+      let sourceHandle = params["sourceHandle"];
+      let node = getNode(source);
+      let edges2 = edges;
+      if (node.type == "startNode") {
+        edges2 = edges.filter((item, i) => {
+          return item["source"] != source;
+        });
+      }
+      if (node.type == "playerNode") {
+        edges2 = edges.filter((item, i) => {
+          return item["source"] != connectingParams.nodeId;
+        });
+      }
+      if (node.type == "npcNode" && sourceHandle == "handleN") {
+        edges2 = edges.filter((item, i) => {
+          return (
+            item["source"] != connectingParams.nodeId ||
+            item["sourceHandle"] != "handleN"
+          );
+        });
+      }
 
-    edges2 = addEdge(params, edges2)
-    setEdges(edges2)
-  }, [edges]);
+      edges2 = addEdge(params, edges2);
+      setEdges(edges2);
+    },
+    [edges]
+  );
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
+    event.dataTransfer.dropEffect = "move";
   }, []);
 
   const [needsLayout, setNeedsLayout] = useState(false);
 
-  const cmdAndSPressed = useKeyPress(['Delete']);
+  const cmdAndSPressed = useKeyPress(["Delete"]);
 
   const deleteSelectedNodes = useCallback(() => {
     let nodes2 = nodes.filter((item, i) => {
-      return item.selected != true
+      return item.selected != true;
     });
     let edges2 = edges.filter((item, i) => {
-      return item.selected != true
+      return item.selected != true;
     });
-    setNodes(nodes2)
-    setEdges(edges2)
+    setNodes(nodes2);
+    setEdges(edges2);
   }, [nodes, edges]);
 
   useEffect(() => {
@@ -143,20 +149,20 @@ const SaveRestore = () => {
 
   useEffect(() => {
     let nodesStart = nodes.filter((item, i) => {
-      return item.type === 'startNode'
+      return item.type === "startNode";
     });
     if (!nodesStart || nodesStart.length == 0) {
-      let id = getId()
+      let id = getId();
       while (getNode(id)) {
-        id = getId()
+        id = getId();
       }
       const newNode = {
         id: id,
-        type: 'startNode',
+        type: "startNode",
         position: { x: 0, y: 0 },
-        data: { 'name': `${id}` },
+        data: { name: `${id}` },
       };
-      setNodes([...nodes, newNode])
+      setNodes([...nodes, newNode]);
     }
   }, [nodes]);
 
@@ -165,10 +171,10 @@ const SaveRestore = () => {
       event.preventDefault();
 
       const reactFlowBounds = flowWrapper.current.getBoundingClientRect();
-      const type = event.dataTransfer.getData('application/reactflow');
+      const type = event.dataTransfer.getData("application/reactflow");
 
       // check if the dropped element is valid
-      if (typeof type === 'undefined' || !type) {
+      if (typeof type === "undefined" || !type) {
         return;
       }
 
@@ -176,15 +182,15 @@ const SaveRestore = () => {
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,
       });
-      let id = getId()
+      let id = getId();
       while (getNode(id)) {
-        id = getId()
+        id = getId();
       }
       const newNode = {
         id: id,
         type,
         position,
-        data: { 'name': `${id}` },
+        data: { name: `${id}` },
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -223,9 +229,9 @@ const SaveRestore = () => {
   }, [reactFlowInstance]);
 
   const resetFlow = async (nodes, edges, viewport) => {
-    setEdges([])
-    setNodes([])
-    setViewport({ x: 0, y: 0, zoom: 1 })
+    setEdges([]);
+    setNodes([]);
+    setViewport({ x: 0, y: 0, zoom: 1 });
 
     setTimeout(() => {
       setNodes(nodes || []);
@@ -236,18 +242,18 @@ const SaveRestore = () => {
         window.requestAnimationFrame(() => fitView());
       }
     }, 0);
-  }
+  };
 
   const onRestore = useCallback(() => {
     const flow = JSON.parse(localStorage.getItem(flowKey));
     if (!flow) {
-      return
+      return;
     }
-    resetFlow(flow.nodes, flow.edges, flow.viewport)
+    resetFlow(flow.nodes, flow.edges, flow.viewport);
   }, []);
 
   const onUploadJSON = () => {
-    document.getElementById('json-upload').click();
+    document.getElementById("json-upload").click();
   };
 
   const uploadJSON = (event) => {
@@ -265,7 +271,7 @@ const SaveRestore = () => {
           setViewport({ x, y, zoom });
         }
       } catch (error) {
-        console.error('Error parsing JSON:', error);
+        console.error("Error parsing JSON:", error);
       }
     };
 
@@ -273,27 +279,27 @@ const SaveRestore = () => {
   };
 
   const onUploadYML = () => {
-    document.getElementById('yml-upload').click();
+    document.getElementById("yml-upload").click();
   };
 
   const uploadYML = (event) => {
     const file = event.target.files[0];
-    let fileName = file.name.split('.').slice(0, -1).join('.');
+    let fileName = file.name.split(".").slice(0, -1).join(".");
     const reader = new FileReader();
     reader.onload = function (event) {
-      console.log('reader.onload')
+      console.log("reader.onload");
       const text = event.target.result;
       const flow = readYaml(fileName, text);
 
       if (!flow) {
-        return
+        return;
       }
-      resetFlow(flow.nodes, flow.edges)
+      resetFlow(flow.nodes, flow.edges);
     };
     if (file) {
       reader.readAsText(file);
     }
-    event.target.value = '';
+    event.target.value = "";
   };
 
   useEffect(() => {
@@ -304,14 +310,20 @@ const SaveRestore = () => {
   }, [needsLayout]);
   const onScreenshot = () => {
     const nodesBounds = getRectOfNodes(getNodes());
-    const targetScale = 1
-    const targetWidth = nodesBounds.width * targetScale
-    const targetHeight = nodesBounds.height * targetScale
+    const targetScale = 1;
+    const targetWidth = nodesBounds.width * targetScale;
+    const targetHeight = nodesBounds.height * targetScale;
 
-    const transform = getTransformForBounds(nodesBounds, targetWidth, targetHeight, 0.5, 2);
+    const transform = getTransformForBounds(
+      nodesBounds,
+      targetWidth,
+      targetHeight,
+      0.5,
+      2
+    );
     // console.log(transform[2])
-    toJpeg(document.querySelector('.react-flow__viewport'), {
-      backgroundColor: '#ffffff',
+    toJpeg(document.querySelector(".react-flow__viewport"), {
+      backgroundColor: "#ffffff",
       quality: 0.95,
       width: targetWidth,
       height: targetHeight,
@@ -326,25 +338,23 @@ const SaveRestore = () => {
   // test ------------------------
 
   const onAutoLayout = useCallback(() => {
-    let obj = autoLayout(nodes, edges)
+    let obj = autoLayout(nodes, edges);
     if (!obj) {
-      return
+      return;
     }
-    let newNodes = obj.nodes
-    let newEdges = obj.edges
-
+    let newNodes = obj.nodes;
+    let newEdges = obj.edges;
 
     setNodes(JSON.parse(JSON.stringify(newNodes)));
     setEdges(newEdges);
-    const p = {}
-    p.x = 0
-    p.y = 0
-    p.zoom = 1
-    setViewport(p)
+    const p = {};
+    p.x = 0;
+    p.y = 0;
+    p.zoom = 1;
+    setViewport(p);
 
     window.requestAnimationFrame(() => fitView());
   }, [nodes, edges]);
-
 
   let connectingParams = useRef(null);
 
@@ -355,115 +365,119 @@ const SaveRestore = () => {
 
   const onConnectEnd = useCallback(
     (event) => {
-      const targetIsPane = event.target.classList.contains('react-flow__pane');
+      const targetIsPane = event.target.classList.contains("react-flow__pane");
       const { top, left } = flowWrapper.current.getBoundingClientRect();
 
       if (!targetIsPane) {
-        return
+        return;
       }
-      if (connectingParams.handleId == 'handleIn') {
-        return
+      if (connectingParams.handleId == "handleIn") {
+        return;
       }
 
-      let hitPosition = project({ x: event.clientX - left, y: event.clientY - top })
-      let safeSpace = 10
+      let hitPosition = project({
+        x: event.clientX - left,
+        y: event.clientY - top,
+      });
+      let safeSpace = 10;
       for (let i = 0; i < nodes.length; i++) {
-        let node = nodes[i]
-        if (hitPosition.x > node.position.x - safeSpace &&
+        let node = nodes[i];
+        if (
+          hitPosition.x > node.position.x - safeSpace &&
           hitPosition.y > node.position.y - safeSpace &&
           hitPosition.x < node.position.x + node.width + safeSpace &&
-          hitPosition.y < node.position.y + node.height + safeSpace) {
-
-          return
+          hitPosition.y < node.position.y + node.height + safeSpace
+        ) {
+          return;
         }
       }
 
-
-      const fromNode = getNode(connectingParams.nodeId)
+      const fromNode = getNode(connectingParams.nodeId);
       if (!fromNode) {
-        return
+        return;
       }
       // console.log(fromNode, connectingParams)
-      let type = 'npcNode';
-      if (fromNode['type'] == 'startNode') {
-        type = 'npcNode';
-      } else if (fromNode['type'] == 'npcNode') {
-        if (connectingParams.handleId == 'handleOut') {
-          type = 'playerNode'
+      let type = "npcNode";
+      if (fromNode["type"] == "startNode") {
+        type = "npcNode";
+      } else if (fromNode["type"] == "npcNode") {
+        if (connectingParams.handleId == "handleOut") {
+          type = "playerNode";
         } else {
-          type = 'npcNode'
+          type = "npcNode";
         }
       } else {
-        type = 'npcNode';
+        type = "npcNode";
       }
 
-
-
-      let id = getId()
+      let id = getId();
       while (getNode(id)) {
-        id = getId()
+        id = getId();
       }
       const newNode = {
         id: id,
         type,
         position: { x: hitPosition.x - 100, y: hitPosition.y },
-        data: { 'name': `${id}` },
+        data: { name: `${id}` },
       };
 
       setNodes((nds) => nds.concat(newNode));
 
-
       while (getNode(id)) {
-        id = getId()
+        id = getId();
       }
-      let edge = {}
-      edge['id'] = id
-      edge['type'] = 'step'
-      edge['markerEnd'] = { type: MarkerType.ArrowClosed }
-      edge['source'] = connectingParams.nodeId
-      edge['sourceHandle'] = connectingParams.handleId
-      edge['target'] = id
-      edge['targetHandle'] = 'handleIn'
+      let edge = {};
+      edge["id"] = id;
+      edge["type"] = "step";
+      edge["markerEnd"] = { type: MarkerType.ArrowClosed };
+      edge["source"] = connectingParams.nodeId;
+      edge["sourceHandle"] = connectingParams.handleId;
+      edge["target"] = id;
+      edge["targetHandle"] = "handleIn";
 
-      let edges2 = edges
-      if (fromNode.type == 'startNode') {
+      let edges2 = edges;
+      if (fromNode.type == "startNode") {
         edges2 = edges.filter((item, i) => {
-          return item['source'] != connectingParams.nodeId
+          return item["source"] != connectingParams.nodeId;
         });
       }
-      if (fromNode.type == 'playerNode') {
+      if (fromNode.type == "playerNode") {
         edges2 = edges.filter((item, i) => {
-          return item['source'] != connectingParams.nodeId
+          return item["source"] != connectingParams.nodeId;
         });
       }
-      if (fromNode.type == 'npcNode' && connectingParams.handleId == 'handleN') {
+      if (
+        fromNode.type == "npcNode" &&
+        connectingParams.handleId == "handleN"
+      ) {
         edges2 = edges.filter((item, i) => {
-          return item['source'] != connectingParams.nodeId || item['sourceHandle'] != 'handleN'
+          return (
+            item["source"] != connectingParams.nodeId ||
+            item["sourceHandle"] != "handleN"
+          );
         });
       }
 
-
-      edges2 = addEdge(edge, edges2)
-      setEdges(edges2)
+      edges2 = addEdge(edge, edges2);
+      setEdges(edges2);
     },
     [project, nodes, flowWrapper, edges]
   );
 
   return (
     <div className="flow-container">
-
       <input
         type="file"
         id="json-upload"
         onChange={uploadJSON}
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
       />
       <input
         type="file"
         id="yml-upload"
         onChange={uploadYML}
         className="download-btn"
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
       />
 
       <div className="flow-wrapper" ref={flowWrapper}>
@@ -484,30 +498,47 @@ const SaveRestore = () => {
         >
           <MiniMap
             nodeStrokeColor={(n) => {
-              return '#0041d0';
+              return "#0041d0";
             }}
             nodeColor={(n) => {
-              return '#fff';
+              return "#fff";
             }}
-            className='minimap'
+            className="minimap"
           />
 
-          <Panel position="top-right" className='panel'>
-            <button onClick={onRestore} className="debug-button">Cache: Restore</button>
-            <button onClick={onSave} className="debug-button">Cache: Save</button>
-            <button onClick={onUploadJSON} className="debug-button">DEBUG: Upload</button>
-            <button onClick={onDownload} className="debug-button">DEBUG: Download</button>
-            <button onClick={onClear} className="user-button">Clear all</button>
-            <button onClick={onAutoLayout} className="user-button">Auto Layout</button>
-            <button onClick={onScreenshot} className="user-button">Screenshot</button>
-            <button onClick={onUploadYML} className="user-button">yml: Upload</button>
-            <button onClick={onDownloadYML} className="user-button">yml: Download</button>
+          <Panel position="top-right" className="panel">
+            <button onClick={onRestore} className="debug-button">
+              Cache: Restore
+            </button>
+            <button onClick={onSave} className="debug-button">
+              Cache: Save
+            </button>
+            <button onClick={onUploadJSON} className="debug-button">
+              DEBUG: Upload
+            </button>
+            <button onClick={onDownload} className="debug-button">
+              DEBUG: Download
+            </button>
+            <button onClick={onClear} className="user-button">
+              Clear all
+            </button>
+            <button onClick={onAutoLayout} className="user-button">
+              Auto Layout
+            </button>
+            <button onClick={onScreenshot} className="user-button">
+              Screenshot
+            </button>
+            <button onClick={onUploadYML} className="user-button">
+              yml: Upload
+            </button>
+            <button onClick={onDownloadYML} className="user-button">
+              yml: Download
+            </button>
           </Panel>
 
           <Background variant="lines" />
         </ReactFlow>
       </div>
-
     </div>
   );
 };
