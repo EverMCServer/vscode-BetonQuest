@@ -76,72 +76,52 @@ export default memo(({ data }) => {
   };
 
   return (
-    <div style={{ padding: 5 }}>
-      <div>NPC ({data.name})</div>
-
-      <div style={{ display: "flex", gap: 20 }}>
-        <label>Conditions:</label>
+    <div style={{ width: "100%" }}>
+      <div className="title-box">NPC ({data.name})</div>
+      <div className="box">
+        Conditions:
         <button onClick={conditionDel} className="actionButton">
           -
         </button>
         <button onClick={conditionAdd} className="actionButton">
           +
         </button>
-      </div>
-
-      {conditionsGet().map((value, index) => (
-        <input
-          key={index}
-          type="text"
-          placeholder={`condition ${index + 1}`}
-          value={value}
-          onChange={(e) => conditionUpdate(index, e.target.value)}
-          style={{
-            width: 170,
-            height: 15,
-          }}
+        {conditionsGet().map((value, index) => (
+          <input
+            key={index}
+            type="text"
+            placeholder={`condition ${index + 1}`}
+            value={value}
+            onChange={(e) => conditionUpdate(index, e.target.value)}
+            className="nodrag input"
+          />
+        ))}
+        <hr className="line"></hr>
+        Text:
+        <textarea
+          className="nodrag textArea"
+          value={textGet()}
+          onChange={(e) => textUpdate(e.target.value)}
         />
-      ))}
-
-      <div style={{ display: "flex", gap: 20 }}>
-        <label>Text:</label>
-      </div>
-      <textarea
-        className="nodrag"
-        value={textGet()}
-        onChange={(e) => textUpdate(e.target.value)}
-        style={{
-          width: 170,
-          minHeight: 50,
-          maxHeight: 200,
-          resize: "vertical",
-        }}
-      />
-
-      <div style={{ display: "flex", gap: 20 }}>
-        <label>Events:</label>
+        <hr className="line"></hr>
+        Events:
         <button onClick={eventDel} className="actionButton">
           -
         </button>
         <button onClick={eventAdd} className="actionButton">
           +
         </button>
+        {eventsGet().map((value, index) => (
+          <input
+            key={index}
+            type="text"
+            placeholder={`event ${index + 1}`}
+            value={value}
+            onChange={(e) => eventUpdate(index, e.target.value)}
+            className="nodrag input"
+          />
+        ))}
       </div>
-
-      {eventsGet().map((value, index) => (
-        <input
-          key={index}
-          type="text"
-          placeholder={`event ${index + 1}`}
-          value={value}
-          onChange={(e) => eventUpdate(index, e.target.value)}
-          style={{
-            width: 170,
-            height: 15,
-            marginBottom: "-1px",
-          }}
-        />
-      ))}
 
       <Handle
         id="handleIn"

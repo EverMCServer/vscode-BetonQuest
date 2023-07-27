@@ -39,45 +39,25 @@ export default memo(({ data }) => {
   };
 
   return (
-    <div style={{ padding: 5 }}>
-      <div>Start</div>
-
-      <div
-        style={{ display: "flex", gap: 10, justifyContent: "space-between" }}
-      >
-        <label>File Name:</label>
-      </div>
-      <div>
+    <div style={{ width: "100%" }}>
+      <div className="title-box">Start</div>
+      <div className="box">
+        File Name:
         <input
           type="text"
-          className="nodrag"
+          className="nodrag input"
           value={textGet()}
           onChange={(e) => textUpdate(e.target.value)}
-          style={{
-            width: 170,
-            height: 15,
-          }}
         />
-      </div>
-
-      <div
-        style={{ display: "flex", gap: 10, justifyContent: "space-between" }}
-      >
-        <label>NPC Name:</label>
-      </div>
-      <div>
+        <hr className="line"></hr>
+        NPC Name:
         <input
           type="text"
-          className="nodrag"
+          className="nodrag input"
           value={text2Get()}
           onChange={(e) => text2Update(e.target.value)}
-          style={{
-            width: 170,
-            height: 15,
-          }}
         />
       </div>
-
       <Handle
         id="handleOut"
         type="source"
