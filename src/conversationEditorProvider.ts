@@ -24,7 +24,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
 		webviewPanel: vscode.WebviewPanel,
 		_token: vscode.CancellationToken
 	): Promise<void> {
-        // config Webview
+        // Config Webview
         webviewPanel.webview.options = {
             enableScripts: true,
             localResourceRoots: [
@@ -32,11 +32,11 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
             ]
         };
 
-        // fill html into Webview
+        // Initialize HTML content in Webview
         webviewPanel.webview.html = this.getWebviewContent(webviewPanel.webview, document);
 
         // Define a method to update Webview
-        function updateWebview() {
+        function sendDocumentToWebview() {
             webviewPanel.webview.postMessage({
                 type: 'update',
                 content: document.getText()
@@ -53,7 +53,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
 
         const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(e => {
 			if (e.document.uri.toString() === document.uri.toString()) {
-				updateWebview();
+				sendDocumentToWebview();
 			}
 		});
 
@@ -65,6 +65,13 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
 		// Receive message from the webview.
 		webviewPanel.webview.onDidReceiveMessage(e => {
 			switch (e.type) {
+                case 'webview-lifecycle':
+                    switch (e.content) {
+                        case 'started':
+                            // When the webview just started, send the initial document to webview.
+                            sendDocumentToWebview();
+                            return;
+                    }
 				case 'edit':
 					console.log(e.content);
 
@@ -84,11 +91,9 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                     return;
 			}
 		});
-
-		updateWebview();
     }
 
-    // function to edit vscode.document
+    // Function to edit vscode.document
     private updateTextDocument(document: vscode.TextDocument, content: string) {
         const edit = new vscode.WorkspaceEdit();
         edit.replace(
@@ -99,14 +104,12 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
         vscode.workspace.applyEdit(edit);
     }
 
-    // render html content
+    // Initialize Webview content
     private getWebviewContent(webview: vscode.Webview, document: vscode.TextDocument): string {
 
         // get root.js url for React-JS
         const reactAppPathOnDisk = vscode.Uri.joinPath(this.context.extensionUri, "dist", "conversationEditor.js");
 
-        let initialData = document.getText().replace("\`", "\\\`");
-        
         return `<!DOCTYPE html>
         <html lang="en">
         <head>
@@ -123,7 +126,6 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
     
             <script>
               window.acquireVsCodeApi = acquireVsCodeApi;
-              window.globalThis.initialData = \`${initialData}\`;
             </script>
         </head>
         <body>

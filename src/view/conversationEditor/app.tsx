@@ -2,28 +2,29 @@ import * as React from "react";
 
 import TestButton from './testbutton';
 import TestView from './testview';
-
-declare global {
-    // acquireVsCodeApi(): WebviewApi<unknown>;
-    var initialData: string;
-}
+import { vscode } from "./vscode";
 
 export default function app() {
 
-    // get initial content data from vscode
-    const [yml, setYml] = React.useState(window.globalThis.initialData);
+    // Get initial content data from vscode
+    const [yml, setYml] = React.useState("");
 
     console.log("initialize yml Data.");
 
-    // get document's content update from vscode
+    // Get document's content update from vscode
     React.useEffect(()=>{
-        // listen from extension message (document update etc)
+        // notify vscode when webview startup completed.
+        vscode.postMessage({
+            type: "webview-lifecycle",
+            content: "started",
+        });
+        // Listen from extension message (document update etc)
         window.addEventListener('message', event => {
             const message = event.data; // JSON
 
             switch (message.type) {
                 case 'update':
-                    if (message.content !== yml) {
+                    if (message.content !== yml) { // Avoid duplicated update
                         console.log("update yml ...");
                         setYml(message.content);
                         break;
