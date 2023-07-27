@@ -40,9 +40,9 @@ export default memo(({ data }) => {
 
   return (
     <div style={{ width: "100%" }}>
-      <div className="title-box">Start</div>
+      <div className="title-box start">Start</div>
       <div className="box">
-        File Name:
+        file name:
         <input
           type="text"
           className="nodrag input"
@@ -50,7 +50,7 @@ export default memo(({ data }) => {
           onChange={(e) => textUpdate(e.target.value)}
         />
         <hr className="line"></hr>
-        NPC Name:
+        NPC name:
         <input
           type="text"
           className="nodrag input"

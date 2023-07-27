@@ -77,45 +77,55 @@ export default memo(({ data }) => {
 
   return (
     <div style={{ width: "100%" }}>
-      <div className="title-box">NPC ({data.name})</div>
+      <div className="title-box npc">
+        NPC
+        <div className="nodeName">({data.name})</div>
+      </div>
       <div className="box">
-        Conditions:
-        <button onClick={conditionDel} className="actionButton">
-          -
-        </button>
-        <button onClick={conditionAdd} className="actionButton">
-          +
-        </button>
+        <div class="container">
+          conditions:
+          <div class="buttons">
+            <button onClick={conditionDel} className="actionButton">
+              -
+            </button>
+            <button onClick={conditionAdd} className="actionButton">
+              +
+            </button>
+          </div>
+        </div>
         {conditionsGet().map((value, index) => (
           <input
             key={index}
             type="text"
-            placeholder={`condition ${index + 1}`}
             value={value}
             onChange={(e) => conditionUpdate(index, e.target.value)}
             className="nodrag input"
           />
         ))}
         <hr className="line"></hr>
-        Text:
+        text:
         <textarea
           className="nodrag textArea"
           value={textGet()}
           onChange={(e) => textUpdate(e.target.value)}
+          spellcheck="false"
         />
         <hr className="line"></hr>
-        Events:
-        <button onClick={eventDel} className="actionButton">
-          -
-        </button>
-        <button onClick={eventAdd} className="actionButton">
-          +
-        </button>
+        <div class="container">
+          events:
+          <div class="buttons">
+            <button onClick={eventDel} className="actionButton">
+              -
+            </button>
+            <button onClick={eventAdd} className="actionButton">
+              +
+            </button>
+          </div>
+        </div>
         {eventsGet().map((value, index) => (
           <input
             key={index}
             type="text"
-            placeholder={`event ${index + 1}`}
             value={value}
             onChange={(e) => eventUpdate(index, e.target.value)}
             className="nodrag input"

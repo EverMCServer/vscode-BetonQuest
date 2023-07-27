@@ -30,7 +30,6 @@
   width: 200px;
   padding: 0px;
   display: flex;
-  font-family: 'Roboto';
   padding-right: 0px;
 }
 
@@ -41,32 +40,65 @@
 
 
 .title-box {
-  height: 50px;
-  line-height: 50px;
+  height: 35px;
+  line-height: 35px;
   background: #f7f7f7;
-  border-bottom: 1px solid #e9e9e9;
   border-radius: 4px 4px 0px 0px;
   padding-left: 10px;
+  display: flex;
+  font-size: 13px;
+}
+
+.title-box.start {
+  border-bottom: 1px solid #dd9816;
+}
+
+.title-box.npc {
+  border-bottom: 1px solid #00b3ff;
+}
+
+.title-box.player {
+  border-bottom: 1px solid #00c100;
+}
+
+.title-box .nodeName {
+  color: #999;
+  font-size: 10px;
+  padding-left: 5px;
 }
 
 .box {
-  padding: 10px 10px 10px 10px;
-  font-size: 14px;
-  color: #555555;
+  padding: 8px 10px 10px 10px;
+  font-size: 10px;
+  line-height: 20px;
+  color: #999;
+}
+
+.box .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.box .buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  padding-right: 2px;
 }
 
 .box .line {
   width: 188px;
   height: 1px;
   border: none;
-  border-top: 1px solid #e9e9e9;
+  border-bottom: 1px solid #ccc;
 }
 
 .box .textArea {
   border-radius: 4px;
-  border: 1px solid #cacaca;
+  border: 1px solid #ccc;
   font-size: 13px;
-  color: #555555;
+  color: #555;
   width: 170px;
   min-height: 50px;
   max-height: 200px;
@@ -75,29 +107,20 @@
 
 .box .input {
   border-radius: 4px;
-  border: 1px solid #cacaca;
+  border: 1px solid #ccc;
   font-size: 13px;
-  color: #555555;
+  color: #555;
   width: 170px;
   height: 15px;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-.actionButton {
-  border: 1px solid #a7a7a7;
+.box .actionButton {
+  font-size: 10px;
+  color: #555;
+  border: 1px solid #ccc;
+  background: #ffffff;
   padding: 0px 0px;
-  width: 16px;
+  width: 25px;
   height: 16px;
   border-radius: 10px;
 }
