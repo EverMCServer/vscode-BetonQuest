@@ -9,7 +9,7 @@ interface TestButtonProps {
 export default function testButton({yml} : TestButtonProps) {
 
     let updatedYml:string = yml!;
-    updatedYml = updatedYml + "\n\n# test";
+    updatedYml = "# test\n\n" + updatedYml;
 
     return (
         <>
