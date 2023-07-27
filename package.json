@@ -38,7 +38,6 @@
     "compile:views": "webpack --mode development",
     "watch:extension": "tsc -watch -p ./",
     "watch:views": "webpack --watch --mode development",
-    "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
