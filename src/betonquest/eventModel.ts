@@ -4,7 +4,12 @@ export default interface IEvent {
     options: IEventOption[],
 }
 
+
+
 interface IEventOption {
-    kind: string,
+    kind: string, // "string" "number" "boolean" "location" "minecraft_block" "items"
+    must: boolean,
     value: string,
 }
+
+
