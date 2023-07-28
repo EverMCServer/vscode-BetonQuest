@@ -1,11 +1,13 @@
 {
   "name": "betonquest",
+  "publisher": "EverMC",
   "displayName": "BetonQuest",
   "description": "A GUI for BetonQuest scripting",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.80.0"
   },
+  "license": "AGPL-3.0",
   "categories": [
     "Other"
   ],
