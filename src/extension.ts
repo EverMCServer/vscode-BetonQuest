@@ -1,7 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { ConversationEditorProvider } from './conversationEditorProvider';
+// import { ConversationEditorProvider } from './conversationEditorProvider';
+import { ExampleEditorProvider } from './exampleEditorProvider';
 import { setLocale } from './i18n/i18n';
 
 // This method is called when your extension is activated
@@ -16,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
 	setLocale(vscode.env.language);
 
 	// register custom editor
-	context.subscriptions.push(ConversationEditorProvider.register(context));
+	context.subscriptions.push(ExampleEditorProvider.register(context));
 }
 
 // This method is called when your extension is deactivated

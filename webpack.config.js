@@ -53,7 +53,7 @@ const reactConfig = {
 
   // entry: './src/extension.ts', // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
   entry: {
-    conversationEditor: './src/view/conversationEditor/index.tsx',
+    exampleEditor: './src/view/exampleEditor/index.tsx',
   }, // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
   output: {
     // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/

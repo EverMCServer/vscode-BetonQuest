@@ -20,8 +20,8 @@
     ],
     "customEditors": [
       {
-        "viewType": "betonquest.conversationEditor",
-        "displayName": "Conversation",
+        "viewType": "betonquest.exampleEditor",
+        "displayName": "Example",
         "selector": [
           {
             "filenamePattern": "**/conversations/*.yml"
