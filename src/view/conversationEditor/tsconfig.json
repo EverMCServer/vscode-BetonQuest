@@ -10,7 +10,6 @@
         ],
         "jsx": "react",
         "sourceMap": true,
-        "rootDir": "..",
         "noUnusedLocals": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,

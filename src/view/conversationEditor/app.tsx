@@ -4,6 +4,10 @@ import TestButton from './testbutton';
 import TestView from './testview';
 import { vscode } from "./vscode";
 
+// test locale
+import {setLocale} from '../../i18n/i18n';
+import L from '../../i18n/i18n';
+
 export default function app() {
 
     // Get initial content data from vscode
@@ -36,6 +40,11 @@ export default function app() {
     }, []);
 
     console.log("from app.tsx");
+
+    // Test i18n
+    console.log(L("1"));
+    console.log(setLocale("zh-CN"));
+    console.log(L("1"));
     
     return (
         <>
