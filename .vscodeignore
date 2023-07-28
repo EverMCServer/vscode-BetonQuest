@@ -1,5 +1,6 @@
 .vscode/**
 .vscode-test/**
+**/*.code-workspace
 out/**
 node_modules/**
 src/**
