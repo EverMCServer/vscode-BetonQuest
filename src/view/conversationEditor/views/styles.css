@@ -1,0 +1,56 @@
+.flow-container {
+    display: flex;
+    height: 100%;
+}
+
+.flow-container .flow-wrapper {
+    flex-grow: 1;
+}
+
+.flow-container .minimap {
+    margin-bottom: 45px;
+}
+
+.flow-container .panel {
+    display: grid;
+    grid-auto-flow: row;
+}
+
+.debug-button {
+    width: 130px;
+    color: white;
+    background: #edab39;
+    border: 1px solid #0e5ba3;
+    border-radius: 5px;
+    padding: 10px 10px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.clear-button {
+    width: 130px;
+    color: white;
+    background: #e3195a;
+    border: 1px solid #0e5ba3;
+    border-radius: 5px;
+    padding: 10px 10px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.user-button {
+    width: 130px;
+    color: white;
+    background: #4ea9ff;
+    border: 1px solid #0e5ba3;
+    border-radius: 5px;
+    padding: 10px 10px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: left;
+}

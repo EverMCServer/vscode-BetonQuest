@@ -3,7 +3,7 @@
         "module": "ESNext",
         "moduleResolution": "Node",
         "target": "ES5",
-        "outDir": "conversationEditor",
+        "outDir": "exampleEditor",
         "lib": [
             "ES5",
             "DOM"
