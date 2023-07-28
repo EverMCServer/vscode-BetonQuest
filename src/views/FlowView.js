@@ -388,6 +388,8 @@ const MyFlowView = () => {
           nodeTypes={nodeTypes}
           onInit={setReactFlowInstance}
           connectionLineComponent={ConnectionLine}
+          minZoom={0.5}
+          maxZoom={1.5}
           fitView
         >
           <MiniMap
