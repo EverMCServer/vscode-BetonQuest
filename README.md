@@ -6,14 +6,14 @@ A GUI based editor for [BetonQuest 2.0](https://github.com/BetonQuest/BetonQuest
 
 ## Features
 
-- Edit `Conversations` with a interactive flowchart UI.
+- Edit `Conversations` with an interactive flowchart UI.
 - (planning) Base `Events`, `Conditions`, `Objectives` Editors with fully [documentation](https://docs.betonquest.org/2.0-DEV/Documentation/Overview/) support.
 - (planning) [Journal](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Journal/) editing.
 - (planning) [Items](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Items/) editing.
 - (planning) [Intergrated plugins](https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Building-Blocks/Integration-List/) support.
 - (planning) Package configuration.
 - (planning) [Menu](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Menus/Menu/) editing.
-- and more. Please [suggest](https://github.com/EverMCServer/vscode-BetonQuest).
+- and more. Please [suggest](https://github.com/EverMCServer/vscode-BetonQuest/issues).
 
 ## Limitations
 
@@ -25,7 +25,7 @@ A GUI based editor for [BetonQuest 2.0](https://github.com/BetonQuest/BetonQuest
 
 ## Known Issues
 
-Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest
+Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/issues
 
 - Zoom-in and out is limited to certain degrees.
 - Lines in Yaml files are re-ordered while editing.
