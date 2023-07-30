@@ -30,7 +30,7 @@
     "customEditors": [
       {
         "viewType": "betonquest.conversationEditor",
-        "displayName": "Example",
+        "displayName": "Conversation Flowchart",
         "selector": [
           {
             "filenamePattern": "**/conversations/*.yml"
