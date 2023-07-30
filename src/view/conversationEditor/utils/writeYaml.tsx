@@ -1,6 +1,7 @@
 import yaml from "js-yaml";
 import { Node, Edge } from "reactflow";
 import { arrayAppend, logError } from "./commonUtils";
+import { ConversationYamlOptionModel } from "./conversationYamlModel";
 
 export interface YamlWriterOutput {
   fileName: string;
@@ -25,7 +26,7 @@ export function writeYaml(
   const startNode = startNodes[0];
 
   // NPC Yaml
-  const npcYaml: Record<string, YamlConversationOption> = {};
+  const npcYaml: Record<string, ConversationYamlOptionModel> = {};
   for (let i = 0; i < npcNodes.length; i++) {
     const node = npcNodes[i];
     const pointers = node.data["pointers"];
@@ -34,7 +35,7 @@ export function writeYaml(
     const name = node.data["name"];
     const text = node.data["text"];
 
-    const conversation: YamlConversationOption = {
+    const conversation: ConversationYamlOptionModel = {
       text: text || "",
     };
 
@@ -51,7 +52,7 @@ export function writeYaml(
   }
 
   // Player Yaml
-  const playerYaml: Record<string, YamlConversationOption> = {};
+  const playerYaml: Record<string, ConversationYamlOptionModel> = {};
   for (let i = 0; i < playerNodes.length; i++) {
     const node = playerNodes[i];
     const pointers = node.data["pointers"];
@@ -60,7 +61,7 @@ export function writeYaml(
     const name = node.data["name"];
     const text = node.data["text"];
 
-    const conversation: YamlConversationOption = {
+    const conversation: ConversationYamlOptionModel = {
       text: text || "",
     };
 

@@ -45,7 +45,7 @@ const nodeTypes = {
   startNode: StartNode,
 };
 
-const MyFlowView: React.FC = () => {
+function MyFlowView() {
   const flowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([initialNode]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -359,9 +359,10 @@ const MyFlowView: React.FC = () => {
   );
 };
 
-export const MyFlowViewProvider: React.FC = () => (
-  <ReactFlowProvider>
-    <MyFlowView />
-  </ReactFlowProvider>
-);
-export default MyFlowViewProvider;
+export default function FlowView() {
+  return (
+    <ReactFlowProvider>
+      <MyFlowView />
+    </ReactFlowProvider>
+  );
+};

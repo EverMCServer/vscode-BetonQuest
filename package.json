@@ -46,8 +46,7 @@
     "compile:extension": "tsc -p ./",
     "compile:views": "webpack --mode development",
     "watch:extension": "tsc -watch -p ./",
-    "watch:views": "webpack --watch --mode development",
-    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    "watch:views": "webpack --watch --mode development"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",

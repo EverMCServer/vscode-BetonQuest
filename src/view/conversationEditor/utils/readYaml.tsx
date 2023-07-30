@@ -1,6 +1,7 @@
 import { MarkerType, Node, Edge } from "reactflow";
-import yaml from "js-yaml";
+import * as yaml from "js-yaml";
 import { arrayAppend, logWarning, stringSplitToArray } from "./commonUtils";
+import ConversationYamlModel from "./conversationYamlModel";
 
 export interface YamlReaderOutput {
   nodes: Node[];
@@ -11,13 +12,13 @@ export function readYaml(
   fileName: string,
   text: string
 ): YamlReaderOutput | null {
-  const data = yaml.load(text) as YamlModel;
+  const data = yaml.load(text) as ConversationYamlModel;
   return parseYaml(fileName, data);
 }
 
 export function parseYaml(
   fileName: string,
-  yaml: YamlModel
+  yaml: ConversationYamlModel
 ): YamlReaderOutput | null {
   // Load
   const NPC_options = yaml.NPC_options;
