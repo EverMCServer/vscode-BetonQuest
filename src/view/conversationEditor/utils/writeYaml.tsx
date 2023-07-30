@@ -141,7 +141,7 @@ export function solveNodes(nodes: Node[], edges: Edge[]) {
   // Check results
   if (startNodes.length !== 1) {
     logError("Cannot solve nodes.");
-    return;
+    return undefined;
   }
 
   // Solve main lines
@@ -152,7 +152,7 @@ export function solveNodes(nodes: Node[], edges: Edge[]) {
   delete unusedNodesDict[startNodeID];
   const lines = linesDict[startNodeID];
   if (!lines) {
-    return;
+    return undefined;
   }
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
