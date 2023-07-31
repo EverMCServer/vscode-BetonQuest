@@ -11,6 +11,6 @@ export interface ConversationYamlOptionModel {
 export default interface ConversationYamlModel {
   first: string;
   quester: string;
-  NPC_options?: Record<string, ConversationYamlOptionModel>;
-  player_options?: Record<string, ConversationYamlOptionModel>;
+  npcOptions?: Record<string, ConversationYamlOptionModel>;
+  playerOptions?: Record<string, ConversationYamlOptionModel>;
 }

@@ -25,7 +25,7 @@ import { vscode } from "../utils/vscode";
 
 const cacheKey = "bq-flow";
 
-export default function MyFlowPanel() {
+export default function myFlowPanel() {
   const viewport = useViewport();
   const { getNodes, setNodes, getEdges, setEdges, setViewport, fitView } =
     useReactFlow();
@@ -67,7 +67,6 @@ export default function MyFlowPanel() {
 
   useEffect(() => {
     deleteSelectedNodes();
-    //// eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteButtonPressed]);
 
   /* Clear event */

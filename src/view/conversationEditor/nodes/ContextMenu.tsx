@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import * as React from 'react';
+import * as React from "react";
 import { useReactFlow } from "reactflow";
 
 interface ContextMenuProps {
@@ -10,7 +10,7 @@ interface ContextMenuProps {
   bottom?: number;
 }
 
-export default function ContextMenu({
+export default function contextMenu({
   id,
   top,
   left,

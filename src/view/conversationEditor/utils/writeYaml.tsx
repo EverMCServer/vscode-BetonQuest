@@ -83,8 +83,8 @@ export function writeYaml(
   const first = startNode.data["pointers"];
   const fullYaml = {
     quester: quester,
-    NPC_options: npcYaml,
-    player_options: playerYaml,
+    npcOptions: npcYaml,
+    playerOptions: playerYaml,
     first: first,
   };
 

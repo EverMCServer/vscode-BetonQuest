@@ -5,7 +5,7 @@ import {
   Position,
 } from "reactflow";
 
-const CustomEdge: ConnectionLineComponent = ({
+const customEdge: ConnectionLineComponent = ({
   fromX,
   fromY,
   fromPosition,
@@ -37,4 +37,4 @@ const CustomEdge: ConnectionLineComponent = ({
   );
 };
 
-export default CustomEdge;
+export default customEdge;

@@ -21,8 +21,8 @@ export function parseYaml(
   yaml: ConversationYamlModel
 ): YamlReaderOutput | null {
   // Load
-  const NPC_options = yaml.NPC_options;
-  const player_options = yaml.player_options;
+  const npcOptions = yaml.npcOptions;
+  const playerOptions = yaml.playerOptions;
   const firstString = yaml.first;
   const firstKeys = stringSplitToArray(firstString || "");
   for (let i = 0; i < firstKeys.length; i++) {
@@ -40,10 +40,10 @@ export function parseYaml(
 
   // NPC Nodes
   const npcNodes: Record<string, Node> = {};
-  const NPC_optionKeys = Object.keys(NPC_options || {});
-  for (let i = 0; i < NPC_optionKeys.length && NPC_options; i++) {
-    const key = NPC_optionKeys[i];
-    const option = NPC_options[key];
+  const npcOptionKeys = Object.keys(npcOptions || {});
+  for (let i = 0; i < npcOptionKeys.length && npcOptions; i++) {
+    const key = npcOptionKeys[i];
+    const option = npcOptions[key];
     const idKey = `npc_${key}`;
     const pointersString = option.pointers || option.pointer || "";
     const pointers = stringSplitToArray(pointersString);
@@ -71,10 +71,10 @@ export function parseYaml(
 
   // Player Nodes
   const playerNodes: Record<string, Node> = {};
-  const player_optionKeys = Object.keys(player_options || {});
-  for (let i = 0; i < player_optionKeys.length && player_options; i++) {
-    const key = player_optionKeys[i];
-    const option = player_options[key];
+  const playerOptionKeys = Object.keys(playerOptions || {});
+  for (let i = 0; i < playerOptionKeys.length && playerOptions; i++) {
+    const key = playerOptionKeys[i];
+    const option = playerOptions[key];
     const idKey = `player_${key}`;
     const pointersString = option.pointers || option.pointer || "";
     const pointers = stringSplitToArray(pointersString);

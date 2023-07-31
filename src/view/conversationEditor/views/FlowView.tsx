@@ -45,6 +45,7 @@ const nodeTypes = {
   startNode: StartNode,
 };
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function MyFlowView() {
   const flowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([initialNode]);
@@ -357,12 +358,12 @@ function MyFlowView() {
       </div>
     </div>
   );
-};
+}
 
-export default function FlowView() {
+export default function flowView() {
   return (
     <ReactFlowProvider>
       <MyFlowView />
     </ReactFlowProvider>
   );
-};
+}
