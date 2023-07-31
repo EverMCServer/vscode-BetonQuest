@@ -1,17 +1,17 @@
 import L from "../i18n/i18n";
-import { IOptionConf, IOptionConfig, OptionList } from "./optionModel";
+import { IOptionConfig, OptionList } from "./optionModel";
 
 // ========== Event ==========
 
 export class Event implements IEvent {
-    eventName: string;
-    tagName: string;
+    kind: string;
+    key: string;
     optionStr: string;
     options: IEventOption[] = [];
 
-    constructor(eventName: string, tagName: string, optionStr: string) {
-        this.eventName = eventName;
-        this.tagName = tagName;
+    constructor(eventKind: string, key: string, optionStr: string) {
+        this.kind = eventKind;
+        this.key = key;
         this.optionStr = optionStr;
         this.parseOption(optionStr);
     }
@@ -32,8 +32,8 @@ export class Event implements IEvent {
 }
 
 interface IEvent {
-    eventName: string,
-    tagName: string,
+    kind: string,
+    key: string,
     optionStr: string,
     options: IEventOption[],
     parseOption(optionStr: string): void
@@ -46,8 +46,8 @@ export function parseOption(optionStr: string) {
 }
 
 interface IEventOption {
-    optionName: string,
-    optionValue: string,
+    kind: string,
+    value: string,
 }
 
 // ========== Event List ==========
@@ -57,32 +57,32 @@ interface IEventConfigList {
 }
 
 interface IEventConfig {
-    eventName: string,
-    eventDescription: string,
+    name: string,
+    description: string,
     options: IOptionConfig[] // options is an ordered list
 }
 
 // The BetonQuest's Event List
-export const EventList : IEventConfigList = {
+export const EventsList : IEventConfigList = {
     "cancel": {
-        eventName: L("betonquest.event.cancel.name"),
-        eventDescription: L("betonquest.event.cancel.description"),
+        name: L("betonquest.event.cancel.name"),
+        description: L("betonquest.event.cancel.description"),
         options: [
             {
                 ...OptionList.cancelerIdentifier,
                 isRequired: true,
-                tagDescription: L("betonquest.option.cancelerIdentifier.description.event"),
+                description: L("betonquest.option.cancelerIdentifier.description.event"),
             },
         ],
     },
     "teleport": {
-        eventName: L("betonquest.event.list.teleport.name"),
-        eventDescription: L("betonquest.event.list.teleport.description"),
+        name: L("betonquest.event.list.teleport.name"),
+        description: L("betonquest.event.list.teleport.description"),
         options: [
             {
                 ...OptionList.cancelerIdentifier,
                 isRequired: true,
-                tagDescription: L("betonquest.option.location.description.event"),
+                description: L("betonquest.option.location.description.event"),
             }
         ]
     }
@@ -90,7 +90,7 @@ export const EventList : IEventConfigList = {
 
 
 // ========== How to draw UI? ==========
-for (const [bqEventName, bqEvent] of Object.entries(EventList)) {
+for (const [bqEventName, bqEvent] of Object.entries(EventsList)) {
     // the name of "event" is "bqEventName"
     // render(<div>{bqEventName}</div>) ...
     

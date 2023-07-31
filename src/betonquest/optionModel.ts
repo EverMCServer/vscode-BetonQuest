@@ -1,35 +1,35 @@
 import L from "../i18n/i18n";
 
 
-export interface IOptionConfig extends IOptionConf {
+export interface IOptionConfig extends IOptionConfigInfo {
     isRequired: boolean,
 }
 
-export interface IOptionConf {
-    tag: string,
-    tagName: string,
-    tagDescription: string
+export interface IOptionConfigInfo {
+    kind: string,
+    name: string,
+    description: string
 }
 
 interface IOptionList {
-    [optionName: string]: IOptionConf
+    [optionName: string]: IOptionConfigInfo
 }
 
 export const OptionList : IOptionList = {
     "example": {
-        tag: "",
-        tagName: L(""),
-        tagDescription: L("")
+        kind: "",
+        name: L(""),
+        description: L("")
     },
     "cancelerIdentifier" : {
-        tag: "cancelerIdentifier",
-        tagName: L("betonquest.option.cancelerIdentifier.name"),
-        tagDescription: L("betonquest.option.cancelerIdentifier.description"),
+        kind: "cancelerIdentifier",
+        name: L("betonquest.option.cancelerIdentifier.name"),
+        description: L("betonquest.option.cancelerIdentifier.description"),
     },
     "location": {
-        tag: "location",
-        tagName: L("betonquest.option.location.name"),
-        tagDescription: L("betonquest.option.location.description")
+        kind: "location",
+        name: L("betonquest.option.location.name"),
+        description: L("betonquest.option.location.description")
     },
 };
 
