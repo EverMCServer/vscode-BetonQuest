@@ -252,7 +252,7 @@ export default function myFlowPanel() {
   }, [needsLayout, onAutoLayout]);
 
   return (
-    <Panel position="top-right" className="panel" style={{display: "none"}}>
+    <Panel position="top-right" className="panel">
       <input
         type="file"
         id="json-upload"
