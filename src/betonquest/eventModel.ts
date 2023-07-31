@@ -1,3 +1,4 @@
+import { error } from "console";
 import L from "../i18n/i18n";
 import { IOptionConfig, OptionList } from "./optionModel";
 
@@ -10,28 +11,39 @@ export class Event implements IEvent {
     // The key of an Event. It is the name of a single Event from events.yml.
     key: string;
 
-    // The string value of an Event.
-    optionStr: string;
+    // The string value of an Event. Including leading "kind".
+    value: string = "";
 
     // Parsed value of an Event.
     options: IEventOption[] = [];
 
-    constructor(eventKind: string, key: string, optionStr: string) {
-        this.kind = eventKind;
+    constructor(key: string, {kind: kind, value: value, optionObjects: optionObjects}: IEventOption) {
+        this.kind = kind;
         this.key = key;
-        this.optionStr = optionStr;
-        this.parseOption(optionStr);
+        if (value) {
+            this.value = value;
+            this.parseOption(value);
+        } else if (optionObjects) {
+            // TODO
+        } else {
+            throw error("err neither value or optionObjects are empty.");
+        }
     }
 
+    // Parse the option string into options array.
     parseOption(optionStr: string): void {
-        for (const [bqEventName, bqEvent] of Object.entries(EventList)) {
-            if (bqEventName === this.eventName) {
-                // bqEvent.options.array.forEach(element => {
-                //     this.options.push({
-                //         optionName: "",
-                //         optionValue: ""
-                //     });
-                // });
+        let slice = optionStr.split(" ");
+        let pos = 0;
+        for (const [bqEventKind, bqEvent] of Object.entries(EventsList)) {
+            if (bqEventKind === this.kind) {
+                bqEvent.options.forEach(optionConfig => {
+                    this.options.push({
+                        kind: optionConfig.kind,
+                        value: slice[pos], // TODO add and use custom parsed with EventsList, e.g. optionConfig.parse(slice[pos])
+                    });
+                    pos++;
+                });
+                break;
             }
         }
     }
@@ -41,20 +53,20 @@ export class Event implements IEvent {
 interface IEvent {
     kind: string,
     key: string,
-    optionStr: string,
+    value: string,
     options: IEventOption[],
-    parseOption(optionStr: string): void
-}
-
-
-// Method to parse event options
-export function parseOption(optionStr: string) {
-    // ...
+    parseOption(optionStr: string): void,
 }
 
 interface IEventOption {
+    // The kind of an Event, e.g. "teleport". It is the same "tag name" of the Event.
     kind: string,
-    value: string,
+
+    // The string value of an Event in events.yml.
+    value?: string,
+
+    // For storing any custom GUI object.
+    optionObjects?: any[],
 }
 
 // ========== Event List ==========
@@ -113,10 +125,11 @@ for (const [bqEventName, bqEvent] of Object.entries(EventsList)) {
     });
 }
 
-//  ========== How to create a event? (e.g. "teleport event") ==========
-// let myTpEvent : IEvent = {
+//  ========== How to create an Event from event.yml? (e.g. "teleport Event") ==========
+let myTpEventFromStr : IEvent = new Event("asdf", {kind: "cancel", value: "432;121;532;world"});
 
-// }
+//  ========== How to create an Event from GUI? (e.g. "teleport Event") ==========
+// let myTpEventFromGUI : IEvent = new Event("asdf", {kind: "cancel", optionObjects: [{x:432, y:121, z:532, world:"world"}]});
 
 
 

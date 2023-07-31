@@ -17,6 +17,9 @@ export interface IOptionConfigInfo {
 
     // Description of the option, e.g. "Teleport destination."
     description: string
+
+    // Parser for GUI object input
+    parse(input: any): string
 }
 
 interface IOptionList {
@@ -27,17 +30,28 @@ export const OptionList : IOptionList = {
     "example": {
         kind: "",
         name: L(""),
-        description: L("")
+        description: L(""),
+        parse: stringParser,
     },
     "cancelerIdentifier" : {
         kind: "cancelerIdentifier",
         name: L("betonquest.option.cancelerIdentifier.name"),
         description: L("betonquest.option.cancelerIdentifier.description"),
+        parse: stringParser,
     },
     "location": {
         kind: "location",
         name: L("betonquest.option.location.name"),
-        description: L("betonquest.option.location.description")
+        description: L("betonquest.option.location.description"),
+        parse: locationParser,
     },
 };
 
+function stringParser(input: string): string {
+    return input;
+}
+
+function locationParser(input: any): string {
+    // TODO
+    return input.toString();
+}
