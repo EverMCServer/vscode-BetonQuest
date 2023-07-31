@@ -4,9 +4,16 @@ import { IOptionConfig, OptionList } from "./optionModel";
 // ========== Event ==========
 
 export class Event implements IEvent {
+    // The kind of an Event, e.g. "teleport". This is the "tag name" of the Event.
     kind: string;
+
+    // The key of an Event. It is the name of a single Event from events.yml.
     key: string;
+
+    // The string value of an Event.
     optionStr: string;
+
+    // Parsed value of an Event.
     options: IEventOption[] = [];
 
     constructor(eventKind: string, key: string, optionStr: string) {
@@ -57,12 +64,17 @@ interface IEventConfigList {
 }
 
 interface IEventConfig {
+    // Name of an Event, for display only. e.g. "Location".
     name: string,
+
+    // Description of the Event, e.g. "Teleport a player to somewhere."
     description: string,
-    options: IOptionConfig[] // options is an ordered list
+
+    // All option availabled for the Event. Options should be an ordered list.
+    options: IOptionConfig[]
 }
 
-// The BetonQuest's Event List
+// The BetonQuest's Events List
 export const EventsList : IEventConfigList = {
     "cancel": {
         name: L("betonquest.event.cancel.name"),
