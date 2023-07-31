@@ -1,4 +1,17 @@
 {
     "1": "a",
-    "2": "b"
+    "2": "b",
+
+    "betonquest.event.list.cancel.name": "Cancel",
+    "betonquest.event.list.cancel.description": "Cancel a quest",
+    "betonquest.event.list.teleport.name": "Teleport",
+    "betonquest.event.list.teleport.description": "Teleports the player to the specified location. Ends any active conversations.",
+
+    "betonquest.option.cancelerIdentifier.name": "Canceler identifier",
+    "betonquest.option.cancelerIdentifier.description.event": "Canceler identifier",
+    "betonquest.option.location.name": "Unified Location Formatting",
+    "betonquest.option.location.description": "The location in game",
+    "betonquest.option.location.description.event": "The location to which the player will be teleported",
+    
+    "a": ""
 }

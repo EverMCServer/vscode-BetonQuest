@@ -1,4 +1,17 @@
 {
     "1": "甲",
-    "2": "乙"
+    "2": "乙",
+    
+    "betonquest.event.list.cancel.name": "取消任务",
+    "betonquest.event.list.cancel.description": "取消一个任务",
+    "betonquest.event.list.teleport.name": "传送",
+    "betonquest.event.list.teleport.description": "将玩家传送到指定坐标。执行后与NPC的对话会被直接中断。",
+
+    "betonquest.option.cancelerIdentifier.name": "任务取消ID",
+    "betonquest.option.cancelerIdentifier.description.event": "任务取消ID",
+    "betonquest.option.location.name": "统一坐标格式",
+    "betonquest.option.location.description": "在游戏中的坐标",
+    "betonquest.option.location.description.event": "玩家将会被传送到的坐标",
+    
+    "a": ""
 }
