@@ -39,6 +39,12 @@ export const optionList : IOptionList = {
         description: L("betonquest.option.cancelerIdentifier.description"),
         parse: stringParser,
     },
+    "chatMessage": {
+        kind: "chatMessage",
+        name: L("betonquest.option.chatMessage.name"),
+        description: L("betonquest.option.chatMessage.description"),
+        parse: stringParser,
+    },
     "location": {
         kind: "location",
         name: L("betonquest.option.location.name"),

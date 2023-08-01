@@ -30,5 +30,9 @@ export function setLocale(languageCode: string) {
 
 // Get translation by key
 export default function L(key: string): string {
-    return translations[locale][key];
+    if (translations[locale][key]) {
+        return translations[locale][key];
+    } else {
+        return translations[defaultLocale][key];
+    }
 }

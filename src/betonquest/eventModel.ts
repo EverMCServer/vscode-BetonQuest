@@ -88,6 +88,17 @@ interface IEventConfig {
 
 // The BetonQuest's Events List
 export const eventsList : IEventConfigList = {
+    "example": {
+        name: L("betonquest.event.cancel.name"),
+        description: L("betonquest.event.cancel.description"),
+        options: [
+            {
+                ...optionList.cancelerIdentifier,
+                isRequired: true,
+                description: L("betonquest.option.cancelerIdentifier.description.event"),
+            },
+        ],
+    },
     "cancel": {
         name: L("betonquest.event.cancel.name"),
         description: L("betonquest.event.cancel.description"),
@@ -99,12 +110,23 @@ export const eventsList : IEventConfigList = {
             },
         ],
     },
+    "chat": {
+        name: L("betonquest.event.chat.name"),
+        description: L("betonquest.event.chat.description"),
+        options: [
+            {
+                ...optionList.chatMessage,
+                isRequired: true,
+                description: L("betonquest.option.chatMessage.description.event"),
+            },
+        ],
+    },
     "teleport": {
         name: L("betonquest.event.list.teleport.name"),
         description: L("betonquest.event.list.teleport.description"),
         options: [
             {
-                ...optionList.cancelerIdentifier,
+                ...optionList.location,
                 isRequired: true,
                 description: L("betonquest.option.location.description.event"),
             }
