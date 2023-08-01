@@ -26,7 +26,7 @@ interface IOptionList {
     [optionName: string]: IOptionConfigInfo
 }
 
-export const OptionList : IOptionList = {
+export const optionList : IOptionList = {
     "example": {
         kind: "",
         name: L(""),

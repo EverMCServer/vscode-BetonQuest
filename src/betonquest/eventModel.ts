@@ -1,6 +1,6 @@
 import { error } from "console";
 import L from "../i18n/i18n";
-import { IOptionConfig, OptionList } from "./optionModel";
+import { IOptionConfig, optionList } from "./optionModel";
 
 // ========== Event ==========
 
@@ -34,7 +34,7 @@ export class Event implements IEvent {
     parseOption(optionStr: string): void {
         let slice = optionStr.split(" ");
         let pos = 0;
-        for (const [bqEventKind, bqEvent] of Object.entries(EventsList)) {
+        for (const [bqEventKind, bqEvent] of Object.entries(eventsList)) {
             if (bqEventKind === this.kind) {
                 bqEvent.options.forEach(optionConfig => {
                     this.options.push({
@@ -87,13 +87,13 @@ interface IEventConfig {
 }
 
 // The BetonQuest's Events List
-export const EventsList : IEventConfigList = {
+export const eventsList : IEventConfigList = {
     "cancel": {
         name: L("betonquest.event.cancel.name"),
         description: L("betonquest.event.cancel.description"),
         options: [
             {
-                ...OptionList.cancelerIdentifier,
+                ...optionList.cancelerIdentifier,
                 isRequired: true,
                 description: L("betonquest.option.cancelerIdentifier.description.event"),
             },
@@ -104,7 +104,7 @@ export const EventsList : IEventConfigList = {
         description: L("betonquest.event.list.teleport.description"),
         options: [
             {
-                ...OptionList.cancelerIdentifier,
+                ...optionList.cancelerIdentifier,
                 isRequired: true,
                 description: L("betonquest.option.location.description.event"),
             }
@@ -114,7 +114,7 @@ export const EventsList : IEventConfigList = {
 
 
 // ========== How to draw UI? ==========
-for (const [bqEventName, bqEvent] of Object.entries(EventsList)) {
+for (const [bqEventName, bqEvent] of Object.entries(eventsList)) {
     // the name of "event" is "bqEventName"
     // render(<div>{bqEventName}</div>) ...
     

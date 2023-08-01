@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import _en from './data/en.json';
 const en = _en as TTranslation;
 import _zh_CN from './data/zh-CN.json';
@@ -9,7 +10,7 @@ let locale = defaultLocale;
 type TTranslation = {[key: string]: string};
 
 // Translation table
-const Translations : {[key: string]: {[key: string]: string}} = {
+const translations : {[key: string]: {[key: string]: string}} = {
     "en": en,
     "zh_CN": zh_CN,
 };
@@ -29,5 +30,5 @@ export function setLocale(languageCode: string) {
 
 // Get translation by key
 export default function L(key: string): string {
-    return Translations[locale][key];
+    return translations[locale][key];
 }
