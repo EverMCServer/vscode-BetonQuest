@@ -21,8 +21,8 @@ export function parseYaml(
   yaml: ConversationYamlModel
 ): YamlReaderOutput | null {
   // Load
-  const npcOptions = yaml.npcOptions;
-  const playerOptions = yaml.playerOptions;
+  const npcOptions = yaml.NPC_options;
+  const playerOptions = yaml.player_options;
   const firstString = yaml.first;
   const firstKeys = stringSplitToArray(firstString || "");
   for (let i = 0; i < firstKeys.length; i++) {
@@ -206,10 +206,10 @@ export function parseYaml(
       }
       lastTargetNodeID = toNodeID;
     }
-
     orderedNodes = arrayAppend(orderedNodes, node);
     delete unlinkedNodes[key];
   }
+  console.log(orderedNodes, lines);
   return { nodes: orderedNodes, edges: Object.values(lines) };
 }
 
