@@ -416,7 +416,7 @@ function MyFlowView() {
     // downloadFile(`${data.fileName}.yml`, data.content, "yml");
 
     cacheYml = data.content;
-    console.log("3333", data.content);
+    // console.log("3333", data.content);
     vscode.postMessage({
       type: "edit",
       content: data.content,
@@ -527,12 +527,14 @@ function MyFlowView() {
     switch (message.type) {
       case "update":
         let content = message.content as string;
+        console.log("11111", JSON.stringify(content.replace(/\r\n/g, "\n")));
+        console.log("22222", JSON.stringify(cacheYml.replace(/\r\n/g, "\n")));
         if (
           content.replace(/\r\n/g, "\n") !== cacheYml.replace(/\r\n/g, "\n")
         ) {
           // Avoid duplicated update
           console.log("update yml ...");
-          // cacheYml = message.content;
+          cacheYml = content;
           // console.log("44444", cacheYml);
 
           const flow = readYaml("fileName", message.content as string);
