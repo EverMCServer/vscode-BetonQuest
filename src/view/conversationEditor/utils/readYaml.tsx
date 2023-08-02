@@ -233,7 +233,7 @@ export function linkIn(
     sourceHandle: sourceHandle,
     target: targetNodeID,
     targetHandle: "handleIn",
-    type: "step",
+    type: "smoothstep",
     markerEnd: { type: MarkerType.ArrowClosed },
   };
   lines[lineID] = line;
@@ -241,7 +241,7 @@ export function linkIn(
   // Check if node has resolved
   const linkedNodes = linkedNodesRef.nodes || [];
   if (linkedNodes.includes(targetNodeID)) {
-    logWarning("Multiple links to a node.");
+    // logWarning("Multiple links to a node.");
     return;
   }
   linkedNodesRef.nodes = arrayAppend(linkedNodes, targetNodeID);

@@ -26,6 +26,7 @@ import {
   getTransformForBounds,
   Panel,
   useViewport,
+  useOnSelectionChange,
 } from "reactflow";
 import ReactFlow from "reactflow";
 import "reactflow/dist/style.css";
@@ -390,10 +391,21 @@ function MyFlowView() {
     [resetFlow]
   );
 
-  /* YML Download/Upload event */
+  /* Keyup */
 
   React.useEffect(() => {
-    const handleKeyUp = (event: KeyboardEvent) => {
+    const handleKeyUp = (e: KeyboardEvent) => {
+      const ignoreKeys = ["Control", "Meta", "Shift", "Alt", "Tab", "CapsLock"];
+
+      if (
+        ignoreKeys.includes(e.key) ||
+        e.ctrlKey ||
+        e.metaKey ||
+        e.shiftKey ||
+        e.altKey
+      ) {
+        return;
+      }
       onDownloadYML();
     };
 
@@ -407,6 +419,8 @@ function MyFlowView() {
   React.useEffect(() => {
     console.log("new window");
   }, []);
+
+  /* YML Download/Upload event */
 
   const onDownloadYML = useCallback(() => {
     const data = writeYaml(getNodes(), getEdges());
@@ -556,6 +570,38 @@ function MyFlowView() {
     }
   }
 
+  let lastSelectedNodes: Node[] = [];
+
+  useOnSelectionChange({
+    onChange: ({ nodes, edges }) => {
+      if (lastSelectedNodes === nodes) {
+        return;
+      }
+      let nodeIDs: string[] = [];
+      for (let i = 0; i < nodes.length; i++) {
+        let n = nodes[i];
+        nodeIDs = [...nodeIDs, n.id];
+      }
+      let eds = getEdges();
+      for (let i = 0; i < eds.length; i++) {
+        let e = eds[i];
+        if (nodeIDs.includes(e.source) || nodeIDs.includes(e.target)) {
+          e.selected = true;
+          e.zIndex = 1;
+          e.markerEnd = { type: MarkerType.ArrowClosed, color: "#ffb84e" };
+          e.animated = true;
+        } else {
+          e.selected = false;
+          e.zIndex = 0;
+          e.markerEnd = { type: MarkerType.ArrowClosed };
+          e.animated = false;
+        }
+      }
+      setEdges(eds);
+      console.log("changed selection", nodes, edges);
+    },
+  });
+
   return (
     <div className="flow-container">
       <div className="flow-wrapper" ref={flowWrapper}>
@@ -572,18 +618,25 @@ function MyFlowView() {
           fitView
           minZoom={0.5}
           maxZoom={1.5}
-          snapToGrid={true}
+          // snapToGrid={true}
           onNodeContextMenu={onNodeContextMenu}
           onPaneClick={onPaneClick}
         >
           <MiniMap
-            nodeStrokeColor={(n) => {
-              return "#0041d0";
-            }}
             nodeColor={(n) => {
-              return "#fff";
+              switch (n.type) {
+                case "startNode":
+                  return "#dd9816";
+                case "npcNode":
+                  return "#00b3ff";
+                case "playerNode":
+                  return "#00c100";
+              }
+              return "#f00";
             }}
             className="minimap"
+            zoomable
+            pannable
           />
           <Panel position="top-right" className="panel">
             <input

@@ -1,5 +1,6 @@
 .react-flow__edge.selected .react-flow__edge-path {
-    stroke: #4ea9ff;
+    stroke: #ffb84e;
+    stroke-width: 3;
 }
 
 .react-flow .handleIn {
