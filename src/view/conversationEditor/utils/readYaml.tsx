@@ -209,7 +209,6 @@ export function parseYaml(
     orderedNodes = arrayAppend(orderedNodes, node);
     delete unlinkedNodes[key];
   }
-  console.log(orderedNodes, lines);
   return { nodes: orderedNodes, edges: Object.values(lines) };
 }
 

@@ -1,7 +1,9 @@
 import yaml from "js-yaml";
 import { Node, Edge } from "reactflow";
 import { arrayAppend, logError } from "./commonUtils";
-import { ConversationYamlOptionModel } from "./conversationYamlModel";
+import ConversationYamlModel, {
+  ConversationYamlOptionModel,
+} from "./conversationYamlModel";
 
 export interface YamlWriterOutput {
   fileName: string;
@@ -81,10 +83,13 @@ export function writeYaml(
   const fileName = startNode.data["text"] || "conversation";
   const quester = startNode.data["text2"] || "npcName";
   const first = startNode.data["pointers"];
-  const fullYaml = {
+
+  const fullYaml: ConversationYamlModel = {
     quester: quester,
-    npcOptions: npcYaml,
-    playerOptions: playerYaml,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    NPC_options: npcYaml,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    player_options: playerYaml,
     first: first,
   };
 
