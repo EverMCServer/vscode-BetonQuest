@@ -23,14 +23,28 @@
   "contributes": {
     "commands": [
       {
-        "command": "vscode-webpack.helloWorld",
-        "title": "Hello World"
+        "command": "betonquest.openConversationEditor",
+        "title": "Conversation Flowchart",
+        "icon": {
+          "light": "assets/icon-conversation-light.svg",
+          "dark": "assets/icon-conversation-dark.svg"
+        }
       }
     ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /conversations\\/.*\\.ya?ml$/",
+          "command": "betonquest.openConversationEditor",
+          "group": "navigation"
+        }
+      ]
+    },
     "customEditors": [
       {
         "viewType": "betonquest.conversationEditor",
         "displayName": "Conversation Flowchart",
+        "priority": "option",
         "selector": [
           {
             "filenamePattern": "**/conversations/*.yml"

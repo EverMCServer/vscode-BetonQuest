@@ -10,8 +10,24 @@ import { setLocale } from "./i18n/i18n";
 export function activate(context: vscode.ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
-  console.log(
-    'Congratulations, your extension "vscode-webpack" is now active!'
+  // console.log(
+  //   'Congratulations, your extension "betonquest" is now active!'
+  // );
+
+  // test command
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      'betonquest.openConversationEditor',
+      async () => {
+
+        const activeTextEditor = vscode.window.activeTextEditor;
+        if (!activeTextEditor) {
+            return; // No active editor
+        }
+
+        await vscode.commands.executeCommand('vscode.openWith', activeTextEditor.document.uri, 'betonquest.conversationEditor', vscode.ViewColumn.Beside);
+      }
+    )
   );
 
   // Initialize i18n localization
