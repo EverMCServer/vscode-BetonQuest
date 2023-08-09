@@ -26,8 +26,8 @@
         "command": "betonquest.openConversationEditor",
         "title": "Conversation Flowchart",
         "icon": {
-          "light": "assets/icon-conversations-light.svg",
-          "dark": "assets/icon-conversations-dark.svg"
+          "light": "assets/icon-conversations-edit-light.svg",
+          "dark": "assets/icon-conversations-edit-dark.svg"
         }
       }
     ],
