@@ -4,6 +4,7 @@ import * as vscode from "vscode";
 import { ConversationEditorProvider } from "./conversationEditorProvider";
 // import { ExampleEditorProvider } from './exampleEditorProvider';
 import { setLocale } from "./i18n/i18n";
+import { ExampleEditorProvider } from "./exampleEditorProvider";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -14,7 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
   //   'Congratulations, your extension "betonquest" is now active!'
   // );
 
-  // test command
+  // Command to open the Conversation Editor
   context.subscriptions.push(
     vscode.commands.registerCommand(
       'betonquest.openConversationEditor',
@@ -30,12 +31,28 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
+  // Command to open the Example Editor (for development reference only)
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      'betonquest.openExampleEditor',
+      async () => {
+
+        const activeTextEditor = vscode.window.activeTextEditor;
+        if (!activeTextEditor) {
+            return; // No active editor
+        }
+
+        await vscode.commands.executeCommand('vscode.openWith', activeTextEditor.document.uri, 'betonquest.exampleEditor', vscode.ViewColumn.Beside);
+      }
+    )
+  );
+
   // Initialize i18n localization
   setLocale(vscode.env.language);
 
-  // register custom editor
+  // Register custom editor
   context.subscriptions.push(ConversationEditorProvider.register(context));
-  // context.subscriptions.push(ExampleEditorProvider.register(context));
+  context.subscriptions.push(ExampleEditorProvider.register(context));
 }
 
 // This method is called when your extension is deactivated

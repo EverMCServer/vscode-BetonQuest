@@ -62,6 +62,16 @@ export class ExampleEditorProvider implements vscode.CustomTextEditorProvider {
 			changeDocumentSubscription.dispose();
 		});
 
+        vscode.workspace.onDidChangeConfiguration(e => {
+            if (e.affectsConfiguration('betonquest.setting.translationSelection')) {
+                console.log("sendding betonquest-translationSelection into webview ...");
+                webviewPanel.webview.postMessage({
+                    type: 'betonquest-translationSelection',
+                    content: vscode.workspace.getConfiguration('betonquest.setting').get<string>('translationSelection')
+                });
+            }
+        });
+
 		// Receive message from the webview.
 		webviewPanel.webview.onDidReceiveMessage(e => {
 			switch (e.type) {
@@ -87,8 +97,15 @@ export class ExampleEditorProvider implements vscode.CustomTextEditorProvider {
                 case 'test-from-webview':
                     console.log("received test message from webview to extension:");
                     console.log(e);
-                    vscode.window.showInformationMessage("received test message from webview to extension: " + e.message);
+                    vscode.window.showInformationMessage("received test message from webview to extension: " + e.content);
                     return;
+
+                case 'set-betonquest-translationSelection':
+                    console.log("got betonquest-translationSelection from webview:", e.content);
+                    vscode.workspace.getConfiguration('betonquest.setting').update('translationSelection', e.content, vscode.ConfigurationTarget.Global);
+                    setTimeout(() => {
+                        console.log("new betonquest-translationSelection:", vscode.workspace.getConfiguration('betonquest.setting').get<string>('translationSelection'));
+                    }, 1000);
 			}
 		});
     }

@@ -12,6 +12,7 @@ export default function app() {
 
     // Get initial content data from vscode
     const [yml, setYml] = React.useState("");
+    const [translationSelection, setTranslationSelection] = React.useState("");
 
     console.log("initialize yml Data.");
 
@@ -35,6 +36,9 @@ export default function app() {
                     }
                     console.log("update yml ... nothing changed.");
                     break;
+                case 'betonquest-translationSelection':
+                    console.log("update betonquest's translation selection ...");
+                    setTranslationSelection(message.content);
             }
         });
     }, []);
@@ -50,7 +54,7 @@ export default function app() {
         <>
         <h1>Hello, World!</h1>
         <div>{"hi form tsx"}</div>
-        <TestButton yml={yml} />
+        <TestButton yml={yml} translationSelection={translationSelection} />
         <TestView yml={yml} />
         </>
     );

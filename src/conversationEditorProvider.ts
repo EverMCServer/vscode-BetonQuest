@@ -87,7 +87,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                 case 'test-from-webview':
                     console.log("received test message from webview to extension:");
                     console.log(e);
-                    vscode.window.showInformationMessage("received test message from webview to extension: " + e.message);
+                    vscode.window.showInformationMessage("received test message from webview to extension: " + e.content);
                     return;
 			}
 		});

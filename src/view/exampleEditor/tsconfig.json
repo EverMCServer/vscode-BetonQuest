@@ -1,4 +1,5 @@
 {
+    "extends": "../../../tsconfig",
     "compilerOptions": {
         "module": "ESNext",
         "moduleResolution": "Node",

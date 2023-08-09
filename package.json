@@ -24,11 +24,15 @@
     "commands": [
       {
         "command": "betonquest.openConversationEditor",
-        "title": "Conversation Flowchart",
+        "title": "BetonQuest: Open Conversation Flowchart",
         "icon": {
           "light": "assets/icon-conversations-edit-light.svg",
           "dark": "assets/icon-conversations-edit-dark.svg"
         }
+      },
+      {
+        "command": "betonquest.openExampleEditor",
+        "title": "BetonQuest: Open Example Editor (debug only)"
       }
     ],
     "menus": {
@@ -50,8 +54,28 @@
             "filenamePattern": "**/conversations/*.yml"
           }
         ]
+      },
+      {
+        "viewType": "betonquest.exampleEditor",
+        "displayName": "Example Editor",
+        "priority": "option",
+        "selector": [
+          {
+            "filenamePattern": "*.ya?ml"
+          }
+        ]
       }
-    ]
+    ],
+    "configuration": {
+      "title":  "BetonQuest",
+      "properties": {
+        "betonquest.setting.translationSelection": {
+          "type": "string",
+          "default": "en",
+          "description": "The Translation selection for conversation scripts. Default to 'en'."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
