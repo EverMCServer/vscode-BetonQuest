@@ -9,8 +9,9 @@ export interface ConversationYamlOptionModel {
 }
 
 export default interface ConversationYamlModel {
-  first: string;
   quester: string;
+  first: string;
+  stop?: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   NPC_options?: Record<string, ConversationYamlOptionModel>;
   // eslint-disable-next-line @typescript-eslint/naming-convention

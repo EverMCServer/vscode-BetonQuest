@@ -86,11 +86,12 @@ export function writeYaml(
 
   const fullYaml: ConversationYamlModel = {
     quester: quester,
+    first: first,
+    stop: startNode.data["text3"] || "true",
     // eslint-disable-next-line @typescript-eslint/naming-convention
     NPC_options: npcYaml,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     player_options: playerYaml,
-    first: first,
   };
 
   // Encode

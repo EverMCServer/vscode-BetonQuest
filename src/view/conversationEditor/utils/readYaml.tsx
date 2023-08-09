@@ -34,7 +34,7 @@ export function parseYaml(
     id: "startNodeID",
     type: "startNode",
     position: { x: 0, y: 0 },
-    data: { name: "start", text: fileName, text2: yaml.quester },
+    data: { name: "start", text: fileName, text2: yaml.quester, text3: yaml.stop },
   };
   const startNodes: Record<string, Node> = { startNodeID: startNode };
 
