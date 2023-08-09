@@ -1,11 +1,23 @@
 export interface ConversationYamlOptionModel {
-  text?: string;
+  text?: string | TextMultilingalModel;
   pointer?: string;
   pointers?: string;
   condition?: string;
   conditions?: string;
   event?: string;
   events?: string;
+}
+
+interface TextMultilingalModel {
+  // en?: string,
+  // es?: string,
+  // pl?: string,
+  // fr?: string,
+  // cn?: string,
+  // de?: string,
+  // nl?: string,
+  // hu?: string,
+  [lang: string]: string,
 }
 
 export default interface ConversationYamlModel {
