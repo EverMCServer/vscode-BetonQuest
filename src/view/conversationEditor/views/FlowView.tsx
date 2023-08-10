@@ -50,6 +50,7 @@ import { readYaml } from "../utils/readYaml";
 import { autoLayout } from "../utils/autoLayout";
 import { toJpeg } from "html-to-image";
 import { writeYaml } from "../utils/writeYaml";
+import ConversationYamlModel, { ConversationYamlOptionModel, IConversationYamlOptionModel, TextMultilingualModel } from "../utils/conversationYamlModel";
 
 const cacheKey = "bq-flow";
 
@@ -239,12 +240,31 @@ function MyFlowView() {
         type = "npcNode";
       }
 
+      // Check parent node uses multilingual text or not.
+      // The newly created node should follows the parent's multilingual behaviour.
+      let isMultilingual = false;
+      switch (fromNode["type"]) {
+        case "npcNode" || "playerNode":
+          isMultilingual = Object.assign(new ConversationYamlOptionModel(), fromNode.data["option"]).isTextMultilingual();
+          break;
+        default: // startNode
+          isMultilingual = Object.assign(new ConversationYamlModel(), fromNode.data["yaml"]).isQuesterMultilingual();
+          break;
+      }
+      const newNodeOption: IConversationYamlOptionModel = {};
+      if (isMultilingual) {
+        newNodeOption.text = {} as TextMultilingualModel;
+      } else {
+        newNodeOption.text = "";
+      }
+      console.log("new node is multilingual:", Object.assign(new ConversationYamlOptionModel(), newNodeOption).isTextMultilingual());
+
       const newNodeID = getNewNodeID();
       const newNode = {
         id: newNodeID,
         type,
         position: { x: hitPosition.x - 100, y: hitPosition.y },
-        data: { name: `${newNodeID}` },
+        data: { name: `${newNodeID}` , option: newNodeOption },
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -429,7 +449,7 @@ function MyFlowView() {
     }
     // downloadFile(`${data.fileName}.yml`, data.content, "yml");
 
-    cacheYml = data.content;
+    cacheYml = data.content; // bug
     // console.log("3333", data.content);
     vscode.postMessage({
       type: "edit",

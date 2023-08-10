@@ -9,6 +9,7 @@ import {
 } from "reactflow";
 import { connectionAvaliable } from "../utils/commonUtils";
 import "./styles.css";
+import { ConversationYamlOptionModel } from "../utils/conversationYamlModel";
 
 export default memo(({ data, selected }: NodeProps) => {
   const [getTrigger, setTrigger] = useState(false);
@@ -40,10 +41,10 @@ export default memo(({ data, selected }: NodeProps) => {
 
   // Text
   const textGet = (): string => {
-    return data["text"] || "";
+    return Object.assign(new ConversationYamlOptionModel(), data["option"]).getText('en');
   };
   const textUpdate = (value: string): void => {
-    data["text"] = value;
+    Object.assign(new ConversationYamlOptionModel(), data["option"]).setText(value, 'en');
     refreshUI();
   };
 

@@ -1,6 +1,6 @@
 import { MarkerType, Node, Edge } from "reactflow";
 import * as yaml from "js-yaml";
-import { arrayAppend, logWarning, stringSplitToArray } from "./commonUtils";
+import { arrayAppend, stringSplitToArray } from "./commonUtils";
 import ConversationYamlModel from "./conversationYamlModel";
 
 export interface YamlReaderOutput {
@@ -34,7 +34,8 @@ export function parseYaml(
     id: "startNodeID",
     type: "startNode",
     position: { x: 0, y: 0 },
-    data: { name: "start", text: fileName, text2: yaml.quester, text3: yaml.stop },
+    // data: { name: "start", text: fileName, text2: yaml.quester, text3: yaml.stop },
+    data: { name: "start", fileName: fileName, yaml: yaml },
   };
   const startNodes: Record<string, Node> = { startNodeID: startNode };
 
@@ -60,7 +61,7 @@ export function parseYaml(
       position: { x: 0, y: 0 },
       data: {
         name: key,
-        text: option.text,
+        option: option,
         events: stringSplitToArray(events),
         conditions: stringSplitToArray(conditions),
         pointers: pointers,
@@ -91,7 +92,7 @@ export function parseYaml(
       position: { x: 0, y: 0 },
       data: {
         name: key,
-        text: option.text,
+        option: option,
         events: stringSplitToArray(events),
         conditions: stringSplitToArray(conditions),
         pointers: pointers,
