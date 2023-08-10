@@ -449,7 +449,7 @@ function MyFlowView() {
     }
     // downloadFile(`${data.fileName}.yml`, data.content, "yml");
 
-    cacheYml = data.content; // bug
+    cacheYml = data.content;
     // console.log("3333", data.content);
     vscode.postMessage({
       type: "edit",
