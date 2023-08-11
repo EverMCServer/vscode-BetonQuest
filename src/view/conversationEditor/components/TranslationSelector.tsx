@@ -58,30 +58,30 @@ interface Props {
 }
 
 export default function translationSelector(props: Props): React.JSX.Element {
-    const [translationEnabledWithSwitch, setTranslationEnabledWithSwitch] = React.useState(false);
-    const [switchOnOff, setSwitchOnOff] = React.useState(false);
+    // const [translationEnabledWithSwitch, setTranslationEnabledWithSwitch] = React.useState(false);
+    // const [switchOnOff, setSwitchOnOff] = React.useState(false);
 
     return (<Space>
-    <Switch
-        style={props.enabled?{display: "none"}:{}}
+    {/* <Switch
         size="small"
         defaultChecked={switchOnOff}
         onChange={(checked: boolean) => {
             setTranslationEnabledWithSwitch(checked);
             setSwitchOnOff(checked);
         }}
-    />
+    /> */}
     <Select
-    defaultValue={props.selectedLanguage}
-    size="small"
-    disabled={props.enabled?!false:!translationEnabledWithSwitch}
-    showSearch
-    placeholder="Select a translation"
-    optionFilterProp="children"
-    onChange={onTranslationChange}
-    onSearch={onTranslationSearch}
-    filterOption={(input, option) =>
-    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+        style={!props.enabled?{display: "none"}:{}}
+        defaultValue={props.selectedLanguage}
+        size="small"
+        // disabled={props.enabled?!false:!translationEnabledWithSwitch}
+        showSearch
+        placeholder="Select a translation"
+        optionFilterProp="children"
+        onChange={onTranslationChange}
+        onSearch={onTranslationSearch}
+        filterOption={(input, option) =>
+        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
     }
     options={defaultLanguages}
     />
