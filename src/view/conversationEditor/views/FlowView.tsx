@@ -51,6 +51,7 @@ import { autoLayout } from "../utils/autoLayout";
 import { toJpeg } from "html-to-image";
 import { writeYaml } from "../utils/writeYaml";
 import ConversationYamlModel, { ConversationYamlOptionModel, IConversationYamlOptionModel, TextMultilingualModel } from "../utils/conversationYamlModel";
+import TranslationSelector from "../components/TranslationSelector";
 
 const cacheKey = "bq-flow";
 
@@ -75,6 +76,9 @@ function MyFlowView() {
     setViewport,
     fitView,
   } = useReactFlow();
+
+  // For caching multilingual status
+  let isYamlMultilingual = false;
 
   let cacheYml = "";
 
@@ -622,6 +626,24 @@ function MyFlowView() {
     },
   });
 
+  // Check if the yaml multilingual status, for "Translation Selector".
+  let isMultilingual = false;
+  nodes.every(node => {
+    switch (node["type"]) {
+      case "npcNode" || "playerNode":
+        isMultilingual = isMultilingual || Object.assign(new ConversationYamlOptionModel(), node.data["option"]).isTextMultilingual();
+        break;
+      default: // startNode
+        isMultilingual = isMultilingual || Object.assign(new ConversationYamlModel(), node.data["yaml"]).isQuesterMultilingual();
+        break;
+    }
+    if (isYamlMultilingual) {
+      return false;
+    }
+    return true;
+  });
+  isYamlMultilingual = isMultilingual;
+
   return (
     <div className="flow-container">
       <div className="flow-wrapper" ref={flowWrapper}>
@@ -659,6 +681,7 @@ function MyFlowView() {
             pannable
           />
           <Panel position="top-right" className="panel">
+            <TranslationSelector enabled={isYamlMultilingual} selectedLanguage="en"></TranslationSelector>
             <input
               type="file"
               id="json-upload"
