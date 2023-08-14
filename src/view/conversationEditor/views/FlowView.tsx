@@ -61,6 +61,13 @@ const nodeTypes = {
   startNode: StartNode,
 };
 
+// test globalThis
+declare global {
+  var initialConfig: {
+    translationSelection?: string; // Conversation YAML's translation selection.
+  };
+}
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function MyFlowView() {
   const flowWrapper = useRef<HTMLDivElement>(null);
@@ -76,6 +83,8 @@ function MyFlowView() {
     setViewport,
     fitView,
   } = useReactFlow();
+  // cache translation selection
+  const [translationSelection, setTranslationSelection] = useState(globalThis.initialConfig.translationSelection);
 
   // For caching multilingual status
   let isYamlMultilingual = false;
@@ -268,7 +277,7 @@ function MyFlowView() {
         id: newNodeID,
         type,
         position: { x: hitPosition.x - 100, y: hitPosition.y },
-        data: { name: `${newNodeID}` , option: newNodeOption },
+        data: { name: `${newNodeID}` , option: newNodeOption, translationSelection: translationSelection },
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -561,6 +570,16 @@ function MyFlowView() {
     });
   }, []);
 
+  // // Receive translationSelection setting
+  // React.useEffect(()=>{
+    
+  //   window.addEventListener("message", (event) => {
+  //     const message = event.data; // JSON
+
+  //     onFileUpdate(message);
+  //   });
+  // }, []);
+
   function onFileUpdate(message: any) {
     switch (message.type) {
       case "update":
@@ -681,7 +700,8 @@ function MyFlowView() {
             pannable
           />
           <Panel position="top-right" className="panel">
-            <TranslationSelector enabled={isYamlMultilingual} selectedLanguage="en"></TranslationSelector>
+            <TranslationSelector enabled={isYamlMultilingual} selectedLanguage={globalThis.initialConfig.translationSelection}></TranslationSelector>
+            {/* <button>{globalThis.initialConfig.translationSelection}</button> */}
             <input
               type="file"
               id="json-upload"

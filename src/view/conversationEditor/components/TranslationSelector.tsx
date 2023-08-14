@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { Space, Select, Switch } from 'antd';
+import { vscode } from "../utils/vscode";
 
 // Default languages come from
 // https://github.com/BetonQuest/BetonQuest/blob/b4ce01ed301ca78fbd8663b1102b6064c2803e86/src/main/resources/messages.yml
@@ -48,13 +49,21 @@ let defaultLanguages = [
 ];
 
 function onTranslationSearch() {}
-function onTranslationChange() {}
+function onTranslationChange(value: string) {
+    // Send translation selection to vscode extension.
+    // ...
+    vscode.postMessage({
+        type: "set-betonquest-translationSelection",
+        content: value,
+    });
+    return;
+}
 
 interface Props {
     enabled: boolean,
     selectedLanguage?: string,
     defaultLanguage?: string,
-    languages?: string[],
+    languages?: string[], // Languages detected from conversation yaml
 }
 
 export default function translationSelector(props: Props): React.JSX.Element {
@@ -80,10 +89,8 @@ export default function translationSelector(props: Props): React.JSX.Element {
         optionFilterProp="children"
         onChange={onTranslationChange}
         onSearch={onTranslationSearch}
-        filterOption={(input, option) =>
-        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-    }
-    options={defaultLanguages}
+        filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
+        options={defaultLanguages}
     />
     </Space>);
 }
