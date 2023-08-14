@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Space, Select, Switch } from 'antd';
+import { Space, Select } from 'antd';
 import { vscode } from "../utils/vscode";
 
 // Default languages come from

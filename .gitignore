@@ -3,6 +3,7 @@ dist
 node_modules
 .vscode-test/
 *.vsix
+*.code-workspace
 
 .DS_Store
 __MACOSX/
