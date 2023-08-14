@@ -11,7 +11,7 @@ import {
   addEdge,
   useNodesState,
   useEdgesState,
-  MiniMap,
+  // MiniMap,
   useReactFlow,
   MarkerType,
   Background,
@@ -683,7 +683,7 @@ function MyFlowView() {
           onNodeContextMenu={onNodeContextMenu}
           onPaneClick={onPaneClick}
         >
-          <MiniMap
+          {/* <MiniMap
             nodeColor={(n) => {
               switch (n.type) {
                 case "startNode":
@@ -698,10 +698,10 @@ function MyFlowView() {
             className="minimap"
             zoomable
             pannable
-          />
+          /> */}
           <Panel position="top-right" className="panel">
             <TranslationSelector enabled={isYamlMultilingual} selectedLanguage={translationSelection}></TranslationSelector>
-            <input
+            {/* <input
               type="file"
               id="json-upload"
               onChange={uploadJSON}
@@ -740,7 +740,7 @@ function MyFlowView() {
             </button>
             <button onClick={onDownloadYML} className="user-button">
               yml: Download
-            </button>
+            </button> */}
           </Panel>
 
           <Background variant={BackgroundVariant.Dots} />
