@@ -77,7 +77,7 @@ export default class ConversationYamlModel implements IConversationYamlModel {
 
   getQuester(translation: string): string {
     if (this.isValueMultilingualModel(this.quester)) {
-      return this.quester![translation] || '';
+      return this.quester[translation] || '';
     } else {
       return this.quester || '';
     }
@@ -85,7 +85,7 @@ export default class ConversationYamlModel implements IConversationYamlModel {
 
   setQuester(text: string, translation: string) {
     if (this.isValueMultilingualModel(this.quester)) {
-      this.quester![translation] = text;
+      this.quester[translation] = text;
     } else {
       this.quester = text;
     }
