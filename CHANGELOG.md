@@ -17,3 +17,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Fixed
 - Fix editing on graph is not sync to files
 - Fix editor display name
+
+## [0.0.3] - 2023-08-14
+
+### Added
+- Translation selection
+- Configuration to set your default translation selection
+
+### Changed
+- The Conversation Flowchart is now activated by the Text Editor's tool-bar located on the top right corner

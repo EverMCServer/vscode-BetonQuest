@@ -35,11 +35,8 @@ export function writeYaml(
     const conditions = node.data["conditions"];
     const events = node.data["events"];
     const name = node.data["name"];
-    const text = node.data["text"];
 
-    const conversation: ConversationYamlOptionModel = {
-      text: text || "",
-    };
+    const conversation: ConversationYamlOptionModel = Object.assign(new ConversationYamlOptionModel(), node.data["option"]);
 
     if (conditions && conditions.length) {
       conversation.conditions = conditions;
@@ -61,11 +58,8 @@ export function writeYaml(
     const conditions = node.data["conditions"];
     const events = node.data["events"];
     const name = node.data["name"];
-    const text = node.data["text"];
 
-    const conversation: ConversationYamlOptionModel = {
-      text: text || "",
-    };
+    const conversation: ConversationYamlOptionModel = Object.assign(new ConversationYamlOptionModel(), node.data["option"]);
 
     if (conditions && conditions.length) {
       conversation.conditions = conditions;
@@ -80,19 +74,16 @@ export function writeYaml(
   }
 
   // Full Yaml
-  const fileName = startNode.data["text"] || "conversation";
-  const quester = startNode.data["text2"] || "npcName";
+  const fileName = startNode.data["fileName"] || "conversation";
   const first = startNode.data["pointers"];
+  const originYaml: ConversationYamlModel = Object.assign(new ConversationYamlModel(), startNode.data["yaml"]);
 
-  const fullYaml: ConversationYamlModel = {
-    quester: quester,
-    first: first,
-    stop: startNode.data["text3"] || "true",
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    NPC_options: npcYaml,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    player_options: playerYaml,
-  };
+  const fullYaml = new ConversationYamlModel();
+  fullYaml.quester = originYaml.quester;
+  fullYaml.first = first;
+  fullYaml.stop = originYaml.stop || "true";
+  fullYaml.NPC_options = npcYaml;
+  fullYaml.player_options = playerYaml;
 
   // Encode
   try {

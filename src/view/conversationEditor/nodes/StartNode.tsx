@@ -9,6 +9,7 @@ import {
 } from "reactflow";
 import { connectionAvaliable } from "../utils/commonUtils";
 import "./styles.css";
+import ConversationYamlModel from "../utils/conversationYamlModel";
 
 export default memo(({ data, selected }: NodeProps) => {
   const [getTrigger, setTrigger] = useState(false);
@@ -16,21 +17,24 @@ export default memo(({ data, selected }: NodeProps) => {
     setTrigger(!getTrigger);
   };
 
-  // Text
-  const textGet = (): string => {
-    return data["text"] || "";
+  // Conversation file name
+  const getFileName = (): string => {
+    return data["fileName"] || "";
   };
-  const textUpdate = (value: string): void => {
-    data["text"] = value;
+  const setFileName = (value: string): void => {
+    data["fileName"] = value;
     refreshUI();
   };
 
-  // Text2
-  const text2Get = (): string => {
-    return data["text2"] || "";
+  // NPC's display name
+  const getQuester = (): string => {
+    return Object.assign(new ConversationYamlModel(), data["yaml"]).getQuester(data["translationSelection"]) || "";
   };
-  const text2Update = (value: string): void => {
-    data["text2"] = value;
+  const setQuester = (value: string): void => {
+    const yaml = Object.assign(new ConversationYamlModel(), data["yaml"])
+    yaml.setQuester(value, data["translationSelection"]);
+    data["yaml"] = yaml;
+
     refreshUI();
   };
 
@@ -66,16 +70,16 @@ export default memo(({ data, selected }: NodeProps) => {
         <input
           type="text"
           className="nodrag input"
-          value={textGet()}
-          onChange={(e) => textUpdate(e.target.value)}
+          value={getFileName()}
+          onChange={(e) => setFileName(e.target.value)}
         />
         <hr className="line"></hr>
         NPC name:
         <input
           type="text"
           className="nodrag input"
-          value={text2Get()}
-          onChange={(e) => text2Update(e.target.value)}
+          value={getQuester()}
+          onChange={(e) => setQuester(e.target.value)}
         />
       </div>
       <Handle

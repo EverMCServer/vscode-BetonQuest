@@ -11,7 +11,7 @@ import {
   addEdge,
   useNodesState,
   useEdgesState,
-  MiniMap,
+  // MiniMap,
   useReactFlow,
   MarkerType,
   Background,
@@ -50,6 +50,8 @@ import { readYaml } from "../utils/readYaml";
 import { autoLayout } from "../utils/autoLayout";
 import { toJpeg } from "html-to-image";
 import { writeYaml } from "../utils/writeYaml";
+import ConversationYamlModel, { ConversationYamlOptionModel, IConversationYamlOptionModel, TextMultilingualModel } from "../utils/conversationYamlModel";
+import TranslationSelector from "../components/TranslationSelector";
 
 const cacheKey = "bq-flow";
 
@@ -58,6 +60,13 @@ const nodeTypes = {
   playerNode: PlayerNode,
   startNode: StartNode,
 };
+
+// test globalThis
+declare global {
+  var initialConfig: {
+    translationSelection?: string; // Conversation YAML's translation selection.
+  };
+}
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function MyFlowView() {
@@ -75,7 +84,15 @@ function MyFlowView() {
     fitView,
   } = useReactFlow();
 
-  let cacheYml = "";
+  // Cache translation selection
+  let translationSelection = globalThis.initialConfig.translationSelection;
+  // const [translationSelection, setTranslationSelection] = useState(globalThis.initialConfig.translationSelection);
+
+  // Caching multilingual status
+  let isYamlMultilingual = false;
+
+  // Caching rendered Yaml, prevent unnecessary rendering
+  let cachedYml = "";
 
   /* ID counter */
 
@@ -239,12 +256,31 @@ function MyFlowView() {
         type = "npcNode";
       }
 
+      // Check parent node uses multilingual text or not.
+      // The newly created node should follows the parent's multilingual behaviour.
+      let isMultilingual = false;
+      switch (fromNode["type"]) {
+        case "npcNode" || "playerNode":
+          isMultilingual = Object.assign(new ConversationYamlOptionModel(), fromNode.data["option"]).isTextMultilingual();
+          break;
+        default: // startNode
+          isMultilingual = Object.assign(new ConversationYamlModel(), fromNode.data["yaml"]).isQuesterMultilingual();
+          break;
+      }
+      const newNodeOption: IConversationYamlOptionModel = {};
+      if (isMultilingual) {
+        newNodeOption.text = {} as TextMultilingualModel;
+      } else {
+        newNodeOption.text = "";
+      }
+      console.log("new node is multilingual:", Object.assign(new ConversationYamlOptionModel(), newNodeOption).isTextMultilingual());
+
       const newNodeID = getNewNodeID();
       const newNode = {
         id: newNodeID,
         type,
         position: { x: hitPosition.x - 100, y: hitPosition.y },
-        data: { name: `${newNodeID}` },
+        data: { name: `${newNodeID}` , option: newNodeOption, translationSelection: translationSelection },
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -301,6 +337,21 @@ function MyFlowView() {
     },
     [fitView, setEdges, setNodes, setViewport]
   );
+
+  // Public method to update flowchart contents
+  let updateFlowChart = (fileName: string, content: string, translationSelection?: string) => {
+    const flow = readYaml(fileName, content, translationSelection || "en");
+      if (!flow) {
+        return;
+      }
+
+      const obj = autoLayout(flow.nodes, flow.edges);
+      if (!obj) {
+        return;
+      }
+      const objCopy = JSON.parse(JSON.stringify(obj));
+      resetFlow(objCopy.nodes, objCopy.edges);
+  };
 
   /* DEL keyboard button event */
 
@@ -429,7 +480,7 @@ function MyFlowView() {
     }
     // downloadFile(`${data.fileName}.yml`, data.content, "yml");
 
-    cacheYml = data.content;
+    cachedYml = data.content;
     // console.log("3333", data.content);
     vscode.postMessage({
       type: "edit",
@@ -454,17 +505,8 @@ function MyFlowView() {
       const reader = new FileReader();
       reader.onload = function () {
         const text = reader.result;
-        const flow = readYaml(fileName, text as string);
-        if (!flow) {
-          return;
-        }
-
-        const obj = autoLayout(flow.nodes, flow.edges);
-        if (!obj) {
-          return;
-        }
-        const objCopy = JSON.parse(JSON.stringify(obj));
-        resetFlow(objCopy.nodes, objCopy.edges);
+        updateFlowChart(fileName, text as string, translationSelection);
+        cachedYml = text as string;
       };
       if (file) {
         reader.readAsText(file);
@@ -524,48 +566,49 @@ function MyFlowView() {
   /* VSCode yaml */
 
   React.useEffect(() => {
-    // notify vscode when webview startup completed.
+    // Notify vscode when webview startup completed.
     vscode.postMessage({
       type: "webview-lifecycle",
       content: "started",
     });
-    // Listen from extension message (document update etc)
-    window.addEventListener("message", (event) => {
-      const message = event.data; // JSON
 
-      onFileUpdate(message);
-    });
+    let handlerFn = (event: MessageEvent<any>) => {
+      handleVscodeMessage(event.data);
+    };
+
+    // Listen from extension message (document update, change translation etc)
+    window.addEventListener("message", handlerFn);
+
+    // Unregister listener when component unmounted
+    return () => window.removeEventListener("message", handlerFn);
   }, []);
 
-  function onFileUpdate(message: any) {
+  function handleVscodeMessage(message: any) {
     switch (message.type) {
       case "update":
+        // Update yaml
         let content = message.content as string;
-        console.log("11111", JSON.stringify(content.replace(/\r\n/g, "\n")));
-        console.log("22222", JSON.stringify(cacheYml.replace(/\r\n/g, "\n")));
         if (
-          content.replace(/\r\n/g, "\n") !== cacheYml.replace(/\r\n/g, "\n")
+          content.replace(/\r\n?/g, "\n") !== cachedYml.replace(/\r\n?/g, "\n")
         ) {
           // Avoid duplicated update
           console.log("update yml ...");
-          cacheYml = content;
-          // console.log("44444", cacheYml);
+          // console.log("44444", cachedYml);
 
-          const flow = readYaml("fileName", message.content as string);
-          if (!flow) {
-            return;
-          }
-
-          const obj = autoLayout(flow.nodes, flow.edges);
-          if (!obj) {
-            return;
-          }
-          const objCopy = JSON.parse(JSON.stringify(obj));
-          resetFlow(objCopy.nodes, objCopy.edges);
+          updateFlowChart("fileName", content, translationSelection);
+          cachedYml = content;
 
           break;
         }
         console.log("update yml ... nothing changed.");
+        break;
+
+      // Receive translationSelection setting
+      case "betonquest-translationSelection":
+        translationSelection = message.content;
+        // setTranslationSelection(message.content);
+        updateFlowChart("fileName", cachedYml, message.content);
+
         break;
     }
   }
@@ -602,6 +645,24 @@ function MyFlowView() {
     },
   });
 
+  // Check if the yaml multilingual status, for "Translation Selector".
+  let isMultilingual = false;
+  nodes.every(node => {
+    switch (node["type"]) {
+      case "npcNode" || "playerNode":
+        isMultilingual = isMultilingual || Object.assign(new ConversationYamlOptionModel(), node.data["option"]).isTextMultilingual();
+        break;
+      default: // startNode
+        isMultilingual = isMultilingual || Object.assign(new ConversationYamlModel(), node.data["yaml"]).isQuesterMultilingual();
+        break;
+    }
+    if (isYamlMultilingual) {
+      return false;
+    }
+    return true;
+  });
+  isYamlMultilingual = isMultilingual;
+
   return (
     <div className="flow-container">
       <div className="flow-wrapper" ref={flowWrapper}>
@@ -622,7 +683,7 @@ function MyFlowView() {
           onNodeContextMenu={onNodeContextMenu}
           onPaneClick={onPaneClick}
         >
-          <MiniMap
+          {/* <MiniMap
             nodeColor={(n) => {
               switch (n.type) {
                 case "startNode":
@@ -637,9 +698,10 @@ function MyFlowView() {
             className="minimap"
             zoomable
             pannable
-          />
+          /> */}
           <Panel position="top-right" className="panel">
-            <input
+            <TranslationSelector enabled={isYamlMultilingual} selectedLanguage={translationSelection}></TranslationSelector>
+            {/* <input
               type="file"
               id="json-upload"
               onChange={uploadJSON}
@@ -678,7 +740,7 @@ function MyFlowView() {
             </button>
             <button onClick={onDownloadYML} className="user-button">
               yml: Download
-            </button>
+            </button> */}
           </Panel>
 
           <Background variant={BackgroundVariant.Dots} />

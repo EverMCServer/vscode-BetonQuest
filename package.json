@@ -3,7 +3,7 @@
   "publisher": "EverMC",
   "displayName": "BetonQuest",
   "description": "A GUI for BetonQuest scripting",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -67,7 +67,7 @@
       }
     ],
     "configuration": {
-      "title":  "BetonQuest",
+      "title": "BetonQuest",
       "properties": {
         "betonquest.setting.translationSelection": {
           "type": "string",
@@ -110,6 +110,7 @@
     "webpack-cli": "^5.1.1"
   },
   "dependencies": {
+    "antd": "^5.8.3",
     "html-to-image": "^1.11.11",
     "js-yaml": "^4.1.0",
     "module_name": "^1.0.0",

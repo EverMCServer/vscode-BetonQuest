@@ -57,9 +57,23 @@ export class ExampleEditorProvider implements vscode.CustomTextEditorProvider {
 			}
 		});
 
+        const onDidChangeTextEditorSelection = vscode.window.onDidChangeTextEditorSelection(e => {
+            if (e && e.textEditor.document.fileName.endsWith("events.yml")) {
+                let curPos = e.selections[0].active;
+                let offset = e.textEditor.document.offsetAt(curPos);
+                console.log("\ncurPos: ", curPos, "\noffset: ", offset);
+                
+                webviewPanel.webview.postMessage({
+                    type: 'curPos',
+                    content: curPos
+                });
+			}
+        });
+
         // Make sure we get rid of the listener when our editor is closed.
 		webviewPanel.onDidDispose(() => {
 			changeDocumentSubscription.dispose();
+            onDidChangeTextEditorSelection.dispose();
 		});
 
         vscode.workspace.onDidChangeConfiguration(e => {

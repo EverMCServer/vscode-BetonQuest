@@ -2,7 +2,7 @@
 
 A GUI based editor for [BetonQuest 2.0](https://github.com/BetonQuest/BetonQuest) scripting.
 
-![conversation editor](assets/screenshot-conversation.png)
+![conversation editor](assets/screenshot-conversation-light.jpg)
 
 ## Features
 
@@ -30,9 +30,22 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 - Zoom-in and out is limited to certain degrees.
 - Lines in Yaml files are re-ordered while editing.
 - Original comments in Yaml files are erased while editing.
+- Typing on flowchart the first time or too fast will cause the cursor lost focus from text boxes [#3](https://github.com/EverMCServer/vscode-BetonQuest/issues/3).
 
 ## Release Notes
 
+For more detailes, please check [CHANGELOG.md](CHANGELOG.md).
+
+### 0.0.3
+
+- Translation selection
+- Configuration to set your default translation selection
+- The Conversation Flowchart is now activated by the Text Editor's tool-bar which located on the top right corner
+
+### 0.0.2
+
+- Bug fixes
+
 ### 0.0.1
 
-- Initial Conversation's editor.
+- Initial Conversation's editor

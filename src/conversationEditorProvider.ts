@@ -1,5 +1,9 @@
 import * as vscode from 'vscode';
 
+interface InitialConfig {
+    translationSelection?: string,
+}
+
 export class ConversationEditorProvider implements vscode.CustomTextEditorProvider {
 
     public static register(context: vscode.ExtensionContext): vscode.Disposable {
@@ -33,7 +37,13 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
         };
 
         // Initialize HTML content in Webview
-        webviewPanel.webview.html = this.getWebviewContent(webviewPanel.webview, document);
+        webviewPanel.webview.html = this.getWebviewContent(
+            webviewPanel.webview,
+            {
+                translationSelection: vscode.workspace.getConfiguration('betonquest.setting').get<string>('translationSelection'),
+            },
+            document,
+        );
 
         // Define a method to update Webview
         function sendDocumentToWebview() {
@@ -62,6 +72,16 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
 			changeDocumentSubscription.dispose();
 		});
 
+        vscode.workspace.onDidChangeConfiguration(e => {
+            if (e.affectsConfiguration('betonquest.setting.translationSelection')) {
+                console.log("sendding betonquest-translationSelection into webview ...");
+                webviewPanel.webview.postMessage({
+                    type: 'betonquest-translationSelection',
+                    content: vscode.workspace.getConfiguration('betonquest.setting').get<string>('translationSelection')
+                });
+            }
+        });
+
 		// Receive message from the webview.
 		webviewPanel.webview.onDidReceiveMessage(e => {
 			switch (e.type) {
@@ -72,12 +92,11 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                             sendDocumentToWebview();
                             return;
                     }
-				case 'edit':
-					console.log(e.content);
 
+                case 'edit':
+					console.log(e.content);
                     // update editted yml
                     this.updateTextDocument(document, e.content);
-
 					return;
 
 				case 'save':
@@ -89,6 +108,14 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                     console.log(e);
                     vscode.window.showInformationMessage("received test message from webview to extension: " + e.content);
                     return;
+
+                // Update translation selction configuration.
+                case 'set-betonquest-translationSelection':
+                    console.log("got betonquest-translationSelection from webview:", e.content);
+                    vscode.workspace.getConfiguration('betonquest.setting').update('translationSelection', e.content, vscode.ConfigurationTarget.Global);
+                    // setTimeout(() => {
+                        console.log("new betonquest-translationSelection:", vscode.workspace.getConfiguration('betonquest.setting').get<string>('translationSelection'));
+                    // }, 1000);
 			}
 		});
     }
@@ -105,7 +132,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
     }
 
     // Initialize Webview content
-    private getWebviewContent(webview: vscode.Webview, document: vscode.TextDocument): string {
+    private getWebviewContent(webview: vscode.Webview, initialConfig: InitialConfig, document: vscode.TextDocument): string {
 
         // get root.js url for React-JS
         const reactAppPathOnDisk = vscode.Uri.joinPath(this.context.extensionUri, "dist", "conversationEditor.js");
@@ -125,14 +152,14 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
             />
     
             <script>
-              window.acquireVsCodeApi = acquireVsCodeApi;
+                window.acquireVsCodeApi = acquireVsCodeApi;
+                window.initialConfig = ${JSON.stringify(initialConfig)};
             </script>
         </head>
         <body>
             <div id="root"></div>
     
             <script src="${webview.asWebviewUri(reactAppPathOnDisk)}"></script>
-            <!--<script src="https://file%2B.vscode-resource.vscode-cdn.net/Users/kenneth/projects/vscode-webpack/dist/conversationeditor.js"></script>-->
         </body>
         </html>`;
     }
