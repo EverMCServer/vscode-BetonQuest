@@ -10,15 +10,17 @@ export interface YamlReaderOutput {
 
 export function readYaml(
   fileName: string,
-  text: string
+  text: string,
+  translationSelection: string,
 ): YamlReaderOutput | null {
   const data = yaml.load(text) as ConversationYamlModel;
-  return parseYaml(fileName, data);
+  return parseYaml(fileName, data, translationSelection);
 }
 
 export function parseYaml(
   fileName: string,
-  yaml: ConversationYamlModel
+  yaml: ConversationYamlModel,
+  translationSelection: string
 ): YamlReaderOutput | null {
   // Load
   const npcOptions = yaml.NPC_options;
@@ -34,8 +36,7 @@ export function parseYaml(
     id: "startNodeID",
     type: "startNode",
     position: { x: 0, y: 0 },
-    // data: { name: "start", text: fileName, text2: yaml.quester, text3: yaml.stop },
-    data: { name: "start", fileName: fileName, yaml: yaml },
+    data: { name: "start", fileName: fileName, yaml: yaml, translationSelection: translationSelection },
   };
   const startNodes: Record<string, Node> = { startNodeID: startNode };
 
@@ -65,6 +66,7 @@ export function parseYaml(
         events: stringSplitToArray(events),
         conditions: stringSplitToArray(conditions),
         pointers: pointers,
+        translationSelection: translationSelection,
       },
     };
     npcNodes[idKey] = dict;
@@ -96,6 +98,7 @@ export function parseYaml(
         events: stringSplitToArray(events),
         conditions: stringSplitToArray(conditions),
         pointers: pointers,
+        translationSelection: translationSelection,
       },
     };
     playerNodes[idKey] = dict;

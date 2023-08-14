@@ -41,13 +41,11 @@ export default memo(({ data, selected }: NodeProps) => {
 
   // Text
   const textGet = (): string => {
-    // const option = Object.assign(new ConversationYamlOptionModel(), data["option"]) as ConversationYamlOptionModel;
-    // return option.getText('en');
-    return Object.assign(new ConversationYamlOptionModel(), data["option"]).getText('en');
+    return Object.assign(new ConversationYamlOptionModel(), data["option"]).getText(data["translationSelection"]);
   };
   const textUpdate = (value: string): void => {
     const option = Object.assign(new ConversationYamlOptionModel(), data["option"]) as ConversationYamlOptionModel;
-    option.setText(value, 'en');
+    option.setText(value, data["translationSelection"]);
     data["option"] = option;
     
     refreshUI();

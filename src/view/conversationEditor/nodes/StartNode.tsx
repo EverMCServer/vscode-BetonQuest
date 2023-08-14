@@ -28,10 +28,10 @@ export default memo(({ data, selected }: NodeProps) => {
 
   // NPC's display name
   const getQuester = (): string => {
-    return Object.assign(new ConversationYamlModel(), data["yaml"]).getQuester("en") || "";
+    return Object.assign(new ConversationYamlModel(), data["yaml"]).getQuester(data["translationSelection"]) || "";
   };
   const setQuester = (value: string): void => {
-    Object.assign(new ConversationYamlModel(), data["yaml"]).setQuester(value, "en");
+    Object.assign(new ConversationYamlModel(), data["yaml"]).setQuester(value, data["translationSelection"]);
     refreshUI();
   };
 
