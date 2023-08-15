@@ -26,3 +26,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Changed
 - The Conversation Flowchart is now activated by the Text Editor's tool-bar located on the top right corner
+
+## [0.0.4] - 2023-08-15
+
+### Added
+- Avoid flowchart flickering while editing YAML by delaying the docuemnt update

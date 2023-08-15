@@ -61,9 +61,18 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
 		// Remember that a single text document can also be shared between multiple custom
 		// editors (this happens for example when you split a custom editor)
 
+        let timeoutHandler: NodeJS.Timeout; // Use timeout to avoid frenquent update / flowchart flickering
         const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(e => {
 			if (e.document.uri.toString() === document.uri.toString()) {
+                clearTimeout(timeoutHandler);
+                if (e.reason === 1 || 2) {
+                    // If docuemnt is changed by undo / redo, it should be updated immediately
 				sendDocumentToWebview();
+                } else {
+                    timeoutHandler = setTimeout(()=>{
+                        sendDocumentToWebview();
+                    }, 1000);
+                }
 			}
 		});
 
