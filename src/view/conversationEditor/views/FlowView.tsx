@@ -442,22 +442,34 @@ function MyFlowView() {
     [resetFlow]
   );
 
-  /* Keyup */
+  /* Update Yaml content when user modified the flowchart */
 
   React.useEffect(() => {
-    const handleKeyUp = (e: KeyboardEvent) => {
-      const ignoreKeys = ["Control", "Meta", "Shift", "Alt", "Tab", "CapsLock"];
 
-      if (
-        ignoreKeys.includes(e.key) ||
-        e.ctrlKey ||
-        e.metaKey ||
-        e.shiftKey ||
-        e.altKey
-      ) {
-        return;
-      }
-      onDownloadYML();
+    const ignoreKeys = ["Control", "Meta", "Shift", "Alt", "Tab", "CapsLock", "ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"];
+    let timeoutHandler: number;
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+
+      // Prevent Yaml update if a user is still typing.
+      window.clearTimeout(timeoutHandler);
+
+      // Delayed Yaml update.
+      timeoutHandler = window.setTimeout(()=>{
+        // Skip certain keys
+        if (
+          ignoreKeys.includes(e.key) ||
+          e.ctrlKey ||
+          e.metaKey ||
+          e.shiftKey ||
+          e.altKey
+        ) {
+          return;
+        }
+        // Update
+        onDownloadYML();
+      }, 1000);
+
     };
 
     window.addEventListener("keyup", handleKeyUp);

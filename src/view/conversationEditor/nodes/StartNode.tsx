@@ -31,7 +31,7 @@ export default memo(({ data, selected }: NodeProps) => {
     return Object.assign(new ConversationYamlModel(), data["yaml"]).getQuester(data["translationSelection"]) || "";
   };
   const setQuester = (value: string): void => {
-    const yaml = Object.assign(new ConversationYamlModel(), data["yaml"])
+    const yaml = Object.assign(new ConversationYamlModel(), data["yaml"]);
     yaml.setQuester(value, data["translationSelection"]);
     data["yaml"] = yaml;
 
