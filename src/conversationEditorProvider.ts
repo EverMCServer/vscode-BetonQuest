@@ -89,10 +89,19 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
 			}
 		});
 
-        // Make sure we get rid of the listener when our editor is closed.
-		webviewPanel.onDidDispose(() => {
-			changeDocumentSubscription.dispose();
-		});
+        // Try to save the document again if the document sync from webview is delayed
+        const saveDocumentSubscription = vscode.workspace.onDidSaveTextDocument((e)=>{
+            if (e.uri.toString() === document.uri.toString()) {
+                setTimeout(() => {
+                    if (document.isDirty) {
+                        console.log("dirty");
+                        e.save();
+                    } else {
+                        console.log("non-dirty");
+                    }
+                }, 1000);
+            }
+        });
 
         vscode.workspace.onDidChangeConfiguration(e => {
             if (e.affectsConfiguration('betonquest.setting.translationSelection')) {
@@ -141,6 +150,12 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                         console.log("new betonquest-translationSelection:", vscode.workspace.getConfiguration('betonquest.setting').get<string>('translationSelection'));
                     // }, 1000);
 			}
+		});
+
+        // Make sure we get rid of the listener when our editor is closed.
+		webviewPanel.onDidDispose(() => {
+			changeDocumentSubscription.dispose();
+            saveDocumentSubscription.dispose();
 		});
     }
 

@@ -451,21 +451,22 @@ function MyFlowView() {
 
     const handleKeyUp = (e: KeyboardEvent) => {
 
+      // Skip certain keys
+      if (
+        ignoreKeys.includes(e.key) ||
+        e.ctrlKey ||
+        e.metaKey ||
+        e.shiftKey ||
+        e.altKey
+      ) {
+        return;
+      }
+
       // Prevent Yaml update if a user is still typing.
       window.clearTimeout(timeoutHandler);
 
       // Delayed Yaml update.
       timeoutHandler = window.setTimeout(()=>{
-        // Skip certain keys
-        if (
-          ignoreKeys.includes(e.key) ||
-          e.ctrlKey ||
-          e.metaKey ||
-          e.shiftKey ||
-          e.altKey
-        ) {
-          return;
-        }
         // Update
         onDownloadYML();
       }, 1000);
