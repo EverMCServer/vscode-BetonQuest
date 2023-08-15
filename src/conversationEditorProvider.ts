@@ -47,6 +47,9 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
 
         // Document Cache, prevents duplicated update
         let documentCache: string = "";
+        // workaround https://github.com/Microsoft/vscode/issues/50344
+        let firstTimeDocumentCache: string = "";
+        let nonFirstTimeUpdate: boolean = false;
 
         // Define a method to update Webview
         function sendDocumentToWebview() {
@@ -69,9 +72,10 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
         const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(e => {
 			if (e.document.uri.toString() === document.uri.toString()) {
                 // Update only when document changed
-                if (documentCache !== document.getText()) {
+                let doc = document.getText();
+                if ((nonFirstTimeUpdate || firstTimeDocumentCache !== doc) && documentCache !== doc) {
                     clearTimeout(timeoutHandler);
-                    if (e.reason === 1 || 2) {
+                    if (e.reason === 1 || e.reason === 2) {
                         // If docuemnt is changed by undo / redo, it should be updated immediately
                         sendDocumentToWebview();
                     } else {
@@ -79,6 +83,8 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                             sendDocumentToWebview();
                         }, 1000);
                     }
+                } else if (firstTimeDocumentCache === doc) {
+                    nonFirstTimeUpdate = true;
                 }
 			}
 		});
@@ -105,6 +111,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                     switch (e.content) {
                         case 'started':
                             // When the webview just started, send the initial document to webview.
+                            firstTimeDocumentCache = document.getText();
                             sendDocumentToWebview();
                             return;
                     }
