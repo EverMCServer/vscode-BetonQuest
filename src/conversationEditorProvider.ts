@@ -45,12 +45,16 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
             document,
         );
 
+        // Document Cache, prevents duplicated update
+        let documentCache: string = "";
+
         // Define a method to update Webview
         function sendDocumentToWebview() {
             webviewPanel.webview.postMessage({
                 type: 'update',
                 content: document.getText()
             });
+            documentCache = document.getText();
         }
 
         // Hook up event handlers so that we can synchronize the webview with the text document.
@@ -64,14 +68,17 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
         let timeoutHandler: NodeJS.Timeout; // Use timeout to avoid frenquent update / flowchart flickering
         const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(e => {
 			if (e.document.uri.toString() === document.uri.toString()) {
-                clearTimeout(timeoutHandler);
-                if (e.reason === 1 || 2) {
-                    // If docuemnt is changed by undo / redo, it should be updated immediately
-				sendDocumentToWebview();
-                } else {
-                    timeoutHandler = setTimeout(()=>{
+                // Update only when document changed
+                if (documentCache !== document.getText()) {
+                    clearTimeout(timeoutHandler);
+                    if (e.reason === 1 || 2) {
+                        // If docuemnt is changed by undo / redo, it should be updated immediately
                         sendDocumentToWebview();
-                    }, 1000);
+                    } else {
+                        timeoutHandler = setTimeout(()=>{
+                            sendDocumentToWebview();
+                        }, 1000);
+                    }
                 }
 			}
 		});
@@ -102,14 +109,15 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                             return;
                     }
 
+                // update editted yml
                 case 'edit':
-					console.log(e.content);
-                    // update editted yml
+					// console.log(e.content);
                     this.updateTextDocument(document, e.content);
+                    documentCache = e.content;
 					return;
 
 				case 'save':
-					console.log(document, e.id);
+					// console.log(document, e.id);
 					return;
 
                 case 'test-from-webview':

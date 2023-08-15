@@ -31,3 +31,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Added
 - Avoid flowchart flickering while editing YAML by delaying the docuemnt update
+
+### Fixed
+- Focus lost the first time typing
+- Focus lost typing too fast

@@ -492,12 +492,12 @@ function MyFlowView() {
     }
     // downloadFile(`${data.fileName}.yml`, data.content, "yml");
 
-    cachedYml = data.content;
     // console.log("3333", data.content);
     vscode.postMessage({
       type: "edit",
       content: data.content,
     });
+    cachedYml = data.content;
   }, [getNodes, getEdges]);
 
   const onUploadYML = useCallback(() => {
