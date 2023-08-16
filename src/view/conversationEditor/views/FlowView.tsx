@@ -61,7 +61,7 @@ const nodeTypes = {
   startNode: StartNode,
 };
 
-// test globalThis
+// Global variables from vscode
 declare global {
   var initialConfig: {
     translationSelection?: string; // Conversation YAML's translation selection.

@@ -4,19 +4,14 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
-
-## [0.0.1] - 2023-07-28
+## [0.0.4] - 2023-08-16
 
 ### Added
-- Initial release
-- Initial Conversation's editor
-
-## [0.0.2] - 2023-07-30
+- Avoid flowchart flickering while editing YAML by delaying the docuemnt update
 
 ### Fixed
-- Fix editing on graph is not sync to files
-- Fix editor display name
+- Focus lost the first time typing
+- Focus lost typing too fast
 
 ## [0.0.3] - 2023-08-14
 
@@ -27,11 +22,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Changed
 - The Conversation Flowchart is now activated by the Text Editor's tool-bar located on the top right corner
 
-## [0.0.4] - 2023-08-15
-
-### Added
-- Avoid flowchart flickering while editing YAML by delaying the docuemnt update
+## [0.0.2] - 2023-07-30
 
 ### Fixed
-- Focus lost the first time typing
-- Focus lost typing too fast
+- Fix editing on graph is not sync to files
+- Fix editor display name
+
+## [0.0.1] - 2023-07-28
+
+### Added
+- Initial release
+- Initial Conversation's editor
+
+## [Unreleased]

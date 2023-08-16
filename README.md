@@ -21,20 +21,26 @@ A GUI based editor for [BetonQuest 2.0](https://github.com/BetonQuest/BetonQuest
 
 ## Extension Settings
 
-(Custom settings might come in the future.)
+- Translation Selection - The translation selection for conversation flowchart. Default to 'en'.
 
 ## Known Issues
 
 Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/issues
 
+- Translation selection is reverted when switching between conversation editors.
 - Zoom-in and out is limited to certain degrees.
 - Lines in Yaml files are re-ordered while editing.
 - Original comments in Yaml files are erased while editing.
-- Typing on flowchart the first time or too fast will cause the cursor lost focus from text boxes [#3](https://github.com/EverMCServer/vscode-BetonQuest/issues/3).
 
 ## Release Notes
 
 For more detailes, please check [CHANGELOG.md](CHANGELOG.md).
+
+## 0.0.4
+
+- Avoid flowchart flickering while editing YAML by delaying the docuemnt update
+- Focus lost the first time typing
+- Focus lost typing too fast
 
 ### 0.0.3
 
