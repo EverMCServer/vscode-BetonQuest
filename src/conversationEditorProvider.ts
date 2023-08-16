@@ -99,7 +99,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                     } else {
                         console.log("non-dirty");
                     }
-                }, 1000);
+                }, 2000);
             }
         });
 
