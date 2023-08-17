@@ -45,19 +45,12 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
             document,
         );
 
-        // Document Cache, prevents duplicated update
-        let documentCache: string = "";
-        // workaround https://github.com/Microsoft/vscode/issues/50344
-        let firstTimeDocumentCache: string = "";
-        let nonFirstTimeUpdate: boolean = false;
-
         // Define a method to update Webview
         function sendDocumentToWebview() {
             webviewPanel.webview.postMessage({
                 type: 'update',
                 content: document.getText()
             });
-            documentCache = document.getText();
         }
 
         // Hook up event handlers so that we can synchronize the webview with the text document.
@@ -71,20 +64,14 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
         let timeoutHandler: NodeJS.Timeout; // Use timeout to avoid frenquent update / flowchart flickering
         const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(e => {
 			if (e.document.uri.toString() === document.uri.toString()) {
-                // Update only when document changed
-                let doc = document.getText();
-                if ((nonFirstTimeUpdate || firstTimeDocumentCache !== doc) && documentCache !== doc) {
-                    clearTimeout(timeoutHandler);
-                    if (e.reason === 1 || e.reason === 2) {
-                        // If docuemnt is changed by undo / redo, it should be updated immediately
+                clearTimeout(timeoutHandler);
+                if (e.reason === 1 || e.reason === 2) {
+                    // If docuemnt is changed by undo / redo, it should be updated immediately
+                    sendDocumentToWebview();
+                } else {
+                    timeoutHandler = setTimeout(()=>{
                         sendDocumentToWebview();
-                    } else {
-                        timeoutHandler = setTimeout(()=>{
-                            sendDocumentToWebview();
-                        }, 1000);
-                    }
-                } else if (firstTimeDocumentCache === doc) {
-                    nonFirstTimeUpdate = true;
+                    }, 1000);
                 }
 			}
 		});
@@ -120,7 +107,6 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                     switch (e.content) {
                         case 'started':
                             // When the webview just started, send the initial document to webview.
-                            firstTimeDocumentCache = document.getText();
                             sendDocumentToWebview();
 
                             // Send initial configs
@@ -137,7 +123,6 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                 case 'edit':
 					// console.log(e.content);
                     this.updateTextDocument(document, e.content);
-                    documentCache = e.content;
 					return;
 
 				case 'save':
