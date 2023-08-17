@@ -31,6 +31,14 @@
         }
       },
       {
+        "command": "betonquest.openEventsEditor",
+        "title": "BetonQuest: Open Events GUI",
+        "icon": {
+          "light": "assets/icon-events-light.svg",
+          "dark": "assets/icon-events-dark.svg"
+        }
+      },
+      {
         "command": "betonquest.openExampleEditor",
         "title": "BetonQuest: Open Example Editor (debug only)"
       }
@@ -40,6 +48,11 @@
         {
           "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /conversations\\/.*\\.ya?ml$/",
           "command": "betonquest.openConversationEditor",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /events\\.ya?ml$/ && canActivateEventsEditor",
+          "command": "betonquest.openEventsEditor",
           "group": "navigation"
         }
       ]
@@ -51,7 +64,17 @@
         "priority": "option",
         "selector": [
           {
-            "filenamePattern": "**/conversations/*.yml"
+            "filenamePattern": "**/conversations/*.ya?ml"
+          }
+        ]
+      },
+      {
+        "viewType": "betonquest.eventsEditor",
+        "displayName": "Events GUI",
+        "priority": "option",
+        "selector": [
+          {
+            "filenamePattern": "**/events.ya?ml"
           }
         ]
       },

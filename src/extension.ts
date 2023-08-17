@@ -5,6 +5,8 @@ import { ConversationEditorProvider } from "./conversationEditorProvider";
 // import { ExampleEditorProvider } from './exampleEditorProvider';
 import { setLocale } from "./i18n/i18n";
 import { ExampleEditorProvider } from "./exampleEditorProvider";
+import * as fs from 'fs';
+import * as path from 'path';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -14,6 +16,24 @@ export function activate(context: vscode.ExtensionContext) {
   // console.log(
   //   'Congratulations, your extension "betonquest" is now active!'
   // );
+
+  // Show Events Editor activation button only when it is appropriate
+  vscode.workspace.onDidOpenTextDocument(async (document) => {
+    if (document.fileName.endsWith('events.yml')) {
+      const dir = path.dirname(document.fileName);
+
+      // Check for config.yml
+      const configFile = path.join(dir, 'main.yml');
+      const configExists = fs.existsSync(configFile);
+
+      // Check for conversations folder
+      const conversationsDir = path.join(dir, 'conversations');
+      const conversationsExists = fs.existsSync(conversationsDir) && fs.statSync(conversationsDir).isDirectory();
+
+      // Set the context variable based on the result
+      vscode.commands.executeCommand('setContext', 'canActivateEventsEditor', configExists && conversationsExists);
+    }
+  });
 
   // Command to open the Conversation Editor
   context.subscriptions.push(
