@@ -85,8 +85,7 @@ function MyFlowView() {
   } = useReactFlow();
 
   // Cache translation selection
-  let translationSelection = globalThis.initialConfig.translationSelection;
-  // const [translationSelection, setTranslationSelection] = useState(globalThis.initialConfig.translationSelection);
+  const [translationSelection, setTranslationSelection] = useState(globalThis.initialConfig.translationSelection);
 
   // Caching multilingual status
   let isYamlMultilingual = false;
@@ -618,8 +617,7 @@ function MyFlowView() {
 
       // Receive translationSelection setting
       case "betonquest-translationSelection":
-        translationSelection = message.content;
-        // setTranslationSelection(message.content);
+        setTranslationSelection(message.content);
         updateFlowChart("fileName", cachedYml, message.content);
 
         break;

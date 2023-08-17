@@ -4,6 +4,11 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.5] - TBD
+
+### Fixed
+- Fix translation selection is reverted when switching between conversation editors
+
 ## [0.0.4] - 2023-08-16
 
 ### Added

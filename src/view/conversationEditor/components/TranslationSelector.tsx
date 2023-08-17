@@ -62,7 +62,6 @@ function onTranslationChange(value: string) {
 interface Props {
     enabled: boolean,
     selectedLanguage?: string,
-    defaultLanguage?: string,
     languages?: string[], // Languages detected from conversation yaml
 }
 
@@ -81,7 +80,7 @@ export default function translationSelector(props: Props): React.JSX.Element {
     /> */}
     <Select
         style={!props.enabled?{display: "none"}:{}}
-        defaultValue={props.selectedLanguage}
+        value={props.selectedLanguage}
         size="small"
         // disabled={props.enabled?!false:!translationEnabledWithSwitch}
         showSearch

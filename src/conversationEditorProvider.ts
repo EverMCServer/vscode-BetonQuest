@@ -122,8 +122,16 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                             // When the webview just started, send the initial document to webview.
                             firstTimeDocumentCache = document.getText();
                             sendDocumentToWebview();
+
+                            // Send initial configs
+                            // Translation setting
+                            webviewPanel.webview.postMessage({
+                                type: 'betonquest-translationSelection',
+                                content: vscode.workspace.getConfiguration('betonquest.setting').get<string>('translationSelection')
+                            });
                             return;
                     }
+                    return;
 
                 // update editted yml
                 case 'edit':
@@ -146,9 +154,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                 case 'set-betonquest-translationSelection':
                     console.log("got betonquest-translationSelection from webview:", e.content);
                     vscode.workspace.getConfiguration('betonquest.setting').update('translationSelection', e.content, vscode.ConfigurationTarget.Global);
-                    // setTimeout(() => {
-                        console.log("new betonquest-translationSelection:", vscode.workspace.getConfiguration('betonquest.setting').get<string>('translationSelection'));
-                    // }, 1000);
+                    return;
 			}
 		});
 

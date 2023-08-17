@@ -27,7 +27,6 @@ A GUI based editor for [BetonQuest 2.0](https://github.com/BetonQuest/BetonQuest
 
 Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/issues
 
-- Translation selection is reverted when switching between conversation editors.
 - Zoom-in and out is limited to certain degrees.
 - Lines in Yaml files are re-ordered while editing.
 - Original comments in Yaml files are erased while editing.
@@ -36,7 +35,11 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 
 For more detailes, please check [CHANGELOG.md](CHANGELOG.md).
 
-## 0.0.4
+### 0.0.5
+
+- Fix translation selection is reverted when switching between conversation editors
+
+### 0.0.4
 
 - Avoid flowchart flickering while editing YAML by delaying the docuemnt update
 - Focus lost the first time typing
