@@ -35,6 +35,10 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 
 For more detailes, please check [CHANGELOG.md](CHANGELOG.md).
 
+### 0.0.6
+
+- Fix extension is not being activated when used the first time.
+
 ### 0.0.5
 
 - Fix translation selection is reverted when switching between conversation editors

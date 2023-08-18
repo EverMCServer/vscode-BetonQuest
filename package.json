@@ -3,7 +3,7 @@
   "publisher": "EverMC",
   "displayName": "BetonQuest",
   "description": "A GUI for BetonQuest scripting",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -18,7 +18,11 @@
     "type": "git",
     "url": "https://github.com/EverMCServer/vscode-BetonQuest.git"
   },
-  "activationEvents": [],
+  "activationEvents": [
+    "workspaceContains:**/main.yml",
+    "workspaceContains:**/main.yaml",
+    "workspaceContains:**/conversations/"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
