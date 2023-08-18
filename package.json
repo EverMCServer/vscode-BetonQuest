@@ -34,8 +34,8 @@
         "command": "betonquest.openEventsEditor",
         "title": "BetonQuest: Open Events GUI",
         "icon": {
-          "light": "assets/icon-events-light.svg",
-          "dark": "assets/icon-events-dark.svg"
+          "light": "assets/icon-events-edit-light.svg",
+          "dark": "assets/icon-events-edit-dark.svg"
         }
       },
       {
@@ -46,12 +46,12 @@
     "menus": {
       "editor/title": [
         {
-          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /conversations\\/.*\\.ya?ml$/",
+          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /conversations\\/.+\\.ya?ml$/ && canActivateConversationEditor",
           "command": "betonquest.openConversationEditor",
           "group": "navigation"
         },
         {
-          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /events\\.ya?ml$/ && canActivateEventsEditor",
+          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /\\/events\\.ya?ml$/ && canActivateEventsEditor",
           "command": "betonquest.openEventsEditor",
           "group": "navigation"
         }

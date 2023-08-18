@@ -2,9 +2,9 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import { ConversationEditorProvider } from "./conversationEditorProvider";
-// import { ExampleEditorProvider } from './exampleEditorProvider';
+import { EventsEditorProvider } from "./eventsEditorProvider";
+import { ExampleEditorProvider } from './exampleEditorProvider';
 import { setLocale } from "./i18n/i18n";
-import { ExampleEditorProvider } from "./exampleEditorProvider";
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -17,23 +17,47 @@ export function activate(context: vscode.ExtensionContext) {
   //   'Congratulations, your extension "betonquest" is now active!'
   // );
 
-  // Show Events Editor activation button only when it is appropriate
-  vscode.workspace.onDidOpenTextDocument(async (document) => {
-    if (document.fileName.endsWith('events.yml')) {
+  // Check if the custom editor's buttons should be shown.
+  function checkCanActivateEditor(document: vscode.TextDocument) {
+    // Show Conversation Editor activation button only when it is appropriate
+    if (document.fileName.match(/\/conversations\/.+\.ya?ml$/g)) {
+      const dir = path.resolve(path.dirname(document.fileName), "..");
+
+      // Check for main.yml
+      const mainFile = path.join(dir, 'main.yml');
+      const mainExists = fs.existsSync(mainFile);
+
+      // Set the context variable based on the result
+      vscode.commands.executeCommand('setContext', 'canActivateConversationEditor', mainExists);
+    }
+
+    // Show Events, Conditions, Objectives, Items Editor activation button only when it is appropriate
+    if (
+      document.fileName.match(/\/events.ya?ml$/) ||
+      document.fileName.match(/\/conditions.ya?ml$/) ||
+      document.fileName.match(/\/objectives.ya?ml$/) ||
+      document.fileName.match(/\/items.ya?ml$/)
+      ) {
       const dir = path.dirname(document.fileName);
 
-      // Check for config.yml
-      const configFile = path.join(dir, 'main.yml');
-      const configExists = fs.existsSync(configFile);
+      // Check for main.yml
+      const mainFile = path.join(dir, 'main.yml');
+      const mainExists = fs.existsSync(mainFile);
 
       // Check for conversations folder
       const conversationsDir = path.join(dir, 'conversations');
       const conversationsExists = fs.existsSync(conversationsDir) && fs.statSync(conversationsDir).isDirectory();
 
       // Set the context variable based on the result
-      vscode.commands.executeCommand('setContext', 'canActivateEventsEditor', configExists && conversationsExists);
+      vscode.commands.executeCommand('setContext', 'canActivateEventsEditor', mainExists && conversationsExists);
     }
-  });
+  }
+  // Iterate all opened documents on start-up.
+  for (const document of vscode.workspace.textDocuments) {
+    checkCanActivateEditor(document);
+  }
+  // Listen for future opened documents.
+  vscode.workspace.onDidOpenTextDocument(async (e) => checkCanActivateEditor(e));
 
   // Command to open the Conversation Editor
   context.subscriptions.push(
@@ -47,6 +71,22 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         await vscode.commands.executeCommand('vscode.openWith', activeTextEditor.document.uri, 'betonquest.conversationEditor', vscode.ViewColumn.Beside);
+      }
+    )
+  );
+
+  // Command to open the Events Editor
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      'betonquest.openEventsEditor',
+      async () => {
+
+        const activeTextEditor = vscode.window.activeTextEditor;
+        if (!activeTextEditor) {
+            return; // No active editor
+        }
+
+        await vscode.commands.executeCommand('vscode.openWith', activeTextEditor.document.uri, 'betonquest.eventsEditor', vscode.ViewColumn.Beside);
       }
     )
   );
@@ -72,6 +112,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Register custom editor
   context.subscriptions.push(ConversationEditorProvider.register(context));
+  context.subscriptions.push(EventsEditorProvider.register(context));
   context.subscriptions.push(ExampleEditorProvider.register(context));
 }
 
