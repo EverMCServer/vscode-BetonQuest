@@ -6,13 +6,23 @@ A GUI based editor for [BetonQuest 2.0](https://github.com/BetonQuest/BetonQuest
 
 ## Features
 
-- Edit `Conversations` with an interactive flowchart UI.
-- (planning) Base `Events`, `Conditions`, `Objectives` Editors with fully [documentation](https://docs.betonquest.org/2.0-DEV/Documentation/Overview/) support.
-- (planning) [Journal](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Journal/) editing.
-- (planning) [Items](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Items/) editing.
-- (planning) [Intergrated plugins](https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Building-Blocks/Integration-List/) support.
-- (planning) Package configuration.
-- (planning) [Menu](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Menus/Menu/) editing.
+### Conversations Editor
+
+Edit `Conversations` with an interactive flowchart UI:
+![demo](assets/screenshot-demo-conversation.gif)
+
+Create and link options with drag-and-drop:
+![demo](assets/screenshot-demo-conversation-new-option.gif)
+
+
+### Feature Roadmap
+- [x] Edit `Conversations` with an interactive flowchart UI.
+- [ ] Basic `Events`, `Conditions`, `Objectives` Editors with fully [documentation](https://docs.betonquest.org/2.0-DEV/Documentation/Overview/) support.
+- [ ] [Journal](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Journal/) editing.
+- [ ] [Items](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Items/) editing.
+- [ ] [Intergrated plugins](https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Building-Blocks/Integration-List/) support.
+- [ ] Package configuration.
+- [ ] [Menu](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Menus/Menu/) editing.
 - and more. Please [suggest](https://github.com/EverMCServer/vscode-BetonQuest/issues).
 
 ## Limitations
