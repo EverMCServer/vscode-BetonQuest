@@ -1,134 +1,43 @@
 {
-  "name": "betonquest",
-  "publisher": "EverMC",
-  "displayName": "BetonQuest",
-  "description": "A GUI for BetonQuest scripting",
-  "version": "0.0.6",
-  "engines": {
-    "vscode": "^1.80.0"
-  },
-  "license": "AGPL-3.0",
-  "categories": [
-    "Other"
-  ],
-  "bugs": {
-    "url": "https://github.com/EverMCServer/vscode-BetonQuest/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/EverMCServer/vscode-BetonQuest.git"
-  },
-  "activationEvents": [
-    "workspaceContains:**/main.yml",
-    "workspaceContains:**/main.yaml",
-    "workspaceContains:**/conversations/"
-  ],
-  "main": "./dist/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "betonquest.openConversationEditor",
-        "title": "BetonQuest: Open Conversation Flowchart",
-        "icon": {
-          "light": "assets/icon-conversations-edit-light.svg",
-          "dark": "assets/icon-conversations-edit-dark.svg"
-        }
-      },
-      {
-        "command": "betonquest.openEventsEditor",
-        "title": "BetonQuest: Open Events GUI",
-        "icon": {
-          "light": "assets/icon-events-edit-light.svg",
-          "dark": "assets/icon-events-edit-dark.svg"
-        }
-      }
-    ],
-    "menus": {
-      "editor/title": [
-        {
-          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /conversations\\/.+\\.ya?ml$/ && canActivateConversationEditor",
-          "command": "betonquest.openConversationEditor",
-          "group": "navigation"
-        },
-        {
-          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /\\/events\\.ya?ml$/ && canActivateEventsEditor",
-          "command": "betonquest.openEventsEditor",
-          "group": "navigation"
-        }
-      ]
-    },
-    "customEditors": [
-      {
-        "viewType": "betonquest.conversationEditor",
-        "displayName": "Conversation Flowchart",
-        "priority": "option",
-        "selector": [
-          {
-            "filenamePattern": "**/conversations/*.ya?ml"
-          }
-        ]
-      },
-      {
-        "viewType": "betonquest.eventsEditor",
-        "displayName": "Events GUI",
-        "priority": "option",
-        "selector": [
-          {
-            "filenamePattern": "**/events.ya?ml"
-          }
-        ]
-      }
-    ],
-    "configuration": {
-      "title": "BetonQuest",
-      "properties": {
-        "betonquest.setting.translationSelection": {
-          "type": "string",
-          "default": "en",
-          "description": "The translation selection for conversation flowchart. Default to 'en'."
-        }
-      }
-    }
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "npm-run-all compile:*",
-    "watch": "npm-run-all -p watch:*",
-    "compile:extension": "tsc -p ./",
-    "compile:views": "webpack --mode development",
-    "watch:extension": "tsc -watch -p ./",
-    "watch:views": "webpack --watch --mode development"
-  },
-  "devDependencies": {
-    "@types/glob": "^8.1.0",
-    "@types/js-yaml": "^4.0.5",
-    "@types/mocha": "^10.0.1",
-    "@types/node": "20.2.5",
-    "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
-    "@types/vscode": "^1.80.0",
-    "@types/vscode-webview": "^1.57.1",
-    "@typescript-eslint/eslint-plugin": "^5.59.8",
-    "@typescript-eslint/parser": "^5.59.8",
-    "@vscode/test-electron": "^2.3.2",
-    "css-loader": "^6.8.1",
-    "eslint": "^8.41.0",
-    "glob": "^8.1.0",
-    "mocha": "^10.2.0",
-    "npm-run-all": "^4.1.5",
-    "style-loader": "^3.3.3",
-    "ts-loader": "^9.4.3",
-    "typescript": "^5.1.3",
-    "webpack": "^5.85.0",
-    "webpack-cli": "^5.1.1"
-  },
+  "name": "events-view",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "antd": "^5.8.3",
-    "html-to-image": "^1.11.11",
-    "js-yaml": "^4.1.0",
-    "module_name": "^1.0.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.40",
+    "@types/react": "^18.2.19",
+    "@types/react-dom": "^18.2.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "reactflow": "^11.7.4"
+    "react-scripts": "5.0.1",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

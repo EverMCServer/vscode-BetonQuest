@@ -1,64 +1,46 @@
-# BetonQuest Visual Editor
+# Getting Started with Create React App
 
-A GUI based editor for [BetonQuest 2.0](https://github.com/BetonQuest/BetonQuest) scripting.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-![conversation editor](assets/screenshot-conversation-light.jpg)
+## Available Scripts
 
-## Features
+In the project directory, you can run:
 
-- Edit `Conversations` with an interactive flowchart UI.
-- (planning) Base `Events`, `Conditions`, `Objectives` Editors with fully [documentation](https://docs.betonquest.org/2.0-DEV/Documentation/Overview/) support.
-- (planning) [Journal](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Journal/) editing.
-- (planning) [Items](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Items/) editing.
-- (planning) [Intergrated plugins](https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Building-Blocks/Integration-List/) support.
-- (planning) Package configuration.
-- (planning) [Menu](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Menus/Menu/) editing.
-- and more. Please [suggest](https://github.com/EverMCServer/vscode-BetonQuest/issues).
+### `npm start`
 
-## Limitations
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-- `Conversations` Editor does not support [cross-conversation pointers](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Conversations/#cross-conversation-pointers) at this moment.
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
 
-## Extension Settings
+### `npm test`
 
-- Translation Selection - The translation selection for conversation flowchart. Default to 'en'.
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-## Known Issues
+### `npm run build`
 
-Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/issues
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-- Zoom-in and out is limited to certain degrees.
-- Lines in Yaml files are re-ordered while editing.
-- Original comments in Yaml files are erased while editing.
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-## Release Notes
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-For more detailes, please check [CHANGELOG.md](CHANGELOG.md).
+### `npm run eject`
 
-### 0.0.6
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-- Fix extension is not being activated when VSCode is started the first time.
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-### 0.0.5
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-- Fix translation selection is reverted when switching between conversation editors
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-### 0.0.4
+## Learn More
 
-- Avoid flowchart flickering while editing YAML by delaying the docuemnt update
-- Focus lost the first time typing
-- Focus lost typing too fast
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-### 0.0.3
-
-- Translation selection
-- Configuration to set your default translation selection
-- The Conversation Flowchart is now activated by the Text Editor's tool-bar which located on the top right corner
-
-### 0.0.2
-
-- Bug fixes
-
-### 0.0.1
-
-- Initial Conversation's editor
+To learn React, check out the [React documentation](https://reactjs.org/).

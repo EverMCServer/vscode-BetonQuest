@@ -1,29 +1,26 @@
 {
-	"compilerOptions": {
-		"module": "CommonJS",
-		"target": "ES5",
-		"outDir": "out",
-		"lib": [
-			"ES5",
-			"dom"
-		],
-		"sourceMap": true,
-		"rootDir": "src",
-		"jsx": "react-jsx",
-		"strict": true, /* enable all strict type-checking options */
-		/* Additional Checks */
-		// "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
-		// "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
-		// "noUnusedParameters": true,  /* Report errors on unused parameters. */
-		"esModuleInterop": true,
-		"resolveJsonModule": true
-	},
-	"exclude": [
-		"node_modules",
-		".vscode-test",
-		"**/view/app/index.css",
-		"**/view/app/index.tsx",
-		"**/view/app/tsconfig.json",
-		"**/view/app/config.tsx"
-	]
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
+  },
+  "include": [
+    "src"
+  ]
 }
