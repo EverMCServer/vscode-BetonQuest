@@ -4,10 +4,10 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [0.0.6] - TBD
+## [0.0.6] - 2023-08-21
 
 ### Fixed
-- Fix extension is not being activated when used the first time.
+- Fix extension is not being activated when VSCode is started the first time.
 
 ## [0.0.5] - 2023-08-18
 
