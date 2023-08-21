@@ -4,6 +4,12 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.7] - TBD
+
+### Fixed
+- Fix conversation pointers duplicated with "pointers" and "pointer".
+- Fix Events and Conditions could not be removed from the flowchart completely.
+
 ## [0.0.6] - 2023-08-21
 
 ### Fixed

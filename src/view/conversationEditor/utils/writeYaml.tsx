@@ -36,7 +36,8 @@ export function writeYaml(
     const events = node.data["events"];
     const name = node.data["name"];
 
-    const conversation: ConversationYamlOptionModel = Object.assign(new ConversationYamlOptionModel(), node.data["option"]);
+    const conversation: ConversationYamlOptionModel = new ConversationYamlOptionModel();
+    conversation.text = node.data['option']['text'];
 
     if (conditions && conditions.length) {
       conversation.conditions = conditions;
@@ -59,7 +60,8 @@ export function writeYaml(
     const events = node.data["events"];
     const name = node.data["name"];
 
-    const conversation: ConversationYamlOptionModel = Object.assign(new ConversationYamlOptionModel(), node.data["option"]);
+    const conversation: ConversationYamlOptionModel = new ConversationYamlOptionModel();
+    conversation.text = node.data['option']['text'];
 
     if (conditions && conditions.length) {
       conversation.conditions = conditions;
