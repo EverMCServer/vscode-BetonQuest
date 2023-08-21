@@ -22,8 +22,8 @@ import {
   OnConnectStartParams,
   Viewport,
   useKeyPress,
-  getRectOfNodes,
-  getTransformForBounds,
+  // getRectOfNodes,
+  // getTransformForBounds,
   Panel,
   useViewport,
   useOnSelectionChange,
@@ -33,8 +33,8 @@ import "reactflow/dist/style.css";
 import "./styles.css";
 
 import {
-  downloadFile,
-  downloadImage,
+  // downloadFile,
+  // downloadImage,
   initialNode,
   removeLinesOnConnect,
 } from "../utils/commonUtils";
@@ -372,74 +372,74 @@ function MyFlowView() {
 
   /* Clear event */
 
-  const onClear = useCallback(() => {
-    setEdges([]);
-    setNodes([initialNode]);
-    window.requestAnimationFrame(() => fitView());
-  }, [fitView, setEdges, setNodes]);
+  // const onClear = useCallback(() => {
+  //   setEdges([]);
+  //   setNodes([initialNode]);
+  //   window.requestAnimationFrame(() => fitView());
+  // }, [fitView, setEdges, setNodes]);
 
-  /* DEBUG Save/Restore event */
+  // /* DEBUG Save/Restore event */
 
-  const onSave = useCallback(() => {
-    let dict = {
-      nodes: getNodes(),
-      edges: getEdges(),
-      viewport: viewport,
-    };
-    const json = JSON.stringify(dict);
-    localStorage.setItem(cacheKey, json);
-  }, [getNodes, getEdges, viewport]);
+  // const onSave = useCallback(() => {
+  //   let dict = {
+  //     nodes: getNodes(),
+  //     edges: getEdges(),
+  //     viewport: viewport,
+  //   };
+  //   const json = JSON.stringify(dict);
+  //   localStorage.setItem(cacheKey, json);
+  // }, [getNodes, getEdges, viewport]);
 
-  const onRestore = useCallback(() => {
-    const item = localStorage.getItem(cacheKey) as string;
-    const flow = JSON.parse(item);
-    if (!flow) {
-      return;
-    }
-    resetFlow(flow.nodes, flow.edges, flow.viewport);
-  }, [resetFlow]);
+  // const onRestore = useCallback(() => {
+  //   const item = localStorage.getItem(cacheKey) as string;
+  //   const flow = JSON.parse(item);
+  //   if (!flow) {
+  //     return;
+  //   }
+  //   resetFlow(flow.nodes, flow.edges, flow.viewport);
+  // }, [resetFlow]);
 
-  /* DEBUG Download/Upload event */
+  // /* DEBUG Download/Upload event */
 
-  const onDownloadJSON = useCallback(() => {
-    let dict = {
-      nodes: getNodes(),
-      edges: getEdges(),
-      viewport: viewport,
-    };
-    const json = JSON.stringify(dict);
-    downloadFile("debug.json", json, "json");
-  }, [getNodes, getEdges, viewport]);
+  // const onDownloadJSON = useCallback(() => {
+  //   let dict = {
+  //     nodes: getNodes(),
+  //     edges: getEdges(),
+  //     viewport: viewport,
+  //   };
+  //   const json = JSON.stringify(dict);
+  //   downloadFile("debug.json", json, "json");
+  // }, [getNodes, getEdges, viewport]);
 
-  const onUploadJSON = useCallback(() => {
-    const ele = document.getElementById("json-upload");
-    if (ele) {
-      ele.click();
-    }
-  }, []);
+  // const onUploadJSON = useCallback(() => {
+  //   const ele = document.getElementById("json-upload");
+  //   if (ele) {
+  //     ele.click();
+  //   }
+  // }, []);
 
-  const uploadJSON = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (!event.target.files) {
-        return;
-      }
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      reader.onload = function () {
-        const text = reader.result;
-        const flow = JSON.parse(text as string);
-        if (!flow) {
-          return;
-        }
-        resetFlow(flow.nodes, flow.edges, flow.viewport);
-      };
-      if (file) {
-        reader.readAsText(file);
-      }
-      event.target.value = "";
-    },
-    [resetFlow]
-  );
+  // const uploadJSON = useCallback(
+  //   (event: React.ChangeEvent<HTMLInputElement>) => {
+  //     if (!event.target.files) {
+  //       return;
+  //     }
+  //     const file = event.target.files[0];
+  //     const reader = new FileReader();
+  //     reader.onload = function () {
+  //       const text = reader.result;
+  //       const flow = JSON.parse(text as string);
+  //       if (!flow) {
+  //         return;
+  //       }
+  //       resetFlow(flow.nodes, flow.edges, flow.viewport);
+  //     };
+  //     if (file) {
+  //       reader.readAsText(file);
+  //     }
+  //     event.target.value = "";
+  //   },
+  //   [resetFlow]
+  // );
 
   /* Update Yaml content when user modified the flowchart */
 
@@ -500,60 +500,60 @@ function MyFlowView() {
     cachedYml = data.content;
   }, [getNodes, getEdges]);
 
-  const onUploadYML = useCallback(() => {
-    const ele = document.getElementById("yml-upload");
-    if (ele) {
-      ele.click();
-    }
-  }, []);
+  // const onUploadYML = useCallback(() => {
+  //   const ele = document.getElementById("yml-upload");
+  //   if (ele) {
+  //     ele.click();
+  //   }
+  // }, []);
 
-  const uploadYML = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (!event.target.files) {
-        return;
-      }
-      const file = event.target.files[0];
-      let fileName = file.name.split(".").slice(0, -1).join(".");
-      const reader = new FileReader();
-      reader.onload = function () {
-        const text = reader.result;
-        updateFlowChart(fileName, text as string, translationSelection);
-        cachedYml = text as string;
-      };
-      if (file) {
-        reader.readAsText(file);
-      }
-      event.target.value = "";
-    },
-    [resetFlow]
-  );
+  // const uploadYML = useCallback(
+  //   (event: React.ChangeEvent<HTMLInputElement>) => {
+  //     if (!event.target.files) {
+  //       return;
+  //     }
+  //     const file = event.target.files[0];
+  //     let fileName = file.name.split(".").slice(0, -1).join(".");
+  //     const reader = new FileReader();
+  //     reader.onload = function () {
+  //       const text = reader.result;
+  //       updateFlowChart(fileName, text as string, translationSelection);
+  //       cachedYml = text as string;
+  //     };
+  //     if (file) {
+  //       reader.readAsText(file);
+  //     }
+  //     event.target.value = "";
+  //   },
+  //   [resetFlow]
+  // );
 
-  /* Screenshot */
+  // /* Screenshot */
 
-  const onScreenshot = useCallback(() => {
-    const nodesBounds = getRectOfNodes(getNodes());
-    const targetScale = 1;
-    const targetWidth = nodesBounds.width * targetScale;
-    const targetHeight = nodesBounds.height * targetScale;
+  // const onScreenshot = useCallback(() => {
+  //   const nodesBounds = getRectOfNodes(getNodes());
+  //   const targetScale = 1;
+  //   const targetWidth = nodesBounds.width * targetScale;
+  //   const targetHeight = nodesBounds.height * targetScale;
 
-    const transform = getTransformForBounds(
-      nodesBounds,
-      targetWidth,
-      targetHeight,
-      0.5,
-      2
-    );
-    const ele = document.querySelector(".react-flow__viewport");
-    toJpeg(ele as HTMLElement, {
-      backgroundColor: "#ffffff",
-      quality: 0.95,
-      width: targetWidth,
-      height: targetHeight,
-      style: {
-        transform: `translate(${transform[0]}px, ${transform[1]}px) scale(${transform[2]})`,
-      },
-    }).then(downloadImage);
-  }, [getNodes]);
+  //   const transform = getTransformForBounds(
+  //     nodesBounds,
+  //     targetWidth,
+  //     targetHeight,
+  //     0.5,
+  //     2
+  //   );
+  //   const ele = document.querySelector(".react-flow__viewport");
+  //   toJpeg(ele as HTMLElement, {
+  //     backgroundColor: "#ffffff",
+  //     quality: 0.95,
+  //     width: targetWidth,
+  //     height: targetHeight,
+  //     style: {
+  //       transform: `translate(${transform[0]}px, ${transform[1]}px) scale(${transform[2]})`,
+  //     },
+  //   }).then(downloadImage);
+  // }, [getNodes]);
 
   /* Auto Layout */
 

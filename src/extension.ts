@@ -3,7 +3,7 @@
 import * as vscode from "vscode";
 import { ConversationEditorProvider } from "./conversationEditorProvider";
 import { EventsEditorProvider } from "./eventsEditorProvider";
-import { ExampleEditorProvider } from './exampleEditorProvider';
+// import { ExampleEditorProvider } from './exampleEditorProvider';
 import { setLocale } from "./i18n/i18n";
 import * as fs from 'fs';
 import * as path from 'path';
@@ -91,21 +91,21 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
-  // Command to open the Example Editor (for development reference only)
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      'betonquest.openExampleEditor',
-      async () => {
+  // // Command to open the Example Editor (for development reference only)
+  // context.subscriptions.push(
+  //   vscode.commands.registerCommand(
+  //     'betonquest.openExampleEditor',
+  //     async () => {
 
-        const activeTextEditor = vscode.window.activeTextEditor;
-        if (!activeTextEditor) {
-            return; // No active editor
-        }
+  //       const activeTextEditor = vscode.window.activeTextEditor;
+  //       if (!activeTextEditor) {
+  //           return; // No active editor
+  //       }
 
-        await vscode.commands.executeCommand('vscode.openWith', activeTextEditor.document.uri, 'betonquest.exampleEditor', vscode.ViewColumn.Beside);
-      }
-    )
-  );
+  //       await vscode.commands.executeCommand('vscode.openWith', activeTextEditor.document.uri, 'betonquest.exampleEditor', vscode.ViewColumn.Beside);
+  //     }
+  //   )
+  // );
 
   // Initialize i18n localization
   setLocale(vscode.env.language);
@@ -113,7 +113,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Register custom editor
   context.subscriptions.push(ConversationEditorProvider.register(context));
   context.subscriptions.push(EventsEditorProvider.register(context));
-  context.subscriptions.push(ExampleEditorProvider.register(context));
+  // context.subscriptions.push(ExampleEditorProvider.register(context));
 }
 
 // This method is called when your extension is deactivated

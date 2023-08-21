@@ -41,10 +41,6 @@
           "light": "assets/icon-events-edit-light.svg",
           "dark": "assets/icon-events-edit-dark.svg"
         }
-      },
-      {
-        "command": "betonquest.openExampleEditor",
-        "title": "BetonQuest: Open Example Editor (debug only)"
       }
     ],
     "menus": {
@@ -79,16 +75,6 @@
         "selector": [
           {
             "filenamePattern": "**/events.ya?ml"
-          }
-        ]
-      },
-      {
-        "viewType": "betonquest.exampleEditor",
-        "displayName": "Example Editor",
-        "priority": "option",
-        "selector": [
-          {
-            "filenamePattern": "*.ya?ml"
           }
         ]
       }
