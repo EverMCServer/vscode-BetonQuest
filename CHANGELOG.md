@@ -11,6 +11,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Fix Events and Conditions could not be removed from the flowchart completely
 - Fix new conversation option not respects to translation setting
 - Fix yaml multilingual status is not detected correctelly
+- Fix conversation crashed when missing "text"
 
 ## [0.0.6] - 2023-08-21
 

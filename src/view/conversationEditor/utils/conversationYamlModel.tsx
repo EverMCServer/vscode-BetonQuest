@@ -10,18 +10,25 @@ export class ConversationYamlOptionModel implements IConversationYamlOptionModel
   // constructor(public text?: string | TextMultilingalModel, public pointer?: string, public pointers?: string, public condition?: string, public conditions?: string, public event?: string, public events?: string) {}
 
   getText(translation: string): string {
-    if (this.isValueMultilingualModel(this.text!)) {
-      return this.text![translation] || '';
+    if (!this.text) {
+      return '';
+    } else if (this.isValueMultilingualModel(this.text!)) {
+      return this.text[translation] || '';
     } else {
       return this.text || '';
     }
   }
 
-  setText(text: string, translation: string) {
-    if (this.isValueMultilingualModel(this.text!)) {
-      this.text![translation] = text;
+  setText(text: string, translation?: string) {
+    // Assign a multilingual model if it is undifined
+    if (!this.text && translation) {
+      this.text = {} as TextMultilingualModel;
+    }
+    // Set the text
+    if (this.isValueMultilingualModel(this.text!) && translation) {
+      this.text[translation] = text;
     } else {
-      this.text! = text;
+      this.text = text;
     }
   }
 
@@ -30,7 +37,7 @@ export class ConversationYamlOptionModel implements IConversationYamlOptionModel
   }
 
   isValueMultilingualModel(value: string | TextMultilingualModel): value is TextMultilingualModel {
-    return typeof value !== 'string';
+    return typeof value === 'object';
   }
 }
 
@@ -96,7 +103,7 @@ export default class ConversationYamlModel implements IConversationYamlModel {
   }
 
   isValueMultilingualModel(value: string | TextMultilingualModel): value is TextMultilingualModel {
-    return typeof value !== 'string';
+    return typeof value === 'object';
   }
 
 }

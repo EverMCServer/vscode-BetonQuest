@@ -263,7 +263,7 @@ function MyFlowView() {
       }
       const newNodeOption: IConversationYamlOptionModel = {};
       if (isMultilingual) {
-        newNodeOption.text = {} as TextMultilingualModel;
+        newNodeOption.text = {[fromNode.data["translationSelection"]]: ""} as TextMultilingualModel;
       } else {
         newNodeOption.text = "";
       }

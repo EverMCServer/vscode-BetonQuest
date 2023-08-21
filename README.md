@@ -47,7 +47,7 @@ For more detailes, please check [CHANGELOG.md](CHANGELOG.md).
 
 ### 0.0.6
 
-- Fix extension is not being activated when VSCode is started the first time.
+- Fix extension is not being activated when VSCode is started the first time
 
 ### 0.0.5
 

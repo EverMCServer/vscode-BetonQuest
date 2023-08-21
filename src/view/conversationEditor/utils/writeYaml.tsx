@@ -37,8 +37,10 @@ export function writeYaml(
     const name = node.data["name"];
 
     const conversation: ConversationYamlOptionModel = new ConversationYamlOptionModel();
-    conversation.text = node.data['option']['text'];
-
+    
+    if (node.data['option']['text']) {
+      conversation.text = node.data['option']['text'];
+    }
     if (conditions && conditions.length) {
       conversation.conditions = conditions;
     }
@@ -61,8 +63,10 @@ export function writeYaml(
     const name = node.data["name"];
 
     const conversation: ConversationYamlOptionModel = new ConversationYamlOptionModel();
-    conversation.text = node.data['option']['text'];
-
+    
+    if (node.data['option']['text']) {
+      conversation.text = node.data['option']['text'];
+    }
     if (conditions && conditions.length) {
       conversation.conditions = conditions;
     }
