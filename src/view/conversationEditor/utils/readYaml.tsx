@@ -28,7 +28,7 @@ export function parseYaml(
   const firstString = yaml.first;
   const firstKeys = stringSplitToArray(firstString || "");
   for (let i = 0; i < firstKeys.length; i++) {
-    firstKeys[i] = `npc_${firstKeys[i]}`;
+    firstKeys[i] = `npcNode_${firstKeys[i]}`;
   }
 
   // Check if the yaml multilingual, if not remove "translationSelection".
@@ -60,11 +60,11 @@ export function parseYaml(
   for (let i = 0; i < npcOptionKeys.length && npcOptions; i++) {
     const key = npcOptionKeys[i];
     const option = npcOptions[key];
-    const idKey = `npc_${key}`;
+    const idKey = `npcNode_${key}`;
     const pointersString = option.pointers || option.pointer || "";
     const pointers = stringSplitToArray(pointersString);
     for (let i = 0; i < pointers.length; i++) {
-      pointers[i] = `player_${pointers[i]}`;
+      pointers[i] = `playerNode_${pointers[i]}`;
     }
 
     const conditions = option.conditions || option.condition || "";
@@ -91,11 +91,11 @@ export function parseYaml(
   for (let i = 0; i < playerOptionKeys.length && playerOptions; i++) {
     const key = playerOptionKeys[i];
     const option = playerOptions[key];
-    const idKey = `player_${key}`;
+    const idKey = `playerNode_${key}`;
     const pointersString = option.pointers || option.pointer || "";
     const pointers = stringSplitToArray(pointersString);
     for (let i = 0; i < pointers.length; i++) {
-      pointers[i] = `npc_${pointers[i]}`;
+      pointers[i] = `npcNode_${pointers[i]}`;
     }
 
     const conditions = option.conditions || option.condition || "";

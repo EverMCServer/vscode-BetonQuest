@@ -105,7 +105,7 @@ function MyFlowView() {
 
   let nodeID = 1;
   const getNewNodeID = useCallback(() => {
-    while (getNode(`node_${nodeID}`)) {
+    while (getNode(`npcNode_node_${nodeID}`) || getNode(`playerNode_node_${nodeID}`)) {
       nodeID++;
     }
     return `node_${nodeID}`;
@@ -269,12 +269,13 @@ function MyFlowView() {
       }
       console.log("new node is multilingual:", Object.assign(new ConversationYamlOptionModel(), newNodeOption).isTextMultilingual());
 
-      const newNodeID = getNewNodeID();
+      const newNodeName = getNewNodeID();
+      const newNodeID = type + "_" + newNodeName;
       const newNode = {
         id: newNodeID,
         type,
         position: { x: hitPosition.x - 100, y: hitPosition.y },
-        data: { name: `${newNodeID}` , option: newNodeOption, translationSelection: fromNode.data["translationSelection"] },
+        data: { name: `${newNodeName}` , option: newNodeOption, translationSelection: fromNode.data["translationSelection"] },
       };
 
       setNodes((nds) => nds.concat(newNode));

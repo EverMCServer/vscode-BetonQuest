@@ -12,6 +12,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Fix new conversation option not respects to translation setting
 - Fix yaml multilingual status is not detected correctelly
 - Fix conversation crashed when missing "text"
+- Fix newly created node overwrites exists auto created nodes
 
 ## [0.0.6] - 2023-08-21
 
