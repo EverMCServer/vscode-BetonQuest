@@ -258,13 +258,8 @@ function MyFlowView() {
       // Check parent node uses multilingual text or not.
       // The newly created node should follows the parent's multilingual behaviour.
       let isMultilingual = false;
-      switch (fromNode["type"]) {
-        case "npcNode" || "playerNode":
-          isMultilingual = Object.assign(new ConversationYamlOptionModel(), fromNode.data["option"]).isTextMultilingual();
-          break;
-        default: // startNode
-          isMultilingual = Object.assign(new ConversationYamlModel(), fromNode.data["yaml"]).isQuesterMultilingual();
-          break;
+      if (fromNode.data["translationSelection"] && fromNode.data["translationSelection"].length > 0){
+        isMultilingual = true;
       }
       const newNodeOption: IConversationYamlOptionModel = {};
       if (isMultilingual) {
@@ -279,7 +274,7 @@ function MyFlowView() {
         id: newNodeID,
         type,
         position: { x: hitPosition.x - 100, y: hitPosition.y },
-        data: { name: `${newNodeID}` , option: newNodeOption, translationSelection: translationSelection },
+        data: { name: `${newNodeID}` , option: newNodeOption, translationSelection: fromNode.data["translationSelection"] },
       };
 
       setNodes((nds) => nds.concat(newNode));

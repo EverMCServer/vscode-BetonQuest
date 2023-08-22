@@ -7,13 +7,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [0.0.7] - TBD
 
 ### Fixed
-- Fix conversation pointers duplicated with "pointers" and "pointer".
-- Fix Events and Conditions could not be removed from the flowchart completely.
+- Fix conversation pointers duplicated with "pointers" and "pointer"
+- Fix Events and Conditions could not be removed from the flowchart completely
+- Fix new conversation option not respects to translation setting
 
 ## [0.0.6] - 2023-08-21
 
 ### Fixed
-- Fix extension is not being activated when VSCode is started the first time.
+- Fix extension is not being activated when VSCode is started the first time
 
 ## [0.0.5] - 2023-08-18
 

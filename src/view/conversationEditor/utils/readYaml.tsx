@@ -1,7 +1,7 @@
 import { MarkerType, Node, Edge } from "reactflow";
 import * as yaml from "js-yaml";
 import { arrayAppend, stringSplitToArray } from "./commonUtils";
-import ConversationYamlModel from "./conversationYamlModel";
+import ConversationYamlModel, { ConversationYamlOptionModel } from "./conversationYamlModel";
 
 export interface YamlReaderOutput {
   nodes: Node[];
@@ -20,7 +20,7 @@ export function readYaml(
 export function parseYaml(
   fileName: string,
   yaml: ConversationYamlModel,
-  translationSelection: string
+  translationSelection?: string
 ): YamlReaderOutput | null {
   // Load
   const npcOptions = yaml.NPC_options;
@@ -29,6 +29,21 @@ export function parseYaml(
   const firstKeys = stringSplitToArray(firstString || "");
   for (let i = 0; i < firstKeys.length; i++) {
     firstKeys[i] = `npc_${firstKeys[i]}`;
+  }
+
+  // Check if the yaml multilingual, if not remove "translationSelection".
+  let isYamlMultilingual = Object.assign(new ConversationYamlModel(), yaml).isQuesterMultilingual();
+  const npcOptionKeys = Object.keys(npcOptions || {});
+  for (let i = 0; i < npcOptionKeys.length && npcOptions; i++) {
+    isYamlMultilingual ||= Object.assign(new ConversationYamlOptionModel(), npcOptions[npcOptionKeys[i]]).isTextMultilingual();
+  }
+  const playerOptionKeys = Object.keys(playerOptions || {});
+  for (let i = 0; i < playerOptionKeys.length && playerOptions; i++) {
+    isYamlMultilingual ||= Object.assign(new ConversationYamlOptionModel(), playerOptions[playerOptionKeys[i]]).isTextMultilingual();
+  }
+  // remove all translationSelection marking if the yaml is not multilingual.
+  if (!isYamlMultilingual) {
+    translationSelection = undefined;
   }
 
   // StartNodes
@@ -42,7 +57,6 @@ export function parseYaml(
 
   // NPC Nodes
   const npcNodes: Record<string, Node> = {};
-  const npcOptionKeys = Object.keys(npcOptions || {});
   for (let i = 0; i < npcOptionKeys.length && npcOptions; i++) {
     const key = npcOptionKeys[i];
     const option = npcOptions[key];
@@ -74,7 +88,6 @@ export function parseYaml(
 
   // Player Nodes
   const playerNodes: Record<string, Node> = {};
-  const playerOptionKeys = Object.keys(playerOptions || {});
   for (let i = 0; i < playerOptionKeys.length && playerOptions; i++) {
     const key = playerOptionKeys[i];
     const option = playerOptions[key];
