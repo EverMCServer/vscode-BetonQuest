@@ -652,14 +652,14 @@ function MyFlowView() {
   });
 
   // Check if the yaml multilingual status, for "Translation Selector".
-  let isMultilingual = false;
   nodes.every(node => {
     switch (node["type"]) {
-      case "npcNode" || "playerNode":
-        isMultilingual = isMultilingual || Object.assign(new ConversationYamlOptionModel(), node.data["option"]).isTextMultilingual();
+      case "npcNode":
+      case "playerNode":
+        isYamlMultilingual ||= Object.assign(new ConversationYamlOptionModel(), node.data["option"]).isTextMultilingual();
         break;
       default: // startNode
-        isMultilingual = isMultilingual || Object.assign(new ConversationYamlModel(), node.data["yaml"]).isQuesterMultilingual();
+        isYamlMultilingual ||= Object.assign(new ConversationYamlModel(), node.data["yaml"]).isQuesterMultilingual();
         break;
     }
     if (isYamlMultilingual) {
@@ -667,7 +667,6 @@ function MyFlowView() {
     }
     return true;
   });
-  isYamlMultilingual = isMultilingual;
 
   return (
     <div className="flow-container">
