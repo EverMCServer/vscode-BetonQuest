@@ -21,7 +21,7 @@
   "activationEvents": [
     "workspaceContains:**/main.yml",
     "workspaceContains:**/main.yaml",
-    "workspaceContains:**/conversations/"
+    "workspaceContains:**/conversations/*"
   ],
   "main": "./dist/extension.js",
   "contributes": {

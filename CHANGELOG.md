@@ -4,7 +4,7 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [0.0.7] - TBD
+## [0.0.7] - 2023-08-23
 
 ### Fixed
 - Fix conversation pointers duplicated with "pointers" and "pointer"

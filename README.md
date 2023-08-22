@@ -43,7 +43,11 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 
 ## Release Notes
 
-For more detailes, please check [CHANGELOG.md](CHANGELOG.md).
+(For more detailes, please check [CHANGELOG.md](CHANGELOG.md))
+
+### 0.0.7
+
+- Various bugs fix
 
 ### 0.0.6
 
