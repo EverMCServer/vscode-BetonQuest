@@ -25,7 +25,7 @@ import {
   // getRectOfNodes,
   // getTransformForBounds,
   Panel,
-  useViewport,
+  // useViewport,
   useOnSelectionChange,
 } from "reactflow";
 import ReactFlow from "reactflow";
@@ -48,12 +48,12 @@ import ContextMenu from "../nodes/ContextMenu";
 import { vscode } from "../utils/vscode";
 import { readYaml } from "../utils/readYaml";
 import { autoLayout } from "../utils/autoLayout";
-import { toJpeg } from "html-to-image";
+// import { toJpeg } from "html-to-image";
 import { writeYaml } from "../utils/writeYaml";
 import ConversationYamlModel, { ConversationYamlOptionModel, IConversationYamlOptionModel, TextMultilingualModel } from "../utils/conversationYamlModel";
 import TranslationSelector from "../components/TranslationSelector";
 
-const cacheKey = "bq-flow";
+// const cacheKey = "bq-flow";
 
 const nodeTypes = {
   npcNode: NPCNode,
@@ -73,7 +73,7 @@ function MyFlowView() {
   const flowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([initialNode]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const viewport = useViewport();
+  // const viewport = useViewport();
   const {
     getNode,
     getNodes,

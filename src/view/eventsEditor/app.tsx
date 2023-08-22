@@ -12,14 +12,14 @@ export default function app() {
     // Caching rendered Yaml, prevent unnecessary rendering
     let cachedYml = "";
 
-    // Method to sync document into vscode.
-    const updateDocument = (doc: string) => {
-        vscode.postMessage({
-          type: "edit",
-          content: doc,
-        });
-        cachedYml = doc;
-    };
+    // // Method to sync document into vscode.
+    // const updateDocument = (doc: string) => {
+    //     vscode.postMessage({
+    //       type: "edit",
+    //       content: doc,
+    //     });
+    //     cachedYml = doc;
+    // };
 
     // Get document's content update from vscode
     React.useEffect(()=>{
