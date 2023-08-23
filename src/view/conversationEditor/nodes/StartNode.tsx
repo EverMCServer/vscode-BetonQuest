@@ -61,9 +61,9 @@ export default memo(({ data, selected }: NodeProps) => {
     <div style={{ width: "100%" }}>
       <div className="title-box start">
         Start
-        <div className="nodeName" hidden={selected}>
-          ({data.name})
-        </div>
+        {/* <div className="nodeName" hidden={selected}>
+          ({getFileName()})
+        </div> */}
       </div>
       <div className="box">
         file name:
