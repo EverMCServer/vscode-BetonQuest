@@ -571,27 +571,19 @@ function MyFlowView() {
     }
   }, [needsLayout, onAutoLayout]);
 
+  // Cache stuff that need to be referenced in useEffect() ...
+  // Cache "nodes"
+  const nodesRef = React.useRef(nodes);
+  // Cache setViewport()
+  const setViewportRef = React.useRef(setViewport);
+  React.useEffect(()=>{
+    nodesRef.current = nodes;
+    setViewportRef.current = setViewport;
+  }, [nodes, setViewport]);
+
   /* VSCode yaml */
 
-  React.useEffect(() => {
-    // Notify vscode when webview startup completed.
-    vscode.postMessage({
-      type: "webview-lifecycle",
-      content: "started",
-    });
-
-    let handlerFn = (event: MessageEvent<any>) => {
-      handleVscodeMessage(event.data);
-    };
-
-    // Listen from extension message (document update, change translation etc)
-    window.addEventListener("message", handlerFn);
-
-    // Unregister listener when component unmounted
-    return () => window.removeEventListener("message", handlerFn);
-  }, []);
-
-  function handleVscodeMessage(message: any) {
+  const handleVscodeMessage = (message: any) => {
     switch (message.type) {
       case "update":
         // Update yaml
@@ -617,8 +609,55 @@ function MyFlowView() {
         updateFlowChart("fileName", cachedYml, message.content);
 
         break;
+
+      // Center a node when cursor changed in Text Editor
+      case "cursor":
+        console.log("received a new cursor position:", message.content);
+        // let curPos = new Position(message.content.line, message.content.character);
+        // console.log("received a new cursor position:", curPos);
+        console.log(nodesRef.current.length);
+        nodesRef.current.map(node => {
+          // console.log(node);
+          // console.log(node.data.name);
+          if (node.data.name === "start") {
+            console.log("x, y before update =", flowWrapper.current?.getBoundingClientRect().x, flowWrapper.current?.getBoundingClientRect().y);
+            let x = 0;
+            let y = 0;
+            node.selected = true;
+            x = node.position.x + (flowWrapper.current?.getBoundingClientRect().width || 0)/2 - (node.width || 0)/2;
+            y = -node.position.y + (flowWrapper.current?.getBoundingClientRect().height || 0)/2 - (node.height || 0)/2;
+            setViewportRef.current({x: x, y: y, zoom: 1});
+            console.log("x, y after update =", x, y);
+          } else {
+            node.selected = false;
     }
+          return node;
+        });
+        console.log(nodesRef.current);
+        setNodes([...nodesRef.current]);
+        break;
   }
+  };
+
+  React.useEffect(() => {
+    console.log("nodes in useEffect:", nodes.length);
+    const handlerFn = (event: MessageEvent<any>) => {
+      console.log("nodes in handlerFn:", nodes.length);
+      handleVscodeMessage(event.data);
+    };
+
+    // Listen from extension message (document update, change translation etc)
+    window.addEventListener("message", handlerFn);
+
+    // Notify vscode when webview startup completed.
+    vscode.postMessage({
+      type: "webview-lifecycle",
+      content: "started",
+    });
+
+    // Unregister listener when component unmounted
+    return () => window.removeEventListener("message", handlerFn);
+  }, []);
 
   let lastSelectedNodes: Node[] = [];
 

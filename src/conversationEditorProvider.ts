@@ -90,6 +90,26 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
             }
         });
 
+        const onDidChangeTextEditorSelection = vscode.window.onDidChangeTextEditorSelection(e => {
+            if (e.textEditor.document.uri.toString() === document.uri.toString()) {
+                let curPos = e.selections[0].active;
+                let offset = e.textEditor.document.offsetAt(curPos);
+                console.log("\ncurPos: ", curPos, "\noffset: ", offset);
+                
+                webviewPanel.webview.postMessage({
+                    type: 'cursor',
+                    content: curPos
+                });
+			}
+        });
+
+        // Make sure we get rid of the listener when our editor is closed.
+		webviewPanel.onDidDispose(() => {
+			changeDocumentSubscription.dispose();
+            saveDocumentSubscription.dispose();
+            onDidChangeTextEditorSelection.dispose();
+		});
+
         vscode.workspace.onDidChangeConfiguration(e => {
             if (e.affectsConfiguration('betonquest.setting.translationSelection')) {
                 console.log("sendding betonquest-translationSelection into webview ...");
@@ -141,12 +161,6 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                     vscode.workspace.getConfiguration('betonquest.setting').update('translationSelection', e.content, vscode.ConfigurationTarget.Global);
                     return;
 			}
-		});
-
-        // Make sure we get rid of the listener when our editor is closed.
-		webviewPanel.onDidDispose(() => {
-			changeDocumentSubscription.dispose();
-            saveDocumentSubscription.dispose();
 		});
     }
 

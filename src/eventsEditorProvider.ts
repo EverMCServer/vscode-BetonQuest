@@ -58,7 +58,7 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
 		});
 
         const onDidChangeTextEditorSelection = vscode.window.onDidChangeTextEditorSelection(e => {
-            if (e && e.textEditor.document.fileName.endsWith("events.yml")) {
+            if (e.textEditor.document.uri.toString() === document.uri.toString()) {
                 let curPos = e.selections[0].active;
                 let offset = e.textEditor.document.offsetAt(curPos);
                 console.log("\ncurPos: ", curPos, "\noffset: ", offset);
