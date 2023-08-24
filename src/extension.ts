@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Check if the custom editor's buttons should be shown.
   function checkCanActivateEditor(document: vscode.TextDocument) {
     // Show Conversation Editor activation button only when it is appropriate
-    if (document.fileName.match(/\/conversations\/.+\.ya?ml$/g)) {
+    if (document.fileName.match(/[\/\\]conversations[\/\\].+\.ya?ml$/gi)) {
       const dir = path.resolve(path.dirname(document.fileName), "..");
 
       // Check for main.yml
@@ -33,10 +33,10 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Show Events, Conditions, Objectives, Items Editor activation button only when it is appropriate
     if (
-      document.fileName.match(/\/events.ya?ml$/) ||
-      document.fileName.match(/\/conditions.ya?ml$/) ||
-      document.fileName.match(/\/objectives.ya?ml$/) ||
-      document.fileName.match(/\/items.ya?ml$/)
+      document.fileName.match(/[\/\\]events.ya?ml$/) ||
+      document.fileName.match(/[\/\\]conditions.ya?ml$/) ||
+      document.fileName.match(/[\/\\]objectives.ya?ml$/) ||
+      document.fileName.match(/[\/\\]items.ya?ml$/)
       ) {
       const dir = path.dirname(document.fileName);
 

@@ -46,12 +46,12 @@
     "menus": {
       "editor/title": [
         {
-          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /conversations\\/.+\\.ya?ml$/ && canActivateConversationEditor",
+          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /conversations[\\/\\\\].+\\.ya?ml$/i && canActivateConversationEditor",
           "command": "betonquest.openConversationEditor",
           "group": "navigation"
         },
         {
-          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /\\/events\\.ya?ml$/ && canActivateEventsEditor",
+          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /[\\/\\\\]events\\.ya?ml$/i && canActivateEventsEditor",
           "command": "betonquest.openEventsEditor",
           "group": "navigation"
         }

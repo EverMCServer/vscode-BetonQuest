@@ -4,6 +4,14 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.8] - TBD
+
+### Added
+- Conversation optiosn can now be fast-located with cursor on yaml documents
+
+### Fixed
+- Fix "Open Conversation Flowchart" button does not show up in Windows
+
 ## [0.0.7] - 2023-08-23
 
 ### Fixed
