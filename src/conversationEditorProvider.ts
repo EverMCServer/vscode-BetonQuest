@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import findYamlNodeByOffset from './utils/findYamlNodeByOffset';
 
 interface InitialConfig {
     translationSelection?: string,
@@ -94,11 +95,11 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
             if (e.textEditor.document.uri.toString() === document.uri.toString()) {
                 let curPos = e.selections[0].active;
                 let offset = e.textEditor.document.offsetAt(curPos);
-                console.log("\ncurPos: ", curPos, "\noffset: ", offset);
-                
+                // console.log("\ncurPos: ", curPos, "\noffset: ", offset);
+
                 webviewPanel.webview.postMessage({
-                    type: 'cursor',
-                    content: curPos
+                    type: 'cursor-yaml-path',
+                    content: findYamlNodeByOffset(offset, document.getText())
                 });
 			}
         });

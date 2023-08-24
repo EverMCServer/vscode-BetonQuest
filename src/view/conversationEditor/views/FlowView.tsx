@@ -611,32 +611,47 @@ function MyFlowView() {
         break;
 
       // Center a node when cursor changed in Text Editor
-      case "cursor":
-        console.log("received a new cursor position:", message.content);
-        // let curPos = new Position(message.content.line, message.content.character);
-        // console.log("received a new cursor position:", curPos);
-        console.log(nodesRef.current.length);
+      case "cursor-yaml-path":
+        console.log("received a new yaml path position:", message.content);
+        const pa = message.content as string[];
+        // skip if path not landed in "NPC_options" or "player_options"
+        if (pa.length < 2) {
+          break;
+        }
+        let type = "";
+        switch (pa[0]) {
+          case "NPC_options":
+            type = "npcNode";
+            break;
+          case "player_options":
+            type = "playerNode";
+            break;
+          default:
+            return;
+        }
+        // console.log("pa[0]:", pa[0], "pa[1]:", pa[1]);
+        // console.log("id:", type+"_"+pa[1], "name:", pa[1], "type:", type);
         nodesRef.current.map(node => {
           // console.log(node);
-          // console.log(node.data.name);
-          if (node.data.name === "start") {
-            console.log("x, y before update =", flowWrapper.current?.getBoundingClientRect().x, flowWrapper.current?.getBoundingClientRect().y);
+          // console.log("checking node.data.name:", node.data.name, "node.type", node.type);
+          if (node.data.name === pa[1] && node.type === type) {
+            // console.log("x, y before update =", flowWrapper.current?.getBoundingClientRect().x, flowWrapper.current?.getBoundingClientRect().y);
             let x = 0;
             let y = 0;
             node.selected = true;
-            x = node.position.x + (flowWrapper.current?.getBoundingClientRect().width || 0)/2 - (node.width || 0)/2;
+            x = -node.position.x + (flowWrapper.current?.getBoundingClientRect().width || 0)/2 - (node.width || 0)/2;
             y = -node.position.y + (flowWrapper.current?.getBoundingClientRect().height || 0)/2 - (node.height || 0)/2;
             setViewportRef.current({x: x, y: y, zoom: 1});
-            console.log("x, y after update =", x, y);
+            // console.log("x, y after update =", x, y);
           } else {
             node.selected = false;
-    }
+          }
           return node;
         });
-        console.log(nodesRef.current);
+        // console.log(nodesRef.current);
         setNodes([...nodesRef.current]);
         break;
-  }
+    }
   };
 
   React.useEffect(() => {
@@ -687,7 +702,7 @@ function MyFlowView() {
         }
       }
       setEdges(eds);
-      console.log("changed selection", nodes, edges);
+      // console.log("changed selection", nodes, edges);
     },
   });
 
@@ -722,7 +737,7 @@ function MyFlowView() {
           nodeTypes={nodeTypes}
           connectionLineComponent={ConnectionLine}
           fitView
-          minZoom={0.5}
+          minZoom={0.25}
           maxZoom={1.5}
           // snapToGrid={true}
           onNodeContextMenu={onNodeContextMenu}

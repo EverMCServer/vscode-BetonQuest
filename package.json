@@ -129,6 +129,7 @@
     "module_name": "^1.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "reactflow": "^11.7.4"
+    "reactflow": "^11.7.4",
+    "yaml": "^2.3.1"
   }
 }
