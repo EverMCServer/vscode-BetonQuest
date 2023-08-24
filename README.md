@@ -45,6 +45,10 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 
 (For more detailes, please check [CHANGELOG.md](CHANGELOG.md))
 
+### 0.0.8
+- Conversation optiosn can now be fast-located with cursor on yaml documents
+- Fix "Open Conversation Flowchart" button does not show up in Windows
+
 ### 0.0.7
 
 - Various bugs fix
