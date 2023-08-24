@@ -25,7 +25,7 @@ import {
   // getRectOfNodes,
   // getTransformForBounds,
   Panel,
-  // useViewport,
+  useViewport,
   useOnSelectionChange,
 } from "reactflow";
 import ReactFlow from "reactflow";
@@ -73,7 +73,7 @@ function MyFlowView() {
   const flowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([initialNode]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  // const viewport = useViewport();
+  const viewport = useViewport();
   const {
     getNode,
     getNodes,
@@ -576,10 +576,12 @@ function MyFlowView() {
   const nodesRef = React.useRef(nodes);
   // Cache setViewport()
   const setViewportRef = React.useRef(setViewport);
+  const viewportRef = React.useRef(viewport);
   React.useEffect(()=>{
     nodesRef.current = nodes;
     setViewportRef.current = setViewport;
-  }, [nodes, setViewport]);
+    viewportRef.current = viewport;
+  }, [nodes, setViewport, viewport]);
 
   /* VSCode yaml */
 
@@ -635,13 +637,13 @@ function MyFlowView() {
           // console.log(node);
           // console.log("checking node.data.name:", node.data.name, "node.type", node.type);
           if (node.data.name === pa[1] && node.type === type) {
-            // console.log("x, y before update =", flowWrapper.current?.getBoundingClientRect().x, flowWrapper.current?.getBoundingClientRect().y);
+            // console.log("x, y, zoom before update =", flowWrapper.current?.getBoundingClientRect().x, flowWrapper.current?.getBoundingClientRect().y, viewportRef.current.zoom);
             let x = 0;
             let y = 0;
             node.selected = true;
-            x = -node.position.x + (flowWrapper.current?.getBoundingClientRect().width || 0)/2 - (node.width || 0)/2;
-            y = -node.position.y + (flowWrapper.current?.getBoundingClientRect().height || 0)/2 - (node.height || 0)/2;
-            setViewportRef.current({x: x, y: y, zoom: 1});
+            x = (-node.position.x - (node.width || 0)/2) * viewportRef.current.zoom + (flowWrapper.current?.getBoundingClientRect().width || 0)/2;
+            y = (-node.position.y - (node.height || 0)/2) * viewportRef.current.zoom + (flowWrapper.current?.getBoundingClientRect().height || 0)/2;
+            setViewportRef.current({x: x, y: y, zoom: viewportRef.current.zoom}, {duration: 250});
             // console.log("x, y after update =", x, y);
           } else {
             node.selected = false;
