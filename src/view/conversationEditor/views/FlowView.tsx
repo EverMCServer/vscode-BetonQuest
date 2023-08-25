@@ -583,7 +583,7 @@ function MyFlowView() {
     viewportRef.current = viewport;
   }, [nodes, setViewport, viewport]);
 
-  /* VSCode yaml */
+  /* VSCode messages */
 
   const handleVscodeMessage = (message: any) => {
     switch (message.type) {
@@ -614,12 +614,12 @@ function MyFlowView() {
 
       // Center a node when cursor changed in Text Editor
       case "cursor-yaml-path":
-        console.log("received a new yaml path position:", message.content);
         const pa = message.content as string[];
-        // skip if path not landed in "NPC_options" or "player_options"
+        // Skip if path not landed in "NPC_options" or "player_options"
         if (pa.length < 2) {
           break;
         }
+        // Center a node by type
         let type = "";
         switch (pa[0]) {
           case "NPC_options":
@@ -628,38 +628,33 @@ function MyFlowView() {
           case "player_options":
             type = "playerNode";
             break;
-          default:
-            return;
         }
-        // console.log("pa[0]:", pa[0], "pa[1]:", pa[1]);
-        // console.log("id:", type+"_"+pa[1], "name:", pa[1], "type:", type);
+        if (type === "") {
+          break;
+        }
         nodesRef.current.map(node => {
-          // console.log(node);
-          // console.log("checking node.data.name:", node.data.name, "node.type", node.type);
           if (node.data.name === pa[1] && node.type === type) {
-            // console.log("x, y, zoom before update =", flowWrapper.current?.getBoundingClientRect().x, flowWrapper.current?.getBoundingClientRect().y, viewportRef.current.zoom);
             let x = 0;
             let y = 0;
             node.selected = true;
             x = (-node.position.x - (node.width || 0)/2) * viewportRef.current.zoom + (flowWrapper.current?.getBoundingClientRect().width || 0)/2;
             y = (-node.position.y - (node.height || 0)/2) * viewportRef.current.zoom + (flowWrapper.current?.getBoundingClientRect().height || 0)/2;
+            // Move the Viewport
             setViewportRef.current({x: x, y: y, zoom: viewportRef.current.zoom}, {duration: 250});
-            // console.log("x, y after update =", x, y);
           } else {
             node.selected = false;
           }
           return node;
         });
-        // console.log(nodesRef.current);
+        // Update node selections
         setNodes([...nodesRef.current]);
         break;
     }
   };
 
+  // Handle VSCode messages
   React.useEffect(() => {
-    console.log("nodes in useEffect:", nodes.length);
     const handlerFn = (event: MessageEvent<any>) => {
-      console.log("nodes in handlerFn:", nodes.length);
       handleVscodeMessage(event.data);
     };
 
@@ -683,6 +678,7 @@ function MyFlowView() {
       if (lastSelectedNodes === nodes) {
         return;
       }
+      // Highlight all related edges
       let nodeIDs: string[] = [];
       for (let i = 0; i < nodes.length; i++) {
         let n = nodes[i];
@@ -704,7 +700,6 @@ function MyFlowView() {
         }
       }
       setEdges(eds);
-      // console.log("changed selection", nodes, edges);
     },
   });
 
