@@ -100,6 +100,7 @@
     "watch:views": "webpack --watch --mode development"
   },
   "devDependencies": {
+    "@types/async-lock": "^1.4.0",
     "@types/glob": "^8.1.0",
     "@types/js-yaml": "^4.0.5",
     "@types/mocha": "^10.0.1",
@@ -124,6 +125,7 @@
   },
   "dependencies": {
     "antd": "^5.8.3",
+    "async-lock": "^1.4.0",
     "html-to-image": "^1.11.11",
     "js-yaml": "^4.1.0",
     "module_name": "^1.0.0",

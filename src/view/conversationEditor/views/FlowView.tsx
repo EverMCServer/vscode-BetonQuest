@@ -53,6 +53,8 @@ import { writeYaml } from "../utils/writeYaml";
 import ConversationYamlModel, { ConversationYamlOptionModel, IConversationYamlOptionModel, TextMultilingualModel } from "../utils/conversationYamlModel";
 import TranslationSelector from "../components/TranslationSelector";
 
+import AsyncLock from "async-lock";
+
 // const cacheKey = "bq-flow";
 
 const nodeTypes = {
@@ -92,6 +94,9 @@ function MyFlowView() {
 
   // Caching rendered Yaml, prevent unnecessary rendering
   let cachedYml = "";
+
+  // Async/await lock, for message handling, etc
+  const lock = new AsyncLock();
 
   /* ID counter */
 
@@ -316,11 +321,11 @@ function MyFlowView() {
 
   const resetFlow = useCallback(
     async (nodes: Node[], edges: Edge[], viewport?: Viewport) => {
-      setEdges([]);
-      setNodes([]);
-      setViewport({ x: 0, y: 0, zoom: 1 });
+      // setEdges([]);
+      // setNodes([]);
+      // setViewport({ x: 0, y: 0, zoom: 1 });
 
-      setTimeout(() => {
+      // setTimeout(() => {
         setNodes(nodes || []);
         setEdges(edges || []);
         if (viewport) {
@@ -328,7 +333,7 @@ function MyFlowView() {
         } else {
           window.requestAnimationFrame(() => fitView());
         }
-      }, 0);
+      // }, 0);
     },
     [fitView, setEdges, setNodes, setViewport]
   );
@@ -336,16 +341,16 @@ function MyFlowView() {
   // Public method to update flowchart contents
   let updateFlowChart = (fileName: string, content: string, translationSelection?: string) => {
     const flow = readYaml(fileName, content, translationSelection || "en");
-      if (!flow) {
-        return;
-      }
+    if (!flow) {
+      return;
+    }
 
-      const obj = autoLayout(flow.nodes, flow.edges);
-      if (!obj) {
-        return;
-      }
-      const objCopy = JSON.parse(JSON.stringify(obj));
-      resetFlow(objCopy.nodes, objCopy.edges);
+    const obj = autoLayout(flow.nodes, flow.edges);
+    if (!obj) {
+      return;
+    }
+    const objCopy = JSON.parse(JSON.stringify(obj));
+    resetFlow(objCopy.nodes, objCopy.edges);
   };
 
   /* DEL keyboard button event */
@@ -648,6 +653,7 @@ function MyFlowView() {
         });
         // Update node selections
         setNodes([...nodesRef.current]);
+        // console.log("node selection updated");
         break;
     }
   };
@@ -655,7 +661,10 @@ function MyFlowView() {
   // Handle VSCode messages
   React.useEffect(() => {
     const handlerFn = (event: MessageEvent<any>) => {
-      handleVscodeMessage(event.data);
+      lock.acquire("message", ()=>{ // Lock message handling to single thread, prevent various race conditions
+        // console.log("new message:", event.data.type);
+        handleVscodeMessage(event.data);
+      });
     };
 
     // Listen from extension message (document update, change translation etc)

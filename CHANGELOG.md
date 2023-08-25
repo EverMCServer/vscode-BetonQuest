@@ -4,6 +4,11 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.9] - TBD
+
+### Fixed
+- Fix flowchart is not being updated when undo/redo
+
 ## [0.0.8] - 2023-08-24
 
 ### Added
