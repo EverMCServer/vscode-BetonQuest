@@ -349,6 +349,22 @@ function MyFlowView() {
     if (!obj) {
       return;
     }
+
+    // Preserve nodes selection if possible
+    // Find selected nodes
+    let noedIDs: string[] = [];
+    nodesRef.current.map((node)=>{
+      if (node.selected) {
+        noedIDs.unshift(node.id);
+      }
+    });
+    // Set nodes selection
+    obj.nodes.map((node)=>{
+      if (noedIDs.includes(node.id)) {
+        node.selected = true;
+      }
+    });
+
     const objCopy = JSON.parse(JSON.stringify(obj));
     resetFlow(objCopy.nodes, objCopy.edges);
   };

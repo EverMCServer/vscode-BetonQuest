@@ -8,6 +8,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Fixed
 - Fix flowchart is not being updated when undo/redo
+- Preserve nodes selection if possible
 
 ## [0.0.8] - 2023-08-24
 
