@@ -18,6 +18,8 @@ Create and link options with drag-and-drop:
 ### Feature Roadmap
 - [x] Edit `Conversations` with an interactive flowchart UI.
 - [ ] Basic `Events`, `Conditions`, `Objectives` Editors with fully [documentation](https://docs.betonquest.org/2.0-DEV/Documentation/Overview/) support.
+- [x] The legacy **1.x file structure** \[[1](https://docs.betonquest.org/1.12/User-Documentation/Reference/#packages)\] \[[2](https://docs.betonquest.org/1.12/User-Documentation/Conversations/)\] support.
+- [ ] The new **2.0 file structure** \[[1](https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Packages-%26-Templates/)\] \[[2](https://docs.betonquest.org/2.0-DEV/Tutorials/Syntax/Quest-Packages/)\] support.
 - [ ] [Journal](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Journal/) editing.
 - [ ] [Items](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Items/) editing.
 - [ ] [Intergrated plugins](https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Building-Blocks/Integration-List/) support.
@@ -37,6 +39,7 @@ Create and link options with drag-and-drop:
 
 Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/issues
 
+- The new *2.0 file structure* is not supported at this moment due to [various difficulties](https://github.com/EverMCServer/vscode-BetonQuest/issues/5). If you are scripting with the new file format, you may consider [manually convert your files](https://github.com/EverMCServer/vscode-BetonQuest/issues/5#issuecomment-1694207893) before loading them onto your server.
 - Zoom-in and out is limited to certain degrees.
 - Lines in Yaml files are re-ordered while editing.
 - Original comments in Yaml files are erased while editing.
