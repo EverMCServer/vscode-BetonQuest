@@ -745,6 +745,28 @@ function MyFlowView() {
     return true;
   });
 
+  // Move the cursor when a node is selected
+  const onNodeClick = (event: ReactMouseEvent, node: Node) => {
+    let content: string[];
+    switch (node.type) {
+      case "startNode":
+        content = ["quester"];
+        break;
+      case "npcNode":
+        content = ["NPC_options", node.data.name];
+        break;
+      case "playerNode":
+        content = ["player_options", node.data.name];
+        break;
+      default:
+        return;
+    }
+    vscode.postMessage({
+      type: "cursor-yaml-path",
+      content: content,
+    });
+  };
+
   return (
     <div className="flow-container">
       <div className="flow-wrapper" ref={flowWrapper}>
@@ -764,6 +786,7 @@ function MyFlowView() {
           // snapToGrid={true}
           onNodeContextMenu={onNodeContextMenu}
           onPaneClick={onPaneClick}
+          onNodeClick={onNodeClick}
         >
           {/* <MiniMap
             nodeColor={(n) => {

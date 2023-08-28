@@ -6,6 +6,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [0.0.9] - TBD
 
+### Added
+- Sync cursor position when a node is clicked
+
 ### Fixed
 - Fix flowchart is not being updated when undo/redo
 - Preserve nodes selection if possible

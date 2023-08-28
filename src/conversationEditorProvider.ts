@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import findYamlNodeByOffset from './utils/findYamlNodeByOffset';
+import findOffestByYamlNode from './utils/findOffestByYamlNode';
 
 interface InitialConfig {
     translationSelection?: string,
@@ -163,6 +164,18 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                 case 'set-betonquest-translationSelection':
                     console.log("got betonquest-translationSelection from webview:", e.content);
                     vscode.workspace.getConfiguration('betonquest.setting').update('translationSelection', e.content, vscode.ConfigurationTarget.Global);
+                    return;
+
+                // Move cursor on text editor.
+                case 'cursor-yaml-path':
+                    let offset = findOffestByYamlNode(e.content, document.getText());
+                    let curPos = document.positionAt(offset);
+                    // Iterate all opened documents, set the cursor position.
+                    for (const editor of vscode.window.visibleTextEditors) {
+                        if (editor.document.uri.toString() === document.uri.toString()) {
+                            editor.selections = [new vscode.Selection(curPos, curPos)];
+                        }
+                    }
                     return;
 			}
 		});
