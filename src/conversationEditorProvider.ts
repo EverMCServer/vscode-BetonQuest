@@ -92,7 +92,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
         });
 
         const onDidChangeTextEditorSelection = vscode.window.onDidChangeTextEditorSelection(e => {
-            if (e.textEditor.document.uri.toString() === document.uri.toString()) {
+            if (vscode.window.activeTextEditor && e.textEditor.document.uri.toString() === document.uri.toString()) {
                 let curPos = e.selections[0].active;
                 let offset = e.textEditor.document.offsetAt(curPos);
                 // console.log("\ncurPos: ", curPos, "\noffset: ", offset);
