@@ -29,6 +29,14 @@ Create and link options with drag-and-drop:
 
 ## Limitations
 
+- The new **2.0 file structure** \[[1](https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Packages-%26-Templates/)\] \[[2](https://docs.betonquest.org/2.0-DEV/Tutorials/Syntax/Quest-Packages/)\] is not supported currently due to [various difficulties](https://github.com/EverMCServer/vscode-BetonQuest/issues/5) (more helps needed!). If you are using such a format, you should convert your files manually before importing them into your server:
+```yaml
+conversations:
+  MyNPC: # Name of your npc
+    # Paste the content of a legacy conversation file here.
+    # Don't forget the indention: just select the content and `tab` twice.
+```
+
 - `Conversations` Editor does not support [cross-conversation pointers](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Conversations/#cross-conversation-pointers) at this moment.
 
 ## Extension Settings
@@ -46,7 +54,11 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 
 ## Release Notes
 
-(For more detailes, please check [CHANGELOG.md](CHANGELOG.md))
+### 0.0.9
+- Sync cursor position when a node is clicked
+- Fix flowchart is not being updated when undo/redo
+- Preserve nodes selection if possible
+- Fix viewport be moved while typing
 
 ### 0.0.8
 - Conversation optiosn can now be fast-located with cursor on yaml documents
@@ -56,30 +68,4 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 
 - Various bugs fix
 
-### 0.0.6
-
-- Fix extension is not being activated when VSCode is started the first time
-
-### 0.0.5
-
-- Fix translation selection is reverted when switching between conversation editors
-
-### 0.0.4
-
-- Avoid flowchart flickering while editing YAML by delaying the docuemnt update
-- Focus lost the first time typing
-- Focus lost typing too fast
-
-### 0.0.3
-
-- Translation selection
-- Configuration to set your default translation selection
-- The Conversation Flowchart is now activated by the Text Editor's tool-bar which located on the top right corner
-
-### 0.0.2
-
-- Bug fixes
-
-### 0.0.1
-
-- Initial Conversation's editor
+(For more detailes, please check [CHANGELOG.md](CHANGELOG.md))
