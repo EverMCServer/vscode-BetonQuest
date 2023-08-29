@@ -370,18 +370,28 @@ function MyFlowView() {
     });
 
     // Get all translation from yaml
+    let langs: string[] = [];
     obj.nodes.every(n => {
-      if (n.type === "startNode") {
-        let l: string[] = [];
-        for (const [k, _] of Object.entries(n.data.yaml.quester)) {
-          l.push(k);
-        }
-        setAllTranslations(l);
-        return false;
+      switch (n.type) {
+        case "startNode":
+          for (const [k, _] of Object.entries(n.data.yaml.quester)) {
+            if (!langs.find(v => v===k)) {
+              langs.push(k);
+            }
+          }
+          break;
+        case "npcNode":
+        case "playerNode":
+          for (const [k, _] of Object.entries(n.data.option.text)) {
+            if (!langs.find(v => v===k)) {
+              langs.push(k);
+            }
+          }
+          break;
       }
       return true;
     });
-    // ...
+    setAllTranslations(langs);
 
     const objCopy = JSON.parse(JSON.stringify(obj));
     resetFlow(objCopy.nodes, objCopy.edges);
