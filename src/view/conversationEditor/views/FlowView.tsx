@@ -92,6 +92,10 @@ function MyFlowView() {
   // Caching multilingual status
   let isYamlMultilingual = false;
 
+  // Caching translation list
+  // let allTranslations: string[] = [];
+  const [allTranslations, setAllTranslations] = useState(["en"]);
+
   // Caching rendered Yaml, prevent unnecessary rendering
   let cachedYml = "";
 
@@ -365,6 +369,20 @@ function MyFlowView() {
       }
     });
 
+    // Get all translation from yaml
+    obj.nodes.every(n => {
+      if (n.type === "startNode") {
+        let l: string[] = [];
+        for (const [k, _] of Object.entries(n.data.yaml.quester)) {
+          l.push(k);
+        }
+        setAllTranslations(l);
+        return false;
+      }
+      return true;
+    });
+    // ...
+
     const objCopy = JSON.parse(JSON.stringify(obj));
     resetFlow(objCopy.nodes, objCopy.edges);
   };
@@ -592,6 +610,7 @@ function MyFlowView() {
     }
   }, [needsLayout, onAutoLayout]);
 
+  //
   // Cache stuff that need to be referenced in useEffect() ...
   // Cache "nodes"
   const nodesRef = React.useRef(nodes);
@@ -805,7 +824,7 @@ function MyFlowView() {
             pannable
           /> */}
           <Panel position="top-right" className="panel">
-            <TranslationSelector enabled={isYamlMultilingual} selectedLanguage={translationSelection}></TranslationSelector>
+            <TranslationSelector enabled={isYamlMultilingual} selectedTranslation={translationSelection} allTranslations={allTranslations}></TranslationSelector>
             {/* <input
               type="file"
               id="json-upload"

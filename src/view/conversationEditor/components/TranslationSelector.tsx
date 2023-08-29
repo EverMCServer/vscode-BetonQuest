@@ -1,95 +1,108 @@
 import * as React from "react";
 
-import { Space, Select } from 'antd';
+import { Space, Select, Divider, Button } from 'antd';
 import { vscode } from "../utils/vscode";
-
-// Default languages come from
-// https://github.com/BetonQuest/BetonQuest/blob/b4ce01ed301ca78fbd8663b1102b6064c2803e86/src/main/resources/messages.yml
-let defaultLanguages = [
-    {
-        value: 'en',
-        label: 'English (en)',
-    },
-    {
-        value: 'es',
-        label: 'Español (es)',
-    },
-    {
-        value: 'pl',
-        label: 'Polski (pl)',
-    },
-    {
-        value: 'fr',
-        label: 'Français (fr)',
-    },
-    {
-        value: 'cn',
-        label: '简体中文 (cn)',
-    },
-    {
-        value: 'de',
-        label: 'Deutsch (de)',
-    },
-    {
-        value: 'nl',
-        label: 'Nederlands (nl)',
-    },
-    {
-        value: 'it',
-        label: 'Italiano (it)',
-    },
-    {
-        value: 'hu',
-        label: 'Magyar (hu)',
-    },
-    {
-        value: 'vi',
-        label: 'Tiếng Việt (vi)',
-    },
-];
-
-function onTranslationSearch() {}
-function onTranslationChange(value: string) {
-    // Send translation selection to vscode extension.
-    // ...
-    vscode.postMessage({
-        type: "set-betonquest-translationSelection",
-        content: value,
-    });
-    return;
-}
+import { allLanguages } from "../../../i18n/i18n";
 
 interface Props {
     enabled: boolean,
-    selectedLanguage?: string,
-    languages?: string[], // Languages detected from conversation yaml
+    selectedTranslation?: string,
+    allTranslations: string[], // Languages detected from conversation yaml
 }
 
 export default function translationSelector(props: Props): React.JSX.Element {
-    // const [translationEnabledWithSwitch, setTranslationEnabledWithSwitch] = React.useState(false);
-    // const [switchOnOff, setSwitchOnOff] = React.useState(false);
 
-    return (<Space>
-    {/* <Switch
-        size="small"
-        defaultChecked={switchOnOff}
-        onChange={(checked: boolean) => {
-            setTranslationEnabledWithSwitch(checked);
-            setSwitchOnOff(checked);
-        }}
-    /> */}
-    <Select
-        style={!props.enabled?{display: "none"}:{}}
-        value={props.selectedLanguage}
-        size="small"
-        // disabled={props.enabled?!false:!translationEnabledWithSwitch}
-        showSearch
-        placeholder="Select a translation"
-        optionFilterProp="children"
+    const [name, setName] = React.useState("");
+    const [items, setItems] = React.useState(allLanguages.filter(e=>!props.allTranslations.every(f=>f!==e.value)));
+
+    React.useEffect(() => {
+        // Get all translations from props
+        let translations = props.allTranslations.map(f => {
+            return {
+                value: f,
+                label: f
+            };
+        });
+        // Replace display name by language list
+        translations.map(e => {
+            e.label = allLanguages.find(f => e.value === f.value)?.label || e.label;
+        });
+        setItems(translations);
+    }, [props.allTranslations]);
+
+    function onTranslationChange(value: string) {
+        // Send translation selection to vscode extension.
+        vscode.postMessage({
+        type: "set-betonquest-translationSelection",
+        content: value,
+        });
+        return;
+    }
+
+    function preventEvent(e: React.MouseEvent) {
+        // e.preventDefault();
+        e.stopPropagation();
+    }
+
+    const onNameChange = (value: string) => {
+        setName(value);
+    };
+
+    const addItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+        if (!name) {
+            return;
+        }
+        if (items.find((e) => e.value === name)) {
+            return;
+        }
+        const item = allLanguages.find(e => e.value === name);
+        if (!item) {
+            return;
+        }
+        setItems([...items, item]);
+        setName("");
+    };
+
+    return (
+        <Select
+        value={props.selectedTranslation}
         onChange={onTranslationChange}
-        onSearch={onTranslationSearch}
-        filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
-        options={defaultLanguages}
-    />
-    </Space>);
+        style={!props.enabled?{display:"none"}:{}}
+        size="small"
+        showSearch
+        popupMatchSelectWidth={false}
+        placeholder="language"
+        // dropdownAlign={{ offset: [-40, 4] }}
+        // dropdownStyle={{alignItems: "right"}}
+        dropdownRender={(menu) => (
+            <>
+            {menu}
+            <Divider style={{ margin: "8px 0" }} />
+            <Space style={{ padding: "0 4px 4px" }} onMouseDown={preventEvent}>
+                <Button style={{height: "auto", padding:"0px 6px"}} type="text" onClick={addItem}>
+                +
+                </Button>
+                <Select
+                popupMatchSelectWidth={false}
+                placeholder="New Translation"
+                size="small"
+                showSearch
+                value={name||undefined}
+                onChange={onNameChange}
+                filterOption={(input, option) =>
+                    (option?.label ?? "")
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={allLanguages.filter(e=>items.every(f=>f.value!==e.value))}
+                />
+            </Space>
+            </>
+        )}
+        filterOption={(input, option) =>
+            (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+        }
+        options={items}
+        />
+    );
 }
