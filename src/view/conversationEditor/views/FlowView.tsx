@@ -627,11 +627,14 @@ function MyFlowView() {
   // Cache setViewport()
   const setViewportRef = React.useRef(setViewport);
   const viewportRef = React.useRef(viewport);
+  // Cache translation selection
+  const translationSelectionRef = React.useRef(translationSelection);
   React.useEffect(()=>{
     nodesRef.current = nodes;
     setViewportRef.current = setViewport;
     viewportRef.current = viewport;
-  }, [nodes, setViewport, viewport]);
+    translationSelectionRef.current = translationSelection;
+  }, [nodes, setViewport, viewport, translationSelection]);
 
   /* VSCode messages */
 
@@ -647,7 +650,7 @@ function MyFlowView() {
           console.log("update yml ...");
           // console.log("44444", cachedYml);
 
-          updateFlowChart("fileName", content, translationSelection);
+          updateFlowChart("fileName", content, translationSelectionRef.current);
           cachedYml = content;
 
           break;

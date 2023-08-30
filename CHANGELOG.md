@@ -9,6 +9,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Added
 - Better supports for translation detection and selection
 
+### Fixed
+- Vscode's events are not being properly unregistered
+- Fix translation selection be reverted when editing yml directly
+
 ## [0.0.9] - 2023-08-28
 
 ### Added
