@@ -210,7 +210,7 @@ export const allLanguages = [
     },
     {
       value: 'ja',
-      label: '日本語 (Nihongo) (ja)'
+      label: '日本語(ja)'
     },
     {
       value: 'jbo',
@@ -230,7 +230,7 @@ export const allLanguages = [
     },
     {
       value: 'ko',
-      label: '한국어 (Hangugeo) (ko)'
+      label: '한국어 (ko)'
     },
     {
       value: 'kw',
