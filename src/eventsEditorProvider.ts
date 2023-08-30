@@ -57,7 +57,7 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
 			}
 		});
 
-        const onDidChangeTextEditorSelection = vscode.window.onDidChangeTextEditorSelection(e => {
+        const changeSelectionSubscription = vscode.window.onDidChangeTextEditorSelection(e => {
             if (e.textEditor.document.uri.toString() === document.uri.toString()) {
                 let curPos = e.selections[0].active;
                 let offset = e.textEditor.document.offsetAt(curPos);
@@ -70,13 +70,7 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
 			}
         });
 
-        // Make sure we get rid of the listener when our editor is closed.
-		webviewPanel.onDidDispose(() => {
-			changeDocumentSubscription.dispose();
-            onDidChangeTextEditorSelection.dispose();
-		});
-
-        vscode.workspace.onDidChangeConfiguration(e => {
+        const changeTranslationSubscription = vscode.workspace.onDidChangeConfiguration(e => {
             if (e.affectsConfiguration('betonquest.setting.translationSelection')) {
                 console.log("sendding betonquest-translationSelection into webview ...");
                 webviewPanel.webview.postMessage({
@@ -87,7 +81,7 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
         });
 
 		// Receive message from the webview.
-		webviewPanel.webview.onDidReceiveMessage(e => {
+		const onDidReceiveMessage = webviewPanel.webview.onDidReceiveMessage(e => {
 			switch (e.type) {
                 case 'webview-lifecycle':
                     switch (e.content) {
@@ -104,6 +98,14 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
                     this.updateTextDocument(document, e.content);
 					return;
 			}
+		});
+
+        // Make sure we get rid of the listener when our editor is closed.
+		webviewPanel.onDidDispose(() => {
+			changeDocumentSubscription.dispose();
+            changeSelectionSubscription.dispose();
+            changeTranslationSubscription.dispose();
+            onDidReceiveMessage.dispose();
 		});
     }
 

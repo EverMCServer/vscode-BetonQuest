@@ -92,7 +92,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
             }
         });
 
-        const onDidChangeTextEditorSelection = vscode.window.onDidChangeTextEditorSelection(e => {
+        const changeSelectionSubscription = vscode.window.onDidChangeTextEditorSelection(e => {
             if ((e.kind === vscode.TextEditorSelectionChangeKind.Keyboard ||
                 e.kind === vscode.TextEditorSelectionChangeKind.Mouse) &&
                 vscode.window.activeTextEditor &&
@@ -108,14 +108,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
 			}
         });
 
-        // Make sure we get rid of the listener when our editor is closed.
-		webviewPanel.onDidDispose(() => {
-			changeDocumentSubscription.dispose();
-            saveDocumentSubscription.dispose();
-            onDidChangeTextEditorSelection.dispose();
-		});
-
-        vscode.workspace.onDidChangeConfiguration(e => {
+        const changeTranslationSubscription = vscode.workspace.onDidChangeConfiguration(e => {
             if (e.affectsConfiguration('betonquest.setting.translationSelection')) {
                 console.log("sendding betonquest-translationSelection into webview ...");
                 webviewPanel.webview.postMessage({
@@ -126,7 +119,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
         });
 
 		// Receive message from the webview.
-		webviewPanel.webview.onDidReceiveMessage(e => {
+		const onDidReceiveMessage = webviewPanel.webview.onDidReceiveMessage(e => {
 			switch (e.type) {
                 case 'webview-lifecycle':
                     switch (e.content) {
@@ -178,6 +171,16 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                     }
                     return;
 			}
+		});
+
+        // Make sure we get rid of the listener when our editor is closed.
+		const onDidDispose = webviewPanel.onDidDispose(() => {
+			changeDocumentSubscription.dispose();
+            saveDocumentSubscription.dispose();
+            changeSelectionSubscription.dispose();
+            changeTranslationSubscription.dispose();
+            onDidReceiveMessage.dispose();
+            onDidDispose.dispose();
 		});
     }
 
