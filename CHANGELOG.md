@@ -8,6 +8,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Added
 - Better supports for translation detection and selection
+- "stop", "final_events", "interceptor" editing
 
 ### Fixed
 - Vscode's events are not being properly unregistered

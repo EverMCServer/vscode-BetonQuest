@@ -10,6 +10,7 @@ import {
 import { connectionAvaliable } from "../utils/commonUtils";
 import "./styles.css";
 import ConversationYamlModel from "../utils/conversationYamlModel";
+import { Select } from "antd";
 
 export default memo(({ data, selected }: NodeProps) => {
   const [getTrigger, setTrigger] = useState(false);
@@ -17,12 +18,16 @@ export default memo(({ data, selected }: NodeProps) => {
     setTrigger(!getTrigger);
   };
 
-  // Conversation file name
-  const getFileName = (): string => {
-    return data["fileName"] || "";
+  // Conversation "first" setting
+  const getStop = (): string => {
+    return Object.assign(new ConversationYamlModel(), data["yaml"]).getStop() || "false";
   };
-  const setFileName = (value: string): void => {
-    data["fileName"] = value;
+  const setStop = (value: string): void => {
+    const yaml = Object.assign(new ConversationYamlModel(), data["yaml"]);
+    yaml.setStop(value);
+    data["yaml"] = yaml;
+    data.updateYaml();
+
     refreshUI();
   };
 
@@ -66,21 +71,29 @@ export default memo(({ data, selected }: NodeProps) => {
         </div> */}
       </div>
       <div className="box">
-        file name:
-        <input
-          type="text"
-          className="nodrag input"
-          value={getFileName()}
-          onChange={(e) => setFileName(e.target.value)}
-        />
+        <div>
+          NPC name:
+          <input
+            type="text"
+            className="nodrag input"
+            value={getQuester()}
+            onChange={(e) => setQuester(e.target.value)}
+          />
+        </div>
         <hr className="line"></hr>
-        NPC name:
-        <input
-          type="text"
-          className="nodrag input"
-          value={getQuester()}
-          onChange={(e) => setQuester(e.target.value)}
-        />
+        <div>
+          Stop when player leave:&nbsp;
+          <Select
+            value={getStop()}
+            // style={{height: "18px"}}
+            className="nodrag"
+            size="small"
+            showSearch
+            popupMatchSelectWidth={false}
+            onChange={e => setStop(e)}
+            options={[{ value: "false" }, { value: "true" }]}
+          />
+        </div>
       </div>
       <Handle
         id="handleOut"

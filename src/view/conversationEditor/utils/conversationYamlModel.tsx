@@ -68,6 +68,9 @@ export default class ConversationYamlModel implements IConversationYamlModel {
   first: string = "";
   stop?: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  final_events?: string;
+  interceptor?: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   NPC_options?: Record<string, ConversationYamlOptionModel>;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   player_options?: Record<string, ConversationYamlOptionModel>;
@@ -104,6 +107,14 @@ export default class ConversationYamlModel implements IConversationYamlModel {
 
   isValueMultilingualModel(value: string | TextMultilingualModel): value is TextMultilingualModel {
     return typeof value === 'object';
+  }
+
+  getStop(): string {
+    return this.stop || 'false';
+  }
+
+  setStop(text: string) {
+    this.stop = text;
   }
 
 }

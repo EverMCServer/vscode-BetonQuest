@@ -369,9 +369,11 @@ function MyFlowView() {
       }
     });
 
-    // Get all translation from yaml
     let langs: string[] = [];
-    obj.nodes.every(n => {
+    obj.nodes.forEach((n, i) => {
+      // Add update callback on nodes
+      obj.nodes[i].data.updateYaml = onDownloadYML;
+      // Get all translations from yaml
       switch (n.type) {
         case "startNode":
           for (const [k, _] of Object.entries(n.data.yaml.quester)) {
@@ -393,8 +395,9 @@ function MyFlowView() {
     });
     setAllTranslations(langs);
 
-    const objCopy = JSON.parse(JSON.stringify(obj));
-    resetFlow(objCopy.nodes, objCopy.edges);
+    // const objCopy = JSON.parse(JSON.stringify(obj));
+    // resetFlow(objCopy.nodes, objCopy.edges);
+    resetFlow(obj.nodes, obj.edges);
   };
 
   /* DEL keyboard button event */

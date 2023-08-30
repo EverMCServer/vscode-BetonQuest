@@ -81,13 +81,14 @@ export function writeYaml(
 
   // Full Yaml
   const fileName = startNode.data["fileName"] || "conversation";
-  const first = startNode.data["pointers"];
   const originYaml: ConversationYamlModel = Object.assign(new ConversationYamlModel(), startNode.data["yaml"]);
 
   const fullYaml = new ConversationYamlModel();
   fullYaml.quester = originYaml.quester;
-  fullYaml.first = first;
-  fullYaml.stop = originYaml.stop || "true";
+  fullYaml.first = startNode.data["pointers"];
+  fullYaml.stop = originYaml.stop;
+  fullYaml.final_events = originYaml.final_events;
+  fullYaml.interceptor = originYaml.interceptor;
   fullYaml.NPC_options = npcYaml;
   fullYaml.player_options = playerYaml;
 
