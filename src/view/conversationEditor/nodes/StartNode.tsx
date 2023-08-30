@@ -18,13 +18,39 @@ export default memo(({ data, selected }: NodeProps) => {
     setTrigger(!getTrigger);
   };
 
-  // Conversation "first" setting
+  // Conversation "stop" setting
   const getStop = (): string => {
     return Object.assign(new ConversationYamlModel(), data["yaml"]).getStop() || "false";
   };
   const setStop = (value: string): void => {
     const yaml = Object.assign(new ConversationYamlModel(), data["yaml"]);
     yaml.setStop(value);
+    data["yaml"] = yaml;
+    data.updateYaml();
+
+    refreshUI();
+  };
+
+  // Conversation "final_events"
+  const getFinalEvents = (): string[] => {
+    return Object.assign(new ConversationYamlModel(), data["yaml"]).getFinalEvents();
+  };
+  const setFinalEvents = (value: string[]): void => {
+    const yaml = Object.assign(new ConversationYamlModel(), data["yaml"]);
+    yaml.setFinalEvents(value);
+    data["yaml"] = yaml;
+    data.updateYaml();
+
+    refreshUI();
+  };
+
+  // Conversation "interceptor"
+  const getInterceptor = (): string[] => {
+    return Object.assign(new ConversationYamlModel(), data["yaml"]).getInterceptor();
+  };
+  const setInterceptor = (value: string[]): void => {
+    const yaml = Object.assign(new ConversationYamlModel(), data["yaml"]);
+    yaml.setInterceptor(value);
     data["yaml"] = yaml;
     data.updateYaml();
 
@@ -92,6 +118,33 @@ export default memo(({ data, selected }: NodeProps) => {
             popupMatchSelectWidth={false}
             onChange={e => setStop(e)}
             options={[{ value: "false" }, { value: "true" }]}
+          />
+        </div>
+        <div>
+          Final events:&nbsp;
+          <Select
+            value={getFinalEvents()}
+            // style={{height: "18px"}}
+            className="nodrag"
+            size="small"
+            mode="tags"
+            tokenSeparators={[',', ' ']}
+            popupMatchSelectWidth={false}
+            onChange={e => setFinalEvents(e)}
+            options={[]}
+          />
+        </div>
+        <div>
+          Interceptor:&nbsp;
+          <Select
+            value={getInterceptor()}
+            // style={{height: "18px"}}
+            className="nodrag"
+            size="small"
+            mode="multiple"
+            popupMatchSelectWidth={false}
+            onChange={e => setInterceptor(e)}
+            options={[{ value: "simple" }, { value: "packet" }, { value: "none" }]}
           />
         </div>
       </div>

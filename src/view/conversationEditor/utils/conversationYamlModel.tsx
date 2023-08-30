@@ -117,6 +117,22 @@ export default class ConversationYamlModel implements IConversationYamlModel {
     this.stop = text;
   }
 
+  getFinalEvents(): string[] {
+    return this.final_events?.split(/, */) || [];
+  }
+
+  setFinalEvents(events: string[]) {
+    this.final_events = events.toString();
+  }
+
+  getInterceptor(): string[] {
+    return this.interceptor?.split(/, */) || [];
+  }
+
+  setInterceptor(interceptor: string[]) {
+    this.interceptor = interceptor.toString();
+  }
+
 }
 
 interface IConversationYamlModel {
