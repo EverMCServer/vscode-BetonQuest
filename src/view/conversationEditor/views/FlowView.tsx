@@ -600,25 +600,25 @@ function MyFlowView() {
   //   }).then(downloadImage);
   // }, [getNodes]);
 
-  /* Auto Layout */
+  // /* Auto Layout */
 
-  const onAutoLayout = useCallback(() => {
-    const obj = autoLayout(getNodes(), getEdges());
-    if (!obj) {
-      return;
-    }
-    const objCopy = JSON.parse(JSON.stringify(obj));
-    resetFlow(objCopy.nodes, objCopy.edges);
-  }, [getNodes, getEdges, resetFlow]);
+  // const onAutoLayout = useCallback(() => {
+  //   const obj = autoLayout(getNodes(), getEdges());
+  //   if (!obj) {
+  //     return;
+  //   }
+  //   const objCopy = JSON.parse(JSON.stringify(obj));
+  //   resetFlow(objCopy.nodes, objCopy.edges);
+  // }, [getNodes, getEdges, resetFlow]);
 
-  const [needsLayout, setNeedsLayout] = useState(false);
+  // const [needsLayout, setNeedsLayout] = useState(false);
 
-  React.useEffect(() => {
-    if (needsLayout) {
-      onAutoLayout();
-      setNeedsLayout(false);
-    }
-  }, [needsLayout, onAutoLayout]);
+  // React.useEffect(() => {
+  //   if (needsLayout) {
+  //     onAutoLayout();
+  //     setNeedsLayout(false);
+  //   }
+  // }, [needsLayout, onAutoLayout]);
 
   //
   // Cache stuff that need to be referenced in useEffect() ...
