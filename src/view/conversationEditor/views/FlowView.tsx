@@ -376,22 +376,25 @@ function MyFlowView() {
       // Get all translations from yaml
       switch (n.type) {
         case "startNode":
-          for (const [k, _] of Object.entries(n.data.yaml.quester)) {
-            if (!langs.find(v => v===k)) {
-              langs.push(k);
+          if (n.data.yaml.quester) {
+            for (const [k, _] of Object.entries(n.data.yaml.quester)) {
+              if (!langs.find(v => v===k)) {
+                langs.push(k);
+              }
             }
           }
           break;
         case "npcNode":
         case "playerNode":
-          for (const [k, _] of Object.entries(n.data.option.text)) {
-            if (!langs.find(v => v===k)) {
-              langs.push(k);
+          if (n.data.option.text) {
+            for (const [k, _] of Object.entries(n.data.option.text)) {
+              if (!langs.find(v => v===k)) {
+                langs.push(k);
+              }
             }
           }
           break;
       }
-      return true;
     });
     setAllTranslations(langs);
 
