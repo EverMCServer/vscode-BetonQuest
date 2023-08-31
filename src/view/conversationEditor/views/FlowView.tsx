@@ -819,7 +819,8 @@ function MyFlowView() {
           nodeTypes={nodeTypes}
           connectionLineComponent={ConnectionLine}
           fitView
-          minZoom={0.25}
+          fitViewOptions={{minZoom:0.1, maxZoom:1.0}}
+          minZoom={0.1}
           maxZoom={1.5}
           // snapToGrid={true}
           onNodeContextMenu={onNodeContextMenu}
