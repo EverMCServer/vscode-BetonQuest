@@ -111,7 +111,8 @@ export default memo(({ data, selected }: NodeProps) => {
           Stop when player leave:&nbsp;
           <Select
             value={getStop()}
-            // style={{height: "18px"}}
+            dropdownAlign={{points:['tr', 'br']}}
+            getPopupContainer={triggerNode => triggerNode.parentElement.parentElement}
             className="nodrag"
             size="small"
             showSearch
@@ -120,11 +121,13 @@ export default memo(({ data, selected }: NodeProps) => {
             options={[{ value: "false" }, { value: "true" }]}
           />
         </div>
+        <hr className="line"></hr>
         <div>
           Final events:&nbsp;
           <Select
             value={getFinalEvents()}
-            // style={{height: "18px"}}
+            dropdownAlign={{points:['tr', 'br']}}
+            getPopupContainer={triggerNode => triggerNode.parentElement.parentElement}
             className="nodrag"
             size="small"
             mode="tags"
@@ -134,11 +137,13 @@ export default memo(({ data, selected }: NodeProps) => {
             options={[]}
           />
         </div>
+        <hr className="line"></hr>
         <div>
           Interceptor:&nbsp;
           <Select
             value={getInterceptor()}
-            // style={{height: "18px"}}
+            dropdownAlign={{points:['tr', 'br']}}
+            getPopupContainer={triggerNode => triggerNode.parentElement.parentElement}
             className="nodrag"
             size="small"
             mode="multiple"

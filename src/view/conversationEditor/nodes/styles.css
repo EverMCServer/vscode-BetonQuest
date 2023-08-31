@@ -53,7 +53,7 @@
     border-radius: 4px 4px 0px 0px;
     padding-left: 10px;
     display: flex;
-    font-size: 13px;
+    font-size: 16px;
 }
 
 .title-box.start {
@@ -70,13 +70,13 @@
 
 .title-box .nodeName {
     color: #999;
-    font-size: 10px;
+    font-size: 14px;
     padding-left: 5px;
 }
 
 .box {
     padding: 8px 10px 10px 10px;
-    font-size: 10px;
+    font-size: 14px;
     line-height: 20px;
     color: #999;
 }

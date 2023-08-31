@@ -161,7 +161,7 @@ export function parseYaml(
     node.positionAbsolute = { x: 0, y: 0 };
     node.width = 200;
     if (node.type === "startNode") {
-      node.height = 148;
+      node.height = 290;
     } else {
       let count = 0;
       const data = node.data;

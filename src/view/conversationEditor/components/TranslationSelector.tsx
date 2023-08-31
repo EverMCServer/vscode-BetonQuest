@@ -72,7 +72,7 @@ export default function translationSelector(props: Props): React.JSX.Element {
         showSearch
         popupMatchSelectWidth={false}
         placeholder="language"
-        // dropdownAlign={{ offset: [-40, 4] }}
+        // dropdownAlign={{points:['tr', 'br']}}
         // dropdownStyle={{alignItems: "right"}}
         dropdownRender={(menu) => (
             <>
