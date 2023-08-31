@@ -118,19 +118,19 @@ export default class ConversationYamlModel implements IConversationYamlModel {
   }
 
   getFinalEvents(): string[] {
-    return this.final_events?.split(/, */) || [];
+    return this.final_events?.split(',').map((item) => item.trim()).filter((item) => item.length > 0) || [];
   }
 
   setFinalEvents(events: string[]) {
-    this.final_events = events.toString();
+    this.final_events = events.join(", ") || undefined;
   }
 
   getInterceptor(): string[] {
-    return this.interceptor?.split(/, */) || [];
+    return this.interceptor?.split(',').map((item) => item.trim()).filter((item) => item.length > 0) || [];
   }
 
   setInterceptor(interceptor: string[]) {
-    this.interceptor = interceptor.toString();
+    this.interceptor = interceptor.join(", ") || undefined;
   }
 
 }

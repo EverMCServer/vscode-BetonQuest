@@ -10,12 +10,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Better supports for translation detection and selection
 - "stop", "final_events", "interceptor" editing
 
+### Changed
+- Optimize zoom
+
 ### Fixed
 - Vscode's events are not being properly unregistered
 - Fix translation selection be reverted when editing yml directly
-
-### Changed
-- Optimize zoom
 
 ## [0.0.9] - 2023-08-28
 

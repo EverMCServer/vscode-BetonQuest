@@ -131,8 +131,10 @@ export default memo(({ data, selected }: NodeProps) => {
             className="nodrag"
             size="small"
             mode="tags"
-            tokenSeparators={[',', ' ']}
             popupMatchSelectWidth={false}
+            style={{width: "100%"}}
+            placeholder={"(none)"}
+            tokenSeparators={[',', ' ']}
             onChange={e => setFinalEvents(e)}
             options={[]}
           />
@@ -148,6 +150,8 @@ export default memo(({ data, selected }: NodeProps) => {
             size="small"
             mode="multiple"
             popupMatchSelectWidth={false}
+            style={{width: "100%"}}
+            placeholder={"(none)"}
             onChange={e => setInterceptor(e)}
             options={[{ value: "simple" }, { value: "packet" }, { value: "none" }]}
           />
