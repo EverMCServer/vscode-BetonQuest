@@ -54,6 +54,12 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 
 ## Release Notes
 
+### 0.0.10
+- Better supports for translation detection and selection
+- "stop", "final_events", "interceptor" editing
+- Optimized zoom
+- Various bugs fixed
+
 ### 0.0.9
 - Sync cursor position when a node is clicked
 - Fix flowchart is not being updated when undo/redo
@@ -63,9 +69,5 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 ### 0.0.8
 - Conversation optiosn can now be fast-located with cursor on yaml documents
 - Fix "Open Conversation Flowchart" button does not show up in Windows
-
-### 0.0.7
-
-- Various bugs fix
 
 (For more detailes, please check [CHANGELOG.md](CHANGELOG.md))
