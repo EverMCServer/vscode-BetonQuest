@@ -1,4 +1,5 @@
 import YAML, { Document, YAMLMap, Scalar } from 'yaml';
+import Conversation from './Conversation';
 
 export default class Package {
 
@@ -54,6 +55,29 @@ export default class Package {
                 >
             >
         > | undefined;
+    }
+
+    // Get all conversations
+    getConversations(): Map<string, Conversation> {
+        const map = new Map<string, Conversation>();
+        const yaml = this.yaml.getIn(["conversations"]);
+        if (yaml instanceof YAMLMap) {
+            yaml.items.forEach((pair, i) => {
+                if (pair.value instanceof YAMLMap) {
+                    map.set(pair.key.toString(), new Conversation(pair.value));
+                }
+            });
+        }
+        return map;
+    }
+
+    // Get the Conversation Model by script name.
+    getConversation(scriptName: string): Conversation | undefined {
+        const yaml = this.yaml.getIn(["conversations", scriptName]);
+        if (yaml instanceof YAMLMap) {
+            return new Conversation(yaml);
+        }
+        return undefined;
     }
 
 }
