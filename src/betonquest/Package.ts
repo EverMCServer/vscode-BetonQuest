@@ -1,25 +1,15 @@
-import YAML, { Document, YAMLMap } from 'yaml';
+import YAML, { Document, YAMLMap, Scalar } from 'yaml';
 
-export default class {
+export default class Package {
 
-    private yaml?: Document;
-
-    private eventsYaml?;
-    private conditionsYaml?;
-    private objectivesYaml?;
-    private itemsYaml?;
-    private conversationsYaml?;
+    private yaml: Document<YAMLMap<string>, false>;
 
     constructor(yamlText: string) {
-        console.log(yamlText);
-        this.yaml = YAML.parseDocument(yamlText);
+        this.yaml = YAML.parseDocument<YAMLMap<string>, false>(yamlText);
+    }
 
-        // Determine if "Events", "Conditions", "Objectives", "Items" exists
-        this.eventsYaml = this.yaml.get("events") as YAMLMap<string, string>;
-        this.conditionsYaml = this.yaml.get("conditions") as YAMLMap<string, string>;
-        this.objectivesYaml = this.yaml.get("objectives") as YAMLMap<string, string>;
-        this.itemsYaml = this.yaml.get("items") as YAMLMap<string, string>;
-        this.conversationsYaml = this.yaml.get("conversations") as YAMLMap<string>;
+    reloadYaml() {
+        this.yaml = YAML.parseDocument<YAMLMap<string>, false>(this.yaml.toString());
     }
 
     getYaml() {
@@ -27,22 +17,43 @@ export default class {
     }
 
     getEventsYaml() {
-        return this.eventsYaml;
+        return this.yaml.get("events") as YAMLMap<string, string> | undefined;
     }
 
     getConditionsYaml() {
-        return this.conditionsYaml;
+        return this.yaml.get("conditions") as YAMLMap<string, string> | undefined;
     }
 
     getObjectivesYaml() {
-        return this.objectivesYaml;
+        return this.yaml.get("objectives") as YAMLMap<string, string> | undefined;
     }
 
     getItemsYaml() {
-        return this.itemsYaml;
+        return this.yaml.get("items") as YAMLMap<string, string> | undefined;
     }
 
     getConversationsYaml() {
-        return this.conversationsYaml;
+        return this.yaml.get("conversations") as YAMLMap<
+            // Name of conversation
+            string,
+            // Content of the actuarial conversation script
+            YAMLMap<
+                string,
+                string| // quester-monolingual, first, stop,
+                YAMLMap<
+                    string,
+                    string| // quester-multilingual
+                    YAMLMap<
+                        string,
+                        string| // text-monolingual, conditions, events, pointers
+                        YAMLMap<
+                            string,
+                            string // text-multilingual
+                        >
+                    >
+                >
+            >
+        > | undefined;
     }
+
 }

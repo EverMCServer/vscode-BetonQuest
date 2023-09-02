@@ -3,6 +3,7 @@
 "use strict";
 
 const path = require("path");
+const webpack = require("webpack");
 
 //@ts-check
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
@@ -101,5 +102,15 @@ const reactConfig = {
   infrastructureLogging: {
     level: "log", // enables logging required for problem matchers
   },
+  plugins: [
+    new webpack.DefinePlugin({
+        process: {
+          env: {
+            LOG_TOKENS: undefined
+          }
+        }
+    })
+  ]
 };
 module.exports = [extensionConfig, reactConfig];
+
