@@ -1,4 +1,4 @@
-import YAML, { Document, YAMLMap, Scalar } from 'yaml';
+import YAML, { Document, YAMLMap, Pair } from 'yaml';
 import Conversation from './Conversation';
 
 export default class Package {
@@ -78,6 +78,19 @@ export default class Package {
             return new Conversation(yaml);
         }
         return undefined;
+    }
+
+    // Create a new Conversation
+    newConversation(scriptName: string, quester: string = ""): Conversation {
+        const map = new YAMLMap();
+        map.add(new Pair("quester", quester));
+        this.yaml.setIn(["conversations", scriptName], map);
+        return this.getConversation(scriptName)!;
+    }
+
+    // Remove a Conversation
+    removeConversation(scriptName: string) {
+        this.yaml.deleteIn(["conversations", scriptName]);
     }
 
 }
