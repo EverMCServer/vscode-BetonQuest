@@ -1,4 +1,4 @@
-import YAML, { Document, YAMLMap, Scalar, Pair } from 'yaml';
+import { YAMLMap, Pair } from 'yaml';
 
 // Conversation
 export default class Conversation {
@@ -13,7 +13,6 @@ export default class Conversation {
     }
 
     setQuester(quester: string, translation?: string) {
-        console.log(translation);
         this.setValueOnYamlPath(["quester"], quester, translation);
     }
 
@@ -25,13 +24,21 @@ export default class Conversation {
         this.setStringArrayOnYamlPath(["first"], pointers);
     }
 
-    insertFirst(pointers: string[], after?: string) {
-        this.insertElementToStringArrayOnYamlPath(["first"], pointers, after);
+    insertFirst(pointers: string[], before?: string) {
+        this.insertElementToStringArrayOnYamlPath(["first"], pointers, before);
     }
 
     removeFirst(pointers: string[]) {
-        this.removetElementFromStringArrayOnYamlPath(["first"], pointers);
+        this.removetElementsFromStringArrayOnYamlPath(["first"], pointers);
     }
+
+    getFirstOptions(optionNames: string[]): (Option | undefined)[] {
+        return optionNames.map(optionName => {
+            return this.getOption("NPC_options", optionName);
+        });
+    }
+
+    // setFirstOptions() {} // Not needed, should use setFirst/insertFirst instead
 
     getStop(): string {
         return this.getStringOnYamlPath(["stop"]);
@@ -41,21 +48,23 @@ export default class Conversation {
         this.setValueOnYamlPath(["stop"], value);
     }
 
-    getFinalEvents(): string[] {
+    getFinalEventNames(): string[] {
         return this.getStringArrayOnYamlPath(["final_events"]);
     }
     
-    setFinalEvents(events: string[]) {
+    setFinalEventNames(events: string[]) {
         this.setStringArrayOnYamlPath(["final_events"], events);
     }
 
-    insertFinalEvents(events: string[], after?: string) {
-        this.insertElementToStringArrayOnYamlPath(["final_events"], events, after);
+    insertFinalEventNames(events: string[], before?: string) {
+        this.insertElementToStringArrayOnYamlPath(["final_events"], events, before);
     }
 
-    removeFinalEvents(events: string[]) {
-        this.removetElementFromStringArrayOnYamlPath(["final_events"], events);
+    removeFinalEventNames(events: string[]) {
+        this.removetElementsFromStringArrayOnYamlPath(["final_events"], events);
     }
+
+    getFinalEvents() {} // TODO
 
     getInterceptor(): string {
         return this.getStringOnYamlPath(["interceptor"]);
@@ -73,10 +82,6 @@ export default class Conversation {
         return this.getOption("player_options", optionName);
     }
 
-    // TODO
-    getFirstOptions() {}
-    // setFirstOptions() {} // needed?
-
     private getStringOnYamlPath(yamlPath: string[], translation: string = "en"): string {
         let result: unknown;
         try {
@@ -158,7 +163,7 @@ export default class Conversation {
         this.setStringArrayOnYamlPath(yamlPath, [...existArray.slice(0, pos), ...elements, ...existArray.slice(pos)]);
     }
 
-    private removetElementFromStringArrayOnYamlPath(yamlPath: string[], elements: string[]) {
+    private removetElementsFromStringArrayOnYamlPath(yamlPath: string[], elements: string[]) {
         elements.forEach(element => {
             this.setStringArrayOnYamlPath(yamlPath, this.getStringArrayOnYamlPath(yamlPath).filter(value => {
                 return value.match(new RegExp("$[ \t\r]*"+element+"[ \t\r]*^")) === null;
@@ -175,7 +180,7 @@ export default class Conversation {
         }
         
         if (yaml instanceof YAMLMap) {
-            return new Option(yaml);
+            return new Option(optionName, type, yaml, this);
         }
         return undefined;
     }
@@ -183,34 +188,105 @@ export default class Conversation {
 
 // Conversation's Option
 export class Option {
+    private name: string;
+    private type: string; // = "NPC_options" / "player_options"
     private yaml: YAMLMap;
+    private conversation: Conversation; // the Conversation this Option belongs to
+    // private package?: Package; // the Package this Option belongs to
+    // private completeConversation?: Conversation; // the complete Conversation this Option belongs to, from the complete Package
+    // private completePackage?: Package; // the complete Package
 
-    constructor(yaml: YAMLMap) {
+    constructor(name: string, type: string, yaml: YAMLMap, conversation: Conversation) {
+        this.name = name;
+        this.type = type;
         this.yaml = yaml;
+        this.conversation = conversation;
+
+        // Fix incorrect named sections:
+        // conditions vs condition
+        const condition = this.getStringOnYamlPath(["condition"]);
+        if (!this.getStringOnYamlPath(["conditions"]).length && condition.length) {
+            this.yaml.setIn(["conditions"], condition);
+            this.yaml.deleteIn(["condition"]);
+        }
+        // events vs event
+        const event = this.getStringOnYamlPath(["event"]);
+        if (!this.getStringOnYamlPath(["events"]).length && event.length) {
+            this.yaml.setIn(["events"], event);
+            this.yaml.deleteIn(["event"]);
+        }
+        // pointers vs pointer
+        const pointer = this.getStringOnYamlPath(["pointer"]);
+        if (!this.getStringOnYamlPath(["pointers"]).length && pointer.length) {
+            this.yaml.setIn(["pointers"], pointer);
+            this.yaml.deleteIn(["pointer"]);
+        }
+
     }
 
-    // TODO
+    getName(): string {
+        return this.name;
+    }
 
-    getConditions() {}
-    setConditions() {}
-    insertConditions() {}
-    removeConditions() {}
+    getConditionNames() {
+        return this.getStringArrayOnYamlPath(["conditions"]);
+    }
 
-    getEvents() {}
-    setEvents() {}
-    insertEvents() {}
-    removeEvents() {}
+    setConditionNames(conditionNames: string[]) {
+        this.setStringArrayOnYamlPath(["conditions"], conditionNames);
+    }
 
-    getPointers() {}
-    setPointers() {}
-    insertPointers() {}
-    removePointers() {}
-    getPeriousOptions() {}
-    getNextOptions() {}
+    insertConditionNames(conditionNames: string[], before?: string) {
+        this.insertElementToStringArrayOnYamlPath(["conditions"], conditionNames, before);
+    }
+
+    removeConditionNames(conditionNames: string[]) {
+        this.removetElementsFromStringArrayOnYamlPath(["conditions"], conditionNames);
+    }
+
+    getEventNames(): string[] {
+        return this.getStringArrayOnYamlPath(["events"]);
+    }
+
+    setEventNames(eventNames: string[]) {
+        this.setStringArrayOnYamlPath(["events"], eventNames);
+    }
+
+    insertEventNames(eventNames: string[], before: string) {
+        this.insertElementToStringArrayOnYamlPath(["events"], eventNames, before);
+    }
+
+    removeEventNames(eventNames: string[]) {
+        this.removetElementsFromStringArrayOnYamlPath(["events"], eventNames);
+    }
+
+    getPointerNames() {
+        return this.getStringArrayOnYamlPath(["pointers"]);
+    }
+
+    setPointerNames(pointerNames: string[]) {
+        this.setStringArrayOnYamlPath(["pointers"], pointerNames);
+    }
+
+    insertPointerNames(pointerNames: string[], before: string) {
+        this.insertElementToStringArrayOnYamlPath(["pointers"], pointerNames, before);
+    }
+
+    removePointerNames(pointerNames: string[]) {
+        this.removetElementsFromStringArrayOnYamlPath(["pointers"], pointerNames);
+    }
+
+    // getPeriousOptions() {}
+    // getNextOptions() {}
     // setNextOptions() {} // needed?
 
-    getText() {}
-    setText() {}
+    getText(translation?: string): string {
+        return this.getStringOnYamlPath(["text"], translation);
+    }
+
+    setText(text: string, translation?: string) {
+        this.setValueOnYamlPath(["text"], text, translation);
+    }
 
     private getStringOnYamlPath(yamlPath: string[], translation: string = "en"): string {
         let result: unknown;
@@ -293,7 +369,7 @@ export class Option {
         this.setStringArrayOnYamlPath(yamlPath, [...existArray.slice(0, pos), ...elements, ...existArray.slice(pos)]);
     }
 
-    private removetElementFromStringArrayOnYamlPath(yamlPath: string[], elements: string[]) {
+    private removetElementsFromStringArrayOnYamlPath(yamlPath: string[], elements: string[]) {
         elements.forEach(element => {
             this.setStringArrayOnYamlPath(yamlPath, this.getStringArrayOnYamlPath(yamlPath).filter(value => {
                 return value.match(new RegExp("$[ \t\r]*"+element+"[ \t\r]*^")) === null;
@@ -301,17 +377,11 @@ export class Option {
         });
     }
 
-    private getOption(type: string, optionName: string): Option | undefined {
-        let yaml: unknown;
-        try {
-            yaml = this.yaml.getIn([type, optionName]);
-        } catch {
-            return undefined;
-        }
-        
-        if (yaml instanceof YAMLMap) {
-            return new Option(yaml);
-        }
-        return undefined;
-    }
+    // private getOption(optionName: string): Option | undefined {
+    //     if (this.type === "NPC_options") {
+    //         return this.conversation.getPlayerOption(optionName);
+    //     } else if (this.type === "player_options") {
+    //         return this.conversation.getNpcOption(optionName);
+    //     }
+    // }
 }
