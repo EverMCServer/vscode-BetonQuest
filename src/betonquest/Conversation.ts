@@ -8,6 +8,10 @@ export default class Conversation {
         this.yaml = yaml;
     }
 
+    getYamlText(): string {
+        return this.yaml.toString();
+    }
+
     getQuester(translation?: string): string {
         return this.getStringOnYamlPath(["quester"], translation);
     }

@@ -1,5 +1,9 @@
 import YAML, { Document, YAMLMap, Pair } from 'yaml';
 import Conversation from './Conversation';
+import Event from './Event';
+import Condition from './Condition';
+import Objective from './Objective';
+import Item from './Item';
 
 export default class Package {
 
@@ -13,24 +17,92 @@ export default class Package {
         this.yaml = YAML.parseDocument<YAMLMap<string>, false>(this.yaml.toString());
     }
 
-    getYaml() {
+    private getYaml() {
         return this.yaml;
     }
 
-    getEventsYaml() {
+    getYamlText(): string {
+        return this.getYaml().toString();
+    }
+
+    private getEventsYaml() {
         return this.yaml.get("events") as YAMLMap<string, string> | undefined;
     }
 
-    getConditionsYaml() {
+    getEvent(eventName: string): Event {
+        return new Event(eventName, this.getEventsYaml()?.get(eventName)!);
+    }
+
+    getEvents(eventNames: string[]): Event[] {
+        return eventNames.map(value => {
+            return this.getEvent(value);
+        });
+    }
+
+    getAllEvents(): Event[] {
+        return this.getEventsYaml()?.items.map(pair => {
+            return new Event(pair.key, pair.value || "");
+        }) || [];
+    }
+
+    private getConditionsYaml() {
         return this.yaml.get("conditions") as YAMLMap<string, string> | undefined;
     }
 
-    getObjectivesYaml() {
+    getCondition(conditionName: string): Condition {
+        return new Condition(conditionName, this.getConditionsYaml()?.get(conditionName)!);
+    }
+
+    getConditions(conditionNames: string[]): Condition[] {
+        return conditionNames.map(value => {
+            return this.getCondition(value);
+        });
+    }
+
+    getAllConditions(): Condition[] {
+        return this.getConditionsYaml()?.items.map(pair => {
+            return new Condition(pair.key, pair.value || "");
+        }) || [];
+    }
+
+    private getObjectivesYaml() {
         return this.yaml.get("objectives") as YAMLMap<string, string> | undefined;
     }
 
-    getItemsYaml() {
+    getObjective(objectiveName: string): Objective {
+        return new Objective(objectiveName, this.getConditionsYaml()?.get(objectiveName)!);
+    }
+
+    getObjectives(objectiveNames: string[]): Objective[] {
+        return objectiveNames.map(value => {
+            return this.getObjective(value);
+        });
+    }
+
+    getAllObjectives(): Objective[] {
+        return this.getObjectivesYaml()?.items.map(pair => {
+            return new Objective(pair.key, pair.value || "");
+        }) || [];
+    }
+
+    private getItemsYaml() {
         return this.yaml.get("items") as YAMLMap<string, string> | undefined;
+    }
+
+    getItem(itemName: string): Item {
+        return new Item(itemName, this.getConditionsYaml()?.get(itemName)!);
+    }
+
+    getItems(itemNames: string[]): Item[] {
+        return itemNames.map(value => {
+            return this.getItem(value);
+        });
+    }
+
+    getAllItems(): Item[] {
+        return this.getItemsYaml()?.items.map(pair => {
+            return new Item(pair.key, pair.value || "");
+        }) || [];
     }
 
     getConversationsYaml() {
