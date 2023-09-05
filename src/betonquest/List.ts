@@ -1,44 +1,46 @@
-export default class List {
-    private name: string;
-    private kind: string;
-    private options: string[];
-    
-    constructor (name: string, contentString: string) {
-        this.name = name;
-        this.kind = "";
-        this.options = [];
-        this.setContent(contentString);
-    }
-    // constructor (yamlPair: Pair<string, string>) {
-    //     this.name = yamlPair.key;
-    //     this.kind = "";
-    //     this.options = [];
-    //     this.setContent(yamlPair.value || "");
-    // }
+import { Pair, Scalar } from "yaml";
 
-    setContent(content: string) {
-        const cont = content.split(" ");
-        if (cont.length) {
-            this.kind = cont[0];
-            if (cont.length>1) {
-                this.options = cont.slice(1);
-            }
-        }
+export default class List {
+    private yaml: Pair<Scalar<string>, Scalar<string>>;
+    
+    constructor (pair: Pair<Scalar<string>, Scalar<string>>) {
+        this.yaml = pair;
     }
 
     getName(): string {
-        return this.name;
-    }
-
-    toString(): string {
-        return this.kind + " " + this.options.join(" ");
+        return this.yaml.key.value;
     }
 
     getKind(): string {
-        return this.kind;
+        const cont = this.yaml.value?.value.split(" ");
+        if (cont && cont.length) {
+            return cont[0];
+        }
+        return "";
+    }
+
+    setKind(kind: string) {
+        let cont = this.yaml.value?.value.split(" ") || [];
+        cont[0] = kind;
+        this.yaml.value!.value = cont.join(" ");
     }
 
     getOptions(): string[] {
-        return this.options;
+        const cont = this.yaml.value?.value.split(" ");
+        if (cont && cont.length) {
+            if (cont.length>1) {
+                return cont.slice(1);
+            }
+        }
+        return [];
+    }
+
+    setOptions(options: string[]) {
+        const kind = this.getKind();
+        this.yaml.value!.value = [kind, ...options].join(" ");
+    }
+
+    toString(): string {
+        return this.yaml.value?.value || "";
     }
 }

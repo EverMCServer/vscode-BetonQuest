@@ -1,4 +1,4 @@
-import YAML, { Document, YAMLMap, Pair } from 'yaml';
+import YAML, { Document, YAMLMap, Pair, Scalar } from 'yaml';
 import Conversation from './Conversation';
 import Event from './Event';
 import Condition from './Condition';
@@ -26,14 +26,18 @@ export default class Package {
     }
 
     private getEventsYaml() {
-        return this.yaml.get("events") as YAMLMap<string, string> | undefined;
+        return this.yaml.get("events") as YAMLMap<Scalar<string>, Scalar<string>> | undefined;
     }
 
-    getEvent(eventName: string): Event {
-        return new Event(eventName, this.getEventsYaml()?.get(eventName)!);
+    getEvent(eventName: string): Event | undefined {
+        const index = this.getEventsYaml()?.items.findIndex(pair => pair.key.value === eventName);
+        if (index) {
+            return new Event(this.getEventsYaml()!.items[index]);
+        }
+        return undefined;
     }
 
-    getEvents(eventNames: string[]): Event[] {
+    getEvents(eventNames: string[]): (Event|undefined)[] {
         return eventNames.map(value => {
             return this.getEvent(value);
         });
@@ -41,19 +45,23 @@ export default class Package {
 
     getAllEvents(): Event[] {
         return this.getEventsYaml()?.items.map(pair => {
-            return new Event(pair.key, pair.value || "");
+            return new Event(pair);
         }) || [];
     }
 
     private getConditionsYaml() {
-        return this.yaml.get("conditions") as YAMLMap<string, string> | undefined;
+        return this.yaml.get("conditions") as YAMLMap<Scalar<string>, Scalar<string>> | undefined;
     }
 
-    getCondition(conditionName: string): Condition {
-        return new Condition(conditionName, this.getConditionsYaml()?.get(conditionName)!);
+    getCondition(conditionName: string): Condition | undefined {
+        const index = this.getConditionsYaml()?.items.findIndex(pair => pair.key.value === conditionName);
+        if (index) {
+            return new Condition(this.getConditionsYaml()!.items[index]);
+        }
+        return undefined;
     }
 
-    getConditions(conditionNames: string[]): Condition[] {
+    getConditions(conditionNames: string[]): (Condition|undefined)[] {
         return conditionNames.map(value => {
             return this.getCondition(value);
         });
@@ -61,19 +69,23 @@ export default class Package {
 
     getAllConditions(): Condition[] {
         return this.getConditionsYaml()?.items.map(pair => {
-            return new Condition(pair.key, pair.value || "");
+            return new Condition(pair);
         }) || [];
     }
 
     private getObjectivesYaml() {
-        return this.yaml.get("objectives") as YAMLMap<string, string> | undefined;
+        return this.yaml.get("objectives") as YAMLMap<Scalar<string>, Scalar<string>> | undefined;
     }
 
-    getObjective(objectiveName: string): Objective {
-        return new Objective(objectiveName, this.getConditionsYaml()?.get(objectiveName)!);
+    getObjective(objectiveName: string): Objective | undefined {
+        const index = this.getObjectivesYaml()?.items.findIndex(pair => pair.key.value === objectiveName);
+        if (index) {
+            return new Objective(this.getObjectivesYaml()!.items[index]);
+        }
+        return undefined;
     }
 
-    getObjectives(objectiveNames: string[]): Objective[] {
+    getObjectives(objectiveNames: string[]): (Objective|undefined)[] {
         return objectiveNames.map(value => {
             return this.getObjective(value);
         });
@@ -81,31 +93,39 @@ export default class Package {
 
     getAllObjectives(): Objective[] {
         return this.getObjectivesYaml()?.items.map(pair => {
-            return new Objective(pair.key, pair.value || "");
+            return new Objective(pair);
         }) || [];
     }
 
     private getItemsYaml() {
-        return this.yaml.get("items") as YAMLMap<string, string> | undefined;
+        return this.yaml.get("items") as YAMLMap<Scalar<string>, Scalar<string>> | undefined;
     }
 
-    getItem(itemName: string): Item {
-        return new Item(itemName, this.getConditionsYaml()?.get(itemName)!);
+    getItem(itemName: string): Item | undefined {
+        const index = this.getItemsYaml()?.items.findIndex(pair => pair.key.value === itemName);
+        if (index!==undefined) {
+            return new Item(this.getItemsYaml()!.items[index]);
+        }
+        return undefined;
     }
 
-    getItems(itemNames: string[]): Item[] {
+    getItems(itemNames: string[]): (Item|undefined)[] {
         return itemNames.map(value => {
             return this.getItem(value);
         });
     }
 
     getAllItems(): Item[] {
-        return this.getItemsYaml()?.items.map(pair => {
-            return new Item(pair.key, pair.value || "");
-        }) || [];
+        const yaml = this.getItemsYaml();
+        if (yaml) {
+            return yaml.items.map(pair => {
+                return new Item(pair);
+            }) || [];
+        }
+        return [];
     }
 
-    getConversationsYaml() {
+    private getConversationsYaml() {
         return this.yaml.get("conversations") as YAMLMap<
             // Name of conversation
             string,
