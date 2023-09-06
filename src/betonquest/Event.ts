@@ -1,4 +1,4 @@
-import List from "./List";
+import ListElement from "./ListElement";
 
-export default class Event extends List {
+export default class Event extends ListElement {
 }

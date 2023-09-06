@@ -1,6 +1,6 @@
 import { Pair, Scalar } from "yaml";
 
-export default class List {
+export default class ListElement {
     private yaml: Pair<Scalar<string>, Scalar<string>>;
     
     constructor (pair: Pair<Scalar<string>, Scalar<string>>) {
