@@ -57,6 +57,7 @@ const reactConfig = {
     // exampleEditor: "./src/view/exampleEditor/index.tsx",
     conversationEditor: "./src/view/conversationEditor/index.tsx",
     eventsEditor: "./src/view/eventsEditor/index.tsx",
+    packageEditor: "./src/view/packageEditor/index.tsx",
   }, // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
   output: {
     // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/

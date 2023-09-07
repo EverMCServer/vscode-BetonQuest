@@ -21,7 +21,9 @@
   "activationEvents": [
     "workspaceContains:**/main.yml",
     "workspaceContains:**/main.yaml",
-    "workspaceContains:**/conversations/*"
+    "workspaceContains:**/conversations/*",
+    "workspaceContains:**/package.yml",
+    "workspaceContains:**/package.yaml"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -41,6 +43,14 @@
           "light": "assets/icon-events-edit-light.svg",
           "dark": "assets/icon-events-edit-dark.svg"
         }
+      },
+      {
+        "command": "betonquest.openPackageEditor",
+        "title": "BetonQuest: Open Package Editor",
+        "icon": {
+          "light": "assets/icon-conversations-edit-light.svg",
+          "dark": "assets/icon-conversations-edit-dark.svg"
+        }
       }
     ],
     "menus": {
@@ -53,6 +63,11 @@
         {
           "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /[\\/\\\\]events\\.ya?ml$/i && canActivateEventsEditor",
           "command": "betonquest.openEventsEditor",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /.*\\.ya?ml$/i && canActivatePackageEditor",
+          "command": "betonquest.openPackageEditor",
           "group": "navigation"
         }
       ]
@@ -75,6 +90,16 @@
         "selector": [
           {
             "filenamePattern": "**/events.ya?ml"
+          }
+        ]
+      },
+      {
+        "viewType": "betonquest.packageEditor",
+        "displayName": "Conversation Flowchart",
+        "priority": "option",
+        "selector": [
+          {
+            "filenamePattern": "**/*.ya?ml"
           }
         ]
       }

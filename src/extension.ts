@@ -3,6 +3,7 @@
 import * as vscode from "vscode";
 import { ConversationEditorProvider } from "./conversationEditorProvider";
 import { EventsEditorProvider } from "./eventsEditorProvider";
+import { PackageEditorProvider } from "./packageEditorProvider";
 // import { ExampleEditorProvider } from './exampleEditorProvider';
 import { setLocale } from "./i18n/i18n";
 import * as fs from 'fs';
@@ -50,6 +51,31 @@ export function activate(context: vscode.ExtensionContext) {
 
       // Set the context variable based on the result
       vscode.commands.executeCommand('setContext', 'canActivateEventsEditor', mainExists && conversationsExists);
+    }
+
+    // Show Package Editor activation button only when it is appropriate
+    if (document.fileName.match(/[\/\\].+\.ya?ml$/gi)) {
+      // Iterate all parents dir to find "package.yml"
+      let d = path.dirname(document.fileName);
+      let packageExists = false;
+
+      while (true) {
+        // Check for package.yml
+        const packageFile = path.join(d, 'package.yml');
+        packageExists = fs.existsSync(packageFile);
+
+        d = path.resolve(d, "..");
+        
+        if (packageExists || vscode.workspace.workspaceFolders?.find(base=>{
+          const u = base.uri.fsPath.toString();
+          return u === d;
+        })) {
+          break;
+        }
+      }
+
+      // Set the context variable based on the result
+      vscode.commands.executeCommand('setContext', 'canActivatePackageEditor', packageExists);
     }
   }
   // Iterate all opened documents on start-up.
@@ -107,6 +133,22 @@ export function activate(context: vscode.ExtensionContext) {
   //   )
   // );
 
+  // Command to open the Package Editor
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      'betonquest.openPackageEditor',
+      async () => {
+
+        const activeTextEditor = vscode.window.activeTextEditor;
+        if (!activeTextEditor) {
+            return; // No active editor
+        }
+
+        await vscode.commands.executeCommand('vscode.openWith', activeTextEditor.document.uri, 'betonquest.packageEditor', vscode.ViewColumn.Beside);
+      }
+    )
+  );
+
   // Initialize i18n localization
   setLocale(vscode.env.language);
 
@@ -114,6 +156,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(ConversationEditorProvider.register(context));
   context.subscriptions.push(EventsEditorProvider.register(context));
   // context.subscriptions.push(ExampleEditorProvider.register(context));
+  context.subscriptions.push(PackageEditorProvider.register(context));
 }
 
 // This method is called when your extension is deactivated
