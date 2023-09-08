@@ -4,11 +4,16 @@ import { Layout, SiderProps } from "antd";
 import "./ResizableSider.css";
 
 interface ResizableSiderProps extends SiderProps {
+  // Minimun drag width
+  minWidth?: number;
+
+  // Maximun drag width
+  maxWidth?: number;
 };
 
 let isResizing: boolean = false;
 
-const ResizableSider:React.FC<SiderProps> = ({ children, ...props }) => {
+const ResizableSider:React.FC<ResizableSiderProps> = ({ children, ...props }) => {
   const [siderWidth, setSiderWidth] = useState(props.width);
 
   const cbHandleMouseMove = React.useCallback(handleMousemove, []);
@@ -39,8 +44,8 @@ const ResizableSider:React.FC<SiderProps> = ({ children, ...props }) => {
   function handleMousemove(e: MouseEvent) {
     let offsetRight =
       document.body.offsetWidth - (e.clientX - document.body.offsetLeft);
-    let minWidth = 100;
-    let maxWidth = document.body.scrollWidth;
+    let minWidth = props.minWidth || document.body.scrollWidth/4;
+    let maxWidth = props.maxWidth || document.body.scrollWidth;
     if (offsetRight > minWidth && offsetRight < maxWidth) {
       setSiderWidth(offsetRight);
     }
@@ -49,7 +54,7 @@ const ResizableSider:React.FC<SiderProps> = ({ children, ...props }) => {
   return (
     <Layout.Sider {...props} width={siderWidth}>
       <div className="sidebar-dragger" onMouseDown={handleMousedown} />
-      {children}
+      <div className="sidebar-content">{children}</div>
     </Layout.Sider>
   );
 };

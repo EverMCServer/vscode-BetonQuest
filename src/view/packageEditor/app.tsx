@@ -7,8 +7,8 @@ import {setLocale} from '../../i18n/i18n';
 import L from '../../i18n/i18n';
 import { useEffect, useState } from "react";
 
-import { Layout } from "antd";
-// const { Content, Sider } = Layout;
+import { ConfigProvider, Layout } from "antd";
+// const { Content } = Layout;
 
 import ResizableSider from '../components/ResizableSider';
 
@@ -57,12 +57,27 @@ export default function app() {
     const [collapsed, setCollapsed] = useState(false);
 
     return (
-        <>
+    <ConfigProvider
+        theme={{
+            components: {
+                Layout: {
+                    colorBgBody: "",
+                }
+            },
+        }}
+    >
         <Layout
-            style={{ minHeight: '100vh' }}
+            style={{
+                minHeight: '100vh'
+            }}
         >
-            <Layout>content</Layout>
-            {/* <Sider
+            <Layout>
+                <div>
+                    content
+                </div>
+            </Layout>
+            <ResizableSider
+                width={document.body.scrollWidth/3}
                 collapsedWidth={0}
                 trigger={<div>||</div>}
                 zeroWidthTriggerStyle={{
@@ -71,30 +86,14 @@ export default function app() {
                     height: "40",
                     margin: "-20px 0",
                     top: "50vh",
-                    borderStartStartRadius: "6px",
+                    background: "var(--vscode-menu-separatorBackground)",
+                    borderStartStartRadius: "3px",
                     borderStartEndRadius: "0px",
-                    borderEndStartRadius: "6px",
+                    borderEndStartRadius: "3px",
                     borderEndEndRadius: "0px",
                 }}
-                collapsible
-                collapsed={collapsed}
-                onCollapse={(value) => setCollapsed(value)}
-            >
-                sider
-            </Sider> */}
-            <ResizableSider
-                collapsedWidth={0}
-                trigger={<div>||</div>}
-                zeroWidthTriggerStyle={{
-                    width: "10px",
-                    left: "-10px",
-                    height: "40",
-                    margin: "-20px 0",
-                    top: "50vh",
-                    borderStartStartRadius: "6px",
-                    borderStartEndRadius: "0px",
-                    borderEndStartRadius: "6px",
-                    borderEndEndRadius: "0px",
+                style={{
+                    background: "var(--vscode-sideBar-background)",
                 }}
                 collapsible
                 collapsed={collapsed}
@@ -103,6 +102,6 @@ export default function app() {
                 sider
             </ResizableSider>
         </Layout>
-        </>
+    </ConfigProvider>
     );
 }

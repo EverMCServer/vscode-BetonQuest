@@ -220,7 +220,7 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
                 window.initialConfig = ${JSON.stringify(initialConfig)};
             </script>
         </head>
-        <body style="padding: 0px;">
+        <body style="padding: 0px;overflow:hidden;">
             <div id="root"></div>
     
             <script src="${webview.asWebviewUri(reactAppPathOnDisk)}"></script>

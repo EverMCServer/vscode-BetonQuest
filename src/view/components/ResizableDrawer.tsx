@@ -4,6 +4,11 @@ import { Drawer, DrawerProps } from "antd";
 import "./ResizableDrawer.css";
 
 interface ResizableDrawerProps extends DrawerProps {
+  // Minimun drag width
+  minWidth?: number;
+
+  // Maximun drag width
+  maxWidth?: number;
 };
 
 let isResizing: boolean = false;
@@ -40,8 +45,8 @@ const ResizableDrawer:React.FC<ResizableDrawerProps> = ({ children, ...props }) 
   function handleMousemove(e: MouseEvent) {
     let offsetRight =
       document.body.offsetWidth - (e.clientX - document.body.offsetLeft);
-    let minWidth = 256;
-    let maxWidth = 600;
+    let minWidth = props.minWidth || document.body.scrollWidth/4;
+    let maxWidth = props.maxWidth || document.body.scrollWidth;
     if (offsetRight > minWidth && offsetRight < maxWidth) {
       setDrawerWidth(offsetRight);
     }
@@ -50,7 +55,7 @@ const ResizableDrawer:React.FC<ResizableDrawerProps> = ({ children, ...props }) 
   return (
     <Drawer {...props} width={drawerWidth}>
       <div className="sidebar-dragger" onMouseDown={handleMousedown} />
-      {children}
+      <div className="sidebar-content">{children}</div>
     </Drawer>
   );
 };
