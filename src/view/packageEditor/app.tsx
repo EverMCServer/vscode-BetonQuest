@@ -5,6 +5,12 @@ import { vscode } from "./vscode";
 // test locale
 import {setLocale} from '../../i18n/i18n';
 import L from '../../i18n/i18n';
+import { useEffect, useState } from "react";
+
+import { Layout } from "antd";
+// const { Content, Sider } = Layout;
+
+import ResizableSider from '../components/ResizableSider';
 
 export default function app() {
 
@@ -41,18 +47,62 @@ export default function app() {
         });
     }, []);
 
-    console.log("from app.tsx");
-
     // Test i18n
     console.log(L("1"));
     console.log(setLocale("zh-CN"));
     console.log(L("1"));
+
+    // Collapsible Sider
     
+    const [collapsed, setCollapsed] = useState(false);
+
     return (
         <>
-        <h1>Hello, World! from a Package Editor</h1>
-        <div>{"hi form tsx"}</div>
-        <div>{yml}</div>
+        <Layout
+            style={{ minHeight: '100vh' }}
+        >
+            <Layout>content</Layout>
+            {/* <Sider
+                collapsedWidth={0}
+                trigger={<div>||</div>}
+                zeroWidthTriggerStyle={{
+                    width: "10px",
+                    left: "-10px",
+                    height: "40",
+                    margin: "-20px 0",
+                    top: "50vh",
+                    borderStartStartRadius: "6px",
+                    borderStartEndRadius: "0px",
+                    borderEndStartRadius: "6px",
+                    borderEndEndRadius: "0px",
+                }}
+                collapsible
+                collapsed={collapsed}
+                onCollapse={(value) => setCollapsed(value)}
+            >
+                sider
+            </Sider> */}
+            <ResizableSider
+                collapsedWidth={0}
+                trigger={<div>||</div>}
+                zeroWidthTriggerStyle={{
+                    width: "10px",
+                    left: "-10px",
+                    height: "40",
+                    margin: "-20px 0",
+                    top: "50vh",
+                    borderStartStartRadius: "6px",
+                    borderStartEndRadius: "0px",
+                    borderEndStartRadius: "6px",
+                    borderEndEndRadius: "0px",
+                }}
+                collapsible
+                collapsed={collapsed}
+                onCollapse={(value) => setCollapsed(value)}
+            >
+                sider
+            </ResizableSider>
+        </Layout>
         </>
     );
 }

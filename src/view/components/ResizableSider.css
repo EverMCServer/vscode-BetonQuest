@@ -1,0 +1,16 @@
+[data-theme="compact"] .ant-drawer-body p {
+    margin-bottom: 0;
+}
+
+.sidebar-dragger {
+    width: 5px;
+    cursor: ew-resize;
+    /* padding: "4px 0 0"; */
+    /* border-top: 1px solid #ddd; */
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    background-color: rgb(74, 201, 233);
+}
