@@ -220,7 +220,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                 window.initialConfig = ${JSON.stringify(initialConfig)};
             </script>
         </head>
-        <body>
+        <body style="padding: 0px;">
             <div id="root"></div>
     
             <script src="${webview.asWebviewUri(reactAppPathOnDisk)}"></script>

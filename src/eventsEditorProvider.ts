@@ -144,7 +144,7 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
               window.acquireVsCodeApi = acquireVsCodeApi;
             </script>
         </head>
-        <body>
+        <body style="padding: 0px;">
             <div id="root"></div>
     
             <script src="${webview.asWebviewUri(reactAppPathOnDisk)}"></script>
