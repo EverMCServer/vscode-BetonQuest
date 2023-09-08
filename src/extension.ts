@@ -19,10 +19,10 @@ export function activate(context: vscode.ExtensionContext) {
   // );
 
   // Check if the custom editor's buttons should be shown.
-  function checkCanActivateEditor(document: vscode.TextDocument) {
+  function checkCanActivateEditor(editor: vscode.TextEditor) {
     // Show Conversation Editor activation button only when it is appropriate
-    if (document.fileName.match(/[\/\\]conversations[\/\\].+\.ya?ml$/gi)) {
-      const dir = path.resolve(path.dirname(document.fileName), "..");
+    if (editor.document.fileName.match(/[\/\\]conversations[\/\\].+\.ya?ml$/gi)) {
+      const dir = path.resolve(path.dirname(editor.document.fileName), "..");
 
       // Check for main.yml
       const mainFile = path.join(dir, 'main.yml');
@@ -34,29 +34,25 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Show Events, Conditions, Objectives, Items Editor activation button only when it is appropriate
     if (
-      document.fileName.match(/[\/\\]events.ya?ml$/) ||
-      document.fileName.match(/[\/\\]conditions.ya?ml$/) ||
-      document.fileName.match(/[\/\\]objectives.ya?ml$/) ||
-      document.fileName.match(/[\/\\]items.ya?ml$/)
+      editor.document.fileName.match(/[\/\\]events\.ya?ml$/) ||
+      editor.document.fileName.match(/[\/\\]conditions\.ya?ml$/) ||
+      editor.document.fileName.match(/[\/\\]objectives\.ya?ml$/) ||
+      editor.document.fileName.match(/[\/\\]items\.ya?ml$/)
       ) {
-      const dir = path.dirname(document.fileName);
+      const dir = path.dirname(editor.document.fileName);
 
       // Check for main.yml
       const mainFile = path.join(dir, 'main.yml');
       const mainExists = fs.existsSync(mainFile);
 
-      // Check for conversations folder
-      const conversationsDir = path.join(dir, 'conversations');
-      const conversationsExists = fs.existsSync(conversationsDir) && fs.statSync(conversationsDir).isDirectory();
-
       // Set the context variable based on the result
-      vscode.commands.executeCommand('setContext', 'canActivateEventsEditor', mainExists && conversationsExists);
+      vscode.commands.executeCommand('setContext', 'canActivateEventsEditor', mainExists);
     }
 
     // Show Package Editor activation button only when it is appropriate
-    if (document.fileName.match(/[\/\\].+\.ya?ml$/gi)) {
+    if (editor.document.fileName.match(/[^\/\\]+\.ya?ml$/gi)) {
       // Iterate all parents dir to find "package.yml"
-      let d = path.dirname(document.fileName);
+      let d = path.dirname(editor.document.fileName);
       let packageExists = false;
 
       while (true) {
@@ -68,7 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
         
         if (packageExists || vscode.workspace.workspaceFolders?.find(base=>{
           const u = base.uri.fsPath.toString();
-          return u === d;
+          return u === d || u.length >= d.length;
         })) {
           break;
         }
@@ -79,11 +75,11 @@ export function activate(context: vscode.ExtensionContext) {
     }
   }
   // Iterate all opened documents on start-up.
-  for (const document of vscode.workspace.textDocuments) {
-    checkCanActivateEditor(document);
+  for (const editor of vscode.window.visibleTextEditors) {
+    checkCanActivateEditor(editor);
   }
   // Listen for future opened documents.
-  vscode.workspace.onDidOpenTextDocument(async (e) => checkCanActivateEditor(e));
+  vscode.window.onDidChangeActiveTextEditor(async (e) => {if (e) {checkCanActivateEditor(e);}});
 
   // Command to open the Conversation Editor
   context.subscriptions.push(
