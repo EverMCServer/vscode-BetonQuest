@@ -3,6 +3,7 @@ import ConversationEditor from "./Main/ConversationEditor";
 import Package from "../../../betonquest/Package";
 import { Tabs } from "antd";
 import type { Tab } from 'rc-tabs/lib/interface';
+import { VscTrash } from "react-icons/vsc";
 
 interface MainProps {
     package: Package,
@@ -43,7 +44,8 @@ export default function main( props: MainProps ) {
                 newConvs.push({
                     key: key,
                     label: key,
-                    children: <ConversationEditor key={key} conversation={conv} syncYaml={props.syncYaml}></ConversationEditor>
+                    children: <ConversationEditor key={key} conversation={conv} syncYaml={props.syncYaml}></ConversationEditor>,
+                    closeIcon: <VscTrash />,
                 });
                 setTabsItems(newConvs);
                 setTabsActiveKey(key);
@@ -63,6 +65,7 @@ export default function main( props: MainProps ) {
         const initTabsItems = [] as Tab[];
         props.package.getConversations().forEach((v, k)=>{
             initTabsItems.push({
+                closeIcon: <VscTrash />,
                 key: k,
                 label: k,
                 children: <ConversationEditor key={k} conversation={v} syncYaml={props.syncYaml}></ConversationEditor>,
@@ -78,19 +81,19 @@ export default function main( props: MainProps ) {
 
     return(
         <>
-            main component
             <Tabs
                 type={"editable-card"}
                 onChange={onTabsChange}
                 activeKey={tabsActiveKey}
                 onEdit={onTabsEdit}
                 items={tabsItems}
-                tabPosition="bottom"
+                // tabPosition="bottom"
+                size="small"
                 style={{
                     height: "100%"
                 }}
             ></Tabs>
-            
+            <div style={{position: "absolute", bottom: "0"}}>(Main component)</div>
         </>
     );
 }

@@ -54,7 +54,7 @@ const resizableSider:React.FC<ResizableSiderProps> = ({ children, ...props }) =>
   return (
     <Layout.Sider {...props} width={siderWidth}>
       <div className="sidebar-dragger" onMouseDown={handleMousedown} />
-      <div className="sidebar-content">{children}</div>
+      <div className="sidebar-content" style={{height: "100%"}}>{children}</div>
     </Layout.Sider>
   );
 };
