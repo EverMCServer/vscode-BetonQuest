@@ -25,7 +25,7 @@ export default class Package {
 
     // Emit the Yaml text file.
     getYamlText(): string {
-        return this.getYaml().toString();
+        return this.getYaml().toString({nullStr: ``});
     }
 
     private getEventsYaml() {

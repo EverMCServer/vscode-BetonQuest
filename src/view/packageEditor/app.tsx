@@ -1,27 +1,50 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 
 import { vscode } from "./vscode";
 
 // test locale
 import {setLocale} from '../../i18n/i18n';
 import L from '../../i18n/i18n';
-import { useEffect, useState } from "react";
 
 import { ConfigProvider, Layout } from "antd";
 // const { Content } = Layout;
 
+import Package from '../../betonquest/Package';
+
 import ResizableSider from '../components/ResizableSider';
+import Main from "./components/Main";
+import ListEditor from "./components/ListEditor";
+
+// Global variables from vscode
+declare global {
+    var initialConfig: {
+        // yamlText?: string,
+        translationSelection?: string; // Conversation YAML's translation selection.
+    };
+}
+
+// Cache of the Package's yaml.
+let cachedYaml = "";
 
 export default function app() {
-
     // Get initial content data from vscode
-    const [yml, setYml] = React.useState("");
-    // const [translationSelection, setTranslationSelection] = React.useState("");
+    const [pkg, _setPkg] = React.useState(new Package(cachedYaml));
+    // const [translationSelection, setTranslationSelection] = React.useState(globalThis.initialConfig.translationSelection || "en");
 
-    console.log("initialize yml Data.");
+    // Prevent unnecessary rendering
+    const setPkg = (newPkg: Package) => {
+        const newYaml = newPkg.getYamlText();
+        if (newYaml !== cachedYaml) {
+            console.log("newPkg:", newYaml);
+            console.log("oldPkg:", cachedYaml);
+            _setPkg(newPkg);
+            cachedYaml = newYaml;
+        }
+    };
 
     // Get document's content update from vscode
-    React.useEffect(()=>{
+    useEffect(()=>{
         // notify vscode when webview startup completed.
         vscode.postMessage({
             type: "webview-lifecycle",
@@ -33,12 +56,13 @@ export default function app() {
 
             switch (message.type) {
                 case 'update':
-                    if (message.content !== yml) { // Avoid duplicated update
-                        console.log("update yml ...");
-                        setYml(message.content);
+                    if (message.content !== pkg) { // Avoid duplicated update
+                        const p = new Package(message.content);
+                        console.log("update pkg ...", p);
+                        setPkg(p);
                         break;
                     }
-                    console.log("update yml ... nothing changed.");
+                    console.log("update pkg ... nothing changed.");
                     break;
                 case 'betonquest-translationSelection':
                     console.log("update betonquest's translation selection ...");
@@ -47,14 +71,24 @@ export default function app() {
         });
     }, []);
 
+    // Sync package's yaml back to VSCode
+    const syncYaml = () => {
+        cachedYaml = pkg.getYamlText(); // Prevent duplicated update
+        vscode.postMessage({
+            type: "edit",
+            content: cachedYaml,
+        });
+    };
+
     // Test i18n
     console.log(L("1"));
     console.log(setLocale("zh-CN"));
     console.log(L("1"));
 
     // Collapsible Sider
-    
     const [collapsed, setCollapsed] = useState(false);
+
+    console.log("pkg:", pkg);
 
     return (
     <ConfigProvider
@@ -72,9 +106,7 @@ export default function app() {
             }}
         >
             <Layout>
-                <div>
-                    content
-                </div>
+                <Main package={pkg} syncYaml={syncYaml}></Main>
             </Layout>
             <ResizableSider
                 width={document.body.scrollWidth/3}
@@ -99,7 +131,7 @@ export default function app() {
                 collapsed={collapsed}
                 onCollapse={(value) => setCollapsed(value)}
             >
-                sider
+                <ListEditor package={pkg} syncYaml={syncYaml}></ListEditor>
             </ResizableSider>
         </Layout>
     </ConfigProvider>

@@ -13,7 +13,7 @@ interface ResizableSiderProps extends SiderProps {
 
 let isResizing: boolean = false;
 
-const ResizableSider:React.FC<ResizableSiderProps> = ({ children, ...props }) => {
+const resizableSider:React.FC<ResizableSiderProps> = ({ children, ...props }) => {
   const [siderWidth, setSiderWidth] = useState(props.width);
 
   const cbHandleMouseMove = React.useCallback(handleMousemove, []);
@@ -59,4 +59,4 @@ const ResizableSider:React.FC<ResizableSiderProps> = ({ children, ...props }) =>
   );
 };
 
-export default ResizableSider;
+export default resizableSider;
