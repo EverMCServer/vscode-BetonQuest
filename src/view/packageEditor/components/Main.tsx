@@ -78,6 +78,9 @@ export default function main( props: MainProps ) {
 
                 // Create new Conversation on package
                 const conv = props.package.createConversation(key, key);
+                if (!conv) {
+                    break;
+                }
 
                 // Create new tab and update the view
                 const newConvs = [...tabsItems];

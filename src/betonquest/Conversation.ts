@@ -1,16 +1,22 @@
-import { YAMLMap, Pair } from 'yaml';
+import { Pair, Scalar, YAMLMap } from 'yaml';
 
 // Conversation
 export default class Conversation {
-    private yaml: YAMLMap;
+    private yaml: Pair<Scalar<string>, YAMLMap>;
 
-    constructor(yaml: YAMLMap) {
+    constructor(yaml: Pair<Scalar<string>, YAMLMap>) {
         this.yaml = yaml;
     }
 
     getYamlText(): string {
-        return this.yaml.toString();
+        return this.yaml.value?.toString() || "";
     }
+
+    // // Set name of the Conversation script
+    // // TODO: check key duplication
+    // setConversationName(newScriptName: string) {
+    //     this.yaml.key.value = newScriptName;
+    // }
 
     getQuester(translation?: string): string {
         return this.getStringOnYamlPath(["quester"], translation);
@@ -89,7 +95,7 @@ export default class Conversation {
     private getStringOnYamlPath(yamlPath: string[], translation: string = "en"): string {
         let result: unknown;
         try {
-            result = this.yaml.getIn(yamlPath);
+            result = this.yaml.value?.getIn(yamlPath);
         } catch {
             return "";
         }
@@ -109,7 +115,7 @@ export default class Conversation {
     private setValueOnYamlPath(yamlPath: string[], value: unknown, translation?: string) {
         let node: unknown;
         try {
-            node = this.yaml.getIn(yamlPath);
+            node = this.yaml.value?.getIn(yamlPath);
         } catch {
             return;
         }
@@ -117,18 +123,18 @@ export default class Conversation {
             // Check if value saved with YAML.YAMLMap or string
             node.set(translation||"en", value);
         } else if (typeof node === "string" || !translation) {
-            this.yaml.setIn(yamlPath, value);
+            this.yaml.value!.setIn(yamlPath, value);
         } else {
             const map = new YAMLMap();
-            map.add(new Pair(translation, value));
-            this.yaml.setIn(yamlPath, map);
+            map.add(new Pair(new Scalar(translation), value));
+            this.yaml.value!.setIn(yamlPath, map);
         }
     }
 
     private getStringArrayOnYamlPath(yamlPath: string[]): string[] {
         let str: unknown;
         try {
-            str = this.yaml.getIn(yamlPath);
+            str = this.yaml.value?.getIn(yamlPath);
         } catch {
             return [];
         }
@@ -148,7 +154,7 @@ export default class Conversation {
             // Filter out empty elements
             return value.match(/^[ \t\r]*$/) === null;
         }).join(", ");
-        this.yaml.setIn(yamlPath, str);
+        this.yaml.value?.setIn(yamlPath, str);
     }
 
     private insertElementToStringArrayOnYamlPath(yamlPath: string[], elements: string[], before?: string) {
@@ -178,7 +184,7 @@ export default class Conversation {
     private getOption(type: string, optionName: string): Option | undefined {
         let yaml: unknown;
         try {
-            yaml = this.yaml.getIn([type, optionName]);
+            yaml = this.yaml.value?.getIn([type, optionName]);
         } catch {
             return undefined;
         }
@@ -326,7 +332,7 @@ export class Option {
             this.yaml.setIn(yamlPath, value);
         } else {
             const map = new YAMLMap();
-            map.add(new Pair(translation, value));
+            map.add(new Pair(new Scalar(translation), value));
             this.yaml.setIn(yamlPath, map);
         }
     }

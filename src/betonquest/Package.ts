@@ -1,4 +1,4 @@
-import YAML, { Document, YAMLMap, Pair, Scalar } from 'yaml';
+import YAML, { Document, YAMLMap, Pair, Scalar, ErrorCode, YAMLError } from 'yaml';
 import Conversation from './Conversation';
 import Event from './Event';
 import Condition from './Condition';
@@ -210,13 +210,14 @@ export default class Package {
     }
 
     // Get all conversations
+    // TODO: return array instead, for key renaming etc
     getConversations(): Map<string, Conversation> {
         const map = new Map<string, Conversation>();
         const yaml = this.yaml.getIn(["conversations"]);
         if (yaml instanceof YAMLMap) {
             yaml.items.forEach((pair, i) => {
                 if (pair.value instanceof YAMLMap) {
-                    map.set(pair.key.toString(), new Conversation(pair.value));
+                    map.set(pair.key.toString(), new Conversation(pair));
                 }
             });
         }
@@ -225,18 +226,46 @@ export default class Package {
 
     // Get the Conversation Model by script name.
     getConversation(scriptName: string): Conversation | undefined {
-        const yaml = this.yaml.getIn(["conversations", scriptName]);
+        console.log("getConversation");
+        let result: Conversation | undefined;
+        const yaml = this.yaml.getIn(["conversations"]);
         if (yaml instanceof YAMLMap) {
-            return new Conversation(yaml);
+            yaml.items.forEach(pair => {
+                if (pair.key instanceof Scalar && pair.key.value === scriptName) {
+                    result = new Conversation(pair);
+                }
+            });
         }
-        return undefined;
+        return result;
+    }
+
+    // Set name of the Conversation script
+    // TODO: check key duplication: use setIn() maybe?
+    setConversationName(oldScriptName: string, newScriptName: string) {
+        const yaml = this.yaml.getIn(["conversations"]);
+        if (yaml instanceof YAMLMap) {
+            yaml.items.forEach(pair => {
+                if (pair.key instanceof Scalar && pair.key.value === oldScriptName) {
+                    pair.key.value = newScriptName;
+                }
+            });
+        }
+        return;
     }
 
     // Create a new Conversation
-    createConversation(scriptName: string, quester: string = ""): Conversation {
+    createConversation(scriptName: string, quester: string = ""): Conversation | undefined {
         const map = new YAMLMap();
         map.add(new Pair(new Scalar("quester"), new Scalar(quester)));
-        this.yaml.addIn(["conversations"], this.yaml.createPair(new Scalar(scriptName), map));
+        try {
+            this.yaml.addIn(["conversations"], this.yaml.createPair(new Scalar(scriptName), map));
+        } catch (e) {
+            if (e instanceof YAMLError) {
+                if (e.code === "DUPLICATE_KEY") {
+                    return undefined;
+                }
+            }
+        }
         return this.getConversation(scriptName)!;
     }
 
