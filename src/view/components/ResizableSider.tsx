@@ -21,7 +21,7 @@ const resizableSider:React.FC<ResizableSiderProps> = ({ children, ...props }) =>
 
   useEffect(() => {
     setSiderWidth(props.width);
-  }, [props.collapsed]);
+  }, [props.width]);
 
   function handleMouseup(e: MouseEvent) {
     if (!isResizing) {

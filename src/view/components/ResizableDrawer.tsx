@@ -22,7 +22,7 @@ const ResizableDrawer:React.FC<ResizableDrawerProps> = ({ children, ...props }) 
   useEffect(() => {
     setDrawerWidth(props.width);
     //// eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.open]);
+  }, [props.open, props.width]);
 
   function handleMouseup(e: MouseEvent) {
     if (!isResizing) {

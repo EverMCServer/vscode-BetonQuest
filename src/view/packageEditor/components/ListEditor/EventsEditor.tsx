@@ -11,14 +11,14 @@ export default function eventsEditor(props: EventsEditorProps) {
 
     // Convert all Events into coresponding Event's Editor
     const getEventEditors = (pkg: Package) => {
-        return pkg.getAllEvents().map(e=>{
+        return pkg.getAllEvents().flatMap(e=>{
             switch (e.getKind().toLowerCase()) {
                 case 'give':
-                    return <Give key={e.getName()} package={props.package} syncYaml={props.syncYaml} event={e}></Give>;
+                    return [<Give key={e.getName()} package={props.package} syncYaml={props.syncYaml} event={e}></Give>];
                 default:
                 break;
             }
-            return <></>;
+            return [];
         });
     };
 

@@ -19,7 +19,6 @@ import ListEditor from "./components/ListEditor";
 // Global variables from vscode
 declare global {
     var initialConfig: {
-        // yamlText?: string,
         translationSelection?: string; // Conversation YAML's translation selection.
     };
 }
@@ -29,8 +28,11 @@ let cachedYaml = "";
 
 export default function app() {
     // Get initial content data from vscode
-    const [pkg, _setPkg] = React.useState(new Package(cachedYaml));
-    // const [translationSelection, setTranslationSelection] = React.useState(globalThis.initialConfig.translationSelection || "en");
+    const [pkg, _setPkg] = useState(new Package(cachedYaml));
+    // const [translationSelection, setTranslationSelection] = useState(globalThis.initialConfig.translationSelection || "en");
+
+    // Width of the sider
+    const [siderWidth, setSiderWidth] = useState(document.body.scrollWidth/3);
 
     // Prevent unnecessary rendering
     const setPkg = (newPkg: Package) => {
@@ -57,9 +59,18 @@ export default function app() {
             switch (message.type) {
                 case 'update':
                     if (message.content !== pkg) { // Avoid duplicated update
+                        // Update Package
                         const p = new Package(message.content);
                         console.log("update pkg ...", p);
                         setPkg(p);
+                        // Handle for initial document update
+                        if (message.isInit) {
+                            if (!p.getConversations().size) {
+                                setSiderWidth(document.body.scrollWidth);
+                            } else if (!p.getAllEvents().length && !p.getAllConditions().length && !p.getAllObjectives().length && !p.getAllItems().length) {
+                                setCollapsed(true);
+                            }
+                        }
                         break;
                     }
                     console.log("update pkg ... nothing changed.");
@@ -109,20 +120,21 @@ export default function app() {
                 <Main package={pkg} syncYaml={syncYaml}></Main>
             </Layout>
             <ResizableSider
-                width={document.body.scrollWidth/3}
+                width={siderWidth}
                 collapsedWidth={0}
-                trigger={<div>||</div>}
+                trigger={<div>|||</div>}
                 zeroWidthTriggerStyle={{
-                    width: "10px",
-                    left: "-10px",
-                    height: "40",
+                    width: "18px",
+                    left: "-6px", // "-10px",
+                    height: "40px",
                     margin: "-20px 0",
                     top: "50vh",
                     background: "var(--vscode-menu-separatorBackground)",
-                    borderStartStartRadius: "3px",
+                    borderStartStartRadius: "0px",
                     borderStartEndRadius: "0px",
-                    borderEndStartRadius: "3px",
+                    borderEndStartRadius: "0px",
                     borderEndEndRadius: "0px",
+                    zIndex: "1000",
                 }}
                 style={{
                     background: "var(--vscode-sideBar-background)",

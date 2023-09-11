@@ -48,10 +48,11 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
         );
 
         // Define a method to update Webview
-        function sendDocumentToWebview() {
+        function sendDocumentToWebview(isInit: boolean = false) {
             webviewPanel.webview.postMessage({
                 type: 'update',
-                content: document.getText()
+                content: document.getText(),
+                isInit: isInit,
             });
         }
 
@@ -65,6 +66,7 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
 
         let timeoutHandler: NodeJS.Timeout; // Use timeout to avoid frenquent update / flowchart flickering
         const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(e => {
+            // Send updated content into webview
 			if (e.document.uri.toString() === document.uri.toString()) {
                 clearTimeout(timeoutHandler);
                 if (e.reason === 1 || e.reason === 2) {
@@ -76,6 +78,8 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
                     }, 1000);
                 }
 			}
+            // TODO: update the complete Package when files saved
+            // (Should it be done with LSP?)
 		});
 
         // Try to save the document again if the document sync from webview is delayed
@@ -125,7 +129,7 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
                     switch (e.content) {
                         case 'started':
                             // When the webview just started, send the initial document to webview.
-                            sendDocumentToWebview();
+                            sendDocumentToWebview(true);
 
                             // Send initial configs
                             // Translation setting
