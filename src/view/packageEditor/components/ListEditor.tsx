@@ -18,6 +18,7 @@ export default function listEditor(props: ListEditorProps) {
             <Tabs
                 type={"line"}
                 // onChange={onTabsChange}
+                destroyInactiveTabPane={true}
                 // activeKey={tabsActiveKey}
                 // onEdit={onTabsEdit}
                 // items={tabsItems}
