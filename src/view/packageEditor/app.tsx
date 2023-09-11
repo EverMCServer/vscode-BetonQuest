@@ -23,8 +23,11 @@ declare global {
     };
 }
 
-// Cache of the Package's yaml.
+// Cache of the Package's YAML
 let cachedYaml = "";
+
+// Handler for delayed YAML update
+let syncYamlTimeoutHandler: number;
 
 export default function app() {
     // Get initial content data from vscode
@@ -82,13 +85,20 @@ export default function app() {
         });
     }, []);
 
-    // Sync package's yaml back to VSCode
-    const syncYaml = () => {
-        cachedYaml = pkg.getYamlText(); // Prevent duplicated update
-        vscode.postMessage({
-            type: "edit",
-            content: cachedYaml,
-        });
+    // Sync package's YAML back to VSCode, delay in ms
+    const syncYaml = (delay: number = 1000) => {
+        // Prevent YAML update if it is still updating.
+        window.clearTimeout(syncYamlTimeoutHandler);
+
+        // Delayed YAML update.
+        syncYamlTimeoutHandler = window.setTimeout(()=>{
+            // Update
+            cachedYaml = pkg.getYamlText(); // Prevent duplicated update
+            vscode.postMessage({
+                type: "edit",
+                content: cachedYaml,
+            });
+        }, delay);
     };
 
     // Test i18n
