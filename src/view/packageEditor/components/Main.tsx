@@ -17,6 +17,38 @@ export default function main( props: MainProps ) {
     const [tabsActiveKey, setTabsActiveKey] = useState("");
     const [tabsItems, setTabsItems] = useState([] as Tab[]);
 
+    // Function to remove a tab
+    type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
+    const removeTab = (targetKey: TargetKey) => {
+
+        // Iterate the tab objects, find the script key
+        let lastIndex = -1;
+        let newActiveKey = tabsActiveKey;
+        tabsItems.find((v, i) => {
+            if (v.key === targetKey) {
+                props.package.removeConversation(targetKey);
+                props.syncYaml();
+                lastIndex = i - 1;
+                return true;
+            }
+            return false;
+        });
+
+        // Reset the Tabs panes
+        const newPanes = tabsItems.filter((item) => item.key !== targetKey);
+        setTabsItems(newPanes);
+
+        // Reset the active tabs
+        if (newPanes.length && newActiveKey === targetKey) {
+            if (lastIndex >= 0) {
+                newActiveKey = newPanes[lastIndex].key;
+            } else {
+                newActiveKey = newPanes[0].key;
+            }
+        }
+        setTabsActiveKey(newActiveKey);
+    };
+
     // Handle tabs switching
     const onTabsChange = (newActiveKey: string) => {
         setTabsActiveKey(newActiveKey);
@@ -24,7 +56,7 @@ export default function main( props: MainProps ) {
 
     // Handle tabs addition / removal
     const onTabsEdit = (
-        targetKey: React.MouseEvent | React.KeyboardEvent | string,
+        targetKey: TargetKey,
         action: 'add' | 'remove',
     ) => {
         switch (action) {
@@ -47,6 +79,8 @@ export default function main( props: MainProps ) {
                 const newConvs = [...tabsItems];
                 newConvs.push({
                     key: key,
+                    // TODO: add confirm for deletion
+                    // ...
                     label: <ConversationTabLabel label={key} package={props.package} syncYaml={props.syncYaml}></ConversationTabLabel>,
                     children: <ConversationEditor key={key} conversation={conv} syncYaml={props.syncYaml}></ConversationEditor>,
                     closeIcon: <VscTrash />,
@@ -59,6 +93,8 @@ export default function main( props: MainProps ) {
 
                 break;
             case 'remove':
+                // Remove the whole script from YAML
+                removeTab(targetKey);
                 break;
         }
     };
@@ -69,10 +105,12 @@ export default function main( props: MainProps ) {
         const initTabsItems = [] as Tab[];
         props.package.getConversations().forEach((v, k)=>{
             initTabsItems.push({
-                closeIcon: <VscTrash />,
                 key: k,
+                // TODO: add confirm for deletion
+                // ...
                 label: <ConversationTabLabel label={k} package={props.package} syncYaml={props.syncYaml}></ConversationTabLabel>,
                 children: <ConversationEditor key={k} conversation={v} syncYaml={props.syncYaml}></ConversationEditor>,
+                closeIcon: <VscTrash />,
             });
         });
         if (initTabsItems.length) {
