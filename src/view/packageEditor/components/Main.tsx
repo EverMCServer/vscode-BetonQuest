@@ -1,49 +1,10 @@
 import React, { useEffect, useState } from "react";
 import ConversationEditor from "./Main/ConversationEditor";
+import ConversationTabLabel from "./Main/ConversationTabLabel";
 import Package from "../../../betonquest/Package";
-import { Modal, Tabs } from "antd";
+import { Tabs } from "antd";
 import type { Tab } from 'rc-tabs/lib/interface';
 import { VscTrash } from "react-icons/vsc";
-import Conversation from "../../../betonquest/Conversation";
-
-// Label node for Conversation tabs
-function ConvTabLabel( props: { label: string, package:Package, syncYaml: Function} ) {
-    const [isConvTabLabelModalOpen, setIsConvTabLabelModalOpen] = useState(false);
-
-    const onDoubleClick = () => {
-        setIsConvTabLabelModalOpen(true);
-    };
-
-    const onModalOk = () => {
-        // props.package.setConversationScriptName() // TODO
-        setIsConvTabLabelModalOpen(false);
-        props.syncYaml();
-    };
-
-    const onModalCancel = () => {
-        setIsConvTabLabelModalOpen(false);
-    };
-
-    const [inputValue, setInputValue] = useState(props.label);
-
-    const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInputValue(e.target.value);
-    };
-
-    return (
-    <>
-        <div onDoubleClick={onDoubleClick}>{props.label}</div>
-        <Modal
-            open={isConvTabLabelModalOpen}
-            onOk={onModalOk}
-            onCancel={onModalCancel}
-            destroyOnClose={true}
-        >
-            <input value={inputValue} onChange={onInputChange} placeholder={props.label}></input>
-        </Modal>
-    </>
-    );
-}
 
 interface MainProps {
     package: Package,
@@ -86,7 +47,7 @@ export default function main( props: MainProps ) {
                 const newConvs = [...tabsItems];
                 newConvs.push({
                     key: key,
-                    label: <ConvTabLabel label={key} package={props.package} syncYaml={props.syncYaml}></ConvTabLabel>,
+                    label: <ConversationTabLabel label={key} package={props.package} syncYaml={props.syncYaml}></ConversationTabLabel>,
                     children: <ConversationEditor key={key} conversation={conv} syncYaml={props.syncYaml}></ConversationEditor>,
                     closeIcon: <VscTrash />,
                 });
@@ -110,7 +71,7 @@ export default function main( props: MainProps ) {
             initTabsItems.push({
                 closeIcon: <VscTrash />,
                 key: k,
-                label: <ConvTabLabel label={k} package={props.package} syncYaml={props.syncYaml}></ConvTabLabel>,
+                label: <ConversationTabLabel label={k} package={props.package} syncYaml={props.syncYaml}></ConversationTabLabel>,
                 children: <ConversationEditor key={k} conversation={v} syncYaml={props.syncYaml}></ConversationEditor>,
             });
         });

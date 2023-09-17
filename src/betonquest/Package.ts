@@ -240,17 +240,27 @@ export default class Package {
     }
 
     // Set name of the Conversation script
-    // TODO: check key duplication: use setIn() maybe?
-    setConversationName(oldScriptName: string, newScriptName: string) {
+    // Returns "false" on duplicated key.
+    setConversationScriptName(oldScriptName: string, newScriptName: string): boolean {
         const yaml = this.yaml.getIn(["conversations"]);
         if (yaml instanceof YAMLMap) {
+            // Check duplicate
+            if (yaml.items.find(pair => {
+                if (pair.key instanceof Scalar && pair.key.value === newScriptName) {
+                    return true;
+                }
+            })) {
+                return false;
+            }
+
+            // Set key
             yaml.items.forEach(pair => {
                 if (pair.key instanceof Scalar && pair.key.value === oldScriptName) {
                     pair.key.value = newScriptName;
                 }
             });
         }
-        return;
+        return true;
     }
 
     // Create a new Conversation
