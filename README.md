@@ -1,5 +1,9 @@
 # BetonQuest Visual Editor
 
+[![VS Marketplace](https://img.shields.io/visual-studio-marketplace/v/EverMC.betonquest?color=brightgreen&label=VS%20Marketplace&logo=visual-studio-code&style=flat-square)](https://marketplace.visualstudio.com/items?itemName=EverMC.betonquest)
+[![License](https://img.shields.io/badge/license-AGPL--3.0-blue?style=flat-square)](https://github.com/EverMCServer/vscode-BetonQuest/blob/main/LICENSE)
+
+
 A GUI based editor for [BetonQuest 2.0](https://github.com/BetonQuest/BetonQuest) scripting.
 
 ![conversation editor](assets/screenshot-conversation-light.jpg)
