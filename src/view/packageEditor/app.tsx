@@ -117,6 +117,24 @@ export default function app() {
             components: {
                 Layout: {
                     colorBgBody: "",
+                },
+                Tabs: {
+                    cardBg: "var(--vscode-tab-inactiveBackground)", // un-selected bg
+                    itemActiveColor: "var(--vscode-editor-foreground)", // selection click
+                    itemSelectedColor: "var(--vscode-editor-foreground)", // selected tab
+                    itemHoverColor: "var(--vscode-editor-foreground)", // hover
+                    cardGutter: 0, // gap between tabs
+
+                    // Global
+                    colorText: "var(--vscode-editor-foreground)", // un-selected tab text & contents text
+                    colorBgContainer: "var(--vscode-tab-activeBackground)", // selected tab bg
+                    colorTextDescription: "var(--vscode-disabledForeground)", // "delete" button
+                    colorTextHeading: "var(--vscode-editor-foreground)", // "delete" button hover
+                    colorPrimary: "var(--vscode-editor-foreground)", // color of the line below the selected tab
+
+                    borderRadius: 0, // tab radius
+                    colorBorderSecondary: "transparent", // tab border
+                    borderRadiusLG: 0, // "add" button border radius
                 }
             },
         }}

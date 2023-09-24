@@ -16,7 +16,8 @@ export default function listEditor(props: ListEditorProps) {
     return (
         <>
             <Tabs
-                type={"line"}
+                type="line"
+                // type="card"
                 // onChange={onTabsChange}
                 destroyInactiveTabPane={true}
                 // activeKey={tabsActiveKey}
@@ -45,6 +46,9 @@ export default function listEditor(props: ListEditorProps) {
                 size="small"
                 style={{
                     height: "100%"
+                }}
+                tabBarStyle={{
+                    color: "var(--vscode-disabledForeground)", // un-activated tab text color
                 }}
             ></Tabs>
             <div style={{position: "absolute", bottom: "0"}}>(ListEditor component)</div>

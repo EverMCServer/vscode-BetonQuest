@@ -133,7 +133,10 @@ export default function main( props: MainProps ) {
                 // tabPosition="bottom"
                 size="small"
                 style={{
-                    height: "100%"
+                    height: "100%",
+                }}
+                tabBarStyle={{
+                    color: "var(--vscode-disabledForeground)", // un-activated tab text color
                 }}
             ></Tabs>
             <div style={{position: "absolute", bottom: "0"}}>(Main component)</div>
