@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ConversationEditor from "./Main/ConversationEditor";
 import ConversationTabLabel from "./Main/ConversationTabLabel";
 import Package from "../../../betonquest/Package";
-import { Tabs } from "antd";
+import { Modal, Tabs } from "antd";
 import type { Tab } from 'rc-tabs/lib/interface';
 import { VscTrash } from "react-icons/vsc";
 
@@ -16,6 +16,7 @@ export default function main( props: MainProps ) {
 
     const [tabsActiveKey, setTabsActiveKey] = useState("");
     const [tabsItems, setTabsItems] = useState([] as Tab[]);
+    const [modal, modalContextHolder] = Modal.useModal();
 
     // Function to remove a tab
     type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
@@ -93,8 +94,18 @@ export default function main( props: MainProps ) {
 
                 break;
             case 'remove':
-                // Remove the whole script from YAML
-                removeTab(targetKey);
+                // Prompt the confirmation modal
+                modal.confirm({
+                    title: "Delete the Conversation!",
+                    content: `Are you sure you want to delete Conversation "${targetKey}"?`,
+                    okText: "DELETE",
+                    okType: 'danger',
+                    onOk: () => {
+                        // Remove the whole script from YAML
+                        removeTab(targetKey);
+                    }
+                });
+
                 break;
         }
     };
@@ -139,6 +150,7 @@ export default function main( props: MainProps ) {
                     color: "var(--vscode-disabledForeground)", // un-activated tab text color
                 }}
             ></Tabs>
+            {modalContextHolder}
             <div style={{position: "absolute", bottom: "0"}}>(Main component)</div>
         </>
     );
