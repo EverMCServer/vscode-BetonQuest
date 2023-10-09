@@ -92,6 +92,47 @@ export default class Conversation {
         return this.getOption("player_options", optionName);
     }
 
+    // Get all Options of a type
+    getOptions(type: string): Option[] | undefined {
+        let yaml: unknown;
+        try {
+            yaml = this.yaml.value?.getIn([type]);
+        } catch {
+            return undefined;
+        }
+        
+        if (yaml instanceof YAMLMap) {
+            return yaml.items.map(e =>  new Option(e.key.value, type, e.value, this));
+        }
+        return undefined;
+    }
+
+    // Check if the yaml multilingual
+    isMultilingual(): boolean {
+        let isMultilingual = this.isPathYAMLMap(["quester"]);
+        isMultilingual || this.getOptions("NPC_options")?.every(e => {
+            if (e.isMultilingual()) {
+                isMultilingual = true;
+                return true;
+            }
+        });
+        isMultilingual || this.getOptions("player_options")?.every(e => {
+            if (e.isMultilingual()) {
+                isMultilingual = true;
+                return true;
+            }
+        });
+        return isMultilingual;
+    }
+
+    private isPathYAMLMap(yamlPath: string[]): boolean {
+        try {
+            let result = this.yaml.value?.getIn(yamlPath);
+            return result instanceof YAMLMap;
+        } catch {}
+        return false;
+    }
+
     private getStringOnYamlPath(yamlPath: string[], translation: string = "en"): string {
         let result: unknown;
         try {
@@ -296,6 +337,15 @@ export class Option {
 
     setText(text: string, translation?: string) {
         this.setValueOnYamlPath(["text"], text, translation);
+    }
+
+    // Check if text multilingual
+    isMultilingual(): boolean {
+        let result: unknown;
+        try {
+            result = this.yaml.getIn(["text"]);
+        } catch {}
+        return (result instanceof YAMLMap);
     }
 
     private getStringOnYamlPath(yamlPath: string[], translation: string = "en"): string {

@@ -93,6 +93,7 @@ export default function main( props: MainProps ) {
                 props.syncYaml();
 
                 break;
+
             case 'remove':
                 // Prompt the confirmation modal
                 modal.confirm({
