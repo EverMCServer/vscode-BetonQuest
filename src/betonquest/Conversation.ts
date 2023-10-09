@@ -327,6 +327,8 @@ export class Option {
         this.removetElementsFromStringArrayOnYamlPath(["pointers"], pointerNames);
     }
 
+    // TODO
+
     // getPeriousOptions() {}
     // getNextOptions() {}
     // setNextOptions() {} // needed?

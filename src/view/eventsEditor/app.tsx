@@ -1,5 +1,6 @@
 import * as React from "react";
 import { vscode } from "./vscode";
+import Package from "../../betonquest/Package";
 
 // locale
 import L from '../../i18n/i18n';
@@ -48,7 +49,54 @@ export default function app() {
 
     // Test i18n
     console.log(L("1"));
-    
+
+    // test bq model
+    const pkg = new Package(`
+events:
+  teleportPlayer: "..."
+  # ...
+
+conditions:
+  hasDiamondArmor: "..."
+
+objectives:
+  killCrepper: "..."
+
+items:
+  legendarySword: "..."
+
+conversations:
+  bobsConversation:
+    quester: Bob
+    first: asdf, fdsa
+    NPC_options:
+      a:
+        text: 
+          en: asdf
+`);
+    console.log(pkg);
+    const ev = pkg.createEvent("a");
+    ev.setKind("asaaa");
+    // console.log(pkg.getEvent("a"));
+    // pkg.newConversation("new_NPC");
+    // pkg.reloadYaml();
+    // ev.setKind("b");
+    // console.log(pkg);
+    pkg.removeEvent("teleportPlayer");
+
+    const conv = pkg.getConversation("bobsConversation");
+    console.log("is conv bobsConversation multilingual?", conv?.isMultilingual());
+    // console.log("debug:", pkg.getListFromArray(Event, new Pair(new Scalar("key1"), new Scalar("valule1"))));
+    // console.log("debug:", pkg.getListFromArray<Event>(new Pair("key1", "valule1")));
+
+    // const item = pkg.getItem("legendarySword");
+    // console.log(item);
+    // item?.setKind("1111");
+    // item?.setOptions(["asdf", "asdfd"]);
+    // console.log(pkg);
+    // const items = pkg.getAllItems();
+    // console.log(items);
+
     return (
         <>
         <h1>Hello, World!</h1>
