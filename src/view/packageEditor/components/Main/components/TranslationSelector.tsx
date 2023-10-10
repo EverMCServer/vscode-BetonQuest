@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Space, Select, Divider, Button } from 'antd';
-import { vscode } from "../../../../components/vscode";
+import { vscode } from "../../../vscode";
 import { allLanguages } from "../../../../../i18n/i18n";
 
 interface Props {

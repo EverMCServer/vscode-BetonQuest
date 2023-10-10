@@ -45,7 +45,7 @@ import { autoLayout } from "./utils/autoLayout";
 // TODO: refactor all option models with Conversation{}
 import { ConversationYamlOptionModel, IConversationYamlOptionModel, TextMultilingualModel } from "./utils/conversationYamlModel";
 
-import { vscode } from "../../../components/vscode";
+import { vscode } from "../../vscode";
 
 const nodeTypes = {
     npcNode: NPCNode,

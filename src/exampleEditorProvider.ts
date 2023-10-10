@@ -158,7 +158,7 @@ export class ExampleEditorProvider implements vscode.CustomTextEditorProvider {
             />
     
             <script>
-              window.acquireVsCodeApi = acquireVsCodeApi;
+                window.vscode = acquireVsCodeApi();
             </script>
         </head>
         <body style="padding: 0px;">

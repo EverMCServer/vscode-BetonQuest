@@ -216,7 +216,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
             />
     
             <script>
-                window.acquireVsCodeApi = acquireVsCodeApi;
+                window.vscode = acquireVsCodeApi();
                 window.initialConfig = ${JSON.stringify(initialConfig)};
             </script>
         </head>

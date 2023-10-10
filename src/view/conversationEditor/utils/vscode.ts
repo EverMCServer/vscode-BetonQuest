@@ -1,3 +1,9 @@
 import { WebviewApi } from "vscode-webview";
 
-export const vscode : WebviewApi<unknown> = window.acquireVsCodeApi();
+declare global {
+    interface Window {
+        vscode: WebviewApi<unknown>;
+    }
+}
+
+export const vscode = window.vscode;

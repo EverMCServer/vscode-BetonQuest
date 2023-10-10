@@ -220,7 +220,7 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
             />
     
             <script>
-                window.acquireVsCodeApi = acquireVsCodeApi;
+                window.vscode = acquireVsCodeApi();
                 window.initialConfig = ${JSON.stringify(initialConfig)};
             </script>
         </head>
