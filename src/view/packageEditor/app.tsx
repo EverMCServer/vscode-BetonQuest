@@ -135,8 +135,8 @@ export default function app() {
                     colorPrimary: "var(--vscode-editor-foreground)", // color of the line below the selected tab
 
                     borderRadius: 0, // tab radius
-                    // colorBorderSecondary: "transparent", // tab border color
-                    lineWidth: 0, // tab border width
+                    colorBorderSecondary: "transparent", // tab border color
+                    // lineWidth: 0, // tab border width
                     borderRadiusLG: 0, // "add" button border radius
                 }
             },

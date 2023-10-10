@@ -2,3 +2,11 @@
     /* Maximize tab content height for ReactFlow */
     height: 100%;
 }
+
+.ant-tabs.ant-tabs-card .ant-tabs-nav-wrap .ant-tabs-nav-list .ant-tabs-tab {
+    /* .ant-tabs.ant-tabs-card .ant-tabs-nav .ant-tabs-nav-wrap .ant-tabs-nav-list .ant-tabs-tab { */
+    /* Override antd tab default style */
+    /* Add border, just like the default VSCode's tabs */
+    /* border-top: 1px solid var(--vscode-tab-border); */
+    border-right: 1px solid var(--vscode-tab-border);
+}
