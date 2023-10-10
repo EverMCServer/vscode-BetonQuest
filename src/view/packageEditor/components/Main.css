@@ -1,0 +1,4 @@
+.ant-tabs-content {
+    /* Maximize tab content height for ReactFlow */
+    height: 100%;
+}

@@ -6,6 +6,8 @@ import { Modal, Tabs } from "antd";
 import type { Tab } from 'rc-tabs/lib/interface';
 import { VscTrash } from "react-icons/vsc";
 
+import "./Main.css";
+
 interface MainProps {
     package: Package,
     syncYaml: Function,
@@ -80,11 +82,10 @@ export default function main( props: MainProps ) {
                 const newConvs = [...tabsItems];
                 newConvs.push({
                     key: key,
-                    // TODO: add confirm for deletion
-                    // ...
                     label: <ConversationTabLabel label={key} package={props.package} syncYaml={props.syncYaml}></ConversationTabLabel>,
                     children: <ConversationEditor key={key} conversation={conv} syncYaml={props.syncYaml}></ConversationEditor>,
                     closeIcon: <VscTrash />,
+                    style: {height: "100%"}  // Maximize tab content height for ReactFlow
                 });
                 setTabsItems(newConvs);
                 setTabsActiveKey(key);
@@ -118,11 +119,10 @@ export default function main( props: MainProps ) {
         props.package.getConversations().forEach((v, k)=>{
             initTabsItems.push({
                 key: k,
-                // TODO: add confirm for deletion
-                // ...
                 label: <ConversationTabLabel label={k} package={props.package} syncYaml={props.syncYaml}></ConversationTabLabel>,
                 children: <ConversationEditor key={k} conversation={v} syncYaml={props.syncYaml}></ConversationEditor>,
                 closeIcon: <VscTrash />,
+                style: {height: "100%"}  // Maximize tab content height for ReactFlow
             });
         });
         if (initTabsItems.length) {
@@ -152,7 +152,6 @@ export default function main( props: MainProps ) {
                 }}
             ></Tabs>
             {modalContextHolder}
-            <div style={{position: "absolute", bottom: "0"}}>(Main component)</div>
         </>
     );
 }

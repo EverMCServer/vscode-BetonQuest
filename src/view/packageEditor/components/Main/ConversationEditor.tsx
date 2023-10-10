@@ -25,6 +25,9 @@ import ReactFlow, {
     useViewport,
     useOnSelectionChange
 } from "reactflow";
+import "reactflow/dist/style.css";
+import "./ConversationEditor.css";
+
 import AsyncLock from "async-lock";
 
 import Conversation from "../../../../betonquest/Conversation";
@@ -44,6 +47,8 @@ import { autoLayout } from "./utils/autoLayout";
 
 // TODO: refactor all option models with Conversation{}
 import { ConversationYamlOptionModel, IConversationYamlOptionModel, TextMultilingualModel } from "./utils/conversationYamlModel";
+import { readYaml } from "./utils/readYaml";
+import { writeYaml } from "./utils/writeYaml";
 
 import { vscode } from "../../vscode";
 
@@ -66,7 +71,7 @@ interface ConversationEditorProps {
 }
 
 // ========== TODO ==========
-// 1. replace "readYaml()"
+// 1. replace "readYaml()", "writeYaml()"
 // 2. refacotr all option models with Conversation{}
 // 3. prevent rerender the whole flow map only when the YAML is not updated (cache)
 // 4. (more...)
@@ -692,19 +697,16 @@ function MyFlowView(props: ConversationEditorProps) {
 }
 
 export default function conversationEditor(props: ConversationEditorProps) {
-    console.log("prpos.test in conversation editor:", props.conversation);
-    // props.conversation.setQuester("test quester");
+    console.log("prpos.conversation in conversation editor:", props.conversation);
 
     return (
-        // <>
-        //     conversation editor<br />
-        //     quester: {props.conversation.getQuester()}<br />
-        //     first: {props.conversation.getFirst()}<br />
-        //     stop: {props.conversation.getStop()}<br />
-        //     ...
-        // </>
-        <ReactFlowProvider>
-            <MyFlowView {...props} />
-        </ReactFlowProvider>
+        <>
+        {/* <div style={{height: "100%",lineHeight: 0}}> */} {/* remove the default lineHeight from antd Tabs */}
+            <div style={{width: "100%", position: "absolute", height: "6px", boxShadow: "var(--vscode-scrollbar-shadow) 0 6px 6px -6px inset"}}></div>
+            <ReactFlowProvider>
+                <MyFlowView {...props} />
+            </ReactFlowProvider>
+        {/* </div> */}
+        </>
     );
 }

@@ -69,7 +69,7 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
             // Send updated content into webview
 			if (e.document.uri.toString() === document.uri.toString()) {
                 clearTimeout(timeoutHandler);
-                if (e.reason === 1 || e.reason === 2) {
+                if (e.reason === vscode.TextDocumentChangeReason.Undo || e.reason === vscode.TextDocumentChangeReason.Redo) {
                     // If docuemnt is changed by undo / redo, it should be updated immediately
                     sendDocumentToWebview();
                 } else {
@@ -146,16 +146,6 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
 					// console.log(e.content);
                     this.updateTextDocument(document, e.content);
 					return;
-
-				case 'save':
-					// console.log(document, e.id);
-					return;
-
-                case 'test-from-webview':
-                    console.log("received test message from webview to extension:");
-                    console.log(e);
-                    vscode.window.showInformationMessage("received test message from webview to extension: " + e.content);
-                    return;
 
                 // Update translation selction configuration.
                 case 'set-betonquest-translationSelection':

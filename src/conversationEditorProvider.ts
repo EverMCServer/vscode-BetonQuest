@@ -67,7 +67,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
         const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(e => {
 			if (e.document.uri.toString() === document.uri.toString()) {
                 clearTimeout(timeoutHandler);
-                if (e.reason === 1 || e.reason === 2) {
+                if (e.reason === vscode.TextDocumentChangeReason.Undo || e.reason === vscode.TextDocumentChangeReason.Redo) {
                     // If docuemnt is changed by undo / redo, it should be updated immediately
                     sendDocumentToWebview();
                 } else {
