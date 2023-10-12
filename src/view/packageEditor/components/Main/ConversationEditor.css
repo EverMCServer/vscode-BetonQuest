@@ -1,6 +1,7 @@
 .flow-container {
     display: flex;
-    height: calc(100% + 17.711px);
+    height: calc(100% + 11.5px);
+    line-height: 1;
 }
 
 .flow-container .flow-wrapper {

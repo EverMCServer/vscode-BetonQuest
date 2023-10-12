@@ -52,6 +52,7 @@ import { writeYaml } from "./utils/writeYaml";
 
 import { vscode } from "../../vscode";
 
+// Define the node's React.JSX.Element
 const nodeTypes = {
     npcNode: NPCNode,
     playerNode: PlayerNode,
@@ -67,6 +68,7 @@ declare global {
 
 interface ConversationEditorProps {
     conversation: Conversation,
+    conversationName: string,
     syncYaml: Function,
 }
 
@@ -91,7 +93,7 @@ function MyFlowView(props: ConversationEditorProps) {
         project,
         setViewport,
         fitView,
-    } = useReactFlow();
+    } = useReactFlow<any>(); // TODO: replace any with a definite type
 
     // Cache translation selection
     const [translationSelection, setTranslationSelection] = useState(globalThis.initialConfig.translationSelection);
@@ -234,6 +236,7 @@ function MyFlowView(props: ConversationEditorProps) {
                 return;
             }
 
+            // Calculate the position of the node
             const hitPosition = project({
                 x: event.clientX - left,
                 y: event.clientY - top,
@@ -347,8 +350,8 @@ function MyFlowView(props: ConversationEditorProps) {
     );
 
     // Public method to update flowchart contents
-    let updateFlowChart = (fileName: string, content: string, translationSelection?: string) => {
-        const flow = readYaml(fileName, content, translationSelection || "en");
+    let updateFlowChart = (content: string, translationSelection?: string) => {
+        const flow = readYaml(content, translationSelection || "en");
         if (!flow) {
             return;
         }
@@ -474,7 +477,6 @@ function MyFlowView(props: ConversationEditorProps) {
         if (!data) {
             return;
         }
-        // downloadFile(`${data.fileName}.yml`, data.content, "yml");
 
         // console.log("3333", data.content);
         vscode.postMessage({
@@ -514,7 +516,7 @@ function MyFlowView(props: ConversationEditorProps) {
             //       console.log("update yml ...");
             //       // console.log("44444", cachedYml);
 
-            //       updateFlowChart("fileName", content, translationSelectionRef.current);
+            //       updateFlowChart(content, translationSelectionRef.current);
             //       cachedYml = content;
 
             //       break;
@@ -525,7 +527,7 @@ function MyFlowView(props: ConversationEditorProps) {
             // Receive translationSelection setting
             case "betonquest-translationSelection":
                 setTranslationSelection(message.content);
-                updateFlowChart("fileName", cachedYml, message.content);
+                updateFlowChart(cachedYml, message.content);
 
                 break;
 

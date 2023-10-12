@@ -9,16 +9,14 @@ export interface YamlReaderOutput {
 }
 
 export function readYaml(
-  fileName: string,
   text: string,
   translationSelection: string,
 ): YamlReaderOutput | null {
   const data = yaml.load(text) as ConversationYamlModel;
-  return parseYaml(fileName, data, translationSelection);
+  return parseYaml(data, translationSelection);
 }
 
 export function parseYaml(
-  fileName: string,
   yaml: ConversationYamlModel,
   translationSelection?: string
 ): YamlReaderOutput | null {
@@ -51,7 +49,7 @@ export function parseYaml(
     id: "startNodeID",
     type: "startNode",
     position: { x: 0, y: 0 },
-    data: { fileName: fileName, yaml: yaml, translationSelection: translationSelection },
+    data: { yaml: yaml, translationSelection: translationSelection },
   };
   const startNodes: Record<string, Node> = { startNodeID: startNode };
 

@@ -12,7 +12,7 @@ import "./styles.css";
 import ConversationYamlModel from "../utils/conversationYamlModel";
 import { Select } from "antd";
 
-export default memo(({ data, selected }: NodeProps) => {
+export default memo(({ data, selected }: NodeProps<any>) => { // TODO: change <any> to a definited type.
   const [getTrigger, setTrigger] = useState(false);
   const refreshUI = () => {
     setTrigger(!getTrigger);
@@ -92,9 +92,6 @@ export default memo(({ data, selected }: NodeProps) => {
     <div style={{ width: "100%" }}>
       <div className="title-box start">
         Start
-        {/* <div className="nodeName" hidden={selected}>
-          ({getFileName()})
-        </div> */}
       </div>
       <div className="box">
         <div>

@@ -11,7 +11,7 @@ import { connectionAvaliable } from "../utils/commonUtils";
 import "./styles.css";
 import { ConversationYamlOptionModel } from "../utils/conversationYamlModel";
 
-export default memo(({ data, selected }: NodeProps) => {
+export default memo(({ data, selected }: NodeProps<any>) => { // TODO: change <any> to a definited type.
   const [getTrigger, setTrigger] = useState(false);
   const refreshUI = () => {
     setTrigger(!getTrigger);

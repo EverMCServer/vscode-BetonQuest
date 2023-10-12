@@ -6,7 +6,6 @@ import ConversationYamlModel, {
 } from "./conversationYamlModel";
 
 export interface YamlWriterOutput {
-  fileName: string;
   content: string;
 }
 
@@ -80,7 +79,6 @@ export function writeYaml(
   }
 
   // Full Yaml
-  const fileName = startNode.data["fileName"] || "conversation";
   const originYaml: ConversationYamlModel = Object.assign(new ConversationYamlModel(), startNode.data["yaml"]);
 
   const fullYaml = new ConversationYamlModel();
@@ -105,7 +103,7 @@ export function writeYaml(
     const jsonData = JSON.parse(text);
     const yamlText = yaml.dump(jsonData);
 
-    return { fileName: fileName, content: yamlText };
+    return { content: yamlText };
   } catch (error) {
     logError(`Encoding Yaml ${error}`);
     return null;

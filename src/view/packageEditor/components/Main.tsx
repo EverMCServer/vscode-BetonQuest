@@ -83,7 +83,7 @@ export default function main( props: MainProps ) {
                 newConvs.push({
                     key: key,
                     label: <ConversationTabLabel label={key} package={props.package} syncYaml={props.syncYaml}></ConversationTabLabel>,
-                    children: <ConversationEditor key={key} conversation={conv} syncYaml={props.syncYaml}></ConversationEditor>,
+                    children: <ConversationEditor key={key} conversation={conv} conversationName={key} syncYaml={props.syncYaml}></ConversationEditor>,
                     closeIcon: <VscTrash />,
                     style: {height: "100%"}  // Maximize tab content height for ReactFlow
                 });
@@ -120,7 +120,7 @@ export default function main( props: MainProps ) {
             initTabsItems.push({
                 key: k,
                 label: <ConversationTabLabel label={k} package={props.package} syncYaml={props.syncYaml}></ConversationTabLabel>,
-                children: <ConversationEditor key={k} conversation={v} syncYaml={props.syncYaml}></ConversationEditor>,
+                children: <ConversationEditor key={k} conversation={v} conversationName={k} syncYaml={props.syncYaml}></ConversationEditor>,
                 closeIcon: <VscTrash />,
                 style: {height: "100%"}  // Maximize tab content height for ReactFlow
             });
