@@ -8,6 +8,7 @@ export default class Conversation {
         this.yaml = yaml;
     }
 
+    // Emit the Yaml text file.
     getYamlText(): string {
         return this.yaml.value?.toString() || "";
     }

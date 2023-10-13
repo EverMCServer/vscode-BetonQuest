@@ -80,7 +80,7 @@ interface ConversationEditorProps {
 // ==========================
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-function ConversationFlowView(props: ConversationEditorProps) {
+function MyFlowView(props: ConversationEditorProps) {
     const flowWrapper = useRef<HTMLDivElement>(null);
     const [nodes, setNodes, onNodesChange] = useNodesState([initialNode]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -700,10 +700,12 @@ export default function conversationEditor(props: ConversationEditorProps) {
 
     return (
         <>
+        {/* <div style={{height: "100%",lineHeight: 0}}> */} {/* remove the default lineHeight from antd Tabs */}
             <div style={{width: "100%", position: "absolute", height: "6px", boxShadow: "var(--vscode-scrollbar-shadow) 0 6px 6px -6px inset"}}></div>
             <ReactFlowProvider>
-                <ConversationFlowView {...props} />
+                <MyFlowView {...props} />
             </ReactFlowProvider>
+        {/* </div> */}
         </>
     );
 }
