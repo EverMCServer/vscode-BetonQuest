@@ -9,63 +9,70 @@ import {
 } from "reactflow";
 import { connectionAvaliable } from "../utils/commonUtils";
 import "./styles.css";
-import ConversationYamlModel from "../utils/conversationYamlModel";
 import { Select } from "antd";
+import { NodeData } from "./Nodes";
 
-export default memo(({ data, selected }: NodeProps<any>) => { // TODO: change <any> to a definited type.
+export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const [getTrigger, setTrigger] = useState(false);
   const refreshUI = () => {
     setTrigger(!getTrigger);
   };
 
+  // Lazy update
+  // Critical thinking: maybe it is better to move it to ConversatinEditor?
+  let lazySyncYamltimeoutHandler: number;
+  const lazySyncYaml = () => {
+    // Prevent Yaml update if a user is still typing.
+    window.clearTimeout(lazySyncYamltimeoutHandler);
+
+    // Delayed Yaml update.
+    lazySyncYamltimeoutHandler = window.setTimeout(() => {
+      // Update
+      data.syncYaml();
+    }, 1000);
+  };
+
   // Conversation "stop" setting
   const getStop = (): string => {
-    return Object.assign(new ConversationYamlModel(), data["yaml"]).getStop() || "false";
+    return data.conversation?.getStop() || "false";
   };
   const setStop = (value: string): void => {
-    const yaml = Object.assign(new ConversationYamlModel(), data["yaml"]);
-    yaml.setStop(value);
-    data["yaml"] = yaml;
-    data.updateYaml();
+    data.conversation?.setStop(value);
 
+    lazySyncYaml();
     refreshUI();
   };
 
   // Conversation "final_events"
   const getFinalEvents = (): string[] => {
-    return Object.assign(new ConversationYamlModel(), data["yaml"]).getFinalEvents();
+    return data.conversation?.getFinalEventNames() || [];
   };
   const setFinalEvents = (value: string[]): void => {
-    const yaml = Object.assign(new ConversationYamlModel(), data["yaml"]);
-    yaml.setFinalEvents(value);
-    data["yaml"] = yaml;
-    data.updateYaml();
+    data.conversation?.setFinalEventNames(value);
 
+    lazySyncYaml();
     refreshUI();
   };
 
   // Conversation "interceptor"
   const getInterceptor = (): string[] => {
-    return Object.assign(new ConversationYamlModel(), data["yaml"]).getInterceptor();
+    return data.conversation?.getInterceptor() || [];
   };
   const setInterceptor = (value: string[]): void => {
-    const yaml = Object.assign(new ConversationYamlModel(), data["yaml"]);
-    yaml.setInterceptor(value);
-    data["yaml"] = yaml;
-    data.updateYaml();
+    data.conversation?.setInterceptor(value);
 
+    lazySyncYaml();
     refreshUI();
   };
 
   // NPC's display name
   const getQuester = (): string => {
-    return Object.assign(new ConversationYamlModel(), data["yaml"]).getQuester(data["translationSelection"]) || "";
+    return data.conversation?.getQuester(data.translationSelection) || "";
   };
   const setQuester = (value: string): void => {
-    const yaml = Object.assign(new ConversationYamlModel(), data["yaml"]);
-    yaml.setQuester(value, data["translationSelection"]);
-    data["yaml"] = yaml;
+    data.conversation?.setQuester(value, data.translationSelection);
 
+    lazySyncYaml();
     refreshUI();
   };
 

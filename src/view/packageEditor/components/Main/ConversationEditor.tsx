@@ -1,5 +1,6 @@
 import React, {
     useCallback,
+    useEffect,
     useRef,
     useState,
     MouseEvent as ReactMouseEvent,
@@ -43,14 +44,15 @@ import StartNode from "./Nodes/StartNode";
 import ConnectionLine from "./Nodes/ConnectionLine";
 import ContextMenu from "./Nodes/ContextMenu";
 import TranslationSelector from "./components/TranslationSelector";
-import { autoLayout } from "./utils/autoLayout";
+import { autoLayout, LayoutResult } from "./utils/autoLayout";
 
 // TODO: refactor all option models with Conversation{}
 import { ConversationYamlOptionModel, IConversationYamlOptionModel, TextMultilingualModel } from "./utils/conversationYamlModel";
-import { readYaml } from "./utils/readYaml";
+import { conversationToFlow } from "./utils/conversationToFlow";
 import { writeYaml } from "./utils/writeYaml";
 
 import { vscode } from "../../vscode";
+import { NodeData } from "./Nodes/Nodes";
 
 // Define the node's React.JSX.Element
 const nodeTypes = {
@@ -81,9 +83,28 @@ interface ConversationEditorProps {
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function ConversationFlowView(props: ConversationEditorProps) {
+    // Cache translation selection
+    // TODO: load translation from props?
+    const [translationSelection, setTranslationSelection] = useState(globalThis.initialConfig.translationSelection || 'en');
+
+    // Caching translation list
+    // TODO: Available translation should be get form the Conversation{} directelly
+    // let allTranslations: string[] = [];
+    const [allTranslations, setAllTranslations] = useState([translationSelection]);
+
+    // Get init nodes and edges
+    let y = conversationToFlow(props.conversation, props.syncYaml, translationSelection);
+    if (y.nodes.length > 1) {
+        const obj = autoLayout(y.nodes, y.edges);
+        if (obj) {
+            y.nodes = obj.nodes;
+            y.edges = obj.edges;
+        }
+    }
+
     const flowWrapper = useRef<HTMLDivElement>(null);
-    const [nodes, setNodes, onNodesChange] = useNodesState([initialNode]);
-    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+    const [nodes, setNodes, onNodesChange] = useNodesState<any>(y.nodes); // TODO: replace any with a definite type
+    const [edges, setEdges, onEdgesChange] = useEdgesState(y.edges);
     const viewport = useViewport();
     const {
         getNode,
@@ -93,20 +114,26 @@ function ConversationFlowView(props: ConversationEditorProps) {
         project,
         setViewport,
         fitView,
-    } = useReactFlow<any>(); // TODO: replace any with a definite type
+    } = useReactFlow<NodeData>();
 
-    // Cache translation selection
-    const [translationSelection, setTranslationSelection] = useState(globalThis.initialConfig.translationSelection);
+    // Update nodes and edges when props.conversation udpated
+    useEffect(() => {
+    let y = conversationToFlow(props.conversation, props.syncYaml, translationSelection);
+    if (y.nodes.length > 1) {
+        const obj = autoLayout(y.nodes, y.edges);
+        if (obj) {
+            y.nodes = obj.nodes;
+            y.edges = obj.edges;
+            y.nodes[0].data;
+        }
+        setNodes(y.nodes);
+        setEdges(y.edges);
+    }}, [props.conversation]);
 
-    // Caching translation list
-    // let allTranslations: string[] = [];
-    const [allTranslations, setAllTranslations] = useState(["en"]);
-
-    // Async/await lock, for message handling, etc
+    // Async/await lock, for VSCode message handling, etc
     const lock = new AsyncLock();
 
-    /* ID counter */
-
+    // ID counter, for new nodes and edges
     let lineID = 1;
     const getNewLineID = useCallback(() => {
         while (getEdge(`line_${lineID}`)) {
@@ -256,9 +283,9 @@ function ConversationFlowView(props: ConversationEditorProps) {
                 return;
             }
             let type = "npcNode";
-            if (fromNode["type"] === "startNode") {
+            if (fromNode.type === "startNode") {
                 type = "npcNode";
-            } else if (fromNode["type"] === "npcNode") {
+            } else if (fromNode.type === "npcNode") {
                 if (connectingParams.current.handleId === "handleOut") {
                     type = "playerNode";
                 } else {
@@ -276,7 +303,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
             }
             const newNodeOption: IConversationYamlOptionModel = {};
             if (isMultilingual) {
-                newNodeOption.text = { [fromNode.data["translationSelection"]]: "" } as TextMultilingualModel;
+                newNodeOption.text = {} as TextMultilingualModel;
             } else {
                 newNodeOption.text = "";
             }
@@ -348,63 +375,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
     // Public method to update flowchart contents
     let updateFlowChart = (translationSelection?: string) => {
-        const flow = readYaml(props.conversation.getYamlText(), translationSelection || "en");
-        if (!flow) {
-            return;
-        }
-
-        const obj = autoLayout(flow.nodes, flow.edges);
-        if (!obj) {
-            return;
-        }
-
-        // Preserve nodes selection if possible
-        // Find selected nodes
-        let noedIDs: string[] = [];
-        nodesRef.current.map((node) => {
-            if (node.selected) {
-                noedIDs.unshift(node.id);
-            }
-        });
-        // Set nodes selection
-        obj.nodes.map((node) => {
-            if (noedIDs.includes(node.id)) {
-                node.selected = true;
-            }
-        });
-
-        let langs: string[] = [];
-        obj.nodes.forEach((n, i) => {
-            // Add update callback on nodes
-            obj.nodes[i].data.updateYaml = updateYaml;
-            // Get all translations from yaml
-            switch (n.type) {
-                case "startNode":
-                    if (n.data.yaml.quester) {
-                        for (const [k, _] of Object.entries(n.data.yaml.quester)) {
-                            if (!langs.find(v => v === k)) {
-                                langs.push(k);
-                            }
-                        }
-                    }
-                    break;
-                case "npcNode":
-                case "playerNode":
-                    if (n.data.option.text) {
-                        for (const [k, _] of Object.entries(n.data.option.text)) {
-                            if (!langs.find(v => v === k)) {
-                                langs.push(k);
-                            }
-                        }
-                    }
-                    break;
-            }
-        });
-        setAllTranslations(langs);
-
-        // const objCopy = JSON.parse(JSON.stringify(obj));
-        // resetFlow(objCopy.nodes, objCopy.edges);
-        resetFlow(obj.nodes, obj.edges);
+        // TODO
     };
 
     /* DEL keyboard button event */
@@ -421,13 +392,13 @@ function ConversationFlowView(props: ConversationEditorProps) {
         setEdges(edges2);
     }, [getNodes, getEdges, setNodes, setEdges]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         deleteSelectedNodes();
     }, [deleteButtonPressed]);
 
     /* Update Yaml content when user modified the flowchart */
 
-    React.useEffect(() => {
+    useEffect(() => {
 
         const ignoreKeys = ["Control", "Meta", "Shift", "Alt", "Tab", "CapsLock", "ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"];
         let timeoutHandler: number;
@@ -463,10 +434,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
         };
     }, []);
 
-    React.useEffect(() => {
-        console.log("new window");
-    }, []);
-
     /* YML Download/Upload event */
 
     const updateYaml = useCallback(() => {
@@ -482,110 +449,51 @@ function ConversationFlowView(props: ConversationEditorProps) {
     // Cache stuff that need to be referenced in useEffect() ...
     // Cache "nodes"
     const nodesRef = React.useRef(nodes);
+    useEffect(() => {
+        nodesRef.current = nodes;
+    }, [nodes]);
     // Cache setViewport()
     const setViewportRef = React.useRef(setViewport);
     const viewportRef = React.useRef(viewport);
-    // Cache translation selection
-    const translationSelectionRef = React.useRef(translationSelection);
-    React.useEffect(() => {
-        nodesRef.current = nodes;
+    useEffect(() => {
         setViewportRef.current = setViewport;
         viewportRef.current = viewport;
+    }, [setViewport, viewport]);
+    // Cache translation selection
+    const translationSelectionRef = React.useRef(translationSelection);
+    useEffect(() => {
         translationSelectionRef.current = translationSelection;
-    }, [nodes, setViewport, viewport, translationSelection]);
-
-    /* Initialize flowchart */
-    React.useEffect(() => {
-        updateFlowChart(translationSelectionRef.current);
-    }, [props.conversation]);
+    }, [translationSelection]);
 
     /* VSCode messages */
 
     const handleVscodeMessage = (message: any) => {
         switch (message.type) {
-            //   case "update":
-            //     // Update yaml
-            //     let content = message.content as string;
-            //     if (
-            //       content.replace(/\r\n?/g, "\n") !== cachedYml.replace(/\r\n?/g, "\n")
-            //     ) {
-            //       // Avoid duplicated update
-            //       console.log("update yml ...");
-            //       // console.log("44444", cachedYml);
-
-            //       updateFlowChart(translationSelectionRef.current);
-            //       cachedYml = content;
-
-            //       break;
-            //     }
-            //     console.log("update yml ... nothing changed.");
-            //     break;
 
             // Receive translationSelection setting
             case "betonquest-translationSelection":
                 setTranslationSelection(message.content);
-                updateFlowChart(message.content);
+                // TODO: update flowchart translation accordingly
+                // updateFlowChart(message.content);
 
                 break;
 
             // Center a node when cursor changed in Text Editor
             case "cursor-yaml-path":
-                const pa = message.content as string[];
-                // Skip if path not landed in "NPC_options" or "player_options"
-                if (pa.length < 2) {
-                    break;
-                }
-                // Center a node by type
-                let type = "";
-                switch (pa[0]) {
-                    case "NPC_options":
-                        type = "npcNode";
-                        break;
-                    case "player_options":
-                        type = "playerNode";
-                        break;
-                }
-                if (type === "") {
-                    break;
-                }
-                nodesRef.current.map(node => {
-                    if (node.data.name === pa[1] && node.type === type) {
-                        let x = 0;
-                        let y = 0;
-                        node.selected = true;
-                        x = (-node.position.x - (node.width || 0) / 2) * viewportRef.current.zoom + (flowWrapper.current?.getBoundingClientRect().width || 0) / 2;
-                        y = (-node.position.y - (node.height || 0) / 2) * viewportRef.current.zoom + (flowWrapper.current?.getBoundingClientRect().height || 0) / 2;
-                        // Move the Viewport
-                        setViewportRef.current({ x: x, y: y, zoom: viewportRef.current.zoom }, { duration: 250 });
-                    } else {
-                        node.selected = false;
-                    }
-                    return node;
-                });
-                // Update node selections
-                setNodes([...nodesRef.current]);
-                // console.log("node selection updated");
-                break;
+                // TODO
         }
     };
 
     // Handle VSCode messages
-    React.useEffect(() => {
+    useEffect(() => {
         const handlerFn = (event: MessageEvent<any>) => {
             lock.acquire("message", () => { // Lock message handling to single thread, prevent various race conditions
-                // console.log("new message:", event.data.type);
                 handleVscodeMessage(event.data);
             });
         };
 
         // Listen from extension message (document update, change translation etc)
         window.addEventListener("message", handlerFn);
-
-        // // Notify vscode when webview startup completed.
-        // vscode.postMessage({
-        //   type: "webview-lifecycle",
-        //   content: "started",
-        // });
 
         // Unregister listener when component unmounted
         return () => window.removeEventListener("message", handlerFn);
@@ -624,6 +532,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
     });
 
     // Move the cursor when a node is selected
+    // TODO: update to fit the new Package format
     const onNodeClick = (event: ReactMouseEvent, node: Node) => {
         let content: string[];
         switch (node.type) {

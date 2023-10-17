@@ -6,7 +6,7 @@ interface Position {
   y: number;
 }
 
-interface LayoutResult {
+export interface LayoutResult {
   nodes: Node[];
   edges: Edge[];
 }

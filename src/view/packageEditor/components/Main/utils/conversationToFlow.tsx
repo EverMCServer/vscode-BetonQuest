@@ -1,124 +1,96 @@
 import { MarkerType, Node, Edge } from "reactflow";
-import * as yaml from "js-yaml";
-import { arrayAppend, stringSplitToArray } from "./commonUtils";
-import ConversationYamlModel, { ConversationYamlOptionModel } from "./conversationYamlModel";
+import { arrayAppend } from "./commonUtils";
+import { NodeData } from "../Nodes/Nodes";
+import Conversation from "../../../../../betonquest/Conversation";
 
 export interface YamlReaderOutput {
-  nodes: Node[];
+  nodes: Node<NodeData>[];
   edges: Edge[];
 }
 
-export function readYaml(
-  text: string,
-  translationSelection: string,
-): YamlReaderOutput {
-  const data = yaml.load(text) as ConversationYamlModel;
-  return parseYaml(data, translationSelection);
-}
-
-export function parseYaml(
-  yaml: ConversationYamlModel,
+export function conversationToFlow(
+  conversation: Conversation,
+  syncYaml: Function,
   translationSelection?: string
 ): YamlReaderOutput {
   // Load
-  const npcOptions = yaml.NPC_options;
-  const playerOptions = yaml.player_options;
-  const firstString = yaml.first;
-  const firstKeys = stringSplitToArray(firstString || "");
+  const npcOptions = conversation.getAllNpcOptions();
+  const playerOptions = conversation.getAllPlayerOptions();
+  const firstKeys = conversation.getFirst();
   for (let i = 0; i < firstKeys.length; i++) {
     firstKeys[i] = `npcNode_${firstKeys[i]}`;
   }
 
   // Check if the yaml multilingual, if not remove "translationSelection".
-  let isYamlMultilingual = Object.assign(new ConversationYamlModel(), yaml).isQuesterMultilingual();
-  const npcOptionKeys = Object.keys(npcOptions || {});
-  for (let i = 0; i < npcOptionKeys.length && npcOptions; i++) {
-    isYamlMultilingual ||= Object.assign(new ConversationYamlOptionModel(), npcOptions[npcOptionKeys[i]]).isTextMultilingual();
-  }
-  const playerOptionKeys = Object.keys(playerOptions || {});
-  for (let i = 0; i < playerOptionKeys.length && playerOptions; i++) {
-    isYamlMultilingual ||= Object.assign(new ConversationYamlOptionModel(), playerOptions[playerOptionKeys[i]]).isTextMultilingual();
-  }
-  // remove all translationSelection marking if the yaml is not multilingual.
-  if (!isYamlMultilingual) {
+  if (!conversation.isMultilingual()) {
     translationSelection = undefined;
   }
 
   // StartNodes
-  const startNode = {
+  const startNode: Node<NodeData> = {
     id: "startNodeID",
     type: "startNode",
     position: { x: 0, y: 0 },
-    data: { yaml: yaml, translationSelection: translationSelection },
+    data: {
+      syncYaml: syncYaml,
+      translationSelection: translationSelection,
+      conversation: conversation
+    },
   };
-  const startNodes: Record<string, Node> = { startNodeID: startNode };
+  const startNodes: Record<string, Node<NodeData>> = { startNodeID: startNode };
 
   // NPC Nodes
-  const npcNodes: Record<string, Node> = {};
-  for (let i = 0; i < npcOptionKeys.length && npcOptions; i++) {
-    const key = npcOptionKeys[i];
-    const option = npcOptions[key];
+  const npcNodes: Record<string, Node<NodeData>> = {};
+  for (let i = 0; i < npcOptions.length && npcOptions; i++) {
+    const option = npcOptions[i];
+    const key = option.getName();
     const idKey = `npcNode_${key}`;
-    const pointersString = option.pointers || option.pointer || "";
-    const pointers = stringSplitToArray(pointersString);
-    for (let i = 0; i < pointers.length; i++) {
-      pointers[i] = `playerNode_${pointers[i]}`;
-    }
+    // const pointers = option.getPointerNames();
+    // for (let i = 0; i < pointers.length; i++) {
+    //   pointers[i] = `playerNode_${pointers[i]}`;
+    // }
 
-    const conditions = option.conditions || option.condition || "";
-    const events = option.events || option.event || "";
-
-    const dict = {
+    const dict: Node<NodeData> = {
       id: idKey,
       type: "npcNode",
       position: { x: 0, y: 0 },
       data: {
-        name: key,
-        option: option,
-        events: stringSplitToArray(events),
-        conditions: stringSplitToArray(conditions),
-        pointers: pointers,
+        syncYaml: syncYaml,
         translationSelection: translationSelection,
+        option: option
       },
     };
     npcNodes[idKey] = dict;
   }
 
   // Player Nodes
-  const playerNodes: Record<string, Node> = {};
-  for (let i = 0; i < playerOptionKeys.length && playerOptions; i++) {
-    const key = playerOptionKeys[i];
-    const option = playerOptions[key];
+  const playerNodes: Record<string, Node<NodeData>> = {};
+  for (let i = 0; i < playerOptions.length && playerOptions; i++) {
+    const option = playerOptions[i];
+    const key = option.getName();
     const idKey = `playerNode_${key}`;
-    const pointersString = option.pointers || option.pointer || "";
-    const pointers = stringSplitToArray(pointersString);
-    for (let i = 0; i < pointers.length; i++) {
-      pointers[i] = `npcNode_${pointers[i]}`;
-    }
-
-    const conditions = option.conditions || option.condition || "";
-    const events = option.events || option.event || "";
+    // const pointers = option.getPointerNames();
+    // for (let i = 0; i < pointers.length; i++) {
+    //   pointers[i] = `playerNode_${pointers[i]}`;
+    // }
 
     const dict = {
       id: idKey,
       type: "playerNode",
       position: { x: 0, y: 0 },
       data: {
-        name: key,
-        option: option,
-        events: stringSplitToArray(events),
-        conditions: stringSplitToArray(conditions),
-        pointers: pointers,
+        syncYaml: syncYaml,
         translationSelection: translationSelection,
+        option: option
       },
     };
     playerNodes[idKey] = dict;
   }
 
-  // All Nodes
+  // Combine All Nodes
   const allNodes = Object.assign({}, startNodes, npcNodes, playerNodes);
 
-  // Lines
+  // Generate Lines
   const lines: Record<string, Edge> = {};
   const linkedNodesRef: Record<string, string[]> = {
     nodes: ["startNodeID"],
@@ -148,6 +120,8 @@ export function parseYaml(
     lastTargetNodeID = toNodeID;
   }
 
+  // Calculate Nodes' position, widht and height
+
   // Linked Nodes
   let unlinkedNodes = Object.assign({}, allNodes);
   const linkedNodes = linkedNodesRef.nodes;
@@ -155,21 +129,24 @@ export function parseYaml(
   for (let i = 0; i < linkedNodes.length; i++) {
     let key = linkedNodes[i];
     let node = allNodes[key];
+
+    // Calculate node's position and width
     node.position = { x: i * 200, y: 0 };
     node.positionAbsolute = { x: 0, y: 0 };
     node.width = 200;
+
+    // Calculate node's height
     if (node.type === "startNode") {
       node.height = 290;
     } else {
       let count = 0;
-      const data = node.data;
-      if (data) {
-        if (data.conditions) {
-          count += data.conditions.length;
-        }
-        if (data.events) {
-          count += data.events.length;
-        }
+      const condis = node.data.option?.getConditionNames();
+      if (condis) {
+        count += condis.length;
+      }
+      const events = node.data.option?.getEventNames();
+      if (events) {
+        count += events.length;
       }
       node.height = 202 + 20 * count;
     }
@@ -184,27 +161,29 @@ export function parseYaml(
     const key = unusedNodeKeys[i];
     const node = unlinkedNodes[key];
 
+    // Calculate node's position and width
     node.position = { x: i * 200, y: 400 };
     node.positionAbsolute = { x: 0, y: 0 };
     node.width = 200;
+
+    // Calculate node's height
     if (node.type === "startNode") {
       node.height = 148;
     } else {
       let count = 0;
-      const data = node.data;
-      if (data) {
-        if (data.conditions) {
-          count += data.conditions.length;
-        }
-        if (data.events) {
-          count += data.events.length;
-        }
+      const condis = node.data.option?.getConditionNames();
+      if (condis) {
+        count += condis.length;
+      }
+      const events = node.data.option?.getEventNames();
+      if (events) {
+        count += events.length;
       }
       node.height = 202 + 20 * count;
     }
 
-    // free lines
-    let pointers = node.data["pointers"];
+    // Remove Free-hanging lines
+    let pointers = node.data.option?.getPointerNames();
     for (let i = 0; pointers && i < pointers.length; i++) {
       const toNodeID = pointers[i];
       if (i === 0) {

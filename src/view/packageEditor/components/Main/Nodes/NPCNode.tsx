@@ -9,86 +9,105 @@ import {
 } from "reactflow";
 import { connectionAvaliable } from "../utils/commonUtils";
 import "./styles.css";
-import { ConversationYamlOptionModel } from "../utils/conversationYamlModel";
+import { NodeData } from "./Nodes";
 
-export default memo(({ data, selected }: NodeProps<any>) => { // TODO: change <any> to a definited type.
+export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const [getTrigger, setTrigger] = useState(false);
   const refreshUI = () => {
     setTrigger(!getTrigger);
   };
 
+  // Lazy update
+  // Critical thinking: maybe it is better to move it to ConversatinEditor?
+  let lazySyncYamltimeoutHandler: number;
+  const lazySyncYaml = () => {
+    // Prevent Yaml update if a user is still typing.
+    window.clearTimeout(lazySyncYamltimeoutHandler);
+
+    // Delayed Yaml update.
+    lazySyncYamltimeoutHandler = window.setTimeout(() => {
+      // Update
+      data.syncYaml();
+    }, 1000);
+  };
+
   // Conditions
   const conditionsGet = (): string[] => {
-    return data["conditions"] || [];
+    return data.option?.getConditionNames() || [];
   };
   const conditionAdd = (): void => {
-    const arr = [...conditionsGet(), ""];
-    data["conditions"] = arr;
+    data.option?.insertConditionNames([""]);
+
+    lazySyncYaml();
     refreshUI();
   };
   const conditionDel = (): void => {
     const arr = [...conditionsGet()];
-    arr.pop();
-    data["conditions"] = arr;
+    arr?.pop();
+    data.option?.setConditionNames(arr || []);
+
+    lazySyncYaml();
     refreshUI();
   };
   const conditionUpdate = (index: number, value: string): void => {
-    const arr = [...conditionsGet()];
-    arr[index] = value;
-    data["conditions"] = arr;
+    data.option?.editConditionName(index, value);
+
+    lazySyncYaml();
     refreshUI();
   };
 
   // Text
   const textGet = (): string => {
-    return Object.assign(new ConversationYamlOptionModel(), data["option"]).getText(data["translationSelection"]);
+    return data.option?.getText(data.translationSelection) || "";
   };
   const textUpdate = (value: string): void => {
-    const option = Object.assign(new ConversationYamlOptionModel(), data["option"]) as ConversationYamlOptionModel;
-    option.setText(value, data["translationSelection"]);
-    data["option"] = option;
-    
+    data.option?.setText(value, data.translationSelection);
+
+    lazySyncYaml();
     refreshUI();
   };
 
   // Events
   const eventsGet = (): string[] => {
-    return data["events"] || [];
+    return data.option?.getEventNames() || [];
   };
   const eventAdd = (): void => {
-    const arr = [...eventsGet(), ""];
-    data["events"] = arr;
+    data.option?.insertEventNames([""]);
+
+    lazySyncYaml();
     refreshUI();
   };
   const eventDel = (): void => {
     const arr = [...eventsGet()];
     arr.pop();
-    data["events"] = arr;
+    data.option?.setEventNames(arr);
+
+    lazySyncYaml();
     refreshUI();
   };
   const eventUpdate = (index: number, value: string): void => {
-    const arr = [...eventsGet()];
-    arr[index] = value;
-    data["events"] = arr;
+    data.option?.editEventName(index, value);
+
+    lazySyncYaml();
     refreshUI();
   };
 
   // Connect
-  const { getNode } = useReactFlow();
+  const { getNode } = useReactFlow<NodeData>();
   const isConnectable = (line: Connection): boolean => {
     if (!line) {
       return false;
     }
-    let source = getNode(line["source"] || "");
-    let target = getNode(line["target"] || "");
+    let source = getNode(line.source || "");
+    let target = getNode(line.target || "");
     if (!source || !target) {
       return false;
     }
     return connectionAvaliable(
-      source["type"] || "",
-      line["sourceHandle"] || "",
-      target["type"] || "",
-      line["targetHandle"] || ""
+      source.type || "",
+      line.sourceHandle || "",
+      target.type || "",
+      line.targetHandle || ""
     );
   };
 
@@ -97,7 +116,7 @@ export default memo(({ data, selected }: NodeProps<any>) => { // TODO: change <a
       <div className="title-box npc">
         NPC
         <div className="nodeName" hidden={selected}>
-          ({data.name})
+          ({data.option?.getName()})
         </div>
       </div>
       <div className="box">
