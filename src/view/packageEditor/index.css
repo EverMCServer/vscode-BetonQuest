@@ -1,0 +1,6 @@
+html,
+body,
+#root,
+.App {
+    user-select: none; /* Disable text selection */
+}
