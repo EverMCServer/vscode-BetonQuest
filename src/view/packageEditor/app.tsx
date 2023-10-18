@@ -156,7 +156,7 @@ export default function app() {
                 trigger={<div>|||</div>}
                 zeroWidthTriggerStyle={{
                     width: "18px",
-                    left: "-6px", // "-10px",
+                    left: collapsed ? "-18px" : "-6px", // "-6px",
                     height: "40px",
                     margin: "-20px 0",
                     top: "50vh",

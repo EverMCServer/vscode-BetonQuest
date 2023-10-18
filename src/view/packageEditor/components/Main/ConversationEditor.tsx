@@ -77,10 +77,11 @@ interface ConversationEditorProps {
 // ========== TODO ==========
 // 1. (DONE) replace "readYaml()", "writeYaml()"
 // 2. (DONE) refacotr all option models with Conversation{}
-// 3. prevent rerender the whole flow map only when the YAML is not updated (cache)
-// 4. refactor translation selection
+// 3. prevent rerendering the whole flow map when the YAML is not updated (cache)
+// 4. (DONE) refactor translation selection
 // 5. fix new node creation
-// 6. (more...)
+// 6. delete node
+// 7. (more...)
 // ==========================
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -90,13 +91,24 @@ function ConversationFlowView(props: ConversationEditorProps) {
     const [translationSelection, setTranslationSelection] = useState(globalThis.initialConfig.translationSelection || 'en');
 
     // Caching translation list
-    // TODO: Available translation should be get form the Conversation{} directelly
-    // let allTranslations: string[] = [];
-    const [allTranslations, setAllTranslations] = useState([translationSelection]);
+    const [allTranslations, setAllTranslations] = useState<string[]>([]);
+    useEffect(() => {
+        setAllTranslations(props.conversation.getTranslations());
+    }, [props.conversation]);
+
+    // Caching multilingual status
+    const [isMultilingual, setIsMultilingual] = useState(false);
+    useEffect(() => {
+        const isMultilingual = props.conversation.isMultilingual();
+        if (isMultilingual) {
+            setIsMultilingual(isMultilingual);
+            setAllTranslations(props.conversation.getTranslations());
+        }
+    }, [props.conversation]);
 
     // Get init nodes and edges
     let y = conversationToFlow(props.conversation, props.syncYaml, translationSelection);
-    if (y.nodes.length > 1) {
+    if (y.nodes.length > 0) {
         const obj = autoLayout(y.nodes, y.edges);
         if (obj) {
             y.nodes = obj.nodes;
@@ -118,19 +130,20 @@ function ConversationFlowView(props: ConversationEditorProps) {
         fitView,
     } = useReactFlow<NodeData>();
 
-    // Update nodes and edges when props.conversation udpated
+    // Update nodes and edges when props.conversation / translationSelection is udpated
     useEffect(() => {
-    let y = conversationToFlow(props.conversation, props.syncYaml, translationSelection);
-    if (y.nodes.length > 1) {
-        const obj = autoLayout(y.nodes, y.edges);
-        if (obj) {
-            y.nodes = obj.nodes;
-            y.edges = obj.edges;
-            y.nodes[0].data;
+        let y = conversationToFlow(props.conversation, props.syncYaml, translationSelection);
+            if (y.nodes.length > 0) {
+                const obj = autoLayout(y.nodes, y.edges);
+                if (obj) {
+                    y.nodes = obj.nodes;
+                    y.edges = obj.edges;
+                    y.nodes[0].data;
+                }
+                setNodes(y.nodes);
+                setEdges(y.edges);
         }
-        setNodes(y.nodes);
-        setEdges(y.edges);
-    }}, [props.conversation]);
+    }, [props.conversation, translationSelection]);
 
     // Async/await lock, for VSCode message handling, etc
     const lock = new AsyncLock();
@@ -421,8 +434,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
             // Receive translationSelection setting
             case "betonquest-translationSelection":
                 setTranslationSelection(message.content);
-                // TODO: update flowchart translation accordingly
-                // updateFlowChart(message.content);
 
                 break;
 
@@ -435,7 +446,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
     // Handle VSCode messages
     useEffect(() => {
         const handlerFn = (event: MessageEvent<any>) => {
-            lock.acquire("message", () => { // Lock message handling to single thread, prevent various race conditions
+            lock.acquire("message", () => { // Lock message handling to single "thread", prevent various race conditions
                 handleVscodeMessage(event.data);
             });
         };
@@ -541,7 +552,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                     pannable
                 /> */}
                     <Panel position="top-right" className="panel">
-                        <TranslationSelector enabled={props.conversation.isMultilingual()} selectedTranslation={translationSelection} allTranslations={allTranslations}></TranslationSelector>
+                        <TranslationSelector enabled={isMultilingual} selectedTranslation={translationSelection} allTranslations={allTranslations}></TranslationSelector>
                     </Panel>
 
                     <Background variant={BackgroundVariant.Dots} />

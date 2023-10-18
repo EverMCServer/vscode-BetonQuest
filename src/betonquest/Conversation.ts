@@ -120,22 +120,56 @@ export default class Conversation {
         return undefined;
     }
 
-    // Check if the yaml multilingual
+    // Check if the Yaml multilingual
     isMultilingual(): boolean {
-        let isMultilingual = this.isPathYAMLMap(["quester"]);
-        isMultilingual || this.getOptions("NPC_options")?.every(e => {
-            if (e.isMultilingual()) {
-                isMultilingual = true;
-                return true;
+        return this.isPathYAMLMap(["quester"])
+        || !(this.getOptions("NPC_options")||[]).every(e => !e.isMultilingual())
+        || !(this.getOptions("player_options")||[]).every(e => !e.isMultilingual());
+    }
+
+    // Get number of translations of the Yaml
+    getTranslations(): string[] {
+        let translations: Map<string, boolean> = new Map();
+        let yamlResult: unknown;
+
+        // Get translations from "quester" name
+        try {
+            yamlResult = this.yaml.value?.getIn(["quester"]);
+            if (yamlResult instanceof YAMLMap) {
+                // Check if value saved with YAML.YAMLMap or string
+                yamlResult.items.forEach(e => {
+                    translations.set(e.key.value as string, true);
+                });
             }
+        } catch {}
+
+        // Get translations from "NPC_options" & "player_options"
+        ["NPC_options", "player_options"].forEach(l => {
+            try {
+                yamlResult = this.yaml.value?.getIn([l]);
+                if (yamlResult instanceof YAMLMap) {
+                    yamlResult.items.forEach(o => {
+                        if (o instanceof Pair &&o.value instanceof YAMLMap){
+                            let yamlResult2: unknown;
+                            try {
+                                yamlResult2 = o.value.getIn(["text"]);
+                                if (yamlResult2 instanceof YAMLMap) {
+                                    yamlResult2.items.forEach(e => {
+                                        translations.set(e.key.value as string, true);
+                                    });
+                                }
+                            } catch {}
+                        }
+                    });
+                }
+            } catch {}
         });
-        isMultilingual || this.getOptions("player_options")?.every(e => {
-            if (e.isMultilingual()) {
-                isMultilingual = true;
-                return true;
-            }
+
+        const result: string[] = [];
+        translations.forEach((_, k) => {
+            result.push(k);
         });
-        return isMultilingual;
+        return result;
     }
 
     private isPathYAMLMap(yamlPath: string[]): boolean {
