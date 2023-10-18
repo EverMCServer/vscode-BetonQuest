@@ -10,7 +10,7 @@ import "./Main.css";
 
 interface MainProps {
     package: Package,
-    syncYaml: Function,
+    syncYaml: (delay?: number) => void,
 }
 
 export default function main( props: MainProps ) {

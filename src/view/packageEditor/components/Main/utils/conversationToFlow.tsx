@@ -10,7 +10,7 @@ export interface YamlReaderOutput {
 
 export function conversationToFlow(
   conversation: Conversation,
-  syncYaml: Function,
+  syncYaml: (delay?: number) => void,
   translationSelection?: string
 ): YamlReaderOutput {
   // Load

@@ -71,14 +71,16 @@ declare global {
 interface ConversationEditorProps {
     conversation: Conversation,
     conversationName: string,
-    syncYaml: Function,
+    syncYaml: (delay?: number) => void,
 }
 
 // ========== TODO ==========
-// 1. replace "readYaml()", "writeYaml()"
-// 2. refacotr all option models with Conversation{}
+// 1. (DONE) replace "readYaml()", "writeYaml()"
+// 2. (DONE) refacotr all option models with Conversation{}
 // 3. prevent rerender the whole flow map only when the YAML is not updated (cache)
-// 4. (more...)
+// 4. refactor translation selection
+// 5. fix new node creation
+// 6. (more...)
 // ==========================
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -373,11 +375,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
         [fitView, setEdges, setNodes, setViewport]
     );
 
-    // Public method to update flowchart contents
-    let updateFlowChart = (translationSelection?: string) => {
-        // TODO
-    };
-
     /* DEL keyboard button event */
 
     const deleteButtonPressed = useKeyPress(["Delete"]);
@@ -395,55 +392,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
     useEffect(() => {
         deleteSelectedNodes();
     }, [deleteButtonPressed]);
-
-    /* Update Yaml content when user modified the flowchart */
-
-    useEffect(() => {
-
-        const ignoreKeys = ["Control", "Meta", "Shift", "Alt", "Tab", "CapsLock", "ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"];
-        let timeoutHandler: number;
-
-        const handleKeyUp = (e: KeyboardEvent) => {
-
-            // Skip certain keys
-            if (
-                ignoreKeys.includes(e.key) ||
-                e.ctrlKey ||
-                e.metaKey ||
-                e.shiftKey ||
-                e.altKey
-            ) {
-                return;
-            }
-
-            // Prevent Yaml update if a user is still typing.
-            window.clearTimeout(timeoutHandler);
-
-            // Delayed Yaml update.
-            timeoutHandler = window.setTimeout(() => {
-                // Update
-                updateYaml();
-            }, 1000);
-
-        };
-
-        window.addEventListener("keyup", handleKeyUp);
-
-        return () => {
-            window.removeEventListener("keyup", handleKeyUp);
-        };
-    }, []);
-
-    /* YML Download/Upload event */
-
-    const updateYaml = useCallback(() => {
-        const data = writeYaml(getNodes(), getEdges()); // TODO
-        if (!data) {
-            return;
-        }
-
-        props.syncYaml();
-    }, [getNodes, getEdges]);
 
     //
     // Cache stuff that need to be referenced in useEffect() ...

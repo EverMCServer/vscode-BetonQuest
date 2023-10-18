@@ -5,6 +5,6 @@ export type NodeData = {
     conversation?: Conversation; // for NPC_options and player_options
     option?: Option; // for NPC_options and player_options
 
-    syncYaml: Function; // funciton to sync yaml to VSCode
+    syncYaml: (delay?: number) => void; // funciton to sync yaml to VSCode
     translationSelection?: string, // current selection of translation, e.g. 'en'
 }

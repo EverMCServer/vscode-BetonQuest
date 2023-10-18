@@ -17,20 +17,6 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
     setTrigger(!getTrigger);
   };
 
-  // Lazy update
-  // Critical thinking: maybe it is better to move it to ConversatinEditor?
-  let lazySyncYamltimeoutHandler: number;
-  const lazySyncYaml = () => {
-    // Prevent Yaml update if a user is still typing.
-    window.clearTimeout(lazySyncYamltimeoutHandler);
-
-    // Delayed Yaml update.
-    lazySyncYamltimeoutHandler = window.setTimeout(() => {
-      // Update
-      data.syncYaml();
-    }, 1000);
-  };
-
   // Conditions
   const conditionsGet = (): string[] => {
     return data.option?.getConditionNames() || [];
@@ -38,7 +24,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const conditionAdd = (): void => {
     data.option?.insertConditionNames([""]);
 
-    lazySyncYaml();
+    data.syncYaml();
     refreshUI();
   };
   const conditionDel = (): void => {
@@ -46,13 +32,13 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
     arr?.pop();
     data.option?.setConditionNames(arr || []);
 
-    lazySyncYaml();
+    data.syncYaml();
     refreshUI();
   };
   const conditionUpdate = (index: number, value: string): void => {
     data.option?.editConditionName(index, value);
 
-    lazySyncYaml();
+    data.syncYaml();
     refreshUI();
   };
 
@@ -63,7 +49,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const textUpdate = (value: string): void => {
     data.option?.setText(value, data.translationSelection);
 
-    lazySyncYaml();
+    data.syncYaml();
     refreshUI();
   };
 
@@ -74,7 +60,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const eventAdd = (): void => {
     data.option?.insertEventNames([""]);
 
-    lazySyncYaml();
+    data.syncYaml();
     refreshUI();
   };
   const eventDel = (): void => {
@@ -82,13 +68,13 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
     arr.pop();
     data.option?.setEventNames(arr);
 
-    lazySyncYaml();
+    data.syncYaml();
     refreshUI();
   };
   const eventUpdate = (index: number, value: string): void => {
     data.option?.editEventName(index, value);
 
-    lazySyncYaml();
+    data.syncYaml();
     refreshUI();
   };
 

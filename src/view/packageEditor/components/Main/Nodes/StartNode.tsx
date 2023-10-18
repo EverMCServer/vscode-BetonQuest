@@ -18,20 +18,6 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
     setTrigger(!getTrigger);
   };
 
-  // Lazy update
-  // Critical thinking: maybe it is better to move it to ConversatinEditor?
-  let lazySyncYamltimeoutHandler: number;
-  const lazySyncYaml = () => {
-    // Prevent Yaml update if a user is still typing.
-    window.clearTimeout(lazySyncYamltimeoutHandler);
-
-    // Delayed Yaml update.
-    lazySyncYamltimeoutHandler = window.setTimeout(() => {
-      // Update
-      data.syncYaml();
-    }, 1000);
-  };
-
   // Conversation "stop" setting
   const getStop = (): string => {
     return data.conversation?.getStop() || "false";
@@ -39,7 +25,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const setStop = (value: string): void => {
     data.conversation?.setStop(value);
 
-    lazySyncYaml();
+    data.syncYaml();
     refreshUI();
   };
 
@@ -50,7 +36,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const setFinalEvents = (value: string[]): void => {
     data.conversation?.setFinalEventNames(value);
 
-    lazySyncYaml();
+    data.syncYaml();
     refreshUI();
   };
 
@@ -61,7 +47,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const setInterceptor = (value: string[]): void => {
     data.conversation?.setInterceptor(value);
 
-    lazySyncYaml();
+    data.syncYaml();
     refreshUI();
   };
 
@@ -72,7 +58,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const setQuester = (value: string): void => {
     data.conversation?.setQuester(value, data.translationSelection);
 
-    lazySyncYaml();
+    data.syncYaml();
     refreshUI();
   };
 
