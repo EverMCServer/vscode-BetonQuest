@@ -345,6 +345,10 @@ export class Option {
 
     }
 
+    getType(): string {
+        return this.type;
+    }
+
     getName(): string {
         return this.name;
     }

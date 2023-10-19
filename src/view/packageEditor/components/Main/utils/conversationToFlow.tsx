@@ -210,7 +210,7 @@ export function linkIn(
   sourceNodeID: string,
   sourceHandle: string,
   targetNodeID: string,
-  allNodes: Record<string, Node>,
+  allNodes: Record<string, Node<NodeData>>,
   lines: Record<string, Edge>,
   linkedNodesRef: Record<string, string[]> = {}
 ) {
@@ -240,16 +240,16 @@ export function linkIn(
   }
   linkedNodesRef.nodes = arrayAppend(linkedNodes, targetNodeID);
 
-  const pointers = targetNode.data["pointers"] || [];
+  const pointers = targetNode.data.option?.getPointerNames() || [];
   let lastNextNodeID = "";
 
   for (let i = 0; i < pointers.length; i++) {
-    const nextNodeID = pointers[i];
+    const targetNodeIsNPC = targetNode.type === "npcNode";
+    const nextNodeID = (targetNodeIsNPC?"playerNode":"npcNode")+"_"+pointers[i];
     const nextNode = allNodes[nextNodeID];
     if (!nextNode) {
       return;
     }
-    const targetNodeIsNPC = targetNode.type === "npcNode";
     const nextNodeIsNPC = nextNode.type === "npcNode";
 
     if (targetNodeIsNPC && nextNodeIsNPC) {
