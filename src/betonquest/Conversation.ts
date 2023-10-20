@@ -105,6 +105,14 @@ export default class Conversation {
         return this.getOptions("player_options") || [];
     }
 
+    deleteNpcOption(name: string) {
+        this.deleteOption("NPC_options", name);
+    }
+
+    deletePlayerOption(name: string) {
+        this.deleteOption("player_options", name);
+    }
+
     // Get all Options of a type
     private getOptions(type: string): Option[] | undefined {
         let yaml: unknown;
@@ -118,6 +126,20 @@ export default class Conversation {
             return yaml.items.map(e =>  new Option(e.key.value, type, e.value, this));
         }
         return undefined;
+    }
+
+    // Remove an Option from the Yaml
+    deleteOption(type: string, name: string) {
+        let yaml: unknown;
+        try {
+            yaml = this.yaml.value?.getIn([type, name]);
+        } catch {
+            return;
+        }
+
+        if (yaml) {
+            this.yaml.value?.deleteIn([type, name]);
+        }
     }
 
     // Check if the Yaml multilingual

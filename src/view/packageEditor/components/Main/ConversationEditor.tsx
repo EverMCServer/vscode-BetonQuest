@@ -80,7 +80,7 @@ interface ConversationEditorProps {
 // 3. prevent rerendering the whole flow map when the YAML is not updated (cache)
 // 4. (DONE) refactor translation selection
 // 5. fix new node creation
-// 6. delete node
+// 6. (DONE) delete node
 // 7. (more...)
 // ==========================
 
@@ -372,19 +372,38 @@ function ConversationFlowView(props: ConversationEditorProps) {
         ]
     );
 
-    /* DEL keyboard button event */
+    /* Handle nodes deletion */
+
+    const onNodesDelete = useCallback((nodes: Node<NodeData>[]) => {
+        // Prevent deletion of the Start node
+        const startNode = nodes.find((n) => n.type === "startNode");
+        if (startNode) {
+            setNodes([...nodes, startNode]);
+        }
+
+        // Remove nodes from Yaml
+        nodes.forEach(n => {
+            props.conversation.deleteOption(n.data.option?.getType()!, n.data.option?.getName()!);
+        });
+        props.syncYaml();
+    }, [nodes, edges]);
 
     const deleteButtonPressed = useKeyPress(["Delete"]);
     const deleteSelectedNodes = useCallback(() => {
         const nodes2 = getNodes().filter((item, i) => {
-            return item.selected !== true;
+            if (item.selected !== true) {
+                return true;
+            }
+            props.conversation.deleteOption(item.data.option?.getType() || "", item.data.option?.getName() || "");
+            return false;
         });
         const edges2 = getEdges().filter((item, i) => {
             return item.selected !== true;
         });
         setNodes(nodes2);
         setEdges(edges2);
-    }, [getNodes, getEdges, setNodes, setEdges]);
+        props.syncYaml();
+    }, [getNodes, getEdges, setNodes, setEdges, props.conversation, props.syncYaml]);
 
     useEffect(() => {
         deleteSelectedNodes();
@@ -488,6 +507,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                     onConnectStart={onConnectStart}
                     onConnectEnd={onConnectEnd}
                     onConnect={onConnect}
+                    onNodesDelete={onNodesDelete}
                     nodeTypes={nodeTypes}
                     connectionLineComponent={ConnectionLine}
                     fitView
