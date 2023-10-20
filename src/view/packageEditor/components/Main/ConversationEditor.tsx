@@ -88,14 +88,10 @@ interface ConversationEditorProps {
 function ConversationFlowView(props: ConversationEditorProps) {
     // Cache translation selection
     // TODO: load translation from props?
-    const [translationSelection, setTranslationSelection] = useState(globalThis.initialConfig.translationSelection || 'en');
+    const [translationSelection, setTranslationSelection] = useState('');
 
     // Caching translation list
     const [allTranslations, setAllTranslations] = useState<string[]>([]);
-    useEffect(() => {
-        setAllTranslations(props.conversation.getTranslations());
-    }, [props.conversation]);
-
     // Caching multilingual status
     const [isMultilingual, setIsMultilingual] = useState(false);
     useEffect(() => {
@@ -106,19 +102,9 @@ function ConversationFlowView(props: ConversationEditorProps) {
         }
     }, [props.conversation]);
 
-    // Get init nodes and edges
-    let y = conversationToFlow(props.conversation, props.syncYaml, translationSelection);
-    if (y.nodes.length > 0) {
-        const obj = autoLayout(y.nodes, y.edges);
-        if (obj) {
-            y.nodes = obj.nodes;
-            y.edges = obj.edges;
-        }
-    }
-
     const flowWrapper = useRef<HTMLDivElement>(null);
-    const [nodes, setNodes, onNodesChange] = useNodesState<any>(y.nodes); // TODO: replace any with a definite type
-    const [edges, setEdges, onEdgesChange] = useEdgesState(y.edges);
+    const [nodes, setNodes, onNodesChange] = useNodesState<any>([]); // TODO: replace any with a definite type
+    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const viewport = useViewport();
     const {
         getNode,
@@ -130,19 +116,38 @@ function ConversationFlowView(props: ConversationEditorProps) {
         fitView,
     } = useReactFlow<NodeData>();
 
+    // Wraps for update nodes and edges
+    const resetFlow = useCallback(
+        // async (conversation: Conversation, syncYaml: (delay?: number | undefined) => void, translationSelection: string, viewport?: Viewport) => {
+        //     let y = conversationToFlow(conversation, syncYaml, translationSelection);
+        async (viewport?: Viewport) => {
+            let flow = conversationToFlow(props.conversation, props.syncYaml, translationSelection);
+            const formatedFlow = autoLayout(flow.nodes, flow.edges);
+            if (formatedFlow) {
+                flow.nodes = formatedFlow.nodes;
+                flow.edges = formatedFlow.edges;
+            }
+            setNodes(flow.nodes);
+            setEdges(flow.edges);
+            if (viewport) {
+                setViewport(viewport);
+            }
+            //  else {
+            //     window.requestAnimationFrame(() => fitView());
+            // }
+        },
+        [fitView, setEdges, setNodes, setViewport, props.conversation, props.syncYaml, translationSelection]
+    );
+
+    // Set initial states
+    useEffect(() => {
+        // set initial translation selection, it will also triger the initial rendering resetFlow() in belowing useEffect()
+        setTranslationSelection(globalThis.initialConfig.translationSelection || 'en');
+    }, []);
+
     // Update nodes and edges when props.conversation / translationSelection is udpated
     useEffect(() => {
-        let y = conversationToFlow(props.conversation, props.syncYaml, translationSelection);
-            if (y.nodes.length > 0) {
-                const obj = autoLayout(y.nodes, y.edges);
-                if (obj) {
-                    y.nodes = obj.nodes;
-                    y.edges = obj.edges;
-                    y.nodes[0].data;
-                }
-                setNodes(y.nodes);
-                setEdges(y.edges);
-        }
+        resetFlow();
     }, [props.conversation, translationSelection]);
 
     // Async/await lock, for VSCode message handling, etc
@@ -367,27 +372,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
         ]
     );
 
-    /* Reset Flow */
-
-    const resetFlow = useCallback(
-        async (nodes: Node[], edges: Edge[], viewport?: Viewport) => {
-            // setEdges([]);
-            // setNodes([]);
-            // setViewport({ x: 0, y: 0, zoom: 1 });
-
-            // setTimeout(() => {
-            setNodes(nodes || []);
-            setEdges(edges || []);
-            // if (viewport) {
-            //     setViewport(viewport);
-            // } else {
-            //     window.requestAnimationFrame(() => fitView());
-            // }
-            // }, 0);
-        },
-        [fitView, setEdges, setNodes, setViewport]
-    );
-
     /* DEL keyboard button event */
 
     const deleteButtonPressed = useKeyPress(["Delete"]);
@@ -405,26 +389,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
     useEffect(() => {
         deleteSelectedNodes();
     }, [deleteButtonPressed]);
-
-    //
-    // Cache stuff that need to be referenced in useEffect() ...
-    // Cache "nodes"
-    const nodesRef = React.useRef(nodes);
-    useEffect(() => {
-        nodesRef.current = nodes;
-    }, [nodes]);
-    // Cache setViewport()
-    const setViewportRef = React.useRef(setViewport);
-    const viewportRef = React.useRef(viewport);
-    useEffect(() => {
-        setViewportRef.current = setViewport;
-        viewportRef.current = viewport;
-    }, [setViewport, viewport]);
-    // Cache translation selection
-    const translationSelectionRef = React.useRef(translationSelection);
-    useEffect(() => {
-        translationSelectionRef.current = translationSelection;
-    }, [translationSelection]);
 
     /* VSCode messages */
 

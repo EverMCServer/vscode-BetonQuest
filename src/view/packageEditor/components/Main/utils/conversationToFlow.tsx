@@ -185,7 +185,8 @@ export function conversationToFlow(
     // Remove Free-hanging lines
     let pointers = node.data.option?.getPointerNames();
     for (let i = 0; pointers && i < pointers.length; i++) {
-      const toNodeID = pointers[i];
+      const targetNodeIsNPC = node.type === "npcNode";
+      const toNodeID = (targetNodeIsNPC?"playerNode":"npcNode")+"_"+pointers[i];
       if (i === 0) {
         linkIn(node.id, "handleOut", toNodeID, allNodes, lines, linkedNodesRef);
       } else {
