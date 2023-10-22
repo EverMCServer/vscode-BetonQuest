@@ -31,6 +31,7 @@ export function conversationToFlow(
     id: "startNodeID",
     type: "startNode",
     position: { x: 0, y: 0 },
+    deletable: false, // Prevent deletion of the Start node
     data: {
       syncYaml: syncYaml,
       translationSelection: translationSelection,
@@ -74,7 +75,7 @@ export function conversationToFlow(
     //   pointers[i] = `playerNode_${pointers[i]}`;
     // }
 
-    const dict = {
+    const dict: Node<NodeData> = {
       id: idKey,
       type: "playerNode",
       position: { x: 0, y: 0 },
@@ -222,13 +223,14 @@ export function linkIn(
 
   // Create new line
   const lineID = `line_${Object.values(lines).length}`;
-  const line = {
+  const line: Edge = {
     id: lineID,
     source: sourceNodeID,
     sourceHandle: sourceHandle,
     target: targetNodeID,
     targetHandle: "handleIn",
     type: "smoothstep",
+    deletable: sourceNodeID !== "startNodeID", // Prevent deletion of the Start node
     markerEnd: { type: MarkerType.ArrowClosed },
   };
   lines[lineID] = line;

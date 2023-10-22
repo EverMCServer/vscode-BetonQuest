@@ -30,6 +30,7 @@ export default function contextMenu({
     // Remove the nodes and related edges
     setNodes((nodes) => nodes.filter((node) => node.id !== id));
     setEdges((edges) => edges.filter((edge) => edge.source !== id));
+    // TODO: If source === "startNode", reconnect other "else" nodes
     // Update Yaml
     window.setTimeout(()=>{
       downloadYML();

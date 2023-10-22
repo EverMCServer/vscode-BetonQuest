@@ -9,8 +9,8 @@ export default class Package {
 
     private yaml: Document<YAMLMap<string>, false>;
 
-    constructor(yamlText: string) {
-        this.yaml = YAML.parseDocument<YAMLMap<string>, false>(yamlText);
+    constructor(yamlText: string, yamlParseOption?: (YAML.ParseOptions & YAML.DocumentOptions & YAML.SchemaOptions)) {
+        this.yaml = YAML.parseDocument<YAMLMap<string>, false>(yamlText, yamlParseOption);
     }
 
     // Reload the whole yaml file.
@@ -24,8 +24,8 @@ export default class Package {
     }
 
     // Emit the Yaml text file.
-    getYamlText(): string {
-        return this.getYaml().toString({nullStr: ``});
+    getYamlText(yamlToStringOptions?: YAML.ToStringOptions): string {
+        return this.getYaml().toString(yamlToStringOptions || {nullStr: ``, lineWidth:0});
     }
 
     private getEventsYaml() {

@@ -308,6 +308,8 @@ function MyFlowView() {
       );
 
       setEdges(addEdge(edge, newEdges));
+
+      // TODO: flush YAML
     },
     [
       project,
@@ -413,6 +415,7 @@ function MyFlowView() {
     const edges2 = getEdges().filter((item, i) => {
       return (item.selected !== true || item.source === "startNodeID");
     });
+    // TODO: If source === "startNode", reconnect other "else" nodes
     setNodes(nodes2);
     setEdges(edges2);
   }, [getNodes, getEdges, setNodes, setEdges]);

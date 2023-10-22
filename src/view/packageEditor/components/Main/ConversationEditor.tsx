@@ -374,32 +374,34 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
     /* Handle nodes deletion */
 
-    const onNodesDelete = useCallback((nodes: Node<NodeData>[]) => {
-        // Prevent deletion of the Start node
-        const startNode = nodes.find((n) => n.type === "startNode");
-        if (startNode) {
-            setNodes([...nodes, startNode]);
-        }
-
+    const onNodesDelete = useCallback((deletingNodes: Node<NodeData>[]) => {
         // Remove nodes from Yaml
-        nodes.forEach(n => {
+        deletingNodes.forEach(n => {
+            // Prevent start node from being deleted
+            if (n.type === "startNode") {
+                return;
+            }
+            // Delete the option from the Conversation
             props.conversation.deleteOption(n.data.option?.getType()!, n.data.option?.getName()!);
         });
+        // TODO: If source === "startNode", reconnect other "else" nodes
+        // Sync the Conversation
         props.syncYaml();
     }, [nodes, edges]);
 
     const deleteButtonPressed = useKeyPress(["Delete"]);
     const deleteSelectedNodes = useCallback(() => {
         const nodes2 = getNodes().filter((item, i) => {
-            if (item.selected !== true) {
+            if (item.selected !== true || item.type === "startNode") {
                 return true;
             }
             props.conversation.deleteOption(item.data.option?.getType() || "", item.data.option?.getName() || "");
             return false;
         });
         const edges2 = getEdges().filter((item, i) => {
-            return item.selected !== true;
+            return (item.selected !== true || item.source === "startNodeID");
         });
+        // TODO: If source === "startNode", reconnect other "else" nodes
         setNodes(nodes2);
         setEdges(edges2);
         props.syncYaml();
@@ -504,10 +506,10 @@ function ConversationFlowView(props: ConversationEditorProps) {
                     edges={edges}
                     onNodesChange={onNodesChange}
                     onEdgesChange={onEdgesChange}
+                    onNodesDelete={onNodesDelete}
                     onConnectStart={onConnectStart}
                     onConnectEnd={onConnectEnd}
                     onConnect={onConnect}
-                    onNodesDelete={onNodesDelete}
                     nodeTypes={nodeTypes}
                     connectionLineComponent={ConnectionLine}
                     fitView
@@ -540,7 +542,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                     </Panel>
 
                     <Background variant={BackgroundVariant.Dots} />
-                    {menu && <ContextMenu onClick={onPaneClick} {...menu} />}
+                    {menu && <ContextMenu onClick={onPaneClick} conversation={props.conversation} syncYaml={props.syncYaml} {...menu} />}
                 </ReactFlow>
             </div>
         </div>
