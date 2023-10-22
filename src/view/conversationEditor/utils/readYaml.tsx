@@ -51,6 +51,7 @@ export function parseYaml(
     id: "startNodeID",
     type: "startNode",
     position: { x: 0, y: 0 },
+    deletable: false, // Prevent deletion of the Start node
     data: { fileName: fileName, yaml: yaml, translationSelection: translationSelection },
   };
   const startNodes: Record<string, Node> = { startNodeID: startNode };
@@ -251,6 +252,7 @@ export function linkIn(
     target: targetNodeID,
     targetHandle: "handleIn",
     type: "smoothstep",
+    deletable: sourceNodeID !== "startNodeID", // Prevent deletion of the Start node
     markerEnd: { type: MarkerType.ArrowClosed },
   };
   lines[lineID] = line;

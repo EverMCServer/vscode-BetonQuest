@@ -408,10 +408,10 @@ function MyFlowView() {
   const deleteButtonPressed = useKeyPress(["Delete"]);
   const deleteSelectedNodes = useCallback(() => {
     const nodes2 = getNodes().filter((item, i) => {
-      return item.selected !== true;
+      return (item.selected !== true || item.type === "startNode");
     });
     const edges2 = getEdges().filter((item, i) => {
-      return item.selected !== true;
+      return (item.selected !== true || item.source === "startNodeID");
     });
     setNodes(nodes2);
     setEdges(edges2);
@@ -888,7 +888,7 @@ function MyFlowView() {
           </Panel>
 
           <Background variant={BackgroundVariant.Dots} />
-          {menu && <ContextMenu onClick={onPaneClick} {...menu} />}
+          {menu && <ContextMenu onClick={onPaneClick} downloadYML={onDownloadYML} {...menu} />}
         </ReactFlow>
       </div>
     </div>
