@@ -374,37 +374,80 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
     /* Handle nodes deletion */
 
-    const onNodesDelete = useCallback((deletingNodes: Node<NodeData>[]) => {
-        // Remove nodes from Yaml
-        deletingNodes.forEach(n => {
-            // Prevent start node from being deleted
-            if (n.type === "startNode") {
-                return;
+    // Define the nodes / Edges deletion public method. Returns the nodes and edges actually deleted.
+    const deleteNodes = useCallback((deletingNodes: Node<NodeData>[], updateFlowChart?: boolean): {deletedNodes: Node<NodeData>[], deletedEdges: Edge[]} => {
+        // 1. filter out the nodes that needed to be deleted
+        // 2. remove the nodes from the conversation
+        // 3. remove the related edges (source / destination)
+        // 4. if the node is a NPC option, reconnect "else" edges
+
+        // Delete nodes
+        // Filter the nodes that should be deleted
+        const deletedNodes = deletingNodes.filter(item => item.type !== "startNode");
+        // Filter out the new nodes to be updated
+        const nodes2 = getNodes().filter(item => !deletedNodes.find(e => e.id === item.id));
+
+        // Delete edges
+        // Get the edges that need to be deleted
+        const deletedEdges: Edge[] = getEdges().filter(item => deletedNodes.find(e => e.id === item.source || e.id === item.target));
+        // Filter out the new nodes to be updated
+        const edges2: Edge[] = getEdges().filter(item => !deletedEdges.find(e => e.id === item.id));
+        
+        // Delete nodes and reconnect edges
+        deletedNodes.forEach(item => {
+            // Delete the nodes and
+            props.conversation.deleteOption(item.data.option?.getType() || "", item.data.option?.getName() || "");
+
+            // Find the upper and lower stream edges
+            const upperEdge = deletedEdges.find(e => e.target === item.id);
+            const lowerEdge = deletedEdges.find(e => e.sourceHandle === "handleN" && e.source === item.id);
+
+            // Delete source pointers from upstream options
+            const upperNode: Node<NodeData> | undefined = upperEdge?.sourceNode;
+            if (upperNode && item.data.option) {
+                if (upperNode.type === "startNode") {
+                    upperNode.data.conversation?.removeFirst([item.data.option.getName()]);
+                } else {
+                    upperNode.data.option?.removePointerNames([item.data.option.getName()]);
+                }
             }
-            // Delete the option from the Conversation
-            props.conversation.deleteOption(n.data.option?.getType()!, n.data.option?.getName()!);
+
+            // Reconnect edges for NPC's "else" nodes
+            if (upperEdge && lowerEdge){
+                edges2.push({
+                    ...upperEdge,
+                    target: lowerEdge.target,
+                    targetHandle: lowerEdge.targetHandle,
+                    targetNode: lowerEdge.targetNode,
+                });
+            }
         });
-        // TODO: If source === "startNode", reconnect other "else" nodes
-        // Sync the Conversation
+
+        // Update the flow chart if necessary
+        if (updateFlowChart) {
+            setNodes(nodes2);
+        }
+        setEdges(edges2);
+
+        // Sync YAML to VSCode
         props.syncYaml();
+
+        // Return the deleted nodes and edges
+        return {
+            deletedNodes: deletedNodes,
+            deletedEdges: deletedEdges
+        };
+    }, [getNodes, getEdges, setNodes, setEdges, props.conversation, props.syncYaml]);
+
+    // Deletion triggered with ReactFlow built-in events
+    const onNodesDelete = useCallback((deletingNodes: Node<NodeData>[]) => {
+        deleteNodes(deletingNodes);
     }, [nodes, edges]);
 
+    // Deletion triggered with custom keyboard events
     const deleteButtonPressed = useKeyPress(["Delete"]);
     const deleteSelectedNodes = useCallback(() => {
-        const nodes2 = getNodes().filter((item, i) => {
-            if (item.selected !== true || item.type === "startNode") {
-                return true;
-            }
-            props.conversation.deleteOption(item.data.option?.getType() || "", item.data.option?.getName() || "");
-            return false;
-        });
-        const edges2 = getEdges().filter((item, i) => {
-            return (item.selected !== true || item.source === "startNodeID");
-        });
-        // TODO: If source === "startNode", reconnect other "else" nodes
-        setNodes(nodes2);
-        setEdges(edges2);
-        props.syncYaml();
+        deleteNodes(getNodes().filter(item => item.selected), true);
     }, [getNodes, getEdges, setNodes, setEdges, props.conversation, props.syncYaml]);
 
     useEffect(() => {
@@ -542,7 +585,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                     </Panel>
 
                     <Background variant={BackgroundVariant.Dots} />
-                    {menu && <ContextMenu onClick={onPaneClick} conversation={props.conversation} syncYaml={props.syncYaml} {...menu} />}
+                    {menu && <ContextMenu onClick={onPaneClick} deleteNodes={deleteNodes} {...menu} />}
                 </ReactFlow>
             </div>
         </div>

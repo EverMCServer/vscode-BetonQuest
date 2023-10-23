@@ -226,8 +226,10 @@ export function linkIn(
   const line: Edge = {
     id: lineID,
     source: sourceNodeID,
+    sourceNode: allNodes[sourceNodeID],
     sourceHandle: sourceHandle,
     target: targetNodeID,
+    targetNode: targetNode,
     targetHandle: "handleIn",
     type: "smoothstep",
     deletable: sourceNodeID !== "startNodeID", // Prevent deletion of the Start node

@@ -309,7 +309,7 @@ export default class Conversation {
     private removetElementsFromStringArrayOnYamlPath(yamlPath: string[], elements: string[]) {
         elements.forEach(element => {
             this.setStringArrayOnYamlPath(yamlPath, this.getStringArrayOnYamlPath(yamlPath).filter(value => {
-                return value.match(new RegExp("$[ \t\r]*"+element+"[ \t\r]*^")) === null;
+                return value.match(new RegExp("^[ \t\r]*"+element+"[ \t\r]*$")) === null;
             }));
         });
     }
@@ -565,7 +565,7 @@ export class Option {
     private removetElementsFromStringArrayOnYamlPath(yamlPath: string[], elements: string[]) {
         elements.forEach(element => {
             this.setStringArrayOnYamlPath(yamlPath, this.getStringArrayOnYamlPath(yamlPath).filter(value => {
-                return value.match(new RegExp("$[ \t\r]*"+element+"[ \t\r]*^")) === null;
+                return value.match(new RegExp("^[ \t\r]*"+element+"[ \t\r]*$")) === null;
             }));
         });
     }
