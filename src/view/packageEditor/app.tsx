@@ -41,8 +41,6 @@ export default function app() {
     const setPkg = (newPkg: Package) => {
         const newYaml = newPkg.getYamlText();
         if (newYaml !== cachedYaml) {
-            console.log("newPkg:", newYaml);
-            console.log("oldPkg:", cachedYaml);
             _setPkg(newPkg);
             cachedYaml = newYaml;
         }
@@ -64,7 +62,6 @@ export default function app() {
                     if (message.content !== pkg) { // Avoid duplicated update
                         // Update Package
                         const p = new Package(message.content);
-                        console.log("update pkg ...", p);
                         setPkg(p);
                         // Handle for initial document update
                         if (message.isInit) {
@@ -76,10 +73,8 @@ export default function app() {
                         }
                         break;
                     }
-                    console.log("update pkg ... nothing changed.");
                     break;
                 case 'betonquest-translationSelection':
-                    console.log("update betonquest's translation selection ...");
                     // setTranslationSelection(message.content);
             }
         });
@@ -101,15 +96,13 @@ export default function app() {
         }, delay);
     };
 
-    // Test i18n
-    console.log(L("1"));
-    console.log(setLocale("zh-CN"));
-    console.log(L("1"));
+    // // Test i18n
+    // console.log(L("1"));
+    // console.log(setLocale("zh-CN"));
+    // console.log(L("1"));
 
     // Collapsible Sider
     const [collapsed, setCollapsed] = useState(false);
-
-    console.log("pkg:", pkg);
 
     return (
     <ConfigProvider

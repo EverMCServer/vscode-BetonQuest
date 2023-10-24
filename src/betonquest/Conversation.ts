@@ -1,4 +1,4 @@
-import { Pair, Scalar, YAMLMap } from 'yaml';
+import { Pair, Scalar, YAMLMap, isMap } from 'yaml';
 
 // Conversation
 export default class Conversation {
@@ -105,12 +105,35 @@ export default class Conversation {
         return this.getOptions("player_options") || [];
     }
 
-    deleteNpcOption(name: string) {
-        this.deleteOption("NPC_options", name);
+    createNpcOption(optionName: string) : Option | undefined {
+        return this.createOption("NPC_options", optionName);
     }
 
-    deletePlayerOption(name: string) {
-        this.deleteOption("player_options", name);
+    createPlayerOption(optionName: string) : Option | undefined {
+        return this.createOption("player_options", optionName);
+    }
+
+    deleteNpcOption(optionName: string) {
+        this.deleteOption("NPC_options", optionName);
+    }
+
+    deletePlayerOption(optionName: string) {
+        this.deleteOption("player_options", optionName);
+    }
+
+    // Get a single Option
+    private getOption(type: string, optionName: string): Option | undefined {
+        let yaml: unknown;
+        try {
+            yaml = this.yaml.value?.getIn([type, optionName]);
+        } catch {
+            return undefined;
+        }
+        
+        if (yaml instanceof YAMLMap) {
+            return new Option(optionName, type, yaml, this);
+        }
+        return undefined;
     }
 
     // Get all Options of a type
@@ -128,17 +151,34 @@ export default class Conversation {
         return undefined;
     }
 
-    // Remove an Option from the Yaml
-    deleteOption(type: string, name: string) {
+    // Create a new Option
+    createOption(type: string, optionName: string): Option | undefined {
         let yaml: unknown;
         try {
-            yaml = this.yaml.value?.getIn([type, name]);
+            yaml = this.yaml.value?.getIn([type]);
+        } catch {
+            return undefined;
+        }
+
+        if (isMap(yaml)) {
+            // const map = new YAMLMap<string>();
+            yaml.add(new Pair(optionName, new YAMLMap()));
+            return this.getOption(type, optionName);
+        }
+        return undefined;
+    }
+
+    // Remove an Option from the Yaml
+    deleteOption(type: string, optionName: string) {
+        let yaml: unknown;
+        try {
+            yaml = this.yaml.value?.getIn([type, optionName]);
         } catch {
             return;
         }
 
         if (yaml) {
-            this.yaml.value?.deleteIn([type, name]);
+            this.yaml.value?.deleteIn([type, optionName]);
         }
     }
 
@@ -312,20 +352,6 @@ export default class Conversation {
                 return value.match(new RegExp("^[ \t\r]*"+element+"[ \t\r]*$")) === null;
             }));
         });
-    }
-
-    private getOption(type: string, optionName: string): Option | undefined {
-        let yaml: unknown;
-        try {
-            yaml = this.yaml.value?.getIn([type, optionName]);
-        } catch {
-            return undefined;
-        }
-        
-        if (yaml instanceof YAMLMap) {
-            return new Option(optionName, type, yaml, this);
-        }
-        return undefined;
     }
 }
 

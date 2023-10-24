@@ -97,6 +97,11 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
     );
   };
 
+  const onConnect = React.useCallback((connection: Connection) => {
+    // TODO
+    console.log("onConnect from Player", connection);
+  }, []);
+
   return (
     <div style={{ width: "100%" }}>
       <div className="title-box player">
@@ -163,6 +168,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         position={Position.Top}
         className="handleIn"
         isValidConnection={(e) => isConnectable(e)}
+        onConnect={onConnect}
       />
       <Handle
         id="handleOut"
@@ -170,6 +176,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         position={Position.Bottom}
         className="handleOut"
         isValidConnection={(e) => isConnectable(e)}
+        onConnect={onConnect}
       />
     </div>
   );

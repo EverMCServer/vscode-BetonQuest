@@ -14,7 +14,6 @@ interface MainProps {
 }
 
 export default function main( props: MainProps ) {
-    console.log("prpos.test in main:", props.package);
 
     const [tabsActiveKey, setTabsActiveKey] = useState("");
     const [tabsItems, setTabsItems] = useState([] as Tab[]);

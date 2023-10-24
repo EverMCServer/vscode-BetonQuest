@@ -89,13 +89,18 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
     if (!source || !target) {
       return false;
     }
-    return connectionAvaliable(
+    return connectionAvaliable( //
       source.type || "",
       line.sourceHandle || "",
       target.type || "",
       line.targetHandle || ""
     );
   };
+
+  const onConnect = React.useCallback((connection: Connection) => {
+    // TODO
+    console.log("onConnect from NPC", connection);
+  }, []);
 
   return (
     <div style={{ width: "100%" }}>
@@ -163,6 +168,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         position={Position.Top}
         className="handleIn"
         isValidConnection={(e) => isConnectable(e)}
+        onConnect={onConnect}
       />
       <Handle
         id="handleOut"
@@ -170,6 +176,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         position={Position.Bottom}
         className="handleOut"
         isValidConnection={(e) => isConnectable(e)}
+        onConnect={onConnect}
       />
       <Handle
         id="handleN"
@@ -177,6 +184,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         position={Position.Right}
         className="handleN"
         isValidConnection={(e) => isConnectable(e)}
+        onConnect={onConnect}
       />
     </div>
   );

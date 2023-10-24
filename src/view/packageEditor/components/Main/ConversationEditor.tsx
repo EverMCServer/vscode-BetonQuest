@@ -24,7 +24,8 @@ import ReactFlow, {
     useKeyPress,
     Panel,
     useViewport,
-    useOnSelectionChange
+    useOnSelectionChange,
+    updateEdge
 } from "reactflow";
 import "reactflow/dist/style.css";
 import "./ConversationEditor.css";
@@ -103,7 +104,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
     }, [props.conversation]);
 
     const flowWrapper = useRef<HTMLDivElement>(null);
-    const [nodes, setNodes, onNodesChange] = useNodesState<any>([]); // TODO: replace any with a definite type
+    const [nodes, setNodes, onNodesChange] = useNodesState<NodeData>([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const viewport = useViewport();
     const {
@@ -196,8 +197,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
     );
     const onPaneClick = useCallback(() => setMenu(null), [setMenu]);
 
-    /* Remove unsupport lines */
-
+    // Handle Edge while connecting, style etc
     const onConnect = useCallback(
         (params: Connection) => {
             if (!params) {
@@ -211,12 +211,13 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
             let edge: Edge = {
                 id: getNewLineID(),
-                type: "step",
+                type: "smoothstep",
                 markerEnd: { type: MarkerType.ArrowClosed },
                 source: params.source || "",
                 sourceHandle: params.sourceHandle || "",
                 target: params.target || "",
                 targetHandle: params.targetHandle || "",
+                // deletable: true,
             };
 
             const newEdges = removeLinesOnConnect(
@@ -264,27 +265,30 @@ function ConversationFlowView(props: ConversationEditorProps) {
             if (event instanceof TouchEvent) {
                 return;
             }
-            const targetIsPane = (event.target as any).classList.contains(
-                "react-flow__pane"
-            );
             const wrapper = flowWrapper.current;
             if (!wrapper) {
                 return;
             }
             const { top, left } = wrapper.getBoundingClientRect();
 
+            // Prevent create new node when edge is not landed on the empty pane
+            const targetIsPane = (event.target as any).classList.contains(
+                "react-flow__pane"
+            );
             if (!targetIsPane) {
                 return;
             }
+            // Prevent create new node when edge start from an "in" handle
             if (connectingParams.current.handleId === "handleIn") {
                 return;
             }
 
-            // Calculate the position of the node
             const hitPosition = project({
                 x: event.clientX - left,
                 y: event.clientY - top,
             });
+
+            // Prevent create new node when end position landed near an existing node
             const safeSpace = 20;
             for (let i = 0; i < nodes.length; i++) {
                 let node = nodes[i];
@@ -298,6 +302,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                 }
             }
 
+            // Get source Node
             const fromNode = getNode(connectingParams.current.nodeId || "");
             if (!fromNode) {
                 return;
@@ -315,35 +320,33 @@ function ConversationFlowView(props: ConversationEditorProps) {
                 type = "npcNode";
             }
 
-            // Check parent node uses multilingual text or not.
-            // The newly created node should follows the parent's multilingual behaviour.
-            let isMultilingual = false;
-            if (fromNode.data["translationSelection"] && fromNode.data["translationSelection"].length > 0) {
-                isMultilingual = true;
-            }
-            const newNodeOption: IConversationYamlOptionModel = {};
-            if (isMultilingual) {
-                newNodeOption.text = {} as TextMultilingualModel;
-            } else {
-                newNodeOption.text = "";
-            }
-            console.log("new node is multilingual:", Object.assign(new ConversationYamlOptionModel(), newNodeOption).isTextMultilingual());
-
+            // Create Node
             const newNodeName = getNewNodeID();
             const newNodeID = type + "_" + newNodeName;
-            const newNode = {
+            const data: NodeData = {
+                conversation: props.conversation,
+                syncYaml: props.syncYaml,
+                translationSelection: translationSelection,
+            };
+            if (type === "npcNode") {
+                data.option = props.conversation.createNpcOption(newNodeName);
+            } else {
+                data.option = props.conversation.createPlayerOption(newNodeName);
+            }
+            const newNode: Node<NodeData> = {
                 id: newNodeID,
                 type,
                 position: { x: hitPosition.x - 100, y: hitPosition.y },
-                data: { name: `${newNodeName}`, option: newNodeOption, translationSelection: fromNode.data["translationSelection"] },
+                data: data,
             };
 
             setNodes((nds) => nds.concat(newNode));
 
+            // Create Edge
             const newLineID = getNewLineID();
             let edge: Edge = {
                 id: newLineID,
-                type: "step",
+                type: "smoothstep",
                 markerEnd: { type: MarkerType.ArrowClosed },
                 source: connectingParams.current.nodeId || "",
                 sourceHandle: connectingParams.current.handleId,
@@ -454,6 +457,15 @@ function ConversationFlowView(props: ConversationEditorProps) {
         deleteSelectedNodes();
     }, [deleteButtonPressed]);
 
+    // Handle Edge update (change connection)
+    const onEdgeUpdate = useCallback((oldEdge: Edge, newConnection: Connection) => {
+        // Update conversation pointers
+        // ...
+        
+        // Update connection
+        setEdges((els) => updateEdge(oldEdge, newConnection, els));
+    } , []);
+
     /* VSCode messages */
 
     const handleVscodeMessage = (message: any) => {
@@ -548,8 +560,10 @@ function ConversationFlowView(props: ConversationEditorProps) {
                     nodes={nodes}
                     edges={edges}
                     onNodesChange={onNodesChange}
-                    onEdgesChange={onEdgesChange}
+                    // onEdgesChange={onEdgesChange}
                     onNodesDelete={onNodesDelete}
+                    onEdgesDelete={(edges: Edge[]) => {console.log("onEdgesDelete:", edges);}} // TODO handle pointers update
+                    onEdgeUpdate={onEdgeUpdate}
                     onConnectStart={onConnectStart}
                     onConnectEnd={onConnectEnd}
                     onConnect={onConnect}
@@ -593,8 +607,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
 }
 
 export default function conversationEditor(props: ConversationEditorProps) {
-    console.log("prpos.conversation in conversation editor:", props.conversation);
-
     return (
         <>
             <div style={{width: "100%", position: "absolute", height: "6px", boxShadow: "var(--vscode-scrollbar-shadow) 0 6px 6px -6px inset"}}></div>
