@@ -272,12 +272,11 @@ export function linkIn(
     const nextNodeID = pointers[i];
     const nextNode = allNodes[nextNodeID];
     if (!nextNode) {
-      return;
+      continue;
     }
-    const targetNodeIsNPC = targetNode.type === "npcNode";
     const nextNodeIsNPC = nextNode.type === "npcNode";
 
-    if (targetNodeIsNPC && nextNodeIsNPC) {
+    if (lastNextNodeID && nextNodeIsNPC) {
       linkIn(
         lastNextNodeID,
         "handleN",
@@ -296,6 +295,6 @@ export function linkIn(
         linkedNodesRef
       );
     }
-    lastNextNodeID = targetNodeID;
+    lastNextNodeID = nextNodeID;
   }
 }

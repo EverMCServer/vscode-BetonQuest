@@ -121,7 +121,7 @@ export function conversationToFlow(
     lastTargetNodeID = toNodeID;
   }
 
-  // Calculate Nodes' position, widht and height
+  // Calculate Nodes' position, width and height
 
   // Linked Nodes
   let unlinkedNodes = Object.assign({}, allNodes);
@@ -253,11 +253,11 @@ export function linkIn(
     const nextNodeID = (targetNodeIsNPC?"playerNode":"npcNode")+"_"+pointers[i];
     const nextNode = allNodes[nextNodeID];
     if (!nextNode) {
-      return;
+      continue;
     }
     const nextNodeIsNPC = nextNode.type === "npcNode";
 
-    if (targetNodeIsNPC && nextNodeIsNPC) {
+    if (lastNextNodeID && nextNodeIsNPC) {
       linkIn(
         lastNextNodeID,
         "handleN",
@@ -276,6 +276,6 @@ export function linkIn(
         linkedNodesRef
       );
     }
-    lastNextNodeID = targetNodeID;
+    lastNextNodeID = nextNodeID;
   }
 }
