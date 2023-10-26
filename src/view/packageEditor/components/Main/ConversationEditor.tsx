@@ -25,7 +25,9 @@ import ReactFlow, {
     Panel,
     useViewport,
     useOnSelectionChange,
-    updateEdge
+    updateEdge,
+    OnSelectionChangeParams,
+    HandleType
 } from "reactflow";
 import "reactflow/dist/style.css";
 import "./ConversationEditor.css";
@@ -198,41 +200,143 @@ function ConversationFlowView(props: ConversationEditorProps) {
     const onPaneClick = useCallback(() => setMenu(null), [setMenu]);
 
     // Handle Edge while connecting, style etc
-    const onConnect = useCallback(
-        (params: Connection) => {
-            if (!params) {
-                return;
+    const onConnect = useCallback((params: Connection) => {
+        console.log("onConnect:", params);
+        if (!params) {
+            return;
+        }
+        const sourceID = params.source || "";
+        let sourceNode = getNode(sourceID);
+        if (!sourceNode) {
+            return;
+        }
+
+        // TODO: Update / add pointers to conversation ...
+
+        let edge: Edge = {
+            id: getNewLineID(),
+            type: "smoothstep",
+            markerEnd: { type: MarkerType.ArrowClosed },
+            source: params.source || "",
+            sourceHandle: params.sourceHandle || "",
+            sourceNode: sourceNode,
+            target: params.target || "",
+            targetHandle: params.targetHandle || "",
+            targetNode: getNode(params.target || ""),
+            // deletable: true,
+        };
+
+        const newEdges = removeLinesOnConnect(
+            sourceNode,
+            edges,
+            sourceID,
+            params.sourceHandle || ""
+        );
+
+        setEdges(addEdge(edge, newEdges || []));
+    }, [edges, getNewLineID, getNode, setEdges]);
+
+    // Handle Edge change
+
+    const isEdgeChanging = useRef<boolean>(false);
+
+    const onEdgeUpdateStart = (event: React.MouseEvent<Element, MouseEvent>, edge: Edge<any>, handleType: HandleType) => {
+        // console.log("onEdgeUpdateStart:", event, edge, handleType);
+        console.log("onEdgeUpdateStart:", edge.source);
+        // mark "update" status, prevent new node creation
+        isEdgeChanging.current = true;
+    };
+
+    // Handle Edge connection changed from one node to another
+    // For "new Edge connection created" event, check out Start/NPC/PlayerNode.tsx > onConnect()
+    const onEdgeUpdateEnd = (event: MouseEvent | TouchEvent, edge: Edge<any>, handleType: HandleType) => {
+        // event.preventDefault();
+        // calculate and update pointers
+        // console.log("onEdgeUpdateEnd:", event, edge, handleType);
+        console.log("onEdgeUpdateEnd:", edge.source);
+
+        // reset "update" status
+        isEdgeChanging.current = false;
+    };
+
+    // Handle Edge update (change connection)
+    const onEdgeUpdate = useCallback((oldEdge: Edge, newConnection: Connection) => {
+        // Update conversation pointers
+        // ...
+        console.log("onEdgeUpdate:", oldEdge, newConnection);
+
+        // Skip same node update
+        // TODO...
+
+        // Get target name
+        const newTargetName = newConnection.target?.split("_", 2)[1];
+        if (!newTargetName) {
+            return;
+        }
+
+        // Remove old pointers
+        // Note: if target is NPC, remove till end (deal with "else")
+        const oldTargetPointer = (oldEdge.targetNode?.data as NodeData).option?.getName();
+        if (oldTargetPointer) {
+            switch (oldEdge.sourceNode?.type) {
+                case "startNode":
+                    // Remove old pointers
+                    (oldEdge.sourceNode?.data as NodeData).conversation?.removeFirstTillEnd(oldTargetPointer);
+                    break;
+                case "playerNode":
+                    (oldEdge.sourceNode?.data as NodeData).option?.removePointerNamesTillEnd(oldTargetPointer);
+                    break;
+                case "npcNode":
+                    (oldEdge.sourceNode?.data as NodeData).option?.removePointerNames([oldTargetPointer]);
+                    break;
             }
-            const sourceID = params["source"] || "";
-            let sourceNode = getNode(sourceID);
-            if (!sourceNode) {
-                return;
+        }
+
+        // Set new popinters on the new source option
+        switch (oldEdge.targetNode?.type) {
+            case "playerNode":
+                // Just simply appenend the pointer onto the new node
+                
+                break;
+            case "npcNode":
+                break;
+        }
+        
+        // Update connection
+        setEdges((els) => updateEdge(oldEdge, newConnection, els));
+
+        // update yaml
+        props.syncYaml();
+    } , [setEdges, props.syncYaml]);
+
+    // Handle Edge deletion
+    const onEdgesDelete = useCallback((edges: Edge[]) => {
+        console.log("onEdgesDelete:", edges);
+
+        // Remove old pointers
+        // Note: if target is NPC, remove till end (deal with "else")
+        edges.forEach(oldEdge => {
+            const oldTargetPointer = (oldEdge.targetNode?.data as NodeData).option?.getName();
+            if (oldTargetPointer) {
+                switch (oldEdge.sourceNode?.type) {
+                    case "startNode":
+                        (oldEdge.sourceNode?.data as NodeData).conversation?.removeFirstTillEnd(oldTargetPointer);
+                        break;
+                    case "playerNode":
+                        (oldEdge.sourceNode?.data as NodeData).option?.removePointerNamesTillEnd(oldTargetPointer);
+                        break;
+                    case "npcNode":
+                        (oldEdge.sourceNode?.data as NodeData).option?.removePointerNames([oldTargetPointer]);
+                        break;
+                }
             }
+        });
 
-            let edge: Edge = {
-                id: getNewLineID(),
-                type: "smoothstep",
-                markerEnd: { type: MarkerType.ArrowClosed },
-                source: params.source || "",
-                sourceHandle: params.sourceHandle || "",
-                target: params.target || "",
-                targetHandle: params.targetHandle || "",
-                // deletable: true,
-            };
+        // update yaml
+        props.syncYaml();
+    } , [props.syncYaml]);
 
-            const newEdges = removeLinesOnConnect(
-                sourceNode,
-                edges,
-                sourceID,
-                params["sourceHandle"] || ""
-            );
-
-            setEdges(addEdge(edge, newEdges || []));
-        },
-        [edges, getNewLineID, getNode, setEdges]
-    );
-
-    /* Auto create new node and edge */
+    // Auto create new node and edge
 
     type ConnectParams = {
         nodeId: string | null;
@@ -271,15 +375,19 @@ function ConversationFlowView(props: ConversationEditorProps) {
             }
             const { top, left } = wrapper.getBoundingClientRect();
 
-            // Prevent create new node when edge is not landed on the empty pane
+            // Prevent creating new node when edge is not landed on the empty pane
             const targetIsPane = (event.target as any).classList.contains(
                 "react-flow__pane"
             );
             if (!targetIsPane) {
                 return;
             }
-            // Prevent create new node when edge start from an "in" handle
+            // Prevent creating new node when edge start from an "in" handle
             if (connectingParams.current.handleId === "handleIn") {
+                return;
+            }
+            // Prevent creating new node if it is activated by Edge change
+            if (isEdgeChanging.current) {
                 return;
             }
 
@@ -288,7 +396,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                 y: event.clientY - top,
             });
 
-            // Prevent create new node when end position landed near an existing node
+            // Prevent creating new node when end position landed near an existing node
             const safeSpace = 20;
             for (let i = 0; i < nodes.length; i++) {
                 let node = nodes[i];
@@ -350,8 +458,10 @@ function ConversationFlowView(props: ConversationEditorProps) {
                 markerEnd: { type: MarkerType.ArrowClosed },
                 source: connectingParams.current.nodeId || "",
                 sourceHandle: connectingParams.current.handleId,
+                sourceNode: fromNode,
                 target: newNodeID,
                 targetHandle: "handleIn",
+                targetNode: newNode,
             };
 
             const newEdges = removeLinesOnConnect(
@@ -384,6 +494,8 @@ function ConversationFlowView(props: ConversationEditorProps) {
         // 3. remove the related edges (source / destination)
         // 4. if the node is a NPC option, reconnect "else" edges
 
+        // TODO: delete nodes one-by-one, so "else" can be properly connected
+
         // Delete nodes
         // Filter the nodes that should be deleted
         const deletedNodes = deletingNodes.filter(item => item.type !== "startNode");
@@ -408,15 +520,48 @@ function ConversationFlowView(props: ConversationEditorProps) {
             // Delete source pointers from upstream options
             const upperNode: Node<NodeData> | undefined = upperEdge?.sourceNode;
             if (upperNode && item.data.option) {
-                if (upperNode.type === "startNode") {
-                    upperNode.data.conversation?.removeFirst([item.data.option.getName()]);
-                } else {
-                    upperNode.data.option?.removePointerNames([item.data.option.getName()]);
+                switch (upperNode.type) {
+                    case "startNode":
+                        upperNode.data.conversation?.removeFirstTillEnd(item.data.option.getName());
+                        break;
+                        case "playerNode":
+                            upperNode.data.option?.removePointerNamesTillEnd(item.data.option.getName());
+                            break;
+                        case "npcNode":
+                            upperNode.data.option?.removePointerNames([item.data.option.getName()]);
+                            break;
                 }
             }
 
             // Reconnect edges for NPC's "else" nodes
             if (upperEdge && lowerEdge){
+                // YAML
+                // Iterate all "else" nodes and set pointers
+                const elseNodes: Node[] = [lowerEdge.targetNode!];
+                let currentNodeId: string = lowerEdge.target;
+                do {
+                    const e = edges2.find(edge => edge.sourceHandle === "handleN" && edge.source === currentNodeId);
+                    if (e) {
+                        currentNodeId = e.target;
+                        elseNodes.push(e.targetNode!);
+                    } else {
+                        // no more nodes found
+                        break;
+                    }
+                } while (currentNodeId !== lowerEdge.target); // prevent looped lookup
+                // Get all pointers and set it on source
+                const allPointers: string[] = elseNodes.map(n => (n.data as NodeData).option?.getName()!);
+                if (upperNode) {
+                    switch (upperNode.type) {
+                        case "startNode":
+                            upperNode.data.conversation?.insertFirst(allPointers);
+                            break;
+                        default:
+                            upperNode.data.option?.insertPointerNames(allPointers);
+                    }
+                }
+
+                // UI
                 edges2.push({
                     ...upperEdge,
                     target: lowerEdge.target,
@@ -457,15 +602,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
         deleteSelectedNodes();
     }, [deleteButtonPressed]);
 
-    // Handle Edge update (change connection)
-    const onEdgeUpdate = useCallback((oldEdge: Edge, newConnection: Connection) => {
-        // Update conversation pointers
-        // ...
-        
-        // Update connection
-        setEdges((els) => updateEdge(oldEdge, newConnection, els));
-    } , []);
-
     /* VSCode messages */
 
     const handleVscodeMessage = (message: any) => {
@@ -500,35 +636,63 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
     let lastSelectedNodes: Node[] = [];
 
-    useOnSelectionChange({
-        onChange: ({ nodes, edges }) => {
-            if (lastSelectedNodes === nodes) {
-                return;
+    const onSelectionChange = useCallback((changed: OnSelectionChangeParams) => {
+        if (lastSelectedNodes === changed.nodes) {
+            return;
+        }
+        // Highlight all related edges
+        let nodeIDs: string[] = [];
+        for (let i = 0; i < changed.nodes.length; i++) {
+            let n = changed.nodes[i];
+            nodeIDs = [...nodeIDs, n.id];
+        }
+        let eds = getEdges();
+        for (let i = 0; i < eds.length; i++) {
+            let e = eds[i];
+            if (nodeIDs.includes(e.source) || nodeIDs.includes(e.target)) {
+                e.selected = true;
+                e.zIndex = 1;
+                e.markerEnd = { type: MarkerType.ArrowClosed, color: "#ffb84e" };
+                e.animated = true;
+            } else {
+                // e.selected = false;
+                e.zIndex = 0;
+                e.markerEnd = { type: MarkerType.ArrowClosed };
+                e.animated = false;
             }
-            // Highlight all related edges
-            let nodeIDs: string[] = [];
-            for (let i = 0; i < nodes.length; i++) {
-                let n = nodes[i];
-                nodeIDs = [...nodeIDs, n.id];
-            }
-            let eds = getEdges();
-            for (let i = 0; i < eds.length; i++) {
-                let e = eds[i];
-                if (nodeIDs.includes(e.source) || nodeIDs.includes(e.target)) {
-                    e.selected = true;
-                    e.zIndex = 1;
-                    e.markerEnd = { type: MarkerType.ArrowClosed, color: "#ffb84e" };
-                    e.animated = true;
-                } else {
-                    e.selected = false;
-                    e.zIndex = 0;
-                    e.markerEnd = { type: MarkerType.ArrowClosed };
-                    e.animated = false;
-                }
-            }
-            setEdges(eds);
-        },
-    });
+        }
+        setEdges(eds);
+    }, [getEdge, setEdges]);
+
+    // useOnSelectionChange({ //
+    //     onChange: ({ nodes, edges }) => {
+    //         if (lastSelectedNodes === nodes) {
+    //             return;
+    //         }
+    //         // Highlight all related edges
+    //         let nodeIDs: string[] = [];
+    //         for (let i = 0; i < nodes.length; i++) {
+    //             let n = nodes[i];
+    //             nodeIDs = [...nodeIDs, n.id];
+    //         }
+    //         let eds = getEdges();
+    //         for (let i = 0; i < eds.length; i++) {
+    //             let e = eds[i];
+    //             if (nodeIDs.includes(e.source) || nodeIDs.includes(e.target)) {
+    //                 e.selected = true;
+    //                 e.zIndex = 1;
+    //                 e.markerEnd = { type: MarkerType.ArrowClosed, color: "#ffb84e" };
+    //                 e.animated = true;
+    //             } else {
+    //                 // e.selected = false;
+    //                 e.zIndex = 0;
+    //                 e.markerEnd = { type: MarkerType.ArrowClosed };
+    //                 e.animated = false;
+    //             }
+    //         }
+    //         setEdges(eds);
+    //     },
+    // });
 
     // Move the cursor when a node is selected
     // TODO: update to fit the new Package format
@@ -560,13 +724,16 @@ function ConversationFlowView(props: ConversationEditorProps) {
                     nodes={nodes}
                     edges={edges}
                     onNodesChange={onNodesChange}
-                    // onEdgesChange={onEdgesChange}
+                    onEdgesChange={onEdgesChange}
                     onNodesDelete={onNodesDelete}
-                    onEdgesDelete={(edges: Edge[]) => {console.log("onEdgesDelete:", edges);}} // TODO handle pointers update
+                    onEdgesDelete={onEdgesDelete}
                     onEdgeUpdate={onEdgeUpdate}
+                    onEdgeUpdateStart={onEdgeUpdateStart}
+                    onEdgeUpdateEnd={onEdgeUpdateEnd}
                     onConnectStart={onConnectStart}
                     onConnectEnd={onConnectEnd}
                     onConnect={onConnect}
+                    onSelectionChange={onSelectionChange}
                     nodeTypes={nodeTypes}
                     connectionLineComponent={ConnectionLine}
                     fitView

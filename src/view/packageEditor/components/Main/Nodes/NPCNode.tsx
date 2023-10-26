@@ -97,6 +97,8 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
     );
   };
 
+  // Handle new Edge connection created
+  // For "Edge connection changed from one node to another" event, check out ConversationEditor.tsx > onEdgeUpdateEnd()
   const onConnect = React.useCallback((connection: Connection) => {
     // TODO
     console.log("onConnect from NPC", connection);

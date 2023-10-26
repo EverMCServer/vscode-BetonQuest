@@ -43,6 +43,15 @@ export default class Conversation {
         this.removetElementsFromStringArrayOnYamlPath(["first"], pointers);
     }
 
+    // Remove first pointers till the end, for easy dealing with "else" conditions, return removed pointers
+    removeFirstTillEnd(pointer: string) {
+        const allPointers = this.getFirst();
+        const pos = allPointers.indexOf(pointer);
+        if (pos > -1) {
+            this.setFirst(allPointers.slice(0, pos));
+        }
+    }
+
     getFirstOptions(optionNames: string[]): (Option | undefined)[] {
         return optionNames.map(optionName => {
             return this.getOption("NPC_options", optionName);
@@ -453,12 +462,21 @@ export class Option {
         this.editElementOfStringArrayOnYamlPath(["pointers"], location, pointerName);
     }
 
-    insertPointerNames(pointerNames: string[], location: number | string) {
+    insertPointerNames(pointerNames: string[], location?: number | string) {
         this.insertElementsToStringArrayOnYamlPath(["pointers"], pointerNames, location);
     }
 
     removePointerNames(pointerNames: string[]) {
         this.removetElementsFromStringArrayOnYamlPath(["pointers"], pointerNames);
+    }
+
+    // Remove first pointers till the end, for easy dealing with "else" conditions
+    removePointerNamesTillEnd(pointer: string) {
+        const allPointers = this.getPointerNames();
+        const pos = allPointers.indexOf(pointer);
+        if (pos > -1) {
+            this.setPointerNames(allPointers.slice(0, pos));
+        }
     }
 
     // TODO
@@ -530,7 +548,7 @@ export class Option {
         } catch {
             return [];
         }
-        if (typeof str !== "string") {
+        if (typeof str !== "string" || str.length === 0) {
             return [];
         }
         // Split element by ","
