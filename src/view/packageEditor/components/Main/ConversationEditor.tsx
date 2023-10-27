@@ -24,7 +24,6 @@ import ReactFlow, {
     useKeyPress,
     Panel,
     useViewport,
-    useOnSelectionChange,
     updateEdge,
     OnSelectionChangeParams,
     HandleType
@@ -80,11 +79,15 @@ interface ConversationEditorProps {
 // ========== TODO ==========
 // 1. (DONE) replace "readYaml()", "writeYaml()"
 // 2. (DONE) refacotr all option models with Conversation{}
-// 3. prevent rerendering the whole flow map when the YAML is not updated (cache)
+// 3. (DONE) prevent rerendering the whole flow map when the YAML is not updated (cache)
 // 4. (DONE) refactor translation selection
-// 5. fix new node creation
+// 5. (DONE) fix new node creation UI
 // 6. (DONE) delete node
-// 7. (more...)
+// 7. (DONE) edges delete
+// 8. edges connect
+// 9. edges re-connect
+// 9. sync yaml when creating new node
+// 10. (more...)
 // ==========================
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -204,7 +207,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
     );
     const onPaneClick = useCallback(() => setMenu(null), [setMenu]);
 
-    // Handle Edge while connecting, style etc
+    // Handle new Edge connected
     const onConnect = useCallback((params: Connection) => {
         console.log("onConnect:", params);
         if (!params) {
@@ -216,8 +219,16 @@ function ConversationFlowView(props: ConversationEditorProps) {
             return;
         }
 
-        // TODO: Update / add pointers to conversation ...
+        // TODO: add pointers to the source node ...
+        switch (sourceNode.type) {
+            case "":
+            // connection from start to npc
+            // connection from player to npc
+            // connection from npc to npc (else)
+            // connection from npc to player
+        }
 
+        // UI
         let edge: Edge = {
             id: getNewLineID(),
             type: "smoothstep",
@@ -285,7 +296,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
         if (oldTargetPointer) {
             switch (oldEdge.sourceNode?.type) {
                 case "startNode":
-                    // Remove old pointers
                     (oldEdge.sourceNode?.data as NodeData).conversation?.removeFirstTillEnd(oldTargetPointer);
                     break;
                 case "playerNode":
@@ -315,23 +325,40 @@ function ConversationFlowView(props: ConversationEditorProps) {
     } , [setEdges, props.syncYaml]);
 
     // Handle Edge deletion
-    const onEdgesDelete = useCallback((edges: Edge[]) => {
-        console.log("onEdgesDelete:", edges);
+    const onEdgesDelete = useCallback((deletedEdges: Edge[]) => {
+        console.log("onEdgesDelete:", deletedEdges);
 
         // Remove old pointers
         // Note: if target is NPC, remove till end (deal with "else")
-        edges.forEach(oldEdge => {
-            const oldTargetPointer = (oldEdge.targetNode?.data as NodeData).option?.getName();
-            if (oldTargetPointer) {
-                switch (oldEdge.sourceNode?.type) {
+        deletedEdges.forEach(deletedEdge => {
+            // 1. get the source option from conversation{}
+            // 2. delete the pointers from the source option
+            // note that source option could be "first"
+
+            const targetOption = (deletedEdge.targetNode?.data as NodeData).option;
+            if (targetOption) {
+                // // Get the source option
+                // const oldSourceOption = props.conversation.getNpcOption(oldTargetPointer);
+                switch (deletedEdge.sourceNode?.type) {
                     case "startNode":
-                        (oldEdge.sourceNode?.data as NodeData).conversation?.removeFirstTillEnd(oldTargetPointer);
+                        props.conversation.removeFirstTillEnd(targetOption.getName());
                         break;
                     case "playerNode":
-                        (oldEdge.sourceNode?.data as NodeData).option?.removePointerNamesTillEnd(oldTargetPointer);
+                        (deletedEdge.sourceNode.data as NodeData).option?.removePointerNamesTillEnd(targetOption.getName());
                         break;
                     case "npcNode":
-                        (oldEdge.sourceNode?.data as NodeData).option?.removePointerNames([oldTargetPointer]);
+                        // It could be npc->player, or npc->npc
+                        if (deletedEdge.sourceHandle === "handleN") {
+                            // npc->npc
+                            // Search all source player options, and remove the pointers
+                            props.conversation.getAllPlayerOptions().filter(o => o.getPointerNames().includes(targetOption.getName()))
+                                .forEach(o => {o.removePointerNamesTillEnd(targetOption.getName());});
+                            // Make sure it is not in the "first" as well
+                            props.conversation.removeFirstTillEnd(targetOption.getName());
+                        } else {
+                            // npc->player
+                            (deletedEdge.sourceNode.data as NodeData).option?.removePointerNames([targetOption.getName()]);
+                        }
                         break;
                 }
             }
@@ -339,7 +366,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
         // update yaml
         props.syncYaml();
-    } , [props.syncYaml]);
+    } , [props.conversation, props.syncYaml]);
 
     // Auto create new node and edge
 
@@ -521,27 +548,40 @@ function ConversationFlowView(props: ConversationEditorProps) {
             const lowerEdge = edges2.find(e => e.sourceHandle === "handleN" && e.source === item.id);
 
             upperEdges.forEach(upperEdge => {
-                // Delete source pointers from upstream options
                 const upperNode: Node<NodeData> | undefined = upperEdge?.sourceNode;
-                if (upperNode && item.data.option) {
-                    switch (upperNode.type) {
-                        case "startNode":
-                            upperNode.data.conversation?.removeFirstTillEnd(item.data.option.getName());
-                            break;
-                            case "playerNode":
-                                upperNode.data.option?.removePointerNamesTillEnd(item.data.option.getName());
-                                break;
-                            case "npcNode":
-                                upperNode.data.option?.removePointerNames([item.data.option.getName()]);
-                                break;
-                    }
-                }
+
+                // => No need to delete related edges, ReactFlow already done this for us
+                // For edges' pointers removal, see "onEdgesDelete()"
+                // // Delete source pointers from upstream options
+                // if (upperNode && item.data.option) {
+                //     switch (upperNode.type) {
+                //         case "startNode":
+                //             upperNode.data.conversation?.removeFirstTillEnd(item.data.option.getName());
+                //             break;
+                //         case "playerNode":
+                //             upperNode.data.option?.removePointerNamesTillEnd(item.data.option.getName());
+                //             break;
+                //         case "npcNode":
+                //             if (upperEdge.sourceHandle === "handleN") {
+                //                 // npc->npc
+                //                 // Search all source player options, and remove the pointers
+                //                 props.conversation.getAllPlayerOptions().filter(o => o.getPointerNames().includes(item.data.option?.getName()!))
+                //                     .forEach(o => {o.removePointerNamesTillEnd(item.data.option?.getName()!);});
+                //                 // Make sure it is not in the "first" as well
+                //                 props.conversation.removeFirstTillEnd(item.data.option.getName());
+                //             } else {
+                //                 // npc->player
+                //                 upperNode.data.option?.removePointerNames([item.data.option.getName()]);
+                //             }
+                //             break;
+                //     }
+                // }
 
                 // Reconnect edges for NPC's "else" nodes
                 if (upperEdge && lowerEdge){
                     // YAML
                     // Iterate all "else" nodes and find pointers that need to be set
-                    const elseNodes: Node[] = [lowerEdge.targetNode!];
+                    const elseNodes: Node<NodeData>[] = [lowerEdge.targetNode!];
                     let currentNodeId: string = lowerEdge.target;
                     do {
                         const e = edges2.find(edge => edge.sourceHandle === "handleN" && edge.source === currentNodeId);
@@ -554,14 +594,51 @@ function ConversationFlowView(props: ConversationEditorProps) {
                         }
                     } while (currentNodeId !== lowerEdge.target); // prevent looped lookup
                     // Get all pointers and set it on source
-                    const allPointers: string[] = elseNodes.map(n => (n.data as NodeData).option?.getName()!);
+                    const allPointers: string[] = elseNodes.map(n => n.data.option?.getName()!);
                     if (upperNode) {
                         switch (upperNode.type) {
                             case "startNode":
                                 upperNode.data.conversation?.insertFirst(allPointers);
                                 break;
-                            default:
+                            case "playerNode":
                                 upperNode.data.option?.insertPointerNames(allPointers);
+                                break;
+                            case "npcNode":
+                                // npc->npc
+                                // Search all source options / first, and set the pointers on them
+                                // Steps:
+                                // 1. Search the first NPC node
+                                // 2. Search all nodes point to this NPC node
+                                // 3. Set new pointers on the node
+
+                                // Iterate and find the first NPC node
+                                let currentNode: Node<NodeData> = upperNode;
+                                do {
+                                    const e = edges2.find(edge => edge.sourceHandle === "handleN" && edge.target === currentNode.id);
+                                    if (e) {
+                                        currentNode = e.sourceNode!;
+                                    } else {
+                                        // no more nodes found
+                                        break;
+                                    }
+                                } while (currentNode.id !== upperNode.id); // prevent looped lookup
+
+                                // Search all nodes point to this NPC node
+                                const upstreamNodes: Node<NodeData>[] = edges2.filter(edge => edge.target === currentNode.id).map(edge => {
+                                    return edge.sourceNode!;
+                                });
+
+                                // Set new pointers on the node
+                                upstreamNodes.forEach(node => {
+                                    switch (node.type) {
+                                        case "playerNode":
+                                            node.data.option?.insertPointerNames(allPointers);
+                                            break;
+                                        case "startNode":
+                                            node.data.conversation?.insertFirst(allPointers);
+                                            break;
+                                    }
+                                });
                         }
                     }
 
@@ -677,36 +754,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
         }
         setEdges(eds);
     }, [getEdges, setEdges]);
-
-    // useOnSelectionChange({ //
-    //     onChange: ({ nodes, edges }) => {
-    //         if (lastSelectedNodes === nodes) {
-    //             return;
-    //         }
-    //         // Highlight all related edges
-    //         let nodeIDs: string[] = [];
-    //         for (let i = 0; i < nodes.length; i++) {
-    //             let n = nodes[i];
-    //             nodeIDs = [...nodeIDs, n.id];
-    //         }
-    //         let eds = getEdges();
-    //         for (let i = 0; i < eds.length; i++) {
-    //             let e = eds[i];
-    //             if (nodeIDs.includes(e.source) || nodeIDs.includes(e.target)) {
-    //                 e.selected = true;
-    //                 e.zIndex = 1;
-    //                 e.markerEnd = { type: MarkerType.ArrowClosed, color: "#ffb84e" };
-    //                 e.animated = true;
-    //             } else {
-    //                 // e.selected = false;
-    //                 e.zIndex = 0;
-    //                 e.markerEnd = { type: MarkerType.ArrowClosed };
-    //                 e.animated = false;
-    //             }
-    //         }
-    //         setEdges(eds);
-    //     },
-    // });
 
     // Move the cursor when a node is selected
     // TODO: update to fit the new Package format
