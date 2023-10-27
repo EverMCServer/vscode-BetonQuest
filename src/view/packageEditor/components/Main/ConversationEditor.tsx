@@ -112,7 +112,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
     const {
         getNode,
         getNodes,
-        getEdge,
         getEdges,
         project,
         setViewport,
@@ -157,21 +156,27 @@ function ConversationFlowView(props: ConversationEditorProps) {
     const lock = new AsyncLock();
 
     // ID counter, for new nodes and edges
-    let lineID = 1;
-    const getNewLineID = useCallback(() => {
-        while (getEdge(`line_${lineID}`)) {
-            lineID++;
+    const lineID = useRef(1);
+    const getNewLineID = useCallback((edges?: Edge[]) => {
+        if (!edges) {
+            edges = getEdges();
         }
-        return `line_${lineID}`;
-    }, [getEdge, lineID]);
+        while (edges.some(e => e.id === `line_${lineID.current}`)) {
+            lineID.current++;
+        }
+        return `line_${lineID.current}`;
+    }, [getEdges]);
 
-    let nodeID = 1;
-    const getNewNodeID = useCallback(() => {
-        while (getNode(`npcNode_node_${nodeID}`) || getNode(`playerNode_node_${nodeID}`)) {
-            nodeID++;
+    const nodeID = useRef(1);
+    const getNewNodeID = useCallback((nodes?: Node[]) => {
+        if (!nodes) {
+            nodes = getNodes();
         }
-        return `node_${nodeID}`;
-    }, [getNode, nodeID]);
+        while (nodes.some(n => n.id === `npcNode_node_${nodeID.current}` || n.id === `playerNode_node_${nodeID.current}`)) {
+            nodeID.current++;
+        }
+        return `node_${nodeID.current}`;
+    }, [getNodes]);
 
     /* Menu */
 
@@ -490,23 +495,21 @@ function ConversationFlowView(props: ConversationEditorProps) {
     // Define the nodes / Edges deletion public method. Returns the nodes and edges actually deleted.
     const deleteNodes = useCallback((deletingNodes: Node<NodeData>[], updateFlowChart?: boolean): {deletedNodes: Node<NodeData>[], deletedEdges: Edge[]} => {
         // 1. filter out the nodes that needed to be deleted
-        // 2. remove the nodes from the conversation
+        // 2. remove the nodes and pointers from the conversation
         // 3. remove the related edges (source / destination)
         // 4. if the node is a NPC option, reconnect "else" edges
 
-        // TODO: delete nodes one-by-one, so "else" can be properly connected
-
-        // Delete nodes
+        // Get deleted nodes
+        // Get all nodes that are going to be updated
+        let nodes2 = getNodes(); // .filter(item => !deletedNodes.find(e => e.id === item.id));
         // Filter the nodes that should be deleted
         const deletedNodes = deletingNodes.filter(item => item.type !== "startNode");
-        // Filter out the new nodes to be updated
-        const nodes2 = getNodes().filter(item => !deletedNodes.find(e => e.id === item.id));
 
-        // Delete edges
-        // Get the edges that need to be deleted
-        const deletedEdges: Edge[] = getEdges().filter(item => deletedNodes.find(e => e.id === item.source || e.id === item.target));
-        // Filter out the new nodes to be updated
-        const edges2: Edge[] = getEdges().filter(item => !deletedEdges.find(e => e.id === item.id));
+        // Get related edges
+        // Get all edges that need to be updated
+        let edges2: Edge[] = getEdges(); //.filter(item => !deletedEdges.find(e => e.id === item.id));
+        // Cache the edges that are going to be deleted
+        const deletedEdges: Edge[] = [];
         
         // Delete nodes and reconnect edges
         deletedNodes.forEach(item => {
@@ -514,61 +517,72 @@ function ConversationFlowView(props: ConversationEditorProps) {
             props.conversation.deleteOption(item.data.option?.getType() || "", item.data.option?.getName() || "");
 
             // Find the upper and lower stream edges
-            const upperEdge = deletedEdges.find(e => e.target === item.id);
-            const lowerEdge = deletedEdges.find(e => e.sourceHandle === "handleN" && e.source === item.id);
+            const upperEdges = edges2.filter(e => e.target === item.id); // it might have multiple connections going to a npc node
+            const lowerEdge = edges2.find(e => e.sourceHandle === "handleN" && e.source === item.id);
 
-            // Delete source pointers from upstream options
-            const upperNode: Node<NodeData> | undefined = upperEdge?.sourceNode;
-            if (upperNode && item.data.option) {
-                switch (upperNode.type) {
-                    case "startNode":
-                        upperNode.data.conversation?.removeFirstTillEnd(item.data.option.getName());
-                        break;
-                        case "playerNode":
-                            upperNode.data.option?.removePointerNamesTillEnd(item.data.option.getName());
-                            break;
-                        case "npcNode":
-                            upperNode.data.option?.removePointerNames([item.data.option.getName()]);
-                            break;
-                }
-            }
-
-            // Reconnect edges for NPC's "else" nodes
-            if (upperEdge && lowerEdge){
-                // YAML
-                // Iterate all "else" nodes and set pointers
-                const elseNodes: Node[] = [lowerEdge.targetNode!];
-                let currentNodeId: string = lowerEdge.target;
-                do {
-                    const e = edges2.find(edge => edge.sourceHandle === "handleN" && edge.source === currentNodeId);
-                    if (e) {
-                        currentNodeId = e.target;
-                        elseNodes.push(e.targetNode!);
-                    } else {
-                        // no more nodes found
-                        break;
-                    }
-                } while (currentNodeId !== lowerEdge.target); // prevent looped lookup
-                // Get all pointers and set it on source
-                const allPointers: string[] = elseNodes.map(n => (n.data as NodeData).option?.getName()!);
-                if (upperNode) {
+            upperEdges.forEach(upperEdge => {
+                // Delete source pointers from upstream options
+                const upperNode: Node<NodeData> | undefined = upperEdge?.sourceNode;
+                if (upperNode && item.data.option) {
                     switch (upperNode.type) {
                         case "startNode":
-                            upperNode.data.conversation?.insertFirst(allPointers);
+                            upperNode.data.conversation?.removeFirstTillEnd(item.data.option.getName());
                             break;
-                        default:
-                            upperNode.data.option?.insertPointerNames(allPointers);
+                            case "playerNode":
+                                upperNode.data.option?.removePointerNamesTillEnd(item.data.option.getName());
+                                break;
+                            case "npcNode":
+                                upperNode.data.option?.removePointerNames([item.data.option.getName()]);
+                                break;
                     }
                 }
 
-                // UI
-                edges2.push({
-                    ...upperEdge,
-                    target: lowerEdge.target,
-                    targetHandle: lowerEdge.targetHandle,
-                    targetNode: lowerEdge.targetNode,
-                });
-            }
+                // Reconnect edges for NPC's "else" nodes
+                if (upperEdge && lowerEdge){
+                    // YAML
+                    // Iterate all "else" nodes and find pointers that need to be set
+                    const elseNodes: Node[] = [lowerEdge.targetNode!];
+                    let currentNodeId: string = lowerEdge.target;
+                    do {
+                        const e = edges2.find(edge => edge.sourceHandle === "handleN" && edge.source === currentNodeId);
+                        if (e) {
+                            currentNodeId = e.target;
+                            elseNodes.push(e.targetNode!);
+                        } else {
+                            // no more nodes found
+                            break;
+                        }
+                    } while (currentNodeId !== lowerEdge.target); // prevent looped lookup
+                    // Get all pointers and set it on source
+                    const allPointers: string[] = elseNodes.map(n => (n.data as NodeData).option?.getName()!);
+                    if (upperNode) {
+                        switch (upperNode.type) {
+                            case "startNode":
+                                upperNode.data.conversation?.insertFirst(allPointers);
+                                break;
+                            default:
+                                upperNode.data.option?.insertPointerNames(allPointers);
+                        }
+                    }
+
+                    // UI
+                    // Append the new edge to list
+                    edges2.push({
+                        ...upperEdge,
+                        id: getNewLineID(edges2),
+                        target: lowerEdge.target,
+                        targetHandle: lowerEdge.targetHandle,
+                        targetNode: lowerEdge.targetNode,
+                    });
+                }
+            });
+
+            // Remove the node from list
+            nodes2 = nodes2.filter(n => n.id !== item.id);
+
+            // Remove the edges from list
+            deletedEdges.push(...edges2.filter(e => e.source === item.id || e.target === item.id)); // cache deleted edges
+            edges2 = edges2.filter(e => e.source !== item.id && e.target !== item.id);
         });
 
         // Update the flow chart if necessary
@@ -662,7 +676,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
             }
         }
         setEdges(eds);
-    }, [getEdge, setEdges]);
+    }, [getEdges, setEdges]);
 
     // useOnSelectionChange({ //
     //     onChange: ({ nodes, edges }) => {
