@@ -97,13 +97,6 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
     );
   };
 
-  // Handle new Edge connection created
-  // For "Edge connection changed from one node to another" event, check out ConversationEditor.tsx > onEdgeUpdateEnd()
-  const onConnect = React.useCallback((connection: Connection) => {
-    // TODO
-    console.log("onConnect from NPC", connection);
-  }, []);
-
   return (
     <div style={{ width: "100%" }}>
       <div className="title-box npc">
@@ -170,7 +163,6 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         position={Position.Top}
         className="handleIn"
         isValidConnection={(e) => isConnectable(e)}
-        onConnect={onConnect}
       />
       <Handle
         id="handleOut"
@@ -178,7 +170,6 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         position={Position.Bottom}
         className="handleOut"
         isValidConnection={(e) => isConnectable(e)}
-        onConnect={onConnect}
       />
       <Handle
         id="handleN"
@@ -186,7 +177,6 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         position={Position.Right}
         className="handleN"
         isValidConnection={(e) => isConnectable(e)}
-        onConnect={onConnect}
       />
     </div>
   );

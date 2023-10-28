@@ -324,9 +324,16 @@ function ConversationFlowView(props: ConversationEditorProps) {
         props.syncYaml();
     } , [setEdges, props.syncYaml]);
 
+    // Cache deleting edges
+    const deletingEdges = useRef<Edge[]>([]);
+
     // Handle Edge deletion
+    // Mainly delete related pointers from the Conversation
     const onEdgesDelete = useCallback((deletedEdges: Edge[]) => {
         console.log("onEdgesDelete:", deletedEdges);
+
+        // Cache deleted edges, for used in onNodesDelete(), prevent deleted edges being rolled-back
+        deletingEdges.current = deletedEdges;
 
         // Remove old pointers
         // Note: if target is NPC, remove till end (deal with "else")
@@ -520,7 +527,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
     /* Handle nodes deletion */
 
     // Define the nodes / Edges deletion public method. Returns the nodes and edges actually deleted.
-    const deleteNodes = useCallback((deletingNodes: Node<NodeData>[], updateFlowChart?: boolean): {deletedNodes: Node<NodeData>[], deletedEdges: Edge[]} => {
+    const onNodesDelete = useCallback((deletingNodes: Node<NodeData>[], updateFlowChart: boolean = false): {finalNodes: Node<NodeData>[], finalEdges: Edge[], deletedNodes: Node<NodeData>[], deletedEdges: Edge[]} => {
         // 1. filter out the nodes that needed to be deleted
         // 2. remove the nodes and pointers from the conversation
         // 3. remove the related edges (source / destination)
@@ -528,15 +535,22 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
         // Get deleted nodes
         // Get all nodes that are going to be updated
-        let nodes2 = getNodes(); // .filter(item => !deletedNodes.find(e => e.id === item.id));
+        let nodes2 = getNodes();
         // Filter the nodes that should be deleted
         const deletedNodes = deletingNodes.filter(item => item.type !== "startNode");
 
         // Get related edges
+        // Get all edges that is goting to be lookuped
+        let searchEdges: Edge[] = getEdges();
         // Get all edges that need to be updated
-        let edges2: Edge[] = getEdges(); //.filter(item => !deletedEdges.find(e => e.id === item.id));
+        let edges2: Edge[] = searchEdges.filter(edge => deletingEdges.current.every(e => edge.id !== e.id)); // prevent deleted edges being rolled-back
+        deletingEdges.current = [];
         // Cache the edges that are going to be deleted
         const deletedEdges: Edge[] = [];
+
+        // Usually ReactFlow has already called onEdgesDelete() for us if deletion is triggered by default keys (e.g. backspace)
+        // But if related edges' pointers are still not be removed yet, delete them
+        onEdgesDelete(searchEdges.filter(e => deletedNodes.some(n => e.source === n.id || e.target === n.id)));
         
         // Delete nodes and reconnect edges
         deletedNodes.forEach(item => {
@@ -544,38 +558,11 @@ function ConversationFlowView(props: ConversationEditorProps) {
             props.conversation.deleteOption(item.data.option?.getType() || "", item.data.option?.getName() || "");
 
             // Find the upper and lower stream edges
-            const upperEdges = edges2.filter(e => e.target === item.id); // it might have multiple connections going to a npc node
-            const lowerEdge = edges2.find(e => e.sourceHandle === "handleN" && e.source === item.id);
+            const upperEdges = searchEdges.filter(e => e.target === item.id); // it might have multiple connections going to a npc node
+            const lowerEdge = searchEdges.find(e => e.sourceHandle === "handleN" && e.source === item.id);
 
             upperEdges.forEach(upperEdge => {
                 const upperNode: Node<NodeData> | undefined = upperEdge?.sourceNode;
-
-                // => No need to delete related edges, ReactFlow already done this for us
-                // For edges' pointers removal, see "onEdgesDelete()"
-                // // Delete source pointers from upstream options
-                // if (upperNode && item.data.option) {
-                //     switch (upperNode.type) {
-                //         case "startNode":
-                //             upperNode.data.conversation?.removeFirstTillEnd(item.data.option.getName());
-                //             break;
-                //         case "playerNode":
-                //             upperNode.data.option?.removePointerNamesTillEnd(item.data.option.getName());
-                //             break;
-                //         case "npcNode":
-                //             if (upperEdge.sourceHandle === "handleN") {
-                //                 // npc->npc
-                //                 // Search all source player options, and remove the pointers
-                //                 props.conversation.getAllPlayerOptions().filter(o => o.getPointerNames().includes(item.data.option?.getName()!))
-                //                     .forEach(o => {o.removePointerNamesTillEnd(item.data.option?.getName()!);});
-                //                 // Make sure it is not in the "first" as well
-                //                 props.conversation.removeFirstTillEnd(item.data.option.getName());
-                //             } else {
-                //                 // npc->player
-                //                 upperNode.data.option?.removePointerNames([item.data.option.getName()]);
-                //             }
-                //             break;
-                //     }
-                // }
 
                 // Reconnect edges for NPC's "else" nodes
                 if (upperEdge && lowerEdge){
@@ -584,7 +571,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                     const elseNodes: Node<NodeData>[] = [lowerEdge.targetNode!];
                     let currentNodeId: string = lowerEdge.target;
                     do {
-                        const e = edges2.find(edge => edge.sourceHandle === "handleN" && edge.source === currentNodeId);
+                        const e = searchEdges.find(edge => edge.sourceHandle === "handleN" && edge.source === currentNodeId);
                         if (e) {
                             currentNodeId = e.target;
                             elseNodes.push(e.targetNode!);
@@ -614,7 +601,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                                 // Iterate and find the first NPC node
                                 let currentNode: Node<NodeData> = upperNode;
                                 do {
-                                    const e = edges2.find(edge => edge.sourceHandle === "handleN" && edge.target === currentNode.id);
+                                    const e = searchEdges.find(edge => edge.sourceHandle === "handleN" && edge.target === currentNode.id);
                                     if (e) {
                                         currentNode = e.sourceNode!;
                                     } else {
@@ -624,7 +611,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                                 } while (currentNode.id !== upperNode.id); // prevent looped lookup
 
                                 // Search all nodes point to this NPC node
-                                const upstreamNodes: Node<NodeData>[] = edges2.filter(edge => edge.target === currentNode.id).map(edge => {
+                                const upstreamNodes: Node<NodeData>[] = searchEdges.filter(edge => edge.target === currentNode.id).map(edge => {
                                     return edge.sourceNode!;
                                 });
 
@@ -646,10 +633,11 @@ function ConversationFlowView(props: ConversationEditorProps) {
                     // Append the new edge to list
                     edges2.push({
                         ...upperEdge,
-                        id: getNewLineID(edges2),
+                        id: getNewLineID(searchEdges),
                         target: lowerEdge.target,
                         targetHandle: lowerEdge.targetHandle,
                         targetNode: lowerEdge.targetNode,
+                        selected: false // prevent edge being deleted due to "Delete" key press
                     });
                 }
             });
@@ -657,7 +645,9 @@ function ConversationFlowView(props: ConversationEditorProps) {
             // Remove the node from list
             nodes2 = nodes2.filter(n => n.id !== item.id);
 
-            // Remove the edges from list
+            // Remove the edges from search list
+            searchEdges = searchEdges.filter(e => e.source !== item.id && e.target !== item.id);
+            // Remove the edges from final edges
             deletedEdges.push(...edges2.filter(e => e.source === item.id || e.target === item.id)); // cache deleted edges
             edges2 = edges2.filter(e => e.source !== item.id && e.target !== item.id);
         });
@@ -673,25 +663,12 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
         // Return the deleted nodes and edges
         return {
+            finalNodes: nodes2,
+            finalEdges: edges2,
             deletedNodes: deletedNodes,
             deletedEdges: deletedEdges
         };
     }, [getNodes, getEdges, setNodes, setEdges, props.conversation, props.syncYaml]);
-
-    // Deletion triggered with ReactFlow built-in events
-    const onNodesDelete = useCallback((deletingNodes: Node<NodeData>[]) => {
-        deleteNodes(deletingNodes);
-    }, [nodes, edges]);
-
-    // Deletion triggered with custom keyboard events
-    const deleteButtonPressed = useKeyPress(["Delete"]);
-    const deleteSelectedNodes = useCallback(() => {
-        deleteNodes(getNodes().filter(item => item.selected), true);
-    }, [getNodes, getEdges, setNodes, setEdges, props.conversation, props.syncYaml]);
-
-    useEffect(() => {
-        deleteSelectedNodes();
-    }, [deleteButtonPressed]);
 
     /* VSCode messages */
 
@@ -788,6 +765,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                     onEdgesChange={onEdgesChange}
                     onNodesDelete={onNodesDelete}
                     onEdgesDelete={onEdgesDelete}
+                    deleteKeyCode={["Delete", "Backspace"]}
                     onEdgeUpdate={onEdgeUpdate}
                     onEdgeUpdateStart={onEdgeUpdateStart}
                     onEdgeUpdateEnd={onEdgeUpdateEnd}
@@ -827,7 +805,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                     </Panel>
 
                     <Background variant={BackgroundVariant.Dots} />
-                    {menu && <ContextMenu onClick={onPaneClick} deleteNodes={deleteNodes} {...menu} />}
+                    {menu && <ContextMenu onClick={onPaneClick} deleteNodes={onNodesDelete} {...menu} />}
                 </ReactFlow>
             </div>
         </div>

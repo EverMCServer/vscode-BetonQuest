@@ -102,7 +102,7 @@ export default function app() {
     // console.log(L("1"));
 
     // Collapsible Sider
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
 
     return (
     <ConfigProvider

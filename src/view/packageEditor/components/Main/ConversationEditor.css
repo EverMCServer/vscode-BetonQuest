@@ -1,6 +1,6 @@
 .flow-container {
     display: flex;
-    height: calc(100% + 11.5px);
+    height: calc(100% + 14px);
     line-height: 1;
 }
 
