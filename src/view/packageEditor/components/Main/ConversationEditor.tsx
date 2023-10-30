@@ -207,51 +207,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
     );
     const onPaneClick = useCallback(() => setMenu(null), [setMenu]);
 
-    // Handle new Edge connected
-    const onConnect = useCallback((params: Connection) => {
-        console.log("onConnect:", params);
-        if (!params) {
-            return;
-        }
-        const sourceID = params.source || "";
-        let sourceNode = getNode(sourceID);
-        if (!sourceNode) {
-            return;
-        }
-
-        // TODO: add pointers to the source node ...
-        switch (sourceNode.type) {
-            case "":
-            // connection from start to npc
-            // connection from player to npc
-            // connection from npc to npc (else)
-            // connection from npc to player
-        }
-
-        // UI
-        let edge: Edge = {
-            id: getNewLineID(),
-            type: "smoothstep",
-            markerEnd: { type: MarkerType.ArrowClosed },
-            source: params.source || "",
-            sourceHandle: params.sourceHandle || "",
-            sourceNode: sourceNode,
-            target: params.target || "",
-            targetHandle: params.targetHandle || "",
-            targetNode: getNode(params.target || ""),
-            // deletable: true,
-        };
-
-        const newEdges = removeLinesOnConnect(
-            sourceNode,
-            edges,
-            sourceID,
-            params.sourceHandle || ""
-        );
-
-        setEdges(addEdge(edge, newEdges || []));
-    }, [edges, getNewLineID, getNode, setEdges]);
-
     // Handle Edge change
 
     const isEdgeChanging = useRef<boolean>(false);
@@ -399,130 +354,226 @@ function ConversationFlowView(props: ConversationEditorProps) {
         []
     );
 
-    const onConnectEnd = useCallback(
-        (event: MouseEvent | TouchEvent) => {
-            event.preventDefault();
-            if (!event) {
-                return;
-            }
-            if (event instanceof TouchEvent) {
-                return;
-            }
-            const wrapper = flowWrapper.current;
-            if (!wrapper) {
-                return;
-            }
-            const { top, left } = wrapper.getBoundingClientRect();
+    // Drag-and-drop node creation
+    const onConnectEnd = useCallback((event: MouseEvent | TouchEvent) => {
+        event.preventDefault();
+        if (!event) {
+            return;
+        }
+        if (event instanceof TouchEvent) {
+            return;
+        }
+        const wrapper = flowWrapper.current;
+        if (!wrapper) {
+            return;
+        }
+        const { top, left } = wrapper.getBoundingClientRect();
 
-            // Prevent creating new node when edge is not landed on the empty pane
-            const targetIsPane = (event.target as any).classList.contains(
-                "react-flow__pane"
-            );
-            if (!targetIsPane) {
-                return;
-            }
-            // Prevent creating new node when edge start from an "in" handle
-            if (connectingParams.current.handleId === "handleIn") {
-                return;
-            }
-            // Prevent creating new node if it is activated by Edge change
-            if (isEdgeChanging.current) {
-                return;
-            }
+        // Prevent creating new node when edge is not landed on the empty pane
+        const targetIsPane = (event.target as any).classList.contains(
+            "react-flow__pane"
+        );
+        if (!targetIsPane) {
+            return;
+        }
+        // Prevent creating new node when edge start from an "in" handle
+        if (connectingParams.current.handleId === "handleIn") {
+            return;
+        }
+        // Prevent creating new node if it is activated by Edge change
+        if (isEdgeChanging.current) {
+            return;
+        }
 
-            const hitPosition = project({
-                x: event.clientX - left,
-                y: event.clientY - top,
-            });
+        const hitPosition = project({
+            x: event.clientX - left,
+            y: event.clientY - top,
+        });
 
-            // Prevent creating new node when end position landed near an existing node
-            const safeSpace = 20;
-            for (let i = 0; i < nodes.length; i++) {
-                let node = nodes[i];
-                if (
-                    hitPosition.x > node.position.x - safeSpace &&
-                    hitPosition.y > node.position.y - safeSpace &&
-                    hitPosition.x < node.position.x + (node.width || 0) + safeSpace &&
-                    hitPosition.y < node.position.y + (node.height || 0) + safeSpace
-                ) {
-                    return;
-                }
-            }
-
-            // Get source Node
-            const fromNode = getNode(connectingParams.current.nodeId || "");
-            if (!fromNode) {
+        // Prevent creating new node when end position landed near an existing node
+        const safeSpace = 20;
+        for (let i = 0; i < nodes.length; i++) {
+            let node = nodes[i];
+            if (
+                hitPosition.x > node.position.x - safeSpace &&
+                hitPosition.y > node.position.y - safeSpace &&
+                hitPosition.x < node.position.x + (node.width || 0) + safeSpace &&
+                hitPosition.y < node.position.y + (node.height || 0) + safeSpace
+            ) {
                 return;
             }
-            let type = "npcNode";
-            if (fromNode.type === "startNode") {
-                type = "npcNode";
-            } else if (fromNode.type === "npcNode") {
-                if (connectingParams.current.handleId === "handleOut") {
-                    type = "playerNode";
-                } else {
-                    type = "npcNode";
-                }
+        }
+
+        // Get source Node
+        const fromNode = getNode(connectingParams.current.nodeId || "");
+        if (!fromNode) {
+            return;
+        }
+        let type = "npcNode";
+        if (fromNode.type === "startNode") {
+            type = "npcNode";
+        } else if (fromNode.type === "npcNode") {
+            if (connectingParams.current.handleId === "handleOut") {
+                type = "playerNode";
             } else {
                 type = "npcNode";
             }
+        } else {
+            type = "npcNode";
+        }
 
-            // Create Node
-            const newNodeName = getNewNodeID();
-            const newNodeID = type + "_" + newNodeName;
-            const data: NodeData = {
-                conversation: props.conversation,
-                syncYaml: props.syncYaml,
-                translationSelection: translationSelection,
-            };
-            if (type === "npcNode") {
-                data.option = props.conversation.createNpcOption(newNodeName);
-            } else {
-                data.option = props.conversation.createPlayerOption(newNodeName);
-            }
-            const newNode: Node<NodeData> = {
-                id: newNodeID,
-                type,
-                position: { x: hitPosition.x - 100, y: hitPosition.y },
-                data: data,
-            };
+        // Create Node
+        const newNodeName = getNewNodeID();
+        const newNodeID = type + "_" + newNodeName;
+        const data: NodeData = {
+            conversation: props.conversation,
+            syncYaml: props.syncYaml,
+            translationSelection: translationSelection,
+        };
+        if (type === "npcNode") {
+            data.option = props.conversation.createNpcOption(newNodeName);
+        } else {
+            data.option = props.conversation.createPlayerOption(newNodeName);
+        }
+        const newNode: Node<NodeData> = {
+            id: newNodeID,
+            type: type,
+            position: { x: hitPosition.x - 100, y: hitPosition.y },
+            data: data,
+        };
 
-            setNodes((nds) => nds.concat(newNode));
+        setNodes((nds) => nds.concat(newNode));
 
-            // Create Edge
-            const newLineID = getNewLineID();
-            let edge: Edge = {
-                id: newLineID,
-                type: "smoothstep",
-                markerEnd: { type: MarkerType.ArrowClosed },
-                source: connectingParams.current.nodeId || "",
-                sourceHandle: connectingParams.current.handleId,
-                sourceNode: fromNode,
-                target: newNodeID,
-                targetHandle: "handleIn",
-                targetNode: newNode,
-            };
+        // Create Edge
+        const newLineID = getNewLineID();
+        let edge: Edge = {
+            id: newLineID,
+            type: "smoothstep",
+            markerEnd: { type: MarkerType.ArrowClosed },
+            source: connectingParams.current.nodeId || "",
+            sourceHandle: connectingParams.current.handleId,
+            sourceNode: fromNode,
+            target: newNodeID,
+            targetHandle: "handleIn",
+            targetNode: newNode,
+        };
 
-            const newEdges = removeLinesOnConnect(
-                fromNode,
-                edges,
-                connectingParams.current.nodeId || "",
-                connectingParams.current.handleId || ""
-            );
-
-            setEdges(addEdge(edge, newEdges));
-        },
-        [
-            project,
-            getNode,
-            getNewNodeID,
-            setNodes,
-            getNewLineID,
+        // Remove conflict edges
+        // TODO: remove pointers as well
+        const newEdges = removeLinesOnConnect(
+            fromNode,
             edges,
-            setEdges,
-            nodes,
-        ]
-    );
+            connectingParams.current.nodeId || "",
+            connectingParams.current.handleId || ""
+        );
+
+        setEdges(addEdge(edge, newEdges));
+
+        // Set upstream pointers
+        // TODO ...
+        // 1. Set pointers on upstream options / "first"
+        // 2. Lookup upstream nodes, if upperstream is npc->npc
+        switch (fromNode.type) {
+            case "startNode":
+                fromNode.data.conversation?.insertFirst([newNodeName]);
+                break;
+            case "playerNode":
+                fromNode.data.option?.insertPointerNames([newNodeName]);
+                break;
+            case "npcNode":
+                switch (newNode.type) {
+                    case "playerNode":
+                        fromNode.data.option?.insertPointerNames([newNodeName]);
+                        break;
+                    case "npcNode":
+                    // npc->npc
+                    // Search all source options / first, and set the pointers on them
+                    // Steps:
+                    // 1. Search the first NPC node
+                    // 2. Search all nodes point to this NPC node
+                    // 3. Set new pointers on the node
+
+                    // Iterate and find the first NPC node
+                    let currentNode: Node<NodeData> = fromNode;
+                    do {
+                        const e = edges.find(edge => edge.sourceHandle === "handleN" && edge.target === currentNode.id);
+                        if (e) {
+                            currentNode = e.sourceNode!;
+                        } else {
+                            // no more nodes found
+                            break;
+                        }
+                    } while (currentNode.id !== fromNode.id); // prevent looped lookup
+
+                    // Search all nodes point to this NPC node
+                    const upstreamNodes: Node<NodeData>[] = edges.filter(edge => edge.target === currentNode.id).map(edge => {
+                        return edge.sourceNode!;
+                    });
+
+                    // Set new pointers on the node
+                    upstreamNodes.forEach(node => {
+                        switch (node.type) {
+                            case "playerNode":
+                                node.data.option?.insertPointerNames([newNodeName]);
+                                break;
+                            case "startNode":
+                                node.data.conversation?.insertFirst([newNodeName]);
+                                break;
+                        }
+                    });
+                }
+        }
+
+        // Sync YAML to VSCode
+        props.syncYaml();
+    }, [project, getNode, getNewNodeID, setNodes, getNewLineID, edges, setEdges, nodes, props.syncYaml]);
+
+    // Handle new Edge connected
+    const onConnect = useCallback((params: Connection) => {
+        console.log("onConnect:", params);
+        if (!params) {
+            return;
+        }
+        const sourceID = params.source || "";
+        let sourceNode = getNode(sourceID);
+        if (!sourceNode) {
+            return;
+        }
+
+        // TODO: add pointers to the source node ...
+        switch (sourceNode.type) {
+            case "":
+            // connection from start to npc
+            // connection from player to npc
+            // connection from npc to npc (else)
+            // connection from npc to player
+        }
+
+        // UI
+        let edge: Edge = {
+            id: getNewLineID(),
+            type: "smoothstep",
+            markerEnd: { type: MarkerType.ArrowClosed },
+            source: params.source || "",
+            sourceHandle: params.sourceHandle || "",
+            sourceNode: sourceNode,
+            target: params.target || "",
+            targetHandle: params.targetHandle || "",
+            targetNode: getNode(params.target || ""),
+            // deletable: true,
+        };
+
+        // Remove conflict edges
+        // TODO: remove pointers as well
+        const newEdges = removeLinesOnConnect(
+            sourceNode,
+            edges,
+            sourceID,
+            params.sourceHandle || ""
+        );
+
+        setEdges(addEdge(edge, newEdges || []));
+    }, [edges, getNewLineID, getNode, setEdges]);
 
     /* Handle nodes deletion */
 
@@ -567,7 +618,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                 // Reconnect edges for NPC's "else" nodes
                 if (upperEdge && lowerEdge){
                     // YAML
-                    // Iterate all "else" nodes and find pointers that need to be set
+                    // Iterate all downstream "else" nodes and find pointers that need to be set
                     const elseNodes: Node<NodeData>[] = [lowerEdge.targetNode!];
                     let currentNodeId: string = lowerEdge.target;
                     do {
