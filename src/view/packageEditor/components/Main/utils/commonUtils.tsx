@@ -1,4 +1,5 @@
 import { Node, Edge } from "reactflow";
+import { NodeData } from "../Nodes/Nodes";
 
 export function connectionAvaliable(
   sourceType: string,
@@ -103,6 +104,88 @@ export function removeLinesOnConnect(
     });
   }
   return newEdges || [];
+}
+
+export function getConflictEdges(
+  sourceNode: Node, // source node
+  edges: Edge[], // all edges
+  sourceHandle: string
+): Edge[] {
+  let conflictEdges: Edge[] = [];
+  switch (sourceNode.type) {
+    case "startNode":
+      conflictEdges = edges.filter((item) =>  item.source === sourceNode.id);
+      break;
+    case "playerNode":
+      conflictEdges = edges.filter((item) => item.source === sourceNode.id);
+      break;
+    case "npcNode":
+      if (sourceHandle === "handleN") {
+        conflictEdges = edges.filter((item) => item.source === sourceNode.id && item.sourceHandle === "handleN");
+      }
+      break;
+  }
+  return conflictEdges;
+}
+
+export function addPointersToUpstream(
+  sourceNode: Node<NodeData>,
+  targetNode: Node<NodeData>,
+  pointersToAdd: string[],
+  allEdges: Edge[]
+) {
+  // 1. Set pointers on upstream options / "first"
+  // 2. Lookup upstream nodes, if upperstream is npc->npc
+  switch (sourceNode.type) {
+    case "startNode":
+      sourceNode.data.conversation?.insertFirst(pointersToAdd);
+      break;
+    case "playerNode":
+      sourceNode.data.option?.insertPointerNames(pointersToAdd);
+      break;
+    case "npcNode":
+      switch (targetNode.type) {
+        case "playerNode":
+          sourceNode.data.option?.insertPointerNames(pointersToAdd);
+          break;
+        case "npcNode":
+          // npc->npc
+          // Search all source options / first, and set the pointers on them
+          // Steps:
+          // 1. Search the first NPC node
+          // 2. Search all nodes point to this NPC node
+          // 3. Set new pointers on the node
+
+          // Iterate and find the first NPC node
+          let currentNode: Node<NodeData> = sourceNode;
+          do {
+            const e = allEdges.find(edge => edge.sourceHandle === "handleN" && edge.target === currentNode.id);
+            if (e) {
+              currentNode = e.sourceNode!;
+            } else {
+              // no more nodes found
+              break;
+            }
+          } while (currentNode.id !== sourceNode.id); // prevent looped lookup
+
+          // Search all nodes point to this NPC node
+          const upstreamNodes: Node<NodeData>[] = allEdges.filter(edge => edge.target === currentNode.id).map(edge => {
+            return edge.sourceNode!;
+          });
+
+          // Set new pointers on the node
+          upstreamNodes.forEach(node => {
+            switch (node.type) {
+              case "playerNode":
+                node.data.option?.insertPointerNames(pointersToAdd);
+                break;
+              case "startNode":
+                node.data.conversation?.insertFirst(pointersToAdd);
+                break;
+            }
+          });
+      }
+  }
 }
 
 export const initialNode: Node = {

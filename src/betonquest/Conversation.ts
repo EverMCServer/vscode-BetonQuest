@@ -28,7 +28,7 @@ export default class Conversation {
     }
 
     getFirst(): string[] {
-        return this.getStringArrayOnYamlPath(["first"]);
+        return this.getStringArrayOnYamlPath(["first"], true);
     }
 
     setFirst(pointers: string[]) {
@@ -91,7 +91,7 @@ export default class Conversation {
     getFinalEvents() {} // TODO
 
     getInterceptor(): string[] {
-        return this.getStringArrayOnYamlPath(["interceptor"]);
+        return this.getStringArrayOnYamlPath(["interceptor"], true);
     }
 
     setInterceptor(interceptors: string[]) {
@@ -290,7 +290,7 @@ export default class Conversation {
         }
     }
 
-    private getStringArrayOnYamlPath(yamlPath: string[]): string[] {
+    private getStringArrayOnYamlPath(yamlPath: string[], removeEmpty: boolean = false): string[] {
         let str: unknown;
         try {
             str = this.yaml.value?.getIn(yamlPath);
@@ -301,11 +301,12 @@ export default class Conversation {
             return [];
         }
         // Split element by ","
-        return str.split(/[ \t\r]*,[ \t\r]*/);
-            // // Remove any "empty" pointer
-            // .filter((value) => {
-            //     return value.match(/^[ \t\r]*$/) === null;
-            // });
+        const result = str.split(/[ \t\r]*,[ \t\r]*/);
+        // Remove any "empty" pointer
+        if (removeEmpty) {
+            return result.filter(value => value.match(/^[ \t\r]*$/) === null);
+        }
+        return result;
     }
 
     private setStringArrayOnYamlPath(yamlPath: string[], stringArray: string[]) {
@@ -340,7 +341,7 @@ export default class Conversation {
 
     private insertElementsToStringArrayOnYamlPath(yamlPath: string[], elements: string[], location?: number | string) {
         // Search pos to insert
-        const existArray = this.getStringArrayOnYamlPath(yamlPath);
+        const existArray = this.getStringArrayOnYamlPath(yamlPath, true);
         let pos = existArray.length;
         switch (typeof location) {
             case "string":
@@ -451,7 +452,7 @@ export class Option {
     }
 
     getPointerNames() {
-        return this.getStringArrayOnYamlPath(["pointers"]);
+        return this.getStringArrayOnYamlPath(["pointers"], true);
     }
 
     setPointerNames(pointerNames: string[]) {
@@ -541,7 +542,7 @@ export class Option {
         }
     }
 
-    private getStringArrayOnYamlPath(yamlPath: string[]): string[] {
+    private getStringArrayOnYamlPath(yamlPath: string[], removeEmpty: boolean = false): string[] {
         let str: unknown;
         try {
             str = this.yaml.getIn(yamlPath);
@@ -552,11 +553,12 @@ export class Option {
             return [];
         }
         // Split element by ","
-        return str.split(/[ \t\r]*,[ \t\r]*/);
-            // // Remove any "empty" pointer
-            // .filter((value) => {
-            //     return value.match(/^[ \t\r]*$/) === null;
-            // });
+        const result = str.split(/[ \t\r]*,[ \t\r]*/);
+        // Remove any "empty" pointer
+        if (removeEmpty) {
+            return result.filter(value => value.match(/^[ \t\r]*$/) === null);
+        }
+        return result;
     }
 
     private setStringArrayOnYamlPath(yamlPath: string[], stringArray: string[]) {
@@ -591,7 +593,7 @@ export class Option {
 
     private insertElementsToStringArrayOnYamlPath(yamlPath: string[], elements: string[], location?: number | string) {
         // Search pos to insert
-        const existArray = this.getStringArrayOnYamlPath(yamlPath);
+        const existArray = this.getStringArrayOnYamlPath(yamlPath, true);
         let pos = existArray.length;
         switch (typeof location) {
             case "string":
