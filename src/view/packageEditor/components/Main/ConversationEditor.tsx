@@ -259,7 +259,11 @@ function ConversationFlowView(props: ConversationEditorProps) {
         addPointersToUpstream(sourceNode, targetNode, [targetNode.data.option?.getName()!], edges2);
         
         // Update UI
-        setEdges((els) => updateEdge(oldEdge, newConnection, els));
+        // Update target node
+        oldEdge.sourceNode = sourceNode;
+        oldEdge.targetNode = targetNode;
+        // Update edges list
+        setEdges(updateEdge(oldEdge, newConnection, edges2));
 
         // update yaml
         props.syncYaml();
@@ -474,7 +478,8 @@ function ConversationFlowView(props: ConversationEditorProps) {
             return;
         }
 
-        // Add pointers to the source node ...
+        // Add pointers to the source node
+        // TODO: iterate downstream nodes
         addPointersToUpstream(sourceNode, targetNode, [targetNode.data.option?.getName()!], edges);
 
         // UI

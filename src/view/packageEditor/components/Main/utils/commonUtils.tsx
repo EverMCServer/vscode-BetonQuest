@@ -159,7 +159,8 @@ export function addPointersToUpstream(
           // Iterate and find the first NPC node
           let currentNode: Node<NodeData> = sourceNode;
           do {
-            const e = allEdges.find(edge => edge.sourceHandle === "handleN" && edge.target === currentNode.id);
+            // TODO: support multiple upstream
+            const e = allEdges.find(edge => edge.sourceHandle === "handleN" && edge.target === currentNode.id); //
             if (e) {
               currentNode = e.sourceNode!;
             } else {
