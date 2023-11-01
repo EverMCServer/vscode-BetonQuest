@@ -48,7 +48,7 @@ import {
     addPointersToUpstream,
     getConflictEdges,
     getDownstreamNpcNodes,
-    getSourceNode,
+    getUpstreamNodes,
 } from "./utils/commonUtils";
 
 // Define the node's React.JSX.Element
@@ -306,8 +306,8 @@ function ConversationFlowView(props: ConversationEditorProps) {
                         // It could be npc->player, or npc->npc
                         if (deletedEdge.sourceHandle === "handleN") {
                             // npc->npc
-                            // TODO: iterate find source player option, then delete it
-                            getSourceNode(deletedEdge.sourceNode as Node<NodeData>, searchEdges!).map(node => {
+                            // Iterate and find source player / start options, then delete pointers from it
+                            getUpstreamNodes(deletedEdge.sourceNode as Node<NodeData>, searchEdges!).map(node => {
                                 switch (node.type) {
                                     case "npcNode":
                                     case "playerNode":
@@ -318,11 +318,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
                                       break;
                                 }
                             });
-                            // // Search all source player options, and remove the pointers
-                            // props.conversation.getAllPlayerOptions().filter(o => o.getPointerNames().includes(targetOption.getName()))
-                            //     .forEach(o => {o.removePointerNamesTillEnd(targetOption.getName());});
-                            // // Make sure it is not in the "first" as well
-                            // props.conversation.removeFirstTillEnd(targetOption.getName());
                         } else {
                             // npc->player
                             (deletedEdge.sourceNode.data as NodeData).option?.removePointerNames([targetOption.getName()]);

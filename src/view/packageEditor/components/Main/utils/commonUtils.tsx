@@ -157,7 +157,8 @@ export function addPointersToUpstream(
           // 3. Set new pointers on the node
 
           // Iterate and find the source nodes
-          const upstreamNodes = getSourceNode(sourceNode, searchEdges);
+          // const upstreamNodes = getSourceNode(sourceNode, searchEdges); // BUG
+          const upstreamNodes = getUpstreamNodes(sourceNode, searchEdges);
 
           // Set new pointers on the node
           upstreamNodes.forEach(node => {
@@ -174,39 +175,26 @@ export function addPointersToUpstream(
   }
 }
 
-// Function to search upstream NPC nodes
-function findUpstreamNpcNodes<T = any>(currentNode: Node<T>, searchEdges: Edge[]): Node<T>[] {
+// Function to search upstream nodes. Mainly deal with "npc->npc" else nodes
+export function getUpstreamNodes<T = any>(currentNode: Node<T>, searchEdges: Edge[]): Node<T>[] {
   const result: Node<T>[] = [];
 
-  // find downstream
-  const edges = searchEdges.filter(edge => edge.sourceHandle === "handleN" && edge.target === currentNode.id);
+  // get upstream nodes
+  const edges = searchEdges.filter(edge => edge.target === currentNode.id); // && edge.sourceHandle === "handleN"
   edges.forEach(e => {
     if (e.sourceNode) {
-      const upstreamNodes = findUpstreamNpcNodes(e.sourceNode, searchEdges);
-      if (currentNode.id !== e.sourceNode.id && upstreamNodes.length > 0) {
+      if (e.sourceHandle === "handleN") {
+        // npc->npc
         // iterate
-        result.push(...upstreamNodes);
+        result.push(...getUpstreamNodes(e.sourceNode, searchEdges));
       } else {
-        result.push(e.sourceNode);
+        result.push(e.sourceNode as Node<T>);
       }
     }
   });
 
   return result;
 };
-
-// Find source nodes for NPC node
-export function getSourceNode<T=any>(node: Node<T>, searchEdges: Edge[]): Node<T>[] {
-  // find all upstream nodes, for npc
-  const upstreamNpcNodes = findUpstreamNpcNodes(node, searchEdges);
-  if (upstreamNpcNodes.length === 0) {
-    upstreamNpcNodes.push(node);
-  }
-  // get parent nodes
-  return searchEdges.filter(edge => upstreamNpcNodes.some(node => edge.target === node.id)).map(edge => {
-    return edge.sourceNode! as Node<T>;
-  });
-}
 
 // Get downstream nodes for npc->npc nodes
 export function getDownstreamNpcNodes<T = any>(
