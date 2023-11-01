@@ -254,9 +254,12 @@ function ConversationFlowView(props: ConversationEditorProps) {
         }
 
         // Prevent conflict edges
-        const conflictEdges = getConflictEdges(sourceNode, newConnection.sourceHandle!, edges);
-        onEdgesDelete(conflictEdges, edges2); // update YAML
-        edges2 = edges2.filter(edge => !conflictEdges.some(e => edge.id === e.id)); // Remove from UI
+        const conflictEdges = getConflictEdges(sourceNode, newConnection.sourceHandle!, edges)
+            .filter(edge => edge.id !== oldEdge.id); // "self" should not be considered as conflict
+        if (conflictEdges.length  > 0){
+            onEdgesDelete(conflictEdges, edges2); // update YAML
+            edges2 = edges2.filter(edge => !conflictEdges.some(e => edge.id === e.id)); // Remove from UI
+        }
 
         // Set downstream popinters on the new source option
         const downstreamNodes = getDownstreamNpcNodes(targetNode, edges2);

@@ -186,7 +186,7 @@ export function getUpstreamNodes<T = any>(currentNode: Node<T>, searchEdges: Edg
       if (e.sourceHandle === "handleN") {
         // npc->npc
         // iterate
-        result.push(...getUpstreamNodes(e.sourceNode, searchEdges.filter(edge => edges.every(e => edge.id !== e.id))));
+        result.push(...getUpstreamNodes(e.sourceNode, searchEdges.filter(edge => !edges.some(e => edge.id === e.id))));
       } else {
         result.push(e.sourceNode as Node<T>);
       }
