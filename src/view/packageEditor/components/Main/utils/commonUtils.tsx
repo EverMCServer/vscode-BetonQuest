@@ -157,7 +157,6 @@ export function addPointersToUpstream(
           // 3. Set new pointers on the node
 
           // Iterate and find the source nodes
-          // const upstreamNodes = getSourceNode(sourceNode, searchEdges); // BUG
           const upstreamNodes = getUpstreamNodes(sourceNode, searchEdges);
 
           // Set new pointers on the node
@@ -215,6 +214,21 @@ export function getDownstreamNpcNodes<T = any>(
   } while (currentNodeId !== startNode.id); // prevent looped lookup
 
   return downstreamNodes;
+}
+
+// Detect looped connection
+export function isConnectionLooped<T>(sourceNode: Node<T>, targetNode: Node<T>, searchEdges: Edge[]): boolean {
+  // Get where the target node sit
+  const edges = searchEdges.filter(edge => edge.source === targetNode.id);
+
+  // Try to look up the source node from downstream
+  let result: boolean = false;
+  result = edges.some(edge =>
+    (edge.target === sourceNode.id) ||
+    isConnectionLooped(sourceNode, edge.targetNode!, searchEdges)
+  );
+
+  return result;
 }
 
 export const initialNode: Node = {

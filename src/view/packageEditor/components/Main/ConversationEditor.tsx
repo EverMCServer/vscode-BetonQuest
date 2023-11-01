@@ -49,6 +49,7 @@ import {
     getConflictEdges,
     getDownstreamNpcNodes,
     getUpstreamNodes,
+    isConnectionLooped,
 } from "./utils/commonUtils";
 
 // Define the node's React.JSX.Element
@@ -79,10 +80,11 @@ interface ConversationEditorProps {
 // 5. (DONE) fix new node creation UI
 // 6. (DONE) delete node
 // 7. (DONE) edges delete
-// 8. edges connect
-// 9. edges re-connect
-// 9. sync yaml when creating new node
-// 10. (more...)
+// 8. (DONE) edges connect
+// 9. (DONE) edges re-connect
+// 9. (DONE) sync yaml when creating new node
+// 10. cursor position
+// 11. (more...)
 // ==========================
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -230,7 +232,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
         // Update conversation pointers
         console.log("onEdgeUpdate:", oldEdge, newConnection);
 
-        // Skip same edge update
+        // Prevent same edge update
         if (oldEdge.source === newConnection.source && oldEdge.target === newConnection.target) {
             return;
         }
@@ -242,10 +244,15 @@ function ConversationFlowView(props: ConversationEditorProps) {
             return;
         }
 
+        // Prevent looped connection
+        if (isConnectionLooped(sourceNode, targetNode, edges)) {
+            return;
+        }
+
         // Remove old pointers from YAML
         onEdgesDelete([oldEdge]);
 
-        // Skip duplicated edge update
+        // Prevent duplicated edge update
         let edges2 = edges.filter(edge => edge.source !== newConnection.source || edge.target !== newConnection.target || edge.sourceHandle !== newConnection.sourceHandle);
         if (edges.length !== edges2.length) {
             setEdges(edges.filter(edge => edge.id !== oldEdge.id)); // UI
@@ -489,6 +496,11 @@ function ConversationFlowView(props: ConversationEditorProps) {
         const sourceNode = getNode(sourceID);
         const targetNode = getNode(targetID);
         if (!sourceNode || !targetNode) {
+            return;
+        }
+
+        // Prevent looped connection
+        if (isConnectionLooped(sourceNode, targetNode, edges)) {
             return;
         }
 
