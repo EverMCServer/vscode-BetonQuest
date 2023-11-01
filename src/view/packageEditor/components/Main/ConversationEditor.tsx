@@ -209,8 +209,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
     const isEdgeChanging = useRef<boolean>(false);
 
     const onEdgeUpdateStart = (event: React.MouseEvent<Element, MouseEvent>, edge: Edge<any>, handleType: HandleType) => {
-        // console.log("onEdgeUpdateStart:", event, edge, handleType);
-        console.log("onEdgeUpdateStart:", edge.source);
         // mark "update" status, prevent new node creation
         isEdgeChanging.current = true;
     };
@@ -218,11 +216,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
     // Handle Edge connection changed from one node to another
     // For "new Edge connection created" event, check out Start/NPC/PlayerNode.tsx > onConnect()
     const onEdgeUpdateEnd = (event: MouseEvent | TouchEvent, edge: Edge<any>, handleType: HandleType) => {
-        // event.preventDefault();
-        // calculate and update pointers
-        // console.log("onEdgeUpdateEnd:", event, edge, handleType);
-        console.log("onEdgeUpdateEnd:", edge.source);
-
         // reset "update" status
         isEdgeChanging.current = false;
     };
@@ -230,7 +223,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
     // Handle Edge update (change connection)
     const onEdgeUpdate = useCallback((oldEdge: Edge, newConnection: Connection) => {
         // Update conversation pointers
-        console.log("onEdgeUpdate:", oldEdge, newConnection);
 
         // Prevent same edge update
         if (oldEdge.source === newConnection.source && oldEdge.target === newConnection.target) {
@@ -289,8 +281,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
     // Handle Edge deletion
     // Mainly delete related pointers from the Conversation
     const onEdgesDelete = useCallback((deletedEdges: Edge[], searchEdges: Edge[] = edges) => {
-        console.log("onEdgesDelete:", deletedEdges);
-
         // Cache deleted edges, for used in onNodesDelete(), prevent deleted edges being rolled-back
         deletingEdges.current = deletedEdges;
 
@@ -487,7 +477,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
     // Handle new Edge connected
     const onConnect = useCallback((params: Connection) => {
-        console.log("onConnect:", params);
         if (!params) {
             return;
         }
