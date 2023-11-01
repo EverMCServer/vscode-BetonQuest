@@ -48,6 +48,7 @@ import {
     addPointersToUpstream,
     getConflictEdges,
     getDownstreamNpcNodes,
+    getSourceNode,
 } from "./utils/commonUtils";
 
 // Define the node's React.JSX.Element
@@ -254,7 +255,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
         // Prevent conflict edges
         const conflictEdges = getConflictEdges(sourceNode, newConnection.sourceHandle!, edges);
-        onEdgesDelete(conflictEdges); // update YAML
+        onEdgesDelete(conflictEdges, edges2); // update YAML
         edges2 = edges2.filter(edge => !conflictEdges.some(e => edge.id === e.id)); // Remove from UI
 
         // Set downstream popinters on the new source option
@@ -277,7 +278,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
     // Handle Edge deletion
     // Mainly delete related pointers from the Conversation
-    const onEdgesDelete = useCallback((deletedEdges: Edge[]) => {
+    const onEdgesDelete = useCallback((deletedEdges: Edge[], searchEdges: Edge[] = edges) => {
         console.log("onEdgesDelete:", deletedEdges);
 
         // Cache deleted edges, for used in onNodesDelete(), prevent deleted edges being rolled-back
@@ -305,11 +306,23 @@ function ConversationFlowView(props: ConversationEditorProps) {
                         // It could be npc->player, or npc->npc
                         if (deletedEdge.sourceHandle === "handleN") {
                             // npc->npc
-                            // Search all source player options, and remove the pointers
-                            props.conversation.getAllPlayerOptions().filter(o => o.getPointerNames().includes(targetOption.getName()))
-                                .forEach(o => {o.removePointerNamesTillEnd(targetOption.getName());});
-                            // Make sure it is not in the "first" as well
-                            props.conversation.removeFirstTillEnd(targetOption.getName());
+                            // TODO: iterate find source player option, then delete it
+                            getSourceNode(deletedEdge.sourceNode as Node<NodeData>, searchEdges!).map(node => {
+                                switch (node.type) {
+                                    case "npcNode":
+                                    case "playerNode":
+                                      node.data.option?.removePointerNamesTillEnd(targetOption.getName());
+                                      break;
+                                    case "startNode":
+                                      node.data.conversation?.removeFirstTillEnd(targetOption.getName());
+                                      break;
+                                }
+                            });
+                            // // Search all source player options, and remove the pointers
+                            // props.conversation.getAllPlayerOptions().filter(o => o.getPointerNames().includes(targetOption.getName()))
+                            //     .forEach(o => {o.removePointerNamesTillEnd(targetOption.getName());});
+                            // // Make sure it is not in the "first" as well
+                            // props.conversation.removeFirstTillEnd(targetOption.getName());
                         } else {
                             // npc->player
                             (deletedEdge.sourceNode.data as NodeData).option?.removePointerNames([targetOption.getName()]);
@@ -321,7 +334,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
         // update yaml
         props.syncYaml();
-    } , [props.conversation, props.syncYaml]);
+    } , [edges, props.conversation, props.syncYaml]);
 
     // Auto create new node and edge
 
@@ -535,7 +548,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
         // Usually ReactFlow has already called onEdgesDelete() for us if deletion is triggered by default keys (e.g. backspace)
         // But if related edges' pointers are still not be removed yet, delete them
-        onEdgesDelete(searchEdges.filter(e => deletedNodes.some(n => e.source === n.id || e.target === n.id)));
+        onEdgesDelete(searchEdges.filter(e => deletedNodes.some(n => e.source === n.id || e.target === n.id)), edges2);
         
         // Delete nodes and reconnect edges
         deletedNodes.forEach(item => {

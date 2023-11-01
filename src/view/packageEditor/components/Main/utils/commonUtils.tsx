@@ -156,23 +156,8 @@ export function addPointersToUpstream(
           // 2. Search all nodes point to this NPC node
           // 3. Set new pointers on the node
 
-          // Iterate and find the first NPC node
-          let currentNode: Node<NodeData> = sourceNode;
-          do {
-            // TODO: support multiple upstream
-            const e = searchEdges.find(edge => edge.sourceHandle === "handleN" && edge.target === currentNode.id); //
-            if (e) {
-              currentNode = e.sourceNode!;
-            } else {
-              // no more nodes found
-              break;
-            }
-          } while (currentNode.id !== sourceNode.id); // prevent looped lookup
-
-          // Search all nodes point to this NPC node
-          const upstreamNodes: Node<NodeData>[] = searchEdges.filter(edge => edge.target === currentNode.id).map(edge => {
-            return edge.sourceNode!;
-          });
+          // Iterate and find the source nodes
+          const upstreamNodes = getSourceNode(sourceNode, searchEdges);
 
           // Set new pointers on the node
           upstreamNodes.forEach(node => {
@@ -187,6 +172,40 @@ export function addPointersToUpstream(
           });
       }
   }
+}
+
+// Function to search upstream NPC nodes
+function findUpstreamNpcNodes<T = any>(currentNode: Node<T>, searchEdges: Edge[]): Node<T>[] {
+  const result: Node<T>[] = [];
+
+  // find downstream
+  const edges = searchEdges.filter(edge => edge.sourceHandle === "handleN" && edge.target === currentNode.id);
+  edges.forEach(e => {
+    if (e.sourceNode) {
+      const upstreamNodes = findUpstreamNpcNodes(e.sourceNode, searchEdges);
+      if (currentNode.id !== e.sourceNode.id && upstreamNodes.length > 0) {
+        // iterate
+        result.push(...upstreamNodes);
+      } else {
+        result.push(e.sourceNode);
+      }
+    }
+  });
+
+  return result;
+};
+
+// Find source nodes for NPC node
+export function getSourceNode<T=any>(node: Node<T>, searchEdges: Edge[]): Node<T>[] {
+  // find all upstream nodes, for npc
+  const upstreamNpcNodes = findUpstreamNpcNodes(node, searchEdges);
+  if (upstreamNpcNodes.length === 0) {
+    upstreamNpcNodes.push(node);
+  }
+  // get parent nodes
+  return searchEdges.filter(edge => upstreamNpcNodes.some(node => edge.target === node.id)).map(edge => {
+    return edge.sourceNode! as Node<T>;
+  });
 }
 
 // Get downstream nodes for npc->npc nodes
