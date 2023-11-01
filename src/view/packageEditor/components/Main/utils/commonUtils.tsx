@@ -108,20 +108,20 @@ export function removeLinesOnConnect(
 
 export function getConflictEdges(
   sourceNode: Node, // source node
-  edges: Edge[], // all edges
-  sourceHandle: string
+  sourceHandle: string,
+  searchEdges: Edge[] // all edges
 ): Edge[] {
   let conflictEdges: Edge[] = [];
   switch (sourceNode.type) {
     case "startNode":
-      conflictEdges = edges.filter((item) =>  item.source === sourceNode.id);
+      conflictEdges = searchEdges.filter((item) => item.source === sourceNode.id);
       break;
     case "playerNode":
-      conflictEdges = edges.filter((item) => item.source === sourceNode.id);
+      conflictEdges = searchEdges.filter((item) => item.source === sourceNode.id);
       break;
     case "npcNode":
       if (sourceHandle === "handleN") {
-        conflictEdges = edges.filter((item) => item.source === sourceNode.id && item.sourceHandle === "handleN");
+        conflictEdges = searchEdges.filter((item) => item.source === sourceNode.id && item.sourceHandle === "handleN");
       }
       break;
   }
@@ -132,7 +132,7 @@ export function addPointersToUpstream(
   sourceNode: Node<NodeData>,
   targetNode: Node<NodeData>,
   pointersToAdd: string[],
-  allEdges: Edge[]
+  searchEdges: Edge[]
 ) {
   // 1. Set pointers on upstream options / "first"
   // 2. Lookup upstream nodes, if upperstream is npc->npc
@@ -160,7 +160,7 @@ export function addPointersToUpstream(
           let currentNode: Node<NodeData> = sourceNode;
           do {
             // TODO: support multiple upstream
-            const e = allEdges.find(edge => edge.sourceHandle === "handleN" && edge.target === currentNode.id); //
+            const e = searchEdges.find(edge => edge.sourceHandle === "handleN" && edge.target === currentNode.id); //
             if (e) {
               currentNode = e.sourceNode!;
             } else {
@@ -170,7 +170,7 @@ export function addPointersToUpstream(
           } while (currentNode.id !== sourceNode.id); // prevent looped lookup
 
           // Search all nodes point to this NPC node
-          const upstreamNodes: Node<NodeData>[] = allEdges.filter(edge => edge.target === currentNode.id).map(edge => {
+          const upstreamNodes: Node<NodeData>[] = searchEdges.filter(edge => edge.target === currentNode.id).map(edge => {
             return edge.sourceNode!;
           });
 
@@ -187,6 +187,27 @@ export function addPointersToUpstream(
           });
       }
   }
+}
+
+// Get downstream nodes for npc->npc nodes
+export function getDownstreamNpcNodes<T = any>(
+  startNode: Node<T>,
+  searchEdges: Edge[]
+): Node<T>[] {
+  const downstreamNodes = [startNode];
+  let currentNodeId: string = startNode.id;
+  do {
+    const e = searchEdges.find(edge => edge.sourceHandle === "handleN" && edge.source === currentNodeId);
+    if (e) {
+      currentNodeId = e.target;
+      downstreamNodes.push(e.targetNode!);
+    } else {
+      // no more nodes found
+      break;
+    }
+  } while (currentNodeId !== startNode.id); // prevent looped lookup
+
+  return downstreamNodes;
 }
 
 export const initialNode: Node = {

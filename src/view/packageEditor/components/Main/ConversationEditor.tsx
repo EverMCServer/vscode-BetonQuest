@@ -47,6 +47,7 @@ import { vscode } from "../../vscode";
 import {
     addPointersToUpstream,
     getConflictEdges,
+    getDownstreamNpcNodes,
 } from "./utils/commonUtils";
 
 // Define the node's React.JSX.Element
@@ -252,12 +253,14 @@ function ConversationFlowView(props: ConversationEditorProps) {
         }
 
         // Prevent conflict edges
-        const conflictEdges = getConflictEdges(sourceNode, edges, newConnection.targetHandle!);
-        edges2 = edges2.filter(edge => !conflictEdges.some(e => edge.id === e.id));
+        const conflictEdges = getConflictEdges(sourceNode, newConnection.sourceHandle!, edges);
+        onEdgesDelete(conflictEdges); // update YAML
+        edges2 = edges2.filter(edge => !conflictEdges.some(e => edge.id === e.id)); // Remove from UI
 
-        // Set new popinters on the new source option
-        addPointersToUpstream(sourceNode, targetNode, [targetNode.data.option?.getName()!], edges2);
-        
+        // Set downstream popinters on the new source option
+        const downstreamNodes = getDownstreamNpcNodes(targetNode, edges2);
+        addPointersToUpstream(sourceNode, targetNode, downstreamNodes.map(node => node.data.option?.getName()!), edges2);
+
         // Update UI
         // Update target node
         oldEdge.sourceNode = sourceNode;
@@ -451,8 +454,8 @@ function ConversationFlowView(props: ConversationEditorProps) {
         // Remove conflict edges
         const deletingEdges = getConflictEdges(
             sourceNode,
-            edges,
-            connectingParams.current.handleId || ""
+            connectingParams.current.handleId || "",
+            edges
         );
         onEdgesDelete(deletingEdges); // update YAML
         setEdges(addEdge(edge, edges.filter(edge => !deletingEdges.some(e => edge.id === e.id)))); // update UI
@@ -478,9 +481,9 @@ function ConversationFlowView(props: ConversationEditorProps) {
             return;
         }
 
-        // Add pointers to the source node
-        // TODO: iterate downstream nodes
-        addPointersToUpstream(sourceNode, targetNode, [targetNode.data.option?.getName()!], edges);
+        // Add downstream pointers to the source node
+        const downstreamNodes = getDownstreamNpcNodes(targetNode, edges);
+        addPointersToUpstream(sourceNode, targetNode, downstreamNodes.map(node => node.data.option?.getName()!), edges);
 
         // UI
         let edge: Edge = {
@@ -496,13 +499,13 @@ function ConversationFlowView(props: ConversationEditorProps) {
         };
 
         // Remove conflict edges
-        const deletingEdges = getConflictEdges(
+        const conflictEdges = getConflictEdges(
             sourceNode,
-            edges,
-            params.sourceHandle || ""
+            params.sourceHandle || "",
+            edges
         );
-        onEdgesDelete(deletingEdges); // update YAML
-        setEdges(addEdge(edge, edges.filter(edge => !deletingEdges.some(e => edge.id === e.id)))); // update UI
+        onEdgesDelete(conflictEdges); // update YAML
+        setEdges(addEdge(edge, edges.filter(edge => !conflictEdges.some(e => edge.id === e.id)))); // update UI
 
     }, [edges, getNewLineID, getNode, setEdges]);
 
@@ -550,18 +553,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                 if (upperEdge && lowerEdge){
                     // YAML
                     // Iterate all downstream "else" nodes and find pointers that need to be set
-                    const elseNodes: Node<NodeData>[] = [lowerEdge.targetNode!];
-                    let currentNodeId: string = lowerEdge.target;
-                    do {
-                        const e = searchEdges.find(edge => edge.sourceHandle === "handleN" && edge.source === currentNodeId);
-                        if (e) {
-                            currentNodeId = e.target;
-                            elseNodes.push(e.targetNode!);
-                        } else {
-                            // no more nodes found
-                            break;
-                        }
-                    } while (currentNodeId !== lowerEdge.target); // prevent looped lookup
+                    const elseNodes = getDownstreamNpcNodes(lowerEdge.targetNode!, searchEdges);
                     // Get all pointers and set it on source
                     const allPointers: string[] = elseNodes.map(n => n.data.option?.getName()!);
                     if (upperSourceNode) {
@@ -572,7 +564,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                     // Append the new edge to list
                     edges2.push({
                         ...upperEdge,
-                        id: getNewLineID(searchEdges),
+                        id: getNewLineID(edges2),
                         target: lowerEdge.target,
                         targetHandle: lowerEdge.targetHandle,
                         targetNode: lowerEdge.targetNode,
