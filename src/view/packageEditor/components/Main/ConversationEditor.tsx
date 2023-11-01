@@ -492,6 +492,14 @@ function ConversationFlowView(props: ConversationEditorProps) {
             return;
         }
 
+        // Remove conflict edges
+        const conflictEdges = getConflictEdges(
+            sourceNode,
+            params.sourceHandle || "",
+            edges
+        );
+        onEdgesDelete(conflictEdges); // update YAML
+
         // Add downstream pointers to the source node
         const downstreamNodes = getDownstreamNpcNodes(targetNode, edges);
         addPointersToUpstream(sourceNode, targetNode, downstreamNodes.map(node => node.data.option?.getName()!), edges);
@@ -508,15 +516,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
             targetHandle: params.targetHandle || "",
             targetNode: getNode(targetID),
         };
-
-        // Remove conflict edges
-        const conflictEdges = getConflictEdges(
-            sourceNode,
-            params.sourceHandle || "",
-            edges
-        );
-        onEdgesDelete(conflictEdges); // update YAML
-        setEdges(addEdge(edge, edges.filter(edge => !conflictEdges.some(e => edge.id === e.id)))); // update UI
+        setEdges(addEdge(edge, edges.filter(edge => conflictEdges.every(e => edge.id !== e.id)))); // update UI
 
     }, [edges, getNewLineID, getNode, setEdges]);
 
