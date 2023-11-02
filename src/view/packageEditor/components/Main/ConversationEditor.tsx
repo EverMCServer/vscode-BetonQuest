@@ -83,7 +83,7 @@ interface ConversationEditorProps {
 // 8. (DONE) edges connect
 // 9. (DONE) edges re-connect
 // 9. (DONE) sync yaml when creating new node
-// 10. cursor position
+// 10. (DONE) cursor position
 // 11. (more...)
 // ==========================
 
@@ -118,6 +118,15 @@ function ConversationFlowView(props: ConversationEditorProps) {
         fitView,
     } = useReactFlow<NodeData>();
 
+    // Cache stuff that need to be referenced in useEffect() ...
+    // Cache viewport
+    const viewportRef = React.useRef(viewport);
+    const setViewportRef = React.useRef(setViewport);
+    React.useEffect(() => {
+        viewportRef.current = viewport;
+        setViewportRef.current = setViewport;
+    }, [viewport, setViewport]);
+
     // Wraps for update nodes and edges
     const resetFlow = useCallback(
         // async (conversation: Conversation, syncYaml: (delay?: number | undefined) => void, translationSelection: string, viewport?: Viewport) => {
@@ -132,13 +141,13 @@ function ConversationFlowView(props: ConversationEditorProps) {
             setNodes(flow.nodes);
             setEdges(flow.edges);
             if (viewport) {
-                setViewport(viewport);
+                setViewportRef.current(viewport);
             }
             //  else {
             //     window.requestAnimationFrame(() => fitView());
             // }
         },
-        [fitView, setEdges, setNodes, setViewport, props.conversation, props.syncYaml, translationSelection]
+        [fitView, setEdges, setNodes, props.conversation, props.syncYaml, translationSelection]
     );
 
     // Set initial states
@@ -613,6 +622,50 @@ function ConversationFlowView(props: ConversationEditorProps) {
         };
     }, [getNodes, getEdges, setNodes, setEdges, props.conversation, props.syncYaml]);
 
+
+    /* Handle node selection due to VSCode cursor */
+    
+    // Center and select a node by YAML path
+    const centerAndSelectNode = useCallback((yamlPath: string[]) => {
+        // Skip if path not landed in "NPC_options" or "player_options"
+        if (yamlPath.length < 2 || yamlPath[0] !== "conversations" || yamlPath[1] !== props.conversationName) {
+            return;
+        }
+        // Center a node by type
+        let type = "";
+        switch (yamlPath[2]) {
+            case "NPC_options":
+                type = "npcNode";
+                break;
+            case "player_options":
+                type = "playerNode";
+                break;
+        }
+        if (type === "") {
+            return;
+        }
+
+        // Select and center the node
+        const ndoes2 = getNodes().map(node => {
+            if (node.type === type && node.data.option?.getName() === yamlPath[3]) {
+                node.selected = true;
+                // Move the Viewport
+                let x = 0;
+                let y = 0;
+                x = (-node.position.x - (node.width || 0) / 2) * viewportRef.current.zoom + (flowWrapper.current?.getBoundingClientRect().width || 0) / 2;
+                y = (-node.position.y - (node.height || 0) / 2) * viewportRef.current.zoom + (flowWrapper.current?.getBoundingClientRect().height || 0) / 2;
+                setViewportRef.current({ x: x, y: y, zoom: viewportRef.current.zoom }, { duration: 250 });
+            } else {
+                node.selected = false;
+            }
+            return node;
+        });
+        setNodes(ndoes2);
+
+        // de-select all edges
+        setEdges(getEdges().map(edge => {edge.selected = false;return edge;}));
+    }, [props.conversationName, getNodes]);
+
     /* VSCode messages */
 
     const handleVscodeMessage = (message: any) => {
@@ -626,7 +679,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
             // Center a node when cursor changed in Text Editor
             case "cursor-yaml-path":
-                // TODO
+                centerAndSelectNode(message.content as string[]);
         }
     };
 
@@ -646,53 +699,55 @@ function ConversationFlowView(props: ConversationEditorProps) {
     }, []);
 
     const onSelectionChange = useCallback((changed: OnSelectionChangeParams) => {
-        let eds = getEdges();
+        const edges = getEdges();
 
-        let edgeIDs: string[] = [];
+        const edgeIDs: string[] = [];
         changed.edges.forEach(e => {
             edgeIDs.push(e.id);
         });
-        let nodeIDs: string[] = [];
+        const nodeIDs: string[] = [];
         changed.nodes.forEach(n => {
             nodeIDs.push(n.id);
         });
 
-        eds.forEach((_, i) => {
-            if (nodeIDs.includes(eds[i].source) || nodeIDs.includes(eds[i].target)) {
+        edges.map(edge => {
+            if (nodeIDs.includes(edge.source) || nodeIDs.includes(edge.target)) {
                 // Highlight all related edges
-                eds[i].selected = true;
-                eds[i].zIndex = 1;
-                eds[i].style = { stroke: "#ffb84e", strokeWidth: 4 };
-                eds[i].markerEnd = { type: MarkerType.ArrowClosed, color: "#ffb84e" };
-                eds[i].animated = true;
-            } else if (edgeIDs.includes(eds[i].id)) {
+                edge.selected = true;
+                edge.zIndex = 1;
+                edge.style = { stroke: "#ffb84e", strokeWidth: 4 };
+                edge.markerEnd = { type: MarkerType.ArrowClosed, color: "#ffb84e" };
+                edge.animated = true;
+            } else if (edgeIDs.includes(edge.id)) {
                 // Change selected edges' color
-                eds[i].style = { stroke: "#ffb84e", strokeWidth: 4 };
-                eds[i].markerEnd = { type: MarkerType.ArrowClosed, color: "#ffb84e" };
+                edge.selected = true;
+                edge.zIndex = 1;
+                edge.style = { stroke: "#ffb84e", strokeWidth: 4 };
+                edge.markerEnd = { type: MarkerType.ArrowClosed, color: "#ffb84e" };
+                edge.animated = false;
             } else {
-                // e.selected = false;
-                eds[i].zIndex = 0;
-                eds[i].style = undefined;
-                eds[i].markerEnd = { type: MarkerType.ArrowClosed };
-                eds[i].animated = false;
+                edge.selected = false;
+                edge.zIndex = 0;
+                edge.style = undefined;
+                edge.markerEnd = { type: MarkerType.ArrowClosed };
+                edge.animated = false;
             }
         });
-        setEdges(eds);
+        setEdges(edges);
     }, [getEdges, setEdges]);
 
     // Move the cursor when a node is selected
-    // TODO: update to fit the new Package format
-    const onNodeClick = (event: ReactMouseEvent, node: Node) => {
+    const onNodeClick = useCallback((event: ReactMouseEvent, node: Node<NodeData>) => {
         let content: string[];
         switch (node.type) {
             case "startNode":
-                content = ["quester"];
+                content = ["conversations", props.conversationName, "quester"];
                 break;
             case "npcNode":
-                content = ["NPC_options", node.data.name];
+                content = ["conversations", props.conversationName, "NPC_options", node.data.option?.getName()!];
                 break;
             case "playerNode":
-                content = ["player_options", node.data.name];
+                content = ["conversations", props.conversationName, "player_options", node.data.option?.getName()!];
                 break;
             default:
                 return;
@@ -701,7 +756,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
             type: "cursor-yaml-path",
             content: content,
         });
-    };
+    }, [props.conversationName]);
 
     return (
         <div className="flow-container">
