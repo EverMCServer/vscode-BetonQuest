@@ -124,11 +124,9 @@ export default function main(props: MainProps) {
                 style: { height: "100%" }  // Maximize tab content height for ReactFlow
             });
         });
-        if (initTabsItems.length) {
-            setTabsItems(initTabsItems);
-            if (tabsActiveKey === "") {
-                setTabsActiveKey(initTabsItems[0].key);
-            }
+        setTabsItems(initTabsItems);
+        if (initTabsItems.length && !initTabsItems.some(tabItem => tabItem.id === tabsActiveKey)) {
+            setTabsActiveKey(initTabsItems[0].key);
         }
     }, [props.package]);
 
