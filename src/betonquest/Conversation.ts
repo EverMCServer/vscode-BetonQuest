@@ -171,7 +171,7 @@ export default class Conversation {
 
         if (isMap(yaml)) {
             // const map = new YAMLMap<string>();
-            yaml.add(new Pair(optionName, new YAMLMap()));
+            yaml.add(new Pair(new Scalar(optionName), new YAMLMap()));
             return this.getOption(type, optionName);
         }
         return undefined;
