@@ -645,33 +645,38 @@ function ConversationFlowView(props: ConversationEditorProps) {
         return () => window.removeEventListener("message", handlerFn);
     }, []);
 
-    let lastSelectedNodes: Node[] = [];
-
     const onSelectionChange = useCallback((changed: OnSelectionChangeParams) => {
-        if (lastSelectedNodes === changed.nodes) {
-            return;
-        }
-        // Highlight all related edges
-        let nodeIDs: string[] = [];
-        for (let i = 0; i < changed.nodes.length; i++) {
-            let n = changed.nodes[i];
-            nodeIDs = [...nodeIDs, n.id];
-        }
         let eds = getEdges();
-        for (let i = 0; i < eds.length; i++) {
-            let e = eds[i];
-            if (nodeIDs.includes(e.source) || nodeIDs.includes(e.target)) {
-                e.selected = true;
-                e.zIndex = 1;
-                e.markerEnd = { type: MarkerType.ArrowClosed, color: "#ffb84e" };
-                e.animated = true;
+
+        let edgeIDs: string[] = [];
+        changed.edges.forEach(e => {
+            edgeIDs.push(e.id);
+        });
+        let nodeIDs: string[] = [];
+        changed.nodes.forEach(n => {
+            nodeIDs.push(n.id);
+        });
+
+        eds.forEach((_, i) => {
+            if (nodeIDs.includes(eds[i].source) || nodeIDs.includes(eds[i].target)) {
+                // Highlight all related edges
+                eds[i].selected = true;
+                eds[i].zIndex = 1;
+                eds[i].style = { stroke: "#ffb84e", strokeWidth: 4 };
+                eds[i].markerEnd = { type: MarkerType.ArrowClosed, color: "#ffb84e" };
+                eds[i].animated = true;
+            } else if (edgeIDs.includes(eds[i].id)) {
+                // Change selected edges' color
+                eds[i].style = { stroke: "#ffb84e", strokeWidth: 4 };
+                eds[i].markerEnd = { type: MarkerType.ArrowClosed, color: "#ffb84e" };
             } else {
                 // e.selected = false;
-                e.zIndex = 0;
-                e.markerEnd = { type: MarkerType.ArrowClosed };
-                e.animated = false;
+                eds[i].zIndex = 0;
+                eds[i].style = undefined;
+                eds[i].markerEnd = { type: MarkerType.ArrowClosed };
+                eds[i].animated = false;
             }
-        }
+        });
         setEdges(eds);
     }, [getEdges, setEdges]);
 

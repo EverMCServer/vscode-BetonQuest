@@ -1,32 +1,36 @@
-.react-flow__edge.selected .react-flow__edge-path {
+/* .react-flow__edge.selected .react-flow__edge-path {
     stroke: #ffb84e;
     stroke-width: 3;
+} */
+.react-flow__edge .react-flow__edge-path {
+    stroke-width: 2;
 }
 
 .react-flow .handleIn {
-    width: 15px;
-    height: 8px;
-    top: -5px;
-    border-radius: 3px;
-    background: #fff;
+    width: 30px;
+    height: 16px;
+    top: -8px;
+    border-radius: 6px;
+    background: rgb(255, 255, 255, 0.5);
     border: 1px solid #999;
 }
 
 .react-flow .handleOut {
-    width: 15px;
-    height: 8px;
-    bottom: -5px;
-    border-radius: 3px;
-    background: #fff;
+    width: 30px;
+    height: 16px;
+    bottom: -8px;
+    border-radius: 6px;
+    background: rgb(255, 255, 255, 0.5);
     border: 1px solid #999;
 }
 
 .react-flow .handleN {
-    width: 8px;
-    height: 15px;
-    top: 53px;
-    border-radius: 3px;
-    background: rgb(255, 123, 123);
+    width: 16px;
+    height: 30px;
+    top: 52px;
+    right: -8px;
+    border-radius: 6px;
+    background: rgba(255, 138, 138, 0.5);
     border: 1px solid #999;
 }
 
@@ -57,15 +61,15 @@
 }
 
 .title-box.start {
-    border-bottom: 1px solid #dd9816;
+    border-bottom: 3px solid #dd9816;
 }
 
 .title-box.npc {
-    border-bottom: 1px solid #00b3ff;
+    border-bottom: 3px solid #00b3ff;
 }
 
 .title-box.player {
-    border-bottom: 1px solid #00c100;
+    border-bottom: 3px solid #00c100;
 }
 
 .title-box .nodeName {

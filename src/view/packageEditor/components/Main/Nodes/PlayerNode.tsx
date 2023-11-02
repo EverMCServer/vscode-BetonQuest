@@ -101,7 +101,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
     <div style={{ width: "100%" }}>
       <div className="title-box player">
         Player
-        <div className="nodeName" hidden={selected}>
+        <div className="nodeName">
           ({data.option?.getName()})
         </div>
       </div>
