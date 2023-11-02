@@ -211,15 +211,20 @@ export function getDownstreamNpcNodes<T = any>(
       // no more nodes found
       break;
     }
-  } while (currentNodeId !== startNode.id); // prevent looped lookup
+  } while (currentNodeId !== startNode.id); // prevent looped lookup, if any
 
   return downstreamNodes;
 }
 
-// Detect looped connection
+// Detect looped connection, for npc->npc connection mainly
 export function isConnectionLooped<T>(sourceNode: Node<T>, targetNode: Node<T>, searchEdges: Edge[]): boolean {
   // Get where the target node sit
   const edges = searchEdges.filter(edge => edge.source === targetNode.id);
+
+  // Skip if connection type switched, e.g. npc->player
+  if (sourceNode.type !== targetNode.type) {
+    return false;
+  }
 
   // Try to look up the source node from downstream
   let result: boolean = false;
