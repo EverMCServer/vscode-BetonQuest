@@ -1,4 +1,4 @@
-import { Pair, Scalar, YAMLMap, isMap } from 'yaml';
+import { Pair, Scalar, YAMLMap } from 'yaml';
 
 // Conversation
 export default class Conversation {
@@ -13,12 +13,6 @@ export default class Conversation {
         return this.yaml.value?.toString() || "";
     }
 
-    // // Set name of the Conversation script
-    // // TODO: check key duplication
-    // setConversationName(newScriptName: string) {
-    //     this.yaml.key.value = newScriptName;
-    // }
-
     getQuester(translation?: string): string {
         return this.getStringOnYamlPath(["quester"], translation);
     }
@@ -28,7 +22,15 @@ export default class Conversation {
     }
 
     getFirst(): string[] {
-        return this.getStringArrayOnYamlPath(["first"], true);
+        const pointers = this.getStringArrayOnYamlPath(["first"], true);
+
+        // Filter duplicated pointers, prevent looped connection
+        const pointersFiltered = pointers.filter((pointer, index, allPointers) => index === allPointers.indexOf(pointer));
+        if (pointers.length !== pointersFiltered.length) {
+            this.setStringArrayOnYamlPath(["first"], pointersFiltered);
+        }
+
+        return pointersFiltered;
     }
 
     setFirst(pointers: string[]) {
@@ -441,7 +443,15 @@ export class Option {
     }
 
     getPointerNames() {
-        return this.getStringArrayOnYamlPath(["pointers"], true);
+        const pointers = this.getStringArrayOnYamlPath(["pointers"], true);
+
+        // Filter duplicated pointers, prevent looped connection
+        const pointersFiltered = pointers.filter((pointer, index, allPointers) => index === allPointers.indexOf(pointer));
+        if (pointers.length !== pointersFiltered.length) {
+            this.setStringArrayOnYamlPath(["pointers"], pointersFiltered);
+        }
+
+        return pointersFiltered;
     }
 
     setPointerNames(pointerNames: string[]) {
