@@ -134,22 +134,44 @@ export default function main(props: MainProps) {
 
     return (
         <>
-            <Tabs
-                type={"editable-card"}
-                onChange={onTabsChange}
-                destroyInactiveTabPane={true}
-                activeKey={tabsActiveKey}
-                onEdit={onTabsEdit}
-                items={tabsItems}
-                // tabPosition="bottom"
-                size="small"
-                style={{
-                    height: "100%",
-                }}
-                tabBarStyle={{
-                    color: "var(--vscode-disabledForeground)", // un-activated tab text color
-                }}
-            ></Tabs>
+            {
+                tabsItems.length > 0 ?
+                    // Conversations editor as tabs
+                    <Tabs
+                        type={"editable-card"}
+                        onChange={onTabsChange}
+                        destroyInactiveTabPane={true}
+                        activeKey={tabsActiveKey}
+                        onEdit={onTabsEdit}
+                        items={tabsItems}
+                        // tabPosition="bottom"
+                        size="small"
+                        style={{
+                            height: "100%",
+                        }}
+                        tabBarStyle={{
+                            color: "var(--vscode-disabledForeground)", // un-activated tab text color
+                        }}
+                    ></Tabs>
+                    :
+                    // A placeholder when there are no Conversations available
+                    <div
+                        style={{
+                            height: "100%",
+                            display: "flex",
+                            alignItems: "center", // y
+                            justifyContent: "center", // x
+                        }}
+                    >
+                        <div
+                            style={{
+                                padding: "6px",
+                                border: "1px solid var(--vscode-button-border)"
+                            }}
+                            onClick={() => { onTabsEdit("", "add"); }}
+                        >Click here to create a new Conversation</div>
+                    </div>
+            }
             {modalContextHolder}
         </>
     );
