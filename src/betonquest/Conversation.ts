@@ -162,19 +162,8 @@ export default class Conversation {
 
     // Create a new Option
     createOption(type: string, optionName: string): Option | undefined {
-        let yaml: unknown;
-        try {
-            yaml = this.yaml.value?.getIn([type]);
-        } catch {
-            return undefined;
-        }
-
-        if (isMap(yaml)) {
-            // const map = new YAMLMap<string>();
-            yaml.add(new Pair(new Scalar(optionName), new YAMLMap()));
-            return this.getOption(type, optionName);
-        }
-        return undefined;
+        this.setValueOnYamlPath([type, optionName], new YAMLMap());
+        return this.getOption(type, optionName);
     }
 
     // Remove an Option from the Yaml
