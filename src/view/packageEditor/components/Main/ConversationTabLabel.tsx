@@ -9,7 +9,7 @@ interface ConversationTabLabelProps {
 }
 
 // Label node for Conversation tabs
-export default function conversationTabLabel( props: ConversationTabLabelProps ) {
+export default function conversationTabLabel(props: ConversationTabLabelProps) {
     const [oldValue, setOldValue] = useState(props.label);
     const [inputValue, setInputValue] = useState(props.label);
     const [isSetValueError, setIsSetValueError] = useState(false);
@@ -43,18 +43,18 @@ export default function conversationTabLabel( props: ConversationTabLabelProps )
     };
 
     return (
-    <>
-        <div onDoubleClick={onDoubleClick}>{oldValue}</div>
-        <Modal
-            open={isConvTabLabelModalOpen}
-            onOk={onModalOk}
-            onCancel={onModalCancel}
-            destroyOnClose={true}
-        >
-            <div>Rename the script:</div>
-            <input value={inputValue} onChange={onInputChange} placeholder={props.label} style={isSetValueError?{color: "red"}:undefined}></input>
-            {isSetValueError?<div style={{color: "red"}}>Value "{inputValue}" is already exists. Please consider rename it.</div>:undefined}
-        </Modal>
-    </>
+        <>
+            <div onDoubleClick={onDoubleClick}>{oldValue}</div>
+            <Modal
+                open={isConvTabLabelModalOpen}
+                onOk={onModalOk}
+                onCancel={onModalCancel}
+                destroyOnClose={true}
+            >
+                <div>Rename the script:</div>
+                <input value={inputValue} onChange={onInputChange} placeholder={props.label} style={isSetValueError ? { color: "red" } : undefined}></input>
+                {isSetValueError ? <div style={{ color: "red" }}>Value "{inputValue}" is already exists. Please consider rename it.</div> : undefined}
+            </Modal>
+        </>
     );
 }

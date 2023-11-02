@@ -10,26 +10,26 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
 
     public static register(context: vscode.ExtensionContext): vscode.Disposable {
         const provider = new PackageEditorProvider(context);
-		const providerRegistration = vscode.window.registerCustomEditorProvider(PackageEditorProvider.viewType, provider);
-		return providerRegistration;
+        const providerRegistration = vscode.window.registerCustomEditorProvider(PackageEditorProvider.viewType, provider);
+        return providerRegistration;
     }
 
     private static readonly viewType = 'betonquest.packageEditor';
 
     constructor(
-		private readonly context: vscode.ExtensionContext
-	) { }
+        private readonly context: vscode.ExtensionContext
+    ) { }
 
     /**
-	 * Called when our custom editor is opened.
-	 * 
-	 * 
-	 */
-	public async resolveCustomTextEditor(
-		document: vscode.TextDocument,
-		webviewPanel: vscode.WebviewPanel,
-		_token: vscode.CancellationToken
-	): Promise<void> {
+     * Called when our custom editor is opened.
+     * 
+     * 
+     */
+    public async resolveCustomTextEditor(
+        document: vscode.TextDocument,
+        webviewPanel: vscode.WebviewPanel,
+        _token: vscode.CancellationToken
+    ): Promise<void> {
         // Config Webview
         webviewPanel.webview.options = {
             enableScripts: true,
@@ -57,33 +57,33 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
         }
 
         // Hook up event handlers so that we can synchronize the webview with the text document.
-		//
-		// The text document acts as our model, so we have to sync change in the document to our
-		// editor and sync changes in the editor back to the document.
-		// 
-		// Remember that a single text document can also be shared between multiple custom
-		// editors (this happens for example when you split a custom editor)
+        //
+        // The text document acts as our model, so we have to sync change in the document to our
+        // editor and sync changes in the editor back to the document.
+        // 
+        // Remember that a single text document can also be shared between multiple custom
+        // editors (this happens for example when you split a custom editor)
 
         let timeoutHandler: NodeJS.Timeout; // Use timeout to avoid frenquent update / flowchart flickering
         const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(e => {
             // Send updated content into webview
-			if (e.document.uri.toString() === document.uri.toString()) {
+            if (e.document.uri.toString() === document.uri.toString()) {
                 clearTimeout(timeoutHandler);
                 if (e.reason === vscode.TextDocumentChangeReason.Undo || e.reason === vscode.TextDocumentChangeReason.Redo) {
                     // If docuemnt is changed by undo / redo, it should be updated immediately
                     sendDocumentToWebview();
                 } else {
-                    timeoutHandler = setTimeout(()=>{
+                    timeoutHandler = setTimeout(() => {
                         sendDocumentToWebview();
                     }, 1000);
                 }
-			}
+            }
             // TODO: update the complete Package when files saved
             // (Should it be done with LSP?)
-		});
+        });
 
         // Try to save the document again if the document sync from webview is delayed
-        const saveDocumentSubscription = vscode.workspace.onDidSaveTextDocument((e)=>{
+        const saveDocumentSubscription = vscode.workspace.onDidSaveTextDocument((e) => {
             if (e.uri.toString() === document.uri.toString()) {
                 setTimeout(() => {
                     if (document.isDirty) {
@@ -109,7 +109,7 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
                     type: 'cursor-yaml-path',
                     content: findYamlNodeByOffset(offset, document.getText())
                 });
-			}
+            }
         });
 
         const changeTranslationSubscription = vscode.workspace.onDidChangeConfiguration(e => {
@@ -122,9 +122,9 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
             }
         });
 
-		// Receive message from the webview.
-		const onDidReceiveMessage = webviewPanel.webview.onDidReceiveMessage(e => {
-			switch (e.type) {
+        // Receive message from the webview.
+        const onDidReceiveMessage = webviewPanel.webview.onDidReceiveMessage(e => {
+            switch (e.type) {
                 case 'webview-lifecycle':
                     switch (e.content) {
                         case 'started':
@@ -143,9 +143,9 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
 
                 // update editted yml
                 case 'edit':
-					// console.log(e.content);
+                    // console.log(e.content);
                     this.updateTextDocument(document, e.content);
-					return;
+                    return;
 
                 // Update translation selction configuration.
                 case 'set-betonquest-translationSelection':
@@ -164,18 +164,18 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
                         }
                     }
                     return;
-			}
-		});
+            }
+        });
 
         // Make sure we get rid of the listener when our editor is closed.
-		const onDidDispose = webviewPanel.onDidDispose(() => {
-			changeDocumentSubscription.dispose();
+        const onDidDispose = webviewPanel.onDidDispose(() => {
+            changeDocumentSubscription.dispose();
             saveDocumentSubscription.dispose();
             changeSelectionSubscription.dispose();
             changeTranslationSubscription.dispose();
             onDidReceiveMessage.dispose();
             onDidDispose.dispose();
-		});
+        });
     }
 
     // Function to edit vscode.document

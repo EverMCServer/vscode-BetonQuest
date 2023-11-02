@@ -1,6 +1,6 @@
 import YAML, { Document, Node, Pair, Scalar, YAMLMap, YAMLSeq } from 'yaml';
 
-export default function findOffestByYamlNode (path: string[], yaml: string): number {
+export default function findOffestByYamlNode(path: string[], yaml: string): number {
     return findOffestByYamlMapNode(path, YAML.parseDocument(yaml).contents as YAMLMap | YAMLSeq | Scalar);
 }
 

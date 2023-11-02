@@ -25,7 +25,7 @@ export default class Package {
 
     // Emit the Yaml text file.
     getYamlText(yamlToStringOptions?: YAML.ToStringOptions): string {
-        return this.getYaml().toString(yamlToStringOptions || {nullStr: ``, lineWidth:0});
+        return this.getYaml().toString(yamlToStringOptions || { nullStr: ``, lineWidth: 0 });
     }
 
     private getEventsYaml() {
@@ -42,7 +42,7 @@ export default class Package {
     }
 
     // Get multiple Events by names.
-    getEvents(eventNames: string[]): (Event|undefined)[] {
+    getEvents(eventNames: string[]): (Event | undefined)[] {
         return eventNames.map(value => {
             return this.getEvent(value);
         });
@@ -81,7 +81,7 @@ export default class Package {
     }
 
     // Get multiple Conditions by names.
-    getConditions(conditionNames: string[]): (Condition|undefined)[] {
+    getConditions(conditionNames: string[]): (Condition | undefined)[] {
         return conditionNames.map(value => {
             return this.getCondition(value);
         });
@@ -119,7 +119,7 @@ export default class Package {
     }
 
     // Get multiple Objectives by names.
-    getObjectives(objectiveNames: string[]): (Objective|undefined)[] {
+    getObjectives(objectiveNames: string[]): (Objective | undefined)[] {
         return objectiveNames.map(value => {
             return this.getObjective(value);
         });
@@ -150,14 +150,14 @@ export default class Package {
     // Get an Item by name.
     getItem(itemName: string): Item | undefined {
         const index = this.getItemsYaml()?.items.findIndex(pair => pair.key.value === itemName);
-        if (index!==undefined) {
+        if (index !== undefined) {
             return new Item(this.getItemsYaml()!.items[index]);
         }
         return undefined;
     }
 
     // Get multiple Items by names.
-    getItems(itemNames: string[]): (Item|undefined)[] {
+    getItems(itemNames: string[]): (Item | undefined)[] {
         return itemNames.map(value => {
             return this.getItem(value);
         });
@@ -192,13 +192,13 @@ export default class Package {
             // Content of the actuarial conversation script
             YAMLMap<
                 Scalar<string>,
-                Scalar<string>| // quester-monolingual, first, stop,
+                Scalar<string> | // quester-monolingual, first, stop,
                 YAMLMap<
                     Scalar<string>,
-                    Scalar<string>| // quester-multilingual
+                    Scalar<string> | // quester-multilingual
                     YAMLMap<
                         Scalar<string>,
-                        Scalar<string>| // text-monolingual, conditions, events, pointers
+                        Scalar<string> | // text-monolingual, conditions, events, pointers
                         YAMLMap<
                             Scalar<string>,
                             Scalar<string> // text-multilingual

@@ -71,7 +71,7 @@ export default class Conversation {
     getFinalEventNames(): string[] {
         return this.getStringArrayOnYamlPath(["final_events"]);
     }
-    
+
     setFinalEventNames(events: string[]) {
         this.setStringArrayOnYamlPath(["final_events"], events);
     }
@@ -88,7 +88,7 @@ export default class Conversation {
         this.removetElementsFromStringArrayOnYamlPath(["final_events"], events);
     }
 
-    getFinalEvents() {} // TODO
+    getFinalEvents() { } // TODO
 
     getInterceptor(): string[] {
         return this.getStringArrayOnYamlPath(["interceptor"], true);
@@ -114,11 +114,11 @@ export default class Conversation {
         return this.getOptions("player_options") || [];
     }
 
-    createNpcOption(optionName: string) : Option | undefined {
+    createNpcOption(optionName: string): Option | undefined {
         return this.createOption("NPC_options", optionName);
     }
 
-    createPlayerOption(optionName: string) : Option | undefined {
+    createPlayerOption(optionName: string): Option | undefined {
         return this.createOption("player_options", optionName);
     }
 
@@ -138,7 +138,7 @@ export default class Conversation {
         } catch {
             return undefined;
         }
-        
+
         if (yaml instanceof YAMLMap) {
             return new Option(optionName, type, yaml, this);
         }
@@ -153,9 +153,9 @@ export default class Conversation {
         } catch {
             return undefined;
         }
-        
+
         if (yaml instanceof YAMLMap) {
-            return yaml.items.map(e =>  new Option(e.key.value, type, e.value, this));
+            return yaml.items.map(e => new Option(e.key.value, type, e.value, this));
         }
         return undefined;
     }
@@ -194,8 +194,8 @@ export default class Conversation {
     // Check if the Yaml multilingual
     isMultilingual(): boolean {
         return this.isPathYAMLMap(["quester"])
-        || !(this.getOptions("NPC_options")||[]).every(e => !e.isMultilingual())
-        || !(this.getOptions("player_options")||[]).every(e => !e.isMultilingual());
+            || !(this.getOptions("NPC_options") || []).every(e => !e.isMultilingual())
+            || !(this.getOptions("player_options") || []).every(e => !e.isMultilingual());
     }
 
     // Get number of translations of the Yaml
@@ -212,7 +212,7 @@ export default class Conversation {
                     translations.set(e.key.value as string, true);
                 });
             }
-        } catch {}
+        } catch { }
 
         // Get translations from "NPC_options" & "player_options"
         ["NPC_options", "player_options"].forEach(l => {
@@ -220,7 +220,7 @@ export default class Conversation {
                 yamlResult = this.yaml.value?.getIn([l]);
                 if (yamlResult instanceof YAMLMap) {
                     yamlResult.items.forEach(o => {
-                        if (o instanceof Pair &&o.value instanceof YAMLMap){
+                        if (o instanceof Pair && o.value instanceof YAMLMap) {
                             let yamlResult2: unknown;
                             try {
                                 yamlResult2 = o.value.getIn(["text"]);
@@ -229,11 +229,11 @@ export default class Conversation {
                                         translations.set(e.key.value as string, true);
                                     });
                                 }
-                            } catch {}
+                            } catch { }
                         }
                     });
                 }
-            } catch {}
+            } catch { }
         });
 
         const result: string[] = [];
@@ -247,7 +247,7 @@ export default class Conversation {
         try {
             let result = this.yaml.value?.getIn(yamlPath);
             return result instanceof YAMLMap;
-        } catch {}
+        } catch { }
         return false;
     }
 
@@ -280,7 +280,7 @@ export default class Conversation {
         }
         if (node instanceof YAMLMap) {
             // Check if value saved with YAML.YAMLMap or string
-            node.set(translation||"en", value);
+            node.set(translation || "en", value);
         } else if (typeof node === "string" || !translation) {
             this.yaml.value!.setIn(yamlPath, value);
         } else {
@@ -330,7 +330,7 @@ export default class Conversation {
                 pos = location;
                 break;
         }
-        if (pos < 0 ) {
+        if (pos < 0) {
             return;
         }
         // replace element
@@ -359,7 +359,7 @@ export default class Conversation {
     private removetElementsFromStringArrayOnYamlPath(yamlPath: string[], elements: string[]) {
         elements.forEach(element => {
             this.setStringArrayOnYamlPath(yamlPath, this.getStringArrayOnYamlPath(yamlPath).filter(value => {
-                return value.match(new RegExp("^[ \t\r]*"+element+"[ \t\r]*$")) === null;
+                return value.match(new RegExp("^[ \t\r]*" + element + "[ \t\r]*$")) === null;
             }));
         });
     }
@@ -499,7 +499,7 @@ export class Option {
         let result: unknown;
         try {
             result = this.yaml.getIn(["text"]);
-        } catch {}
+        } catch { }
         return (result instanceof YAMLMap);
     }
 
@@ -532,7 +532,7 @@ export class Option {
         }
         if (node instanceof YAMLMap) {
             // Check if value saved with YAML.YAMLMap or string
-            node.set(translation||"en", value);
+            node.set(translation || "en", value);
         } else if (typeof node === "string" || !translation) {
             this.yaml.setIn(yamlPath, value);
         } else {
@@ -582,7 +582,7 @@ export class Option {
                 pos = location;
                 break;
         }
-        if (pos < 0 ) {
+        if (pos < 0) {
             return;
         }
         // replace element
@@ -611,7 +611,7 @@ export class Option {
     private removetElementsFromStringArrayOnYamlPath(yamlPath: string[], elements: string[]) {
         elements.forEach(element => {
             this.setStringArrayOnYamlPath(yamlPath, this.getStringArrayOnYamlPath(yamlPath).filter(value => {
-                return value.match(new RegExp("^[ \t\r]*"+element+"[ \t\r]*$")) === null;
+                return value.match(new RegExp("^[ \t\r]*" + element + "[ \t\r]*$")) === null;
             }));
         });
     }

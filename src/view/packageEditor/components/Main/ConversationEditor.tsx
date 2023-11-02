@@ -33,12 +33,12 @@ import "./ConversationEditor.css";
 import AsyncLock from "async-lock";
 
 import Conversation from "../../../../betonquest/Conversation";
-import { NodeData } from "./Nodes/Nodes";
-import NPCNode from "./Nodes/NPCNode";
-import PlayerNode from "./Nodes/PlayerNode";
-import StartNode from "./Nodes/StartNode";
-import ConnectionLine from "./Nodes/ConnectionLine";
-import ContextMenu from "./Nodes/ContextMenu";
+import { NodeData } from "./components/Nodes";
+import NPCNode from "./components/NPCNode";
+import PlayerNode from "./components/PlayerNode";
+import StartNode from "./components/StartNode";
+import ConnectionLine from "./components/ConnectionLine";
+import ContextMenu from "./components/ContextMenu";
 import TranslationSelector from "./components/TranslationSelector";
 
 import { autoLayout } from "./utils/autoLayout";
@@ -264,7 +264,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
         // Prevent conflict edges
         const conflictEdges = getConflictEdges(sourceNode, newConnection.sourceHandle!, edges)
             .filter(edge => edge.id !== oldEdge.id); // "self" should not be considered as conflict
-        if (conflictEdges.length  > 0){
+        if (conflictEdges.length > 0) {
             onEdgesDelete(conflictEdges, edges2); // update YAML
             edges2 = edges2.filter(edge => !conflictEdges.some(e => edge.id === e.id)); // Remove from UI
         }
@@ -282,7 +282,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
         // update yaml
         props.syncYaml();
-    } , [edges, getNode, setEdges, props.syncYaml]);
+    }, [edges, getNode, setEdges, props.syncYaml]);
 
     // Cache deleting edges
     const deletingEdges = useRef<Edge[]>([]);
@@ -320,11 +320,11 @@ function ConversationFlowView(props: ConversationEditorProps) {
                                 switch (node.type) {
                                     case "npcNode":
                                     case "playerNode":
-                                      node.data.option?.removePointerNamesTillEnd(targetOption.getName());
-                                      break;
+                                        node.data.option?.removePointerNamesTillEnd(targetOption.getName());
+                                        break;
                                     case "startNode":
-                                      node.data.conversation?.removeFirstTillEnd(targetOption.getName());
-                                      break;
+                                        node.data.conversation?.removeFirstTillEnd(targetOption.getName());
+                                        break;
                                 }
                             });
                         } else {
@@ -338,7 +338,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
         // update yaml
         props.syncYaml();
-    } , [edges, props.conversation, props.syncYaml]);
+    }, [edges, props.conversation, props.syncYaml]);
 
     // Auto create new node and edge
 
@@ -533,7 +533,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
     /* Handle nodes deletion */
 
     // Define the nodes / Edges deletion public method. Returns the nodes and edges actually deleted.
-    const onNodesDelete = useCallback((deletingNodes: Node<NodeData>[], updateFlowChart: boolean = false): {finalNodes: Node<NodeData>[], finalEdges: Edge[], deletedNodes: Node<NodeData>[], deletedEdges: Edge[]} => {
+    const onNodesDelete = useCallback((deletingNodes: Node<NodeData>[], updateFlowChart: boolean = false): { finalNodes: Node<NodeData>[], finalEdges: Edge[], deletedNodes: Node<NodeData>[], deletedEdges: Edge[] } => {
         // 1. filter out the nodes that needed to be deleted
         // 2. remove the nodes and pointers from the conversation
         // 3. remove the related edges (source / destination)
@@ -557,7 +557,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
         // Usually ReactFlow has already called onEdgesDelete() for us if deletion is triggered by default keys (e.g. backspace)
         // But if related edges' pointers are still not be removed yet, delete them
         onEdgesDelete(searchEdges.filter(e => deletedNodes.some(n => e.source === n.id || e.target === n.id)), edges2);
-        
+
         // Delete nodes and reconnect edges
         deletedNodes.forEach(item => {
             // Delete the nodes and
@@ -571,7 +571,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                 const upperSourceNode: Node<NodeData> | undefined = upperEdge?.sourceNode;
 
                 // Reconnect edges for NPC's "else" nodes
-                if (upperEdge && lowerEdge){
+                if (upperEdge && lowerEdge) {
                     // YAML
                     // Iterate all downstream "else" nodes and find pointers that need to be set
                     const elseNodes = getDownstreamNpcNodes(lowerEdge.targetNode!, searchEdges);
@@ -624,7 +624,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
 
     /* Handle node selection due to VSCode cursor */
-    
+
     // Center and select a node by YAML path
     const centerAndSelectNode = useCallback((yamlPath: string[]) => {
         // Skip if path not landed in "NPC_options" or "player_options"
@@ -663,7 +663,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
         setNodes(ndoes2);
 
         // de-select all edges
-        setEdges(getEdges().map(edge => {edge.selected = false;return edge;}));
+        setEdges(getEdges().map(edge => { edge.selected = false; return edge; }));
     }, [props.conversationName, getNodes]);
 
     /* VSCode messages */
@@ -787,7 +787,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                     onPaneClick={onPaneClick}
                     onNodeClick={onNodeClick}
                 >
-                {/* <MiniMap
+                    {/* <MiniMap
                     nodeColor={(n) => {
                     switch (n.type) {
                         case "startNode":
@@ -818,7 +818,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
 export default function conversationEditor(props: ConversationEditorProps) {
     return (
         <>
-            <div style={{width: "100%", position: "absolute", height: "6px", boxShadow: "var(--vscode-scrollbar-shadow) 0 6px 6px -6px inset"}}></div>
+            <div style={{ width: "100%", position: "absolute", height: "6px", boxShadow: "var(--vscode-scrollbar-shadow) 0 6px 6px -6px inset" }}></div>
             <ReactFlowProvider>
                 <ConversationFlowView {...props} />
             </ReactFlowProvider>

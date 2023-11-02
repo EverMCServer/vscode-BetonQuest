@@ -11,12 +11,12 @@ export default function eventsEditor(props: EventsEditorProps) {
 
     // Convert all Events into coresponding Event's Editor
     const getEventEditors = (pkg: Package) => {
-        return pkg.getAllEvents().flatMap(e=>{
+        return pkg.getAllEvents().flatMap(e => {
             switch (e.getKind().toLowerCase()) {
                 case 'give':
                     return [<Give key={e.getName()} package={props.package} syncYaml={props.syncYaml} event={e}></Give>];
                 default:
-                break;
+                    break;
             }
             return [];
         });
@@ -24,7 +24,7 @@ export default function eventsEditor(props: EventsEditorProps) {
 
     const [eventEditorList, setEventEditorList] = useState(getEventEditors(props.package));
 
-    useEffect(()=>{
+    useEffect(() => {
         setEventEditorList(getEventEditors(props.package));
     }, [props.package]);
 

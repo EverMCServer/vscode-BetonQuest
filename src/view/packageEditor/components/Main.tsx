@@ -13,7 +13,7 @@ interface MainProps {
     syncYaml: (delay?: number) => void,
 }
 
-export default function main( props: MainProps ) {
+export default function main(props: MainProps) {
 
     const [tabsActiveKey, setTabsActiveKey] = useState("");
     const [tabsItems, setTabsItems] = useState([] as Tab[]);
@@ -67,7 +67,7 @@ export default function main( props: MainProps ) {
                 let key = "new_conv";
                 let count = 2;
                 const allConv = props.package.getConversations();
-                for (;allConv.has(key);) {
+                for (; allConv.has(key);) {
                     key = `new_conv_${count++}`;
                 };
 
@@ -84,7 +84,7 @@ export default function main( props: MainProps ) {
                     label: <ConversationTabLabel label={key} package={props.package} syncYaml={props.syncYaml}></ConversationTabLabel>,
                     children: <ConversationEditor key={key} conversation={conv} conversationName={key} syncYaml={props.syncYaml}></ConversationEditor>,
                     closeIcon: <VscTrash />,
-                    style: {height: "100%"}  // Maximize tab content height for ReactFlow
+                    style: { height: "100%" }  // Maximize tab content height for ReactFlow
                 });
                 setTabsItems(newConvs);
                 setTabsActiveKey(key);
@@ -115,13 +115,13 @@ export default function main( props: MainProps ) {
     // Iterate all conversations, create tabs items
     useEffect(() => {
         const initTabsItems = [] as Tab[];
-        props.package.getConversations().forEach((v, k)=>{
+        props.package.getConversations().forEach((v, k) => {
             initTabsItems.push({
                 key: k,
                 label: <ConversationTabLabel label={k} package={props.package} syncYaml={props.syncYaml}></ConversationTabLabel>,
                 children: <ConversationEditor key={k} conversation={v} conversationName={k} syncYaml={props.syncYaml}></ConversationEditor>,
                 closeIcon: <VscTrash />,
-                style: {height: "100%"}  // Maximize tab content height for ReactFlow
+                style: { height: "100%" }  // Maximize tab content height for ReactFlow
             });
         });
         if (initTabsItems.length) {
@@ -132,7 +132,7 @@ export default function main( props: MainProps ) {
         }
     }, [props.package]);
 
-    return(
+    return (
         <>
             <Tabs
                 type={"editable-card"}

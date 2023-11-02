@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { vscode } from "./vscode";
 
 // test locale
-import {setLocale} from '../../i18n/i18n';
+import { setLocale } from '../../i18n/i18n';
 import L from '../../i18n/i18n';
 
 import { ConfigProvider, Layout } from "antd";
@@ -35,7 +35,7 @@ export default function app() {
     // const [translationSelection, setTranslationSelection] = useState(globalThis.initialConfig.translationSelection || "en");
 
     // Width of the sider
-    const [siderWidth, setSiderWidth] = useState(document.body.scrollWidth/3);
+    const [siderWidth, setSiderWidth] = useState(document.body.scrollWidth / 3);
 
     // Prevent unnecessary rendering
     const setPkg = (newPkg: Package) => {
@@ -47,7 +47,7 @@ export default function app() {
     };
 
     // Get document's content update from vscode
-    useEffect(()=>{
+    useEffect(() => {
         // notify vscode when webview startup completed.
         vscode.postMessage({
             type: "webview-lifecycle",
@@ -75,7 +75,7 @@ export default function app() {
                     }
                     break;
                 case 'betonquest-translationSelection':
-                    // setTranslationSelection(message.content);
+                // setTranslationSelection(message.content);
             }
         });
     }, []);
@@ -86,7 +86,7 @@ export default function app() {
         window.clearTimeout(syncYamlTimeoutHandler);
 
         // Delayed YAML update.
-        syncYamlTimeoutHandler = window.setTimeout(()=>{
+        syncYamlTimeoutHandler = window.setTimeout(() => {
             // Update
             cachedYaml = pkg.getYamlText(); // Prevent duplicated update
             vscode.postMessage({
@@ -105,71 +105,71 @@ export default function app() {
     const [collapsed, setCollapsed] = useState(true);
 
     return (
-    <ConfigProvider
-        theme={{
-            components: {
-                Layout: {
-                    colorBgBody: "",
+        <ConfigProvider
+            theme={{
+                components: {
+                    Layout: {
+                        colorBgBody: "",
+                    },
+                    Tabs: {
+                        horizontalMargin: "0", // margin around tabs
+
+                        cardBg: "var(--vscode-tab-inactiveBackground)", // un-selected bg
+                        itemActiveColor: "var(--vscode-editor-foreground)", // selection click
+                        itemSelectedColor: "var(--vscode-editor-foreground)", // selected tab
+                        itemHoverColor: "var(--vscode-editor-foreground)", // hover
+                        cardGutter: 0, // gap between tabs
+
+                        // Global
+                        colorText: "var(--vscode-editor-foreground)", // un-selected tab text & contents text
+                        colorBgContainer: "var(--vscode-tab-activeBackground)", // selected tab bg
+                        colorTextDescription: "var(--vscode-disabledForeground)", // "delete" button
+                        colorTextHeading: "var(--vscode-editor-foreground)", // "delete" button hover
+                        colorPrimary: "var(--vscode-editor-foreground)", // color of the line below the selected tab
+
+                        borderRadius: 0, // tab radius
+                        colorBorderSecondary: "transparent", // tab border color
+                        // lineWidth: 0, // tab border width
+                        borderRadiusLG: 0, // "add" button border radius
+                    }
                 },
-                Tabs: {
-                    horizontalMargin: "0", // margin around tabs
-
-                    cardBg: "var(--vscode-tab-inactiveBackground)", // un-selected bg
-                    itemActiveColor: "var(--vscode-editor-foreground)", // selection click
-                    itemSelectedColor: "var(--vscode-editor-foreground)", // selected tab
-                    itemHoverColor: "var(--vscode-editor-foreground)", // hover
-                    cardGutter: 0, // gap between tabs
-
-                    // Global
-                    colorText: "var(--vscode-editor-foreground)", // un-selected tab text & contents text
-                    colorBgContainer: "var(--vscode-tab-activeBackground)", // selected tab bg
-                    colorTextDescription: "var(--vscode-disabledForeground)", // "delete" button
-                    colorTextHeading: "var(--vscode-editor-foreground)", // "delete" button hover
-                    colorPrimary: "var(--vscode-editor-foreground)", // color of the line below the selected tab
-
-                    borderRadius: 0, // tab radius
-                    colorBorderSecondary: "transparent", // tab border color
-                    // lineWidth: 0, // tab border width
-                    borderRadiusLG: 0, // "add" button border radius
-                }
-            },
-        }}
-    >
-        <Layout
-            style={{
-                minHeight: '100vh'
             }}
         >
-            <Layout>
-                <Main package={pkg} syncYaml={syncYaml}></Main>
-            </Layout>
-            <ResizableSider
-                width={siderWidth}
-                collapsedWidth={0}
-                trigger={<div>|||</div>}
-                zeroWidthTriggerStyle={{
-                    width: "18px",
-                    left: collapsed ? "-18px" : "-6px", // "-6px",
-                    height: "40px",
-                    margin: "-20px 0",
-                    top: "50vh",
-                    background: "var(--vscode-menu-separatorBackground)",
-                    borderStartStartRadius: "0px",
-                    borderStartEndRadius: "0px",
-                    borderEndStartRadius: "0px",
-                    borderEndEndRadius: "0px",
-                    zIndex: "1000",
-                }}
+            <Layout
                 style={{
-                    background: "var(--vscode-sideBar-background)",
+                    minHeight: '100vh'
                 }}
-                collapsible
-                collapsed={collapsed}
-                onCollapse={(value) => setCollapsed(value)}
             >
-                <ListEditor package={pkg} syncYaml={syncYaml}></ListEditor>
-            </ResizableSider>
-        </Layout>
-    </ConfigProvider>
+                <Layout>
+                    <Main package={pkg} syncYaml={syncYaml}></Main>
+                </Layout>
+                <ResizableSider
+                    width={siderWidth}
+                    collapsedWidth={0}
+                    trigger={<div>|||</div>}
+                    zeroWidthTriggerStyle={{
+                        width: "18px",
+                        left: collapsed ? "-18px" : "-6px", // "-6px",
+                        height: "40px",
+                        margin: "-20px 0",
+                        top: "50vh",
+                        background: "var(--vscode-menu-separatorBackground)",
+                        borderStartStartRadius: "0px",
+                        borderStartEndRadius: "0px",
+                        borderEndStartRadius: "0px",
+                        borderEndEndRadius: "0px",
+                        zIndex: "1000",
+                    }}
+                    style={{
+                        background: "var(--vscode-sideBar-background)",
+                    }}
+                    collapsible
+                    collapsed={collapsed}
+                    onCollapse={(value) => setCollapsed(value)}
+                >
+                    <ListEditor package={pkg} syncYaml={syncYaml}></ListEditor>
+                </ResizableSider>
+            </Layout>
+        </ConfigProvider>
     );
 }

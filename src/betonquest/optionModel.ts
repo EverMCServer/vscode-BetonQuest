@@ -26,14 +26,14 @@ interface IOptionList {
     [optionName: string]: IOptionConfigInfo
 }
 
-export const optionList : IOptionList = {
+export const optionList: IOptionList = {
     "example": {
         kind: "",
         name: L(""),
         description: L(""),
         parse: stringParser,
     },
-    "cancelerIdentifier" : {
+    "cancelerIdentifier": {
         kind: "cancelerIdentifier",
         name: L("betonquest.option.cancelerIdentifier.name"),
         description: L("betonquest.option.cancelerIdentifier.description"),

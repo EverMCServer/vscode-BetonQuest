@@ -13,7 +13,7 @@ interface Props {
 export default function translationSelector(props: Props): React.JSX.Element {
 
     const [name, setName] = React.useState("");
-    const [items, setItems] = React.useState(allLanguages.filter(e=>!props.allTranslations.every(f=>f!==e.value)));
+    const [items, setItems] = React.useState(allLanguages.filter(e => !props.allTranslations.every(f => f !== e.value)));
 
     React.useEffect(() => {
         // Get all translations from props
@@ -33,8 +33,8 @@ export default function translationSelector(props: Props): React.JSX.Element {
     function onTranslationChange(value: string) {
         // Send translation selection to vscode extension.
         vscode.postMessage({
-        type: "set-betonquest-translationSelection",
-        content: value,
+            type: "set-betonquest-translationSelection",
+            content: value,
         });
         return;
     }
@@ -65,44 +65,44 @@ export default function translationSelector(props: Props): React.JSX.Element {
 
     return (
         <Select
-        value={props.selectedTranslation}
-        onChange={onTranslationChange}
-        style={!props.enabled?{display:"none"}:{}}
-        size="small"
-        showSearch
-        popupMatchSelectWidth={false}
-        placeholder="language"
-        // dropdownAlign={{points:['tr', 'br']}}
-        // dropdownStyle={{alignItems: "right"}}
-        dropdownRender={(menu) => (
-            <>
-            {menu}
-            <Divider style={{ margin: "8px 0" }} />
-            <Space style={{ padding: "0 4px 4px" }} onMouseDown={preventEvent}>
-                <Button style={{height: "auto", padding:"0px 6px"}} type="text" onClick={addItem}>
-                +
-                </Button>
-                <Select
-                popupMatchSelectWidth={false}
-                placeholder="New Translation"
-                size="small"
-                showSearch
-                value={name||undefined}
-                onChange={onNameChange}
-                filterOption={(input, option) =>
-                    (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={allLanguages.filter(e=>items.every(f=>f.value!==e.value))}
-                />
-            </Space>
-            </>
-        )}
-        filterOption={(input, option) =>
-            (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-        }
-        options={items}
+            value={props.selectedTranslation}
+            onChange={onTranslationChange}
+            style={!props.enabled ? { display: "none" } : {}}
+            size="small"
+            showSearch
+            popupMatchSelectWidth={false}
+            placeholder="language"
+            // dropdownAlign={{points:['tr', 'br']}}
+            // dropdownStyle={{alignItems: "right"}}
+            dropdownRender={(menu) => (
+                <>
+                    {menu}
+                    <Divider style={{ margin: "8px 0" }} />
+                    <Space style={{ padding: "0 4px 4px" }} onMouseDown={preventEvent}>
+                        <Button style={{ height: "auto", padding: "0px 6px" }} type="text" onClick={addItem}>
+                            +
+                        </Button>
+                        <Select
+                            popupMatchSelectWidth={false}
+                            placeholder="New Translation"
+                            size="small"
+                            showSearch
+                            value={name || undefined}
+                            onChange={onNameChange}
+                            filterOption={(input, option) =>
+                                (option?.label ?? "")
+                                    .toLowerCase()
+                                    .includes(input.toLowerCase())
+                            }
+                            options={allLanguages.filter(e => items.every(f => f.value !== e.value))}
+                        />
+                    </Space>
+                </>
+            )}
+            filterOption={(input, option) =>
+                (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            options={items}
         />
     );
 }

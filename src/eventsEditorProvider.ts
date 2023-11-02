@@ -4,26 +4,26 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
 
     public static register(context: vscode.ExtensionContext): vscode.Disposable {
         const provider = new EventsEditorProvider(context);
-		const providerRegistration = vscode.window.registerCustomEditorProvider(EventsEditorProvider.viewType, provider);
-		return providerRegistration;
+        const providerRegistration = vscode.window.registerCustomEditorProvider(EventsEditorProvider.viewType, provider);
+        return providerRegistration;
     }
 
     private static readonly viewType = 'betonquest.eventsEditor';
 
     constructor(
-		private readonly context: vscode.ExtensionContext
-	) { }
+        private readonly context: vscode.ExtensionContext
+    ) { }
 
     /**
-	 * Called when our custom editor is opened.
-	 * 
-	 * 
-	 */
-	public async resolveCustomTextEditor(
-		document: vscode.TextDocument,
-		webviewPanel: vscode.WebviewPanel,
-		_token: vscode.CancellationToken
-	): Promise<void> {
+     * Called when our custom editor is opened.
+     * 
+     * 
+     */
+    public async resolveCustomTextEditor(
+        document: vscode.TextDocument,
+        webviewPanel: vscode.WebviewPanel,
+        _token: vscode.CancellationToken
+    ): Promise<void> {
         // Config Webview
         webviewPanel.webview.options = {
             enableScripts: true,
@@ -44,30 +44,30 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
         }
 
         // Hook up event handlers so that we can synchronize the webview with the text document.
-		//
-		// The text document acts as our model, so we have to sync change in the document to our
-		// editor and sync changes in the editor back to the document.
-		// 
-		// Remember that a single text document can also be shared between multiple custom
-		// editors (this happens for example when you split a custom editor)
+        //
+        // The text document acts as our model, so we have to sync change in the document to our
+        // editor and sync changes in the editor back to the document.
+        // 
+        // Remember that a single text document can also be shared between multiple custom
+        // editors (this happens for example when you split a custom editor)
 
         const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(e => {
-			if (e.document.uri.toString() === document.uri.toString()) {
-				sendDocumentToWebview();
-			}
-		});
+            if (e.document.uri.toString() === document.uri.toString()) {
+                sendDocumentToWebview();
+            }
+        });
 
         const changeSelectionSubscription = vscode.window.onDidChangeTextEditorSelection(e => {
             if (e.textEditor.document.uri.toString() === document.uri.toString()) {
                 let curPos = e.selections[0].active;
                 let offset = e.textEditor.document.offsetAt(curPos);
                 console.log("\ncurPos: ", curPos, "\noffset: ", offset);
-                
+
                 webviewPanel.webview.postMessage({
                     type: 'curPos',
                     content: curPos
                 });
-			}
+            }
         });
 
         const changeTranslationSubscription = vscode.workspace.onDidChangeConfiguration(e => {
@@ -80,9 +80,9 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
             }
         });
 
-		// Receive message from the webview.
-		const onDidReceiveMessage = webviewPanel.webview.onDidReceiveMessage(e => {
-			switch (e.type) {
+        // Receive message from the webview.
+        const onDidReceiveMessage = webviewPanel.webview.onDidReceiveMessage(e => {
+            switch (e.type) {
                 case 'webview-lifecycle':
                     switch (e.content) {
                         case 'started':
@@ -92,21 +92,21 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
                     }
                     return;
 
-				case 'edit':
+                case 'edit':
                     console.log("received update editted yml ...");
                     // update editted yml
                     this.updateTextDocument(document, e.content);
-					return;
-			}
-		});
+                    return;
+            }
+        });
 
         // Make sure we get rid of the listener when our editor is closed.
-		webviewPanel.onDidDispose(() => {
-			changeDocumentSubscription.dispose();
+        webviewPanel.onDidDispose(() => {
+            changeDocumentSubscription.dispose();
             changeSelectionSubscription.dispose();
             changeTranslationSubscription.dispose();
             onDidReceiveMessage.dispose();
-		});
+        });
     }
 
     // Function to edit vscode.document

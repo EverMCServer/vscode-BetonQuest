@@ -51,7 +51,7 @@ export default function listEditor(props: ListEditorProps) {
                     color: "var(--vscode-disabledForeground)", // un-activated tab text color
                 }}
             ></Tabs>
-            <div style={{position: "absolute", bottom: "0"}}>(ListEditor component)</div>
+            <div style={{ position: "absolute", bottom: "0" }}>(ListEditor component)</div>
         </>
     );
 }

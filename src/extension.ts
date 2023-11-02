@@ -38,7 +38,7 @@ export function activate(context: vscode.ExtensionContext) {
       editor.document.fileName.match(/[\/\\]conditions\.ya?ml$/) ||
       editor.document.fileName.match(/[\/\\]objectives\.ya?ml$/) ||
       editor.document.fileName.match(/[\/\\]items\.ya?ml$/)
-      ) {
+    ) {
       const dir = path.dirname(editor.document.fileName);
 
       // Check for main.yml
@@ -61,8 +61,8 @@ export function activate(context: vscode.ExtensionContext) {
         packageExists = fs.existsSync(packageFile);
 
         d = path.resolve(d, "..");
-        
-        if (packageExists || vscode.workspace.workspaceFolders?.find(base=>{
+
+        if (packageExists || vscode.workspace.workspaceFolders?.find(base => {
           const u = base.uri.fsPath.toString();
           return u === d || u.length >= d.length;
         })) {
@@ -79,7 +79,7 @@ export function activate(context: vscode.ExtensionContext) {
     checkCanActivateEditor(editor);
   }
   // Listen for future opened documents.
-  vscode.window.onDidChangeActiveTextEditor(async (e) => {if (e) {checkCanActivateEditor(e);}});
+  vscode.window.onDidChangeActiveTextEditor(async (e) => { if (e) { checkCanActivateEditor(e); } });
 
   // Command to open the Conversation Editor
   context.subscriptions.push(
@@ -89,7 +89,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         const activeTextEditor = vscode.window.activeTextEditor;
         if (!activeTextEditor) {
-            return; // No active editor
+          return; // No active editor
         }
 
         await vscode.commands.executeCommand('vscode.openWith', activeTextEditor.document.uri, 'betonquest.conversationEditor', vscode.ViewColumn.Beside);
@@ -105,7 +105,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         const activeTextEditor = vscode.window.activeTextEditor;
         if (!activeTextEditor) {
-            return; // No active editor
+          return; // No active editor
         }
 
         await vscode.commands.executeCommand('vscode.openWith', activeTextEditor.document.uri, 'betonquest.eventsEditor', vscode.ViewColumn.Beside);
@@ -137,7 +137,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         const activeTextEditor = vscode.window.activeTextEditor;
         if (!activeTextEditor) {
-            return; // No active editor
+          return; // No active editor
         }
 
         await vscode.commands.executeCommand('vscode.openWith', activeTextEditor.document.uri, 'betonquest.packageEditor', vscode.ViewColumn.Beside);
@@ -156,4 +156,4 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
