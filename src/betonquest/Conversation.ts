@@ -164,7 +164,7 @@ export default class Conversation {
 
     // Create a new Option
     createOption(type: string, optionName: string): Option | undefined {
-        this.setValueOnYamlPath([type, optionName], new YAMLMap());
+        this.setValueOnYamlPath([type, optionName], new YAMLMap(this.yaml.value?.schema));
         return this.getOption(type, optionName);
     }
 
@@ -273,11 +273,11 @@ export default class Conversation {
             // Check if value saved with YAML.YAMLMap or string
             node.set(translation || "en", value);
         } else if (typeof node === "string" || !translation) {
-            this.yaml.value!.setIn(yamlPath, value);
+            this.yaml.value?.setIn(yamlPath, value);
         } else {
-            const map = new YAMLMap();
+            const map = new YAMLMap(this.yaml.value?.schema);
             map.add(new Pair(new Scalar(translation), value));
-            this.yaml.value!.setIn(yamlPath, map);
+            this.yaml.value?.setIn(yamlPath, map);
         }
     }
 
@@ -542,7 +542,7 @@ export class Option {
         } else if (typeof node === "string" || !translation) {
             this.yaml.setIn(yamlPath, value);
         } else {
-            const map = new YAMLMap();
+            const map = new YAMLMap(this.yaml.schema);
             map.add(new Pair(new Scalar(translation), value));
             this.yaml.setIn(yamlPath, map);
         }

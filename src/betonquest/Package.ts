@@ -1,4 +1,4 @@
-import YAML, { Document, YAMLMap, Pair, Scalar, ErrorCode, YAMLError } from 'yaml';
+import YAML, { Document, YAMLMap, Pair, Scalar, YAMLError } from 'yaml';
 import Conversation from './Conversation';
 import Event from './Event';
 import Condition from './Condition';
@@ -265,7 +265,7 @@ export default class Package {
 
     // Create a new Conversation
     createConversation(scriptName: string, quester: string = ""): Conversation | undefined {
-        const map = new YAMLMap();
+        const map = new YAMLMap(this.yaml.schema);
         map.add(new Pair(new Scalar("quester"), new Scalar(quester)));
         try {
             this.yaml.addIn(["conversations"], this.yaml.createPair(new Scalar(scriptName), map));
