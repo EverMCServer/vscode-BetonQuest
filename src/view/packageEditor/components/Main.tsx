@@ -6,6 +6,7 @@ import { Modal, Tabs } from "antd";
 import type { Tab } from 'rc-tabs/lib/interface';
 import { VscTrash } from "react-icons/vsc";
 
+import "../index.css";
 import "./Main.css";
 
 interface MainProps {
@@ -161,13 +162,10 @@ export default function main(props: MainProps) {
                             justifyContent: "center", // x
                         }}
                     >
-                        <div
-                            style={{
-                                padding: "6px",
-                                border: "1px solid var(--vscode-button-border)"
-                            }}
+                        <a
+                            className="vscode-button vscode-button-secondary"
                             onClick={() => { onTabsEdit("", "add"); }}
-                        >Click here to create a new Conversation</div>
+                        >Click here to create a new Conversation</a>
                     </div>
             }
             {modalContextHolder}
