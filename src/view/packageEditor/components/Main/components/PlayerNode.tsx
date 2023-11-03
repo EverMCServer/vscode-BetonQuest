@@ -30,7 +30,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const conditionDel = (): void => {
     const arr = [...conditionsGet()];
     arr?.pop();
-    data.option?.setConditionNames(arr || []);
+    data.option?.setConditionNames(arr);
 
     data.syncYaml();
     refreshUI();

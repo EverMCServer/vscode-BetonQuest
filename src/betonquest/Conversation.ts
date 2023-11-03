@@ -38,7 +38,7 @@ export default class Conversation {
     }
 
     insertFirst(pointers: string[], location?: number | string) {
-        this.insertElementsToStringArrayOnYamlPath(["first"], pointers, location);
+        this.insertElementsToStringArrayOnYamlPath(["first"], pointers, location, true);
     }
 
     removeFirst(pointers: string[]) {
@@ -262,7 +262,7 @@ export default class Conversation {
         return "";
     }
 
-    private setValueOnYamlPath(yamlPath: string[], value: unknown, translation?: string) {
+    private setValueOnYamlPath(yamlPath: string[], value?: unknown, translation?: string) {
         let node: unknown;
         try {
             node = this.yaml.value?.getIn(yamlPath);
@@ -288,7 +288,7 @@ export default class Conversation {
         } catch {
             return [];
         }
-        if (typeof str !== "string") {
+        if (typeof str !== "string" || removeEmpty && str.length === 0) {
             return [];
         }
         // Split element by ","
@@ -305,13 +305,20 @@ export default class Conversation {
         //     // Filter out empty elements
         //     return value.match(/^[ \t\r]*$/) === null;
         // }).join(", ");
+
+        // Remove the whole key from YAML if array is empty
+        if (stringArray.length === 0) {
+            this.yaml.value?.deleteIn(yamlPath);
+            return;
+        }
+
         const str = stringArray.join(", ");
         this.yaml.value?.setIn(yamlPath, str);
     }
 
-    private editElementOfStringArrayOnYamlPath(yamlPath: string[], location: number | string, element: string) {
+    private editElementOfStringArrayOnYamlPath(yamlPath: string[], location: number | string, element: string, removeEmpty: boolean = false) {
         // Search pos to edit
-        const existArray = this.getStringArrayOnYamlPath(yamlPath);
+        const existArray = this.getStringArrayOnYamlPath(yamlPath, removeEmpty);
         let pos = -1;
         switch (typeof location) {
             case "string":
@@ -330,9 +337,9 @@ export default class Conversation {
         this.setStringArrayOnYamlPath(yamlPath, existArray);
     }
 
-    private insertElementsToStringArrayOnYamlPath(yamlPath: string[], elements: string[], location?: number | string) {
+    private insertElementsToStringArrayOnYamlPath(yamlPath: string[], elements: string[], location?: number | string, removeEmpty: boolean = false) {
         // Search pos to insert
-        const existArray = this.getStringArrayOnYamlPath(yamlPath, true);
+        const existArray = this.getStringArrayOnYamlPath(yamlPath, removeEmpty);
         let pos = existArray.length;
         switch (typeof location) {
             case "string":
@@ -459,11 +466,11 @@ export class Option {
     }
 
     editPointerName(location: number | string, pointerName: string) {
-        this.editElementOfStringArrayOnYamlPath(["pointers"], location, pointerName);
+        this.editElementOfStringArrayOnYamlPath(["pointers"], location, pointerName, true);
     }
 
     insertPointerNames(pointerNames: string[], location?: number | string) {
-        this.insertElementsToStringArrayOnYamlPath(["pointers"], pointerNames, location);
+        this.insertElementsToStringArrayOnYamlPath(["pointers"], pointerNames, location, true);
     }
 
     removePointerNames(pointerNames: string[]) {
@@ -548,7 +555,7 @@ export class Option {
         } catch {
             return [];
         }
-        if (typeof str !== "string" || str.length === 0) {
+        if (typeof str !== "string" || removeEmpty && str.length === 0) {
             return [];
         }
         // Split element by ","
@@ -561,17 +568,24 @@ export class Option {
     }
 
     private setStringArrayOnYamlPath(yamlPath: string[], stringArray: string[]) {
+        // // Filter out empty elements
         // const str = stringArray.filter((value) => {
-        //     // Filter out empty elements
         //     return value.match(/^[ \t\r]*$/) === null;
         // }).join(", ");
+
+        // Remove the whole key from YAML if array is empty
+        if (stringArray.length === 0) {
+            this.yaml.deleteIn(yamlPath);
+            return;
+        }
+
         const str = stringArray.join(", ");
         this.yaml.setIn(yamlPath, str);
     }
 
-    private editElementOfStringArrayOnYamlPath(yamlPath: string[], location: number | string, element: string) {
+    private editElementOfStringArrayOnYamlPath(yamlPath: string[], location: number | string, element: string, removeEmpty: boolean = false) {
         // Search pos to edit
-        const existArray = this.getStringArrayOnYamlPath(yamlPath);
+        const existArray = this.getStringArrayOnYamlPath(yamlPath, removeEmpty);
         let pos = -1;
         switch (typeof location) {
             case "string":
@@ -590,9 +604,9 @@ export class Option {
         this.setStringArrayOnYamlPath(yamlPath, existArray);
     }
 
-    private insertElementsToStringArrayOnYamlPath(yamlPath: string[], elements: string[], location?: number | string) {
+    private insertElementsToStringArrayOnYamlPath(yamlPath: string[], elements: string[], location?: number | string, removeEmpty: boolean = false) {
         // Search pos to insert
-        const existArray = this.getStringArrayOnYamlPath(yamlPath, true);
+        const existArray = this.getStringArrayOnYamlPath(yamlPath, removeEmpty);
         let pos = existArray.length;
         switch (typeof location) {
             case "string":
