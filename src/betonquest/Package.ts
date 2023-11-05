@@ -1,4 +1,4 @@
-import YAML, { Document, YAMLMap, Pair, Scalar, YAMLError } from 'yaml';
+import YAML, { Document, YAMLMap, Pair, Scalar } from 'yaml';
 import Conversation from './Conversation';
 import Event from './Event';
 import Condition from './Condition';
@@ -264,17 +264,17 @@ export default class Package {
     }
 
     // Create a new Conversation
-    createConversation(scriptName: string, quester: string = ""): Conversation | undefined {
+    createConversation(scriptName: string, quester: string = scriptName, isMultilingual: boolean = true, transitionName: string = 'en'): Conversation | undefined {
         const map = new YAMLMap(this.yaml.schema);
-        map.add(new Pair(new Scalar("quester"), new Scalar(quester)));
+        if (isMultilingual) {
+            map.addIn(["quester"], this.yaml.createPair(new Scalar(transitionName), new Scalar(quester)));
+        } else {
+            map.add(new Pair(new Scalar("quester"), new Scalar(quester)));
+        }
         try {
             this.yaml.addIn(["conversations"], this.yaml.createPair(new Scalar(scriptName), map));
         } catch (e) {
-            if (e instanceof YAMLError) {
-                if (e.code === "DUPLICATE_KEY") {
-                    return undefined;
-                }
-            }
+            return undefined;
         }
         return this.getConversation(scriptName)!;
     }

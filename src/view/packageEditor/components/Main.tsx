@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ConversationEditor from "./Main/ConversationEditor";
 import ConversationTabLabel from "./Main/ConversationTabLabel";
 import Package from "../../../betonquest/Package";
-import { Modal, Tabs } from "antd";
+import { Input, Modal, Radio, Space, Tabs } from "antd";
 import type { Tab } from 'rc-tabs/lib/interface';
 import { VscTrash } from "react-icons/vsc";
 
@@ -57,42 +57,39 @@ export default function main(props: MainProps) {
         setTabsActiveKey(newActiveKey);
     };
 
+    // Helper function to create new Conversation
+    const newConversation = (key: string, isMultilingual: boolean, translationName: string = "en") => {
+        // Create new Conversation on package
+        const conv = props.package.createConversation(key, key, isMultilingual, translationName);
+        if (!conv) {
+            return;
+        }
+
+        // Create new tab and update the view
+        const newConvs = [...tabsItems];
+        newConvs.push({
+            key: key,
+            label: <ConversationTabLabel label={key} package={props.package} syncYaml={props.syncYaml}></ConversationTabLabel>,
+            children: <ConversationEditor key={key} conversation={conv} conversationName={key} syncYaml={props.syncYaml}></ConversationEditor>,
+            closeIcon: <VscTrash />,
+            style: { height: "100%" }  // Maximize tab content height for ReactFlow
+        });
+        setTabsItems(newConvs);
+        setTabsActiveKey(key);
+
+        // Sync yaml back to VSCode
+        props.syncYaml();
+
+    };
+
     // Handle tabs addition / removal
     const onTabsEdit = (
         targetKey: TargetKey,
-        action: 'add' | 'remove',
+        action: `add` | 'remove',
     ) => {
         switch (action) {
             case 'add':
-                // Create new key, Conversation's script name
-                let key = "new_conv";
-                let count = 2;
-                const allConv = props.package.getConversations();
-                for (; allConv.has(key);) {
-                    key = `new_conv_${count++}`;
-                };
-
-                // Create new Conversation on package
-                const conv = props.package.createConversation(key, key);
-                if (!conv) {
-                    break;
-                }
-
-                // Create new tab and update the view
-                const newConvs = [...tabsItems];
-                newConvs.push({
-                    key: key,
-                    label: <ConversationTabLabel label={key} package={props.package} syncYaml={props.syncYaml}></ConversationTabLabel>,
-                    children: <ConversationEditor key={key} conversation={conv} conversationName={key} syncYaml={props.syncYaml}></ConversationEditor>,
-                    closeIcon: <VscTrash />,
-                    style: { height: "100%" }  // Maximize tab content height for ReactFlow
-                });
-                setTabsItems(newConvs);
-                setTabsActiveKey(key);
-
-                // Sync yaml back to VSCode
-                props.syncYaml();
-
+                onConversationCreate();
                 break;
 
             case 'remove':
@@ -112,6 +109,67 @@ export default function main(props: MainProps) {
         }
     };
 
+    // Persist config across modals
+    // New key for Conversation's script name
+    const [newConversationKeyConfig, setNewConversationKeyConfig] = useState("new_conv");
+    // Multilingual selection
+    const [isMultilingualConfig, setIsMultilingualConfig] = useState(true);
+    const [translationNameConfig, setTranslationNameConfig] = useState('en');
+
+    // Handle conversation creation
+    const onConversationCreate = () => {
+        // New key for Conversation's script name
+        let key = newConversationKeyConfig;
+        let count = 2;
+        const allConv = props.package.getConversations();
+        for (; allConv.has(key);) {
+            key = `new_conv_${count++}`;
+        };
+        setNewConversationKeyConfig(key);
+
+        // Multilingual selection
+        let isMultilingual = isMultilingualConfig;
+        let translationName = translationNameConfig;
+
+        // Modal body for creating new Conversation
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        function ModalConversationCreate() {
+            const [isMultilingualEnabled, setIsMultilingualEnabled] = useState(isMultilingual);
+
+            return <Space>
+                <Space.Compact direction="vertical" size="small">
+                    <div>Name:</div>
+                    <div>Multilingual:</div>
+                    {isMultilingualEnabled ? <div>Language:</div> : null}
+                </Space.Compact>
+                <Space.Compact direction="vertical" size="small">
+                    <Input
+                        size="small"
+                        defaultValue={key}
+                        onChange={e => { key = e.target.value; setNewConversationKeyConfig(e.target.value); }}
+                    ></Input>
+                    <Radio.Group onChange={e => { isMultilingual = e.target.value; setIsMultilingualConfig(e.target.value); setIsMultilingualEnabled(e.target.value); }} defaultValue={isMultilingual}>
+                        <Radio value={true}>Enable</Radio>
+                        <Radio value={false}>Disable</Radio>
+                    </Radio.Group>
+                    {isMultilingualEnabled ? <Input
+                        size="small"
+                        defaultValue={translationName}
+                        onChange={e => {translationName = e.target.value; setTranslationNameConfig(e.target.value);}}
+                    ></Input> : null}
+                </Space.Compact>
+            </Space>;
+        }
+
+        // Prompt a modal for collecting conversation's name and translation setting
+        modal.confirm({
+            title: "New Conversation",
+            content: <ModalConversationCreate></ModalConversationCreate>,
+            okText: "Create",
+            onOk: () => { newConversation(key, isMultilingual, translationName); },
+            // onCancel: "",
+        });
+    };
 
     // Iterate all conversations, create tabs items
     useEffect(() => {
@@ -164,7 +222,7 @@ export default function main(props: MainProps) {
                     >
                         <a
                             className="vscode-button vscode-button-secondary"
-                            onClick={() => { onTabsEdit("", "add"); }}
+                            onClick={() => { onConversationCreate(); }}
                         >Click here to create a new Conversation</a>
                     </div>
             }
