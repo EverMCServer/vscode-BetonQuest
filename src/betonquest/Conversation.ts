@@ -18,7 +18,7 @@ export default class Conversation {
     }
 
     setQuester(quester: string, translation?: string) {
-        this.setValueOnYamlPath(["quester"], quester, translation);
+        this.setValueOnYamlPath(["quester"], new Scalar(quester), translation);
     }
 
     getFirst(): string[] {
@@ -67,7 +67,7 @@ export default class Conversation {
     }
 
     setStop(value: string) {
-        this.setValueOnYamlPath(["stop"], value);
+        this.setValueOnYamlPath(["stop"], new Scalar(value));
     }
 
     getFinalEventNames(): string[] {
@@ -271,7 +271,7 @@ export default class Conversation {
         }
         if (node instanceof YAMLMap) {
             // Check if value saved with YAML.YAMLMap or string
-            node.set(translation || "en", value);
+            node.set(new Scalar(translation || "en"), value);
         } else if (typeof node === "string" || !translation) {
             this.yaml.value?.setIn(yamlPath, value);
         } else {
@@ -312,7 +312,7 @@ export default class Conversation {
             return;
         }
 
-        const str = stringArray.join(", ");
+        const str = new Scalar(stringArray.join(", "));
         this.yaml.value?.setIn(yamlPath, str);
     }
 
@@ -497,7 +497,7 @@ export class Option {
     }
 
     setText(text: string, translation?: string) {
-        this.setValueOnYamlPath(["text"], text, translation);
+        this.setValueOnYamlPath(["text"], new Scalar(text), translation);
     }
 
     // Check if text multilingual
@@ -538,7 +538,7 @@ export class Option {
         }
         if (node instanceof YAMLMap) {
             // Check if value saved with YAML.YAMLMap or string
-            node.set(translation || "en", value);
+            node.set(new Scalar(translation || "en"), value);
         } else if (typeof node === "string" || !translation) {
             this.yaml.setIn(yamlPath, value);
         } else {
@@ -579,7 +579,7 @@ export class Option {
             return;
         }
 
-        const str = stringArray.join(", ");
+        const str = new Scalar(stringArray.join(", "));
         this.yaml.setIn(yamlPath, str);
     }
 
