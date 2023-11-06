@@ -226,7 +226,6 @@ export default class Package {
 
     // Get the Conversation Model by script name.
     getConversation(scriptName: string): Conversation | undefined {
-        console.log("getConversation");
         let result: Conversation | undefined;
         const yaml = this.yaml.getIn(["conversations"]);
         if (yaml instanceof YAMLMap) {
