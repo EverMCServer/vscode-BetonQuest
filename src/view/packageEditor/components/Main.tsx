@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from "react";
-import ConversationEditor from "./Main/ConversationEditor";
-import ConversationTabLabel from "./Main/ConversationTabLabel";
-import Package from "../../../betonquest/Package";
-import { Input, Modal, Radio, Space, Tabs } from "antd";
+import { Input, Modal, Radio, Select, Space, Tabs } from "antd";
 import type { Tab } from 'rc-tabs/lib/interface';
 import { VscTrash } from "react-icons/vsc";
 
+import ConversationEditor from "./Main/ConversationEditor";
+import ConversationTabLabel from "./Main/ConversationTabLabel";
+import Package from "../../../betonquest/Package";
+import { allLanguages } from "../../../i18n/i18n";
+
 import "../index.css";
 import "./Main.css";
+
+// Global variables from vscode
+declare global {
+    var initialConfig: {
+        translationSelection?: string; // Conversation YAML's translation selection.
+    };
+}
 
 interface MainProps {
     package: Package,
@@ -58,7 +67,7 @@ export default function main(props: MainProps) {
     };
 
     // Helper function to create new Conversation
-    const newConversation = (key: string, isMultilingual: boolean, translationName: string = "en") => {
+    const newConversation = (key: string, isMultilingual: boolean, translationName: string = 'en') => {
         // Create new Conversation on package
         const conv = props.package.createConversation(key, key, isMultilingual, translationName);
         if (!conv) {
@@ -70,7 +79,7 @@ export default function main(props: MainProps) {
         newConvs.push({
             key: key,
             label: <ConversationTabLabel label={key} package={props.package} syncYaml={props.syncYaml}></ConversationTabLabel>,
-            children: <ConversationEditor key={key} conversation={conv} conversationName={key} syncYaml={props.syncYaml}></ConversationEditor>,
+            children: <ConversationEditor key={key} conversation={conv} conversationName={key} syncYaml={props.syncYaml} translationSelection={translationName}></ConversationEditor>,
             closeIcon: <VscTrash />,
             style: { height: "100%" }  // Maximize tab content height for ReactFlow
         });
@@ -114,7 +123,7 @@ export default function main(props: MainProps) {
     const [newConversationKeyConfig, setNewConversationKeyConfig] = useState("new_conv");
     // Multilingual selection
     const [isMultilingualConfig, setIsMultilingualConfig] = useState(true);
-    const [translationNameConfig, setTranslationNameConfig] = useState('en');
+    const [translationNameConfig, setTranslationNameConfig] = useState(globalThis.initialConfig.translationSelection || 'en');
 
     // Handle conversation creation
     const onConversationCreate = () => {
@@ -152,11 +161,21 @@ export default function main(props: MainProps) {
                         <Radio value={true}>Enable</Radio>
                         <Radio value={false}>Disable</Radio>
                     </Radio.Group>
-                    {isMultilingualEnabled ? <Input
-                        size="small"
-                        defaultValue={translationName}
-                        onChange={e => {translationName = e.target.value; setTranslationNameConfig(e.target.value);}}
-                    ></Input> : null}
+                    {isMultilingualEnabled ?
+                        <Select
+                            popupMatchSelectWidth={false}
+                            placeholder="New Translation"
+                            size="small"
+                            showSearch
+                            defaultValue={translationName}
+                            onChange={value => { translationName = value; setTranslationNameConfig(value); }}
+                            filterOption={(input, option) =>
+                                (option?.label ?? "")
+                                    .toLowerCase()
+                                    .includes(input.toLowerCase())
+                            }
+                            options={allLanguages}
+                        /> : null}
                 </Space.Compact>
             </Space>;
         }

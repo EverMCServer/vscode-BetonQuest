@@ -70,6 +70,7 @@ interface ConversationEditorProps {
     conversation: Conversation,
     conversationName: string,
     syncYaml: (delay?: number) => void,
+    translationSelection?: string,
 }
 
 // ========== TODO ==========
@@ -89,21 +90,33 @@ interface ConversationEditorProps {
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function ConversationFlowView(props: ConversationEditorProps) {
-    // Cache translation selection
-    // TODO: load translation from props?
-    const [translationSelection, setTranslationSelection] = useState('');
+
+    // Get available translations list
+    const getAvailableTranslations = (): string[] => {
+        let translations: string[] = [];
+        if (props.conversation.isMultilingual()) {
+            translations = props.conversation.getTranslations();
+            if (props.translationSelection) {
+                translations.concat(props.translationSelection).filter((e, i, a) => i === a.indexOf(e));
+            }
+        }
+        return translations;
+    };
 
     // Caching translation list
-    const [allTranslations, setAllTranslations] = useState<string[]>([]);
+    const translations = getAvailableTranslations();
+    const [allTranslations, setAllTranslations] = useState<string[]>(translations);
     // Caching multilingual status
-    const [isMultilingual, setIsMultilingual] = useState(false);
+    const [isMultilingual, setIsMultilingual] = useState(translations ? true : false);
     useEffect(() => {
         const isMultilingual = props.conversation.isMultilingual();
+        setIsMultilingual(isMultilingual);
         if (isMultilingual) {
-            setIsMultilingual(isMultilingual);
-            setAllTranslations(props.conversation.getTranslations());
+            setAllTranslations(getAvailableTranslations());
         }
     }, [props.conversation]);
+    // Cache translation selection
+    const [translationSelection, setTranslationSelection] = useState(props.translationSelection || translations[0]);
 
     const flowWrapper = useRef<HTMLDivElement>(null);
     const [nodes, setNodes, onNodesChange] = useNodesState<NodeData>([]);
@@ -149,12 +162,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
         },
         [fitView, setEdges, setNodes, props.conversation, props.syncYaml, translationSelection]
     );
-
-    // Set initial states
-    useEffect(() => {
-        // set initial translation selection, it will also triger the initial rendering resetFlow() in belowing useEffect()
-        setTranslationSelection(globalThis.initialConfig.translationSelection || 'en');
-    }, []);
 
     // Update nodes and edges when props.conversation / translationSelection is udpated
     useEffect(() => {
@@ -671,12 +678,6 @@ function ConversationFlowView(props: ConversationEditorProps) {
     const handleVscodeMessage = (message: any) => {
         switch (message.type) {
 
-            // Receive translationSelection setting
-            case "betonquest-translationSelection":
-                setTranslationSelection(message.content);
-
-                break;
-
             // Center a node when cursor changed in Text Editor
             case "cursor-yaml-path":
                 centerAndSelectNode(message.content as string[]);
@@ -804,7 +805,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                     pannable
                 /> */}
                     <Panel position="top-right" className="panel">
-                        <TranslationSelector enabled={isMultilingual} selectedTranslation={translationSelection} allTranslations={allTranslations}></TranslationSelector>
+                        <TranslationSelector enabled={isMultilingual} selectedTranslation={translationSelection} allTranslations={allTranslations} onChange={setTranslationSelection}></TranslationSelector>
                     </Panel>
 
                     <Background id={props.conversationName+"-background"} variant={BackgroundVariant.Dots} />

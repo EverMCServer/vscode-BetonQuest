@@ -1,13 +1,13 @@
 import * as React from "react";
 
 import { Space, Select, Divider, Button } from 'antd';
-import { vscode } from "../../../vscode";
 import { allLanguages } from "../../../../../i18n/i18n";
 
 interface Props {
     enabled: boolean,
     selectedTranslation?: string,
     allTranslations: string[], // Languages detected from conversation yaml
+    onChange?: (value: any) => void,
 }
 
 export default function translationSelector(props: Props): React.JSX.Element {
@@ -29,15 +29,6 @@ export default function translationSelector(props: Props): React.JSX.Element {
         });
         setItems(translations);
     }, [props.allTranslations]);
-
-    function onTranslationChange(value: string) {
-        // Send translation selection to vscode extension.
-        vscode.postMessage({
-            type: "set-betonquest-translationSelection",
-            content: value,
-        });
-        return;
-    }
 
     function preventEvent(e: React.MouseEvent) {
         // e.preventDefault();
@@ -66,7 +57,7 @@ export default function translationSelector(props: Props): React.JSX.Element {
     return (
         <Select
             value={props.selectedTranslation}
-            onChange={onTranslationChange}
+            onChange={props.onChange}
             style={!props.enabled ? { display: "none" } : {}}
             size="small"
             showSearch
