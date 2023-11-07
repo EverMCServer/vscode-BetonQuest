@@ -197,7 +197,7 @@ export default function main(props: MainProps) {
                     <Tabs
                         type={"editable-card"}
                         onChange={onTabsChange}
-                        destroyInactiveTabPane={true}
+                        destroyInactiveTabPane={false} // keep keep flowchart rendering when switch tabs
                         activeKey={tabsActiveKey}
                         onEdit={onTabsEdit}
                         items={tabsItems}

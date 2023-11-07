@@ -807,7 +807,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                         <TranslationSelector enabled={isMultilingual} selectedTranslation={translationSelection} allTranslations={allTranslations}></TranslationSelector>
                     </Panel>
 
-                    <Background variant={BackgroundVariant.Dots} />
+                    <Background id={props.conversationName+"-background"} variant={BackgroundVariant.Dots} />
                     {menu && <ContextMenu onClick={onPaneClick} deleteNodes={onNodesDelete} {...menu} />}
                 </ReactFlow>
             </div>
