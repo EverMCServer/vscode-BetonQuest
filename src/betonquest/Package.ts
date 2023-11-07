@@ -57,8 +57,8 @@ export default class Package {
 
     // Create a new Event on the Package.
     createEvent(eventName: string): Event {
-        // this.yaml.addIn(["events"], new Pair(new Scalar<string>(eventName), new Scalar<string>("")));
-        this.yaml.addIn(["events"], this.yaml.createPair(new Scalar<string>(eventName), new Scalar<string>("")));
+        // this.yaml.addIn([new Scalar("events")], new Pair(new Scalar<string>(eventName), new Scalar<string>("")));
+        this.yaml.addIn([new Scalar("events")], this.yaml.createPair(new Scalar<string>(eventName), new Scalar<string>("")));
         return this.getEvent(eventName)!;
     }
 
@@ -96,7 +96,7 @@ export default class Package {
 
     // Create a new Condition on the Package.
     createCondition(conditionName: string): Event {
-        this.yaml.addIn(["conditions"], this.yaml.createPair(new Scalar<string>(conditionName), new Scalar<string>("")));
+        this.yaml.addIn([new Scalar("conditions")], this.yaml.createPair(new Scalar<string>(conditionName), new Scalar<string>("")));
         return this.getCondition(conditionName)!;
     }
 
@@ -134,7 +134,7 @@ export default class Package {
 
     // Create a new Objective on the Package.
     createObjective(objectiveName: string): Event {
-        this.yaml.addIn(["objectives"], this.yaml.createPair(new Scalar<string>(objectiveName), new Scalar<string>("")));
+        this.yaml.addIn([new Scalar("objectives")], this.yaml.createPair(new Scalar<string>(objectiveName), new Scalar<string>("")));
         return this.getObjective(objectiveName)!;
     }
 
@@ -176,7 +176,7 @@ export default class Package {
 
     // Create a new Item on the Package.
     createItem(itemName: string): Event {
-        this.yaml.addIn(["items"], this.yaml.createPair(new Scalar<string>(itemName), new Scalar<string>("")));
+        this.yaml.addIn([new Scalar("items")], this.yaml.createPair(new Scalar<string>(itemName), new Scalar<string>("")));
         return this.getItem(itemName)!;
     }
 
@@ -266,12 +266,12 @@ export default class Package {
     createConversation(scriptName: string, quester: string = scriptName, isMultilingual: boolean = true, transitionName: string = 'en'): Conversation | undefined {
         const map = new YAMLMap(this.yaml.schema);
         if (isMultilingual) {
-            map.addIn(["quester"], this.yaml.createPair(new Scalar(transitionName), new Scalar(quester)));
+            map.addIn([new Scalar("quester")], this.yaml.createPair(new Scalar(transitionName), new Scalar(quester)));
         } else {
             map.add(new Pair(new Scalar("quester"), new Scalar(quester)));
         }
         try {
-            this.yaml.addIn(["conversations"], this.yaml.createPair(new Scalar(scriptName), map));
+            this.yaml.addIn([new Scalar("conversations")], this.yaml.createPair(new Scalar(scriptName), map));
         } catch (e) {
             return undefined;
         }

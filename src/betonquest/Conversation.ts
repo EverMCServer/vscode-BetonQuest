@@ -269,15 +269,15 @@ export default class Conversation {
         } catch {
             return;
         }
+        // Check if value saved with YAML.YAMLMap or string
         if (node instanceof YAMLMap) {
-            // Check if value saved with YAML.YAMLMap or string
             node.set(new Scalar(translation || "en"), value);
         } else if (typeof node === "string" || !translation) {
-            this.yaml.value?.setIn(yamlPath, value); // TODO: custom addIn / setIn support Scalar(path)
+            this.yaml.value?.setIn(yamlPath.map(e => new Scalar(e)), value); // TODO: custom addIn / setIn support Scalar(path)
         } else {
             const map = new YAMLMap(this.yaml.value?.schema);
             map.add(new Pair(new Scalar(translation), value));
-            this.yaml.value?.setIn(yamlPath, map); // TODO: custom addIn / setIn support Scalar(path)
+            this.yaml.value?.setIn(yamlPath.map(e => new Scalar(e)), map); // TODO: custom addIn / setIn support Scalar(path)
         }
     }
 
@@ -313,7 +313,7 @@ export default class Conversation {
         }
 
         const str = new Scalar(stringArray.join(", "));
-        this.yaml.value?.setIn(yamlPath, str); // TODO: custom addIn / setIn support Scalar(path)
+        this.yaml.value?.setIn(yamlPath.map(e => new Scalar(e)), str); // TODO: custom addIn / setIn support Scalar(path)
     }
 
     private editElementOfStringArrayOnYamlPath(yamlPath: string[], location: number | string, element: string, removeEmpty: boolean = false) {
@@ -383,19 +383,19 @@ export class Option {
         // conditions vs condition
         const condition = this.getStringOnYamlPath(["condition"]);
         if (!this.getStringOnYamlPath(["conditions"]).length && condition.length) {
-            this.yaml.setIn(["conditions"], condition); // TODO: custom addIn / setIn support Scalar(path)
-            this.yaml.deleteIn(["condition"]);
+            this.yaml.setIn([new Scalar("conditions")], condition); // TODO: custom addIn / setIn support Scalar(path)
+            this.yaml.deleteIn(["condition"].map(e => new Scalar(e)));
         }
         // events vs event
         const event = this.getStringOnYamlPath(["event"]);
         if (!this.getStringOnYamlPath(["events"]).length && event.length) {
-            this.yaml.setIn(["events"], event); // TODO: custom addIn / setIn support Scalar(path)
+            this.yaml.setIn([new Scalar("events")].map(e => new Scalar(e)), event); // TODO: custom addIn / setIn support Scalar(path)
             this.yaml.deleteIn(["event"]);
         }
         // pointers vs pointer
         const pointer = this.getStringOnYamlPath(["pointer"]);
         if (!this.getStringOnYamlPath(["pointers"]).length && pointer.length) {
-            this.yaml.setIn(["pointers"], pointer); // TODO: custom addIn / setIn support Scalar(path)
+            this.yaml.setIn([new Scalar("pointers")].map(e => new Scalar(e)), pointer); // TODO: custom addIn / setIn support Scalar(path)
             this.yaml.deleteIn(["pointer"]);
         }
 
@@ -540,11 +540,11 @@ export class Option {
             // Check if value saved with YAML.YAMLMap or string
             node.set(new Scalar(translation || "en"), value);
         } else if (typeof node === "string" || !translation) {
-            this.yaml.setIn(yamlPath, value); // TODO: custom addIn / setIn support Scalar(path)
+            this.yaml.setIn(yamlPath.map(e => new Scalar(e)), value); // TODO: custom addIn / setIn support Scalar(path)
         } else {
             const map = new YAMLMap(this.yaml.schema);
             map.add(new Pair(new Scalar(translation), value));
-            this.yaml.setIn(yamlPath, map); // TODO: custom addIn / setIn support Scalar(path)
+            this.yaml.setIn(yamlPath.map(e => new Scalar(e)), map); // TODO: custom addIn / setIn support Scalar(path)
         }
     }
 
@@ -580,7 +580,7 @@ export class Option {
         }
 
         const str = new Scalar(stringArray.join(", "));
-        this.yaml.setIn(yamlPath, str); // TODO: custom addIn / setIn support Scalar(path)
+        this.yaml.setIn(yamlPath.map(e => new Scalar(e)), str); // TODO: custom addIn / setIn support Scalar(path)
     }
 
     private editElementOfStringArrayOnYamlPath(yamlPath: string[], location: number | string, element: string, removeEmpty: boolean = false) {
