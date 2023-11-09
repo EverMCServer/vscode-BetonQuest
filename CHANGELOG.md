@@ -4,7 +4,16 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [0.0.11] - TBD
+## [0.1.0] - 2023-11-10
+
+### Added
+- 2.0 formated Conversation support!
+- Rework the Legacy Conversation Editor completely
+- Comments and line orders are now kept the same when editing
+- Logic support for line connection / re-connection / modification
+
+### Fixed
+- Fix various bugs on the Legacy Conversatino Editor related to connection and deletion
 
 ## [0.0.10] - 2023-08-31
 
@@ -86,5 +95,3 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Added
 - Initial release
 - Initial Conversation's editor
-
-## [Unreleased]

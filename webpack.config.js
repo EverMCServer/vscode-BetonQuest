@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 //@ts-check
 
 "use strict";
@@ -41,7 +42,6 @@ const extensionConfig = {
       },
     ],
   },
-  devtool: "nosources-source-map",
   infrastructureLogging: {
     level: "log", // enables logging required for problem matchers
   },
@@ -56,7 +56,7 @@ const reactConfig = {
   entry: {
     // exampleEditor: "./src/view/exampleEditor/index.tsx",
     conversationEditor: "./src/view/conversationEditor/index.tsx",
-    eventsEditor: "./src/view/eventsEditor/index.tsx",
+    // eventsEditor: "./src/view/eventsEditor/index.tsx",
     packageEditor: "./src/view/packageEditor/index.tsx",
   }, // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
   output: {
@@ -99,7 +99,6 @@ const reactConfig = {
       },
     ],
   },
-  devtool: "inline-source-map",
   infrastructureLogging: {
     level: "log", // enables logging required for problem matchers
   },

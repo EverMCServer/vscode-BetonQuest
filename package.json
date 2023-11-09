@@ -3,7 +3,7 @@
   "publisher": "EverMC",
   "displayName": "BetonQuest",
   "description": "A GUI for BetonQuest scripting",
-  "version": "0.0.11",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -37,14 +37,6 @@
         }
       },
       {
-        "command": "betonquest.openEventsEditor",
-        "title": "BetonQuest: Open Events GUI",
-        "icon": {
-          "light": "assets/icon-events-edit-light.svg",
-          "dark": "assets/icon-events-edit-dark.svg"
-        }
-      },
-      {
         "command": "betonquest.openPackageEditor",
         "title": "BetonQuest: Open Package Editor",
         "icon": {
@@ -58,11 +50,6 @@
         {
           "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /conversations[\\/\\\\].+\\.ya?ml$/i && canActivateConversationEditor",
           "command": "betonquest.openConversationEditor",
-          "group": "navigation"
-        },
-        {
-          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /[\\/\\\\]events\\.ya?ml$/i && canActivateEventsEditor",
-          "command": "betonquest.openEventsEditor",
           "group": "navigation"
         },
         {
@@ -80,16 +67,6 @@
         "selector": [
           {
             "filenamePattern": "**/conversations/*.ya?ml"
-          }
-        ]
-      },
-      {
-        "viewType": "betonquest.eventsEditor",
-        "displayName": "Events GUI",
-        "priority": "option",
-        "selector": [
-          {
-            "filenamePattern": "**/events.ya?ml"
           }
         ]
       },

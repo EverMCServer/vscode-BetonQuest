@@ -10,7 +10,6 @@
             "DOM"
         ],
         "jsx": "react",
-        "sourceMap": true,
         "noUnusedLocals": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
