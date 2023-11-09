@@ -137,13 +137,13 @@ export default function app() {
         >
             <Layout
                 style={{
-                    minHeight: '100vh'
+                    height: '100vh'
                 }}
             >
                 <Layout>
                     <Main package={pkg} syncYaml={syncYaml}></Main>
                 </Layout>
-                <ResizableSider
+                {/* <ResizableSider
                     width={siderWidth}
                     collapsedWidth={0}
                     trigger={<div>|||</div>}
@@ -168,7 +168,7 @@ export default function app() {
                     onCollapse={(value) => setCollapsed(value)}
                 >
                     <ListEditor package={pkg} syncYaml={syncYaml}></ListEditor>
-                </ResizableSider>
+                </ResizableSider> */}
             </Layout>
         </ConfigProvider>
     );

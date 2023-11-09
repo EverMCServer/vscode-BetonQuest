@@ -85,7 +85,9 @@ interface ConversationEditorProps {
 // 9. (DONE) edges re-connect
 // 9. (DONE) sync yaml when creating new node
 // 10. (DONE) cursor position
-// 11. (more...)
+// 11. load cursor position from props
+// 12. fix document sync causing tab switched to first
+// 13. (more...)
 // ==========================
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
