@@ -1,5 +1,5 @@
 import { Node, Edge } from "reactflow";
-import { NodeData } from "../components/Nodes";
+import { NodeData } from "../ConversationEditor/Nodes";
 
 export function connectionAvaliable(
     sourceType: string,

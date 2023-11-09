@@ -1,6 +1,6 @@
 import { MarkerType, Node, Edge } from "reactflow";
 import { arrayAppend } from "./commonUtils";
-import { NodeData } from "../components/Nodes";
+import { NodeData } from "../ConversationEditor/Nodes";
 import Conversation from "../../../../../betonquest/Conversation";
 
 export interface YamlReaderOutput {

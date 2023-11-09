@@ -33,13 +33,13 @@ import "./ConversationEditor.css";
 import AsyncLock from "async-lock";
 
 import Conversation from "../../../../betonquest/Conversation";
-import { NodeData } from "./components/Nodes";
-import NPCNode from "./components/NPCNode";
-import PlayerNode from "./components/PlayerNode";
-import StartNode from "./components/StartNode";
-import ConnectionLine from "./components/ConnectionLine";
-import ContextMenu from "./components/ContextMenu";
-import TranslationSelector from "./components/TranslationSelector";
+import { NodeData } from "./ConversationEditor/Nodes";
+import NPCNode from "./ConversationEditor/NPCNode";
+import PlayerNode from "./ConversationEditor/PlayerNode";
+import StartNode from "./ConversationEditor/StartNode";
+import ConnectionLine from "./ConversationEditor/ConnectionLine";
+import ContextMenu from "./ConversationEditor/ContextMenu";
+import TranslationSelector from "./ConversationEditor/TranslationSelector";
 
 import { autoLayout } from "./utils/autoLayout";
 import { conversationToFlow } from "./utils/conversationToFlow";
