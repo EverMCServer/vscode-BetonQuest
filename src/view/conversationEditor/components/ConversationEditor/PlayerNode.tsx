@@ -9,9 +9,9 @@ import {
 } from "reactflow";
 import { connectionAvaliable } from "../utils/commonUtils";
 import "./styles.css";
-import { ConversationYamlOptionModel } from "../utils/conversationYamlModel";
+import { NodeData } from "./Nodes";
 
-export default memo(({ data, selected }: NodeProps) => {
+export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const [getTrigger, setTrigger] = useState(false);
   const refreshUI = () => {
     setTrigger(!getTrigger);
@@ -19,57 +19,62 @@ export default memo(({ data, selected }: NodeProps) => {
 
   // Conditions
   const conditionsGet = (): string[] => {
-    return data["conditions"] || [];
+    return data.option?.getConditionNames() || [];
   };
   const conditionAdd = (): void => {
-    const arr = [...conditionsGet(), ""];
-    data["conditions"] = arr;
+    data.option?.insertConditionNames([""]);
+
+    data.syncYaml();
     refreshUI();
   };
   const conditionDel = (): void => {
     const arr = [...conditionsGet()];
-    arr.pop();
-    data["conditions"] = arr;
+    arr?.pop();
+    data.option?.setConditionNames(arr);
+
+    data.syncYaml();
     refreshUI();
   };
   const conditionUpdate = (index: number, value: string): void => {
-    const arr = [...conditionsGet()];
-    arr[index] = value;
-    data["conditions"] = arr;
+    data.option?.editConditionName(index, value);
+
+    data.syncYaml();
     refreshUI();
   };
 
   // Text
   const textGet = (): string => {
-    return Object.assign(new ConversationYamlOptionModel(), data["option"]).getText(data["translationSelection"]);
+    return data.option?.getText(data.translationSelection) || "";
   };
   const textUpdate = (value: string): void => {
-    const option = Object.assign(new ConversationYamlOptionModel(), data["option"]) as ConversationYamlOptionModel;
-    option.setText(value, data["translationSelection"]);
-    data["option"] = option;
-    
+    data.option?.setText(value, data.translationSelection);
+
+    data.syncYaml();
     refreshUI();
   };
 
   // Events
   const eventsGet = (): string[] => {
-    return data["events"] || [];
+    return data.option?.getEventNames() || [];
   };
   const eventAdd = (): void => {
-    const arr = [...eventsGet(), ""];
-    data["events"] = arr;
+    data.option?.insertEventNames([""]);
+
+    data.syncYaml();
     refreshUI();
   };
   const eventDel = (): void => {
     const arr = [...eventsGet()];
     arr.pop();
-    data["events"] = arr;
+    data.option?.setEventNames(arr);
+
+    data.syncYaml();
     refreshUI();
   };
   const eventUpdate = (index: number, value: string): void => {
-    const arr = [...eventsGet()];
-    arr[index] = value;
-    data["events"] = arr;
+    data.option?.editEventName(index, value);
+
+    data.syncYaml();
     refreshUI();
   };
 
@@ -79,25 +84,25 @@ export default memo(({ data, selected }: NodeProps) => {
     if (!line) {
       return false;
     }
-    let source = getNode(line["source"] || "");
-    let target = getNode(line["target"] || "");
+    let source = getNode(line.source || "");
+    let target = getNode(line.target || "");
     if (!source || !target) {
       return false;
     }
     return connectionAvaliable(
-      source["type"] || "",
-      line["sourceHandle"] || "",
-      target["type"] || "",
-      line["targetHandle"] || ""
+      source.type || "",
+      line.sourceHandle || "",
+      target.type || "",
+      line.targetHandle || ""
     );
   };
 
   return (
     <div style={{ width: "100%" }}>
-      <div className="title-box npc">
-        NPC
-        <div className="nodeName" hidden={selected}>
-          ({data.name})
+      <div className="title-box player">
+        Player
+        <div className="nodeName">
+          ({data.option?.getName()})
         </div>
       </div>
       <div className="box">
@@ -164,13 +169,6 @@ export default memo(({ data, selected }: NodeProps) => {
         type="source"
         position={Position.Bottom}
         className="handleOut"
-        isValidConnection={(e) => isConnectable(e)}
-      />
-      <Handle
-        id="handleN"
-        type="source"
-        position={Position.Right}
-        className="handleN"
         isValidConnection={(e) => isConnectable(e)}
       />
     </div>

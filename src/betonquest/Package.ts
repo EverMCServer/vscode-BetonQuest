@@ -19,13 +19,9 @@ export default class Package {
     //     this.yaml = YAML.parseDocument<YAMLMap<string>, false>(this.yaml.toString());
     // }
 
-    private getYaml() {
-        return this.yaml;
-    }
-
     // Emit the Yaml text file.
     getYamlText(yamlToStringOptions?: YAML.ToStringOptions): string {
-        return this.getYaml().toString({ nullStr: ``, lineWidth: 0, ...yamlToStringOptions });
+        return this.yaml.toString({ nullStr: ``, lineWidth: 0, ...yamlToStringOptions });
     }
 
     private getEventsYaml() {
@@ -217,7 +213,7 @@ export default class Package {
         if (yaml instanceof YAMLMap) {
             yaml.items.forEach((pair, i) => {
                 if (pair.value instanceof YAMLMap) {
-                    map.set(pair.key.toString(), new Conversation(pair));
+                    map.set(pair.key.toString(), new Conversation({yamlMap: pair.value}));
                 }
             });
         }
@@ -231,7 +227,7 @@ export default class Package {
         if (yaml instanceof YAMLMap) {
             yaml.items.forEach(pair => {
                 if (pair.key instanceof Scalar && pair.key.value === scriptName) {
-                    result = new Conversation(pair);
+                    result = new Conversation({yamlMap: pair.value});
                 }
             });
         }

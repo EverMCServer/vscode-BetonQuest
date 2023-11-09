@@ -2,7 +2,6 @@ html,
 body,
 #root,
 .App {
-  height: calc(100% + 14px);
   margin: 0;
   overflow: hidden;
   font-family: Arial, sans-serif;

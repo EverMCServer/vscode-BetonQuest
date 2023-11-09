@@ -48,10 +48,11 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
         );
 
         // Define a method to update Webview
-        function sendDocumentToWebview() {
+        function sendDocumentToWebview(isInit: boolean = false) {
             webviewPanel.webview.postMessage({
                 type: 'update',
-                content: document.getText()
+                content: document.getText(),
+                isInit: isInit,
             });
         }
 
@@ -125,7 +126,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                     switch (e.content) {
                         case 'started':
                             // When the webview just started, send the initial document to webview.
-                            sendDocumentToWebview();
+                            sendDocumentToWebview(true);
 
                             // Send initial configs
                             // Translation setting

@@ -1,16 +1,22 @@
-import { Pair, Scalar, YAMLMap } from 'yaml';
+import YAML, { Pair, Scalar, YAMLMap } from 'yaml';
 
 // Conversation
 export default class Conversation {
-    private yaml: Pair<Scalar<string>, YAMLMap>;
+    private yaml: YAMLMap;
 
-    constructor(yaml: Pair<Scalar<string>, YAMLMap>) {
-        this.yaml = yaml;
+    constructor(yaml: {yamlMap?: YAMLMap, yamlText?: string, yamlParseOption?: (YAML.ParseOptions & YAML.DocumentOptions & YAML.SchemaOptions)}) {
+        if (yaml.yamlMap) {
+            this.yaml = yaml.yamlMap;
+        } else if (yaml.yamlText) {
+            this.yaml = YAML.parseDocument<YAMLMap<string>, false>(yaml.yamlText, yaml.yamlParseOption).contents;
+        } else {
+            this.yaml = new YAMLMap();
+        }
     }
 
     // Emit the Yaml text file.
-    getYamlText(): string {
-        return this.yaml.value?.toString() || "";
+    getYamlText(yamlToStringOptions?: YAML.ToStringOptions): string {
+        return YAML.stringify(this.yaml, { nullStr: ``, lineWidth: 0, ...yamlToStringOptions }) || "";
     }
 
     getQuester(translation?: string): string {
@@ -136,7 +142,7 @@ export default class Conversation {
     private getOption(type: string, optionName: string): Option | undefined {
         let yaml: unknown;
         try {
-            yaml = this.yaml.value?.getIn([type, optionName]);
+            yaml = this.yaml.getIn([type, optionName]);
         } catch {
             return undefined;
         }
@@ -151,7 +157,7 @@ export default class Conversation {
     private getOptions(type: string): Option[] | undefined {
         let yaml: unknown;
         try {
-            yaml = this.yaml.value?.getIn([type]);
+            yaml = this.yaml.getIn([type]);
         } catch {
             return undefined;
         }
@@ -164,7 +170,7 @@ export default class Conversation {
 
     // Create a new Option
     createOption(type: string, optionName: string): Option | undefined {
-        this.setValueOnYamlPath([type, optionName], new YAMLMap(this.yaml.value?.schema));
+        this.setValueOnYamlPath([type, optionName], new YAMLMap(this.yaml.schema));
         return this.getOption(type, optionName);
     }
 
@@ -172,13 +178,13 @@ export default class Conversation {
     deleteOption(type: string, optionName: string) {
         let yaml: unknown;
         try {
-            yaml = this.yaml.value?.getIn([type, optionName]);
+            yaml = this.yaml.getIn([type, optionName]);
         } catch {
             return;
         }
 
         if (yaml) {
-            this.yaml.value?.deleteIn([type, optionName]);
+            this.yaml.deleteIn([type, optionName]);
         }
     }
 
@@ -196,7 +202,7 @@ export default class Conversation {
 
         // Get translations from "quester" name
         try {
-            yamlResult = this.yaml.value?.getIn(["quester"]);
+            yamlResult = this.yaml.getIn(["quester"]);
             if (yamlResult instanceof YAMLMap) {
                 // Check if value saved with YAML.YAMLMap or string
                 yamlResult.items.forEach(e => {
@@ -208,7 +214,7 @@ export default class Conversation {
         // Get translations from "NPC_options" & "player_options"
         ["NPC_options", "player_options"].forEach(l => {
             try {
-                yamlResult = this.yaml.value?.getIn([l]);
+                yamlResult = this.yaml.getIn([l]);
                 if (yamlResult instanceof YAMLMap) {
                     yamlResult.items.forEach(o => {
                         if (o instanceof Pair && o.value instanceof YAMLMap) {
@@ -236,7 +242,7 @@ export default class Conversation {
 
     private isPathYAMLMap(yamlPath: string[]): boolean {
         try {
-            let result = this.yaml.value?.getIn(yamlPath);
+            let result = this.yaml.getIn(yamlPath);
             return result instanceof YAMLMap;
         } catch { }
         return false;
@@ -245,7 +251,7 @@ export default class Conversation {
     private getStringOnYamlPath(yamlPath: string[], translation: string = "en"): string {
         let result: unknown;
         try {
-            result = this.yaml.value?.getIn(yamlPath);
+            result = this.yaml.getIn(yamlPath);
         } catch {
             return "";
         }
@@ -265,7 +271,7 @@ export default class Conversation {
     private setValueOnYamlPath(yamlPath: string[], value?: unknown, translation?: string) {
         let node: unknown;
         try {
-            node = this.yaml.value?.getIn(yamlPath);
+            node = this.yaml.getIn(yamlPath);
         } catch {
             return;
         }
@@ -273,18 +279,18 @@ export default class Conversation {
         if (node instanceof YAMLMap) {
             node.set(new Scalar(translation || "en"), value);
         } else if (typeof node === "string" || !translation) {
-            this.yaml.value?.setIn(yamlPath.map(e => new Scalar(e)), value);
+            this.yaml.setIn(yamlPath.map(e => new Scalar(e)), value);
         } else {
-            const map = new YAMLMap(this.yaml.value?.schema);
+            const map = new YAMLMap(this.yaml.schema);
             map.add(new Pair(new Scalar(translation), value));
-            this.yaml.value?.setIn(yamlPath.map(e => new Scalar(e)), map);
+            this.yaml.setIn(yamlPath.map(e => new Scalar(e)), map);
         }
     }
 
     private getStringArrayOnYamlPath(yamlPath: string[], removeEmpty: boolean = false): string[] {
         let str: unknown;
         try {
-            str = this.yaml.value?.getIn(yamlPath);
+            str = this.yaml.getIn(yamlPath);
         } catch {
             return [];
         }
@@ -308,12 +314,12 @@ export default class Conversation {
 
         // Remove the whole key from YAML if array is empty
         if (stringArray.length === 0) {
-            this.yaml.value?.deleteIn(yamlPath);
+            this.yaml.deleteIn(yamlPath);
             return;
         }
 
         const str = new Scalar(stringArray.join(", "));
-        this.yaml.value?.setIn(yamlPath.map(e => new Scalar(e)), str);
+        this.yaml.setIn(yamlPath.map(e => new Scalar(e)), str);
     }
 
     private editElementOfStringArrayOnYamlPath(yamlPath: string[], location: number | string, element: string, removeEmpty: boolean = false) {
