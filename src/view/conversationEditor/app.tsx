@@ -52,7 +52,6 @@ export default function app() {
 
             switch (message.type) {
                 case 'update':
-                    console.log("1");
                     if (message.content !== conversation) { // Avoid duplicated update
                         // Update Conversation
                         const p = new Conversation({yamlText: message.content});
@@ -106,7 +105,7 @@ export default function app() {
                 }}
             >
                 <Layout style={{ display: "block" }}>
-                    <ConversationEditor conversation={conversation} syncYaml={syncYaml}></ConversationEditor>
+                    <ConversationEditor conversation={conversation} syncYaml={syncYaml} translationSelection={globalThis.initialConfig.translationSelection}></ConversationEditor>
                 </Layout>
             </Layout>
         </ConfigProvider>
