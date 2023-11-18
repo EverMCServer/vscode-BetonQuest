@@ -49,6 +49,9 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 
 ## Release Notes
 
+### 0.1.1
+- Fix could not create new conversations with an empty YAML file
+
 ### 0.1.0
 - 2.0 formated Conversation support!
 - Rework the Legacy Conversation Editor completely
@@ -61,11 +64,5 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 - "stop", "final_events", "interceptor" editing
 - Optimized zoom
 - Various bugs fixed
-
-### 0.0.9
-- Sync cursor position when a node is clicked
-- Fix flowchart is not being updated when undo/redo
-- Preserve nodes selection if possible
-- Fix viewport be moved while typing
 
 (For more detailes, please check [CHANGELOG.md](CHANGELOG.md))

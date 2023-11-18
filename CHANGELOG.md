@@ -4,6 +4,11 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.1.1] - 2023-11-18
+
+### Fixed
+- Fix could not create new conversations with an empty YAML file
+
 ## [0.1.0] - 2023-11-10
 
 ### Added
