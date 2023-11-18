@@ -10,7 +10,17 @@ export default class Package {
     private yaml: Document<YAMLMap<string>, false>;
 
     constructor(yamlText: string, yamlParseOption?: (YAML.ParseOptions & YAML.DocumentOptions & YAML.SchemaOptions)) {
+        // Load YAML contents
         this.yaml = YAML.parseDocument<YAMLMap<string>, false>(yamlText, yamlParseOption);
+        // Init if contents empty
+        if (this.yaml.contents instanceof YAMLMap) {
+            // OK
+        } else if (this.yaml.contents) {
+            // TODO: incorrect YAML format
+        } else {
+            // Init document
+            this.yaml.contents = this.yaml.createNode({});
+        }
     }
 
     // Reload the whole yaml file.
