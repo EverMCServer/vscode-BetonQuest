@@ -124,6 +124,7 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
 
         // Receive message from the webview.
         const onDidReceiveMessage = webviewPanel.webview.onDidReceiveMessage(e => {
+            let offset: number | undefined;
             switch (e.type) {
                 case 'webview-lifecycle':
                     switch (e.content) {
@@ -155,8 +156,19 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
 
                 // Move cursor on text editor.
                 case 'cursor-yaml-path':
-                    let offset = findOffestByYamlNode(e.content, document.getText());
-                    let curPos = document.positionAt(offset);
+                    offset = findOffestByYamlNode(e.content, document.getText());
+                case 'cursor-postion':
+                    let curPos = document.positionAt(offset || e.content);
+                    // Switch to the document if requested
+                    if (e.activateDocuemnt) { 
+                        let viewColumn = webviewPanel.viewColumn;
+                        viewColumn = vscode.window.tabGroups.
+                            all.flatMap(group => group.tabs).
+                            find(tab => tab.group.viewColumn !== viewColumn && tab.label === document.fileName.split("/").slice(-1)[0])?.group.viewColumn
+                            || vscode.window.tabGroups.all.map(group => group.viewColumn).find(v => v !== webviewPanel.viewColumn)
+                            || webviewPanel.viewColumn;
+                        vscode.window.showTextDocument(document.uri, { preview: false, viewColumn: viewColumn });
+                    }
                     // Iterate all opened documents, set the cursor position.
                     for (const editor of vscode.window.visibleTextEditors) {
                         if (editor.document.uri.toString() === document.uri.toString()) {

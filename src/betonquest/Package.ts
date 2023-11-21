@@ -23,6 +23,11 @@ export default class Package {
         }
     }
 
+    // Get YAMl parse errors
+    getYamlErrors() {
+        return this.yaml.errors;
+    }
+
     // Reload the whole yaml file.
     // Warning: it will make all Events, Conditions, Objectives, Conversations detached from yaml. You should re-get them after.
     // reloadYaml() {

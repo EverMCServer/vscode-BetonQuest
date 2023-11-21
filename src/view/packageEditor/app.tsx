@@ -2,6 +2,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 
 import { vscode } from "./vscode";
+import { YAMLError } from "yaml";
 
 // test locale
 import { setLocale } from '../../i18n/i18n';
@@ -15,6 +16,7 @@ import Package from '../../betonquest/Package';
 import ResizableSider from '../components/ResizableSider';
 import Main from "./components/Main";
 import ListEditor from "./components/ListEditor";
+import YamlErrorPage from "./components/YamlErrorPage";
 
 // Global variables from vscode
 declare global {
@@ -32,6 +34,7 @@ let syncYamlTimeoutHandler: number;
 export default function app() {
     // Get initial content data from vscode
     const [pkg, _setPkg] = useState(new Package(cachedYaml));
+    const [yamlErrors, setYamlErrors] = useState<YAMLError[]>();
     // const [translationSelection, setTranslationSelection] = useState(globalThis.initialConfig.translationSelection || "en");
 
     // Width of the sider
@@ -62,6 +65,14 @@ export default function app() {
                     if (message.content !== pkg) { // Avoid duplicated update
                         // Update Package
                         const p = new Package(message.content);
+                        // Check if parse error
+                        const e = p.getYamlErrors();
+                        console.log("debug");
+                        if (e.length) {
+                            setYamlErrors(e);
+                            break;
+                        }
+                        setYamlErrors(undefined);
                         setPkg(p);
                         // Handle for initial document update
                         if (message.isInit) {
@@ -135,41 +146,43 @@ export default function app() {
                 },
             }}
         >
-            <Layout
-                style={{
-                    height: '100vh'
-                }}
-            >
-                <Layout>
-                    <Main package={pkg} syncYaml={syncYaml}></Main>
-                </Layout>
-                {/* <ResizableSider
-                    width={siderWidth}
-                    collapsedWidth={0}
-                    trigger={<div>|||</div>}
-                    zeroWidthTriggerStyle={{
-                        width: "18px",
-                        left: collapsed ? "-18px" : "-6px", // "-6px",
-                        height: "40px",
-                        margin: "-20px 0",
-                        top: "50vh",
-                        background: "var(--vscode-menu-separatorBackground)",
-                        borderStartStartRadius: "0px",
-                        borderStartEndRadius: "0px",
-                        borderEndStartRadius: "0px",
-                        borderEndEndRadius: "0px",
-                        zIndex: "1000",
-                    }}
+            {yamlErrors ? <YamlErrorPage yamlErrors={yamlErrors} /> :
+                <Layout
                     style={{
-                        background: "var(--vscode-sideBar-background)",
+                        height: '100vh'
                     }}
-                    collapsible
-                    collapsed={collapsed}
-                    onCollapse={(value) => setCollapsed(value)}
                 >
-                    <ListEditor package={pkg} syncYaml={syncYaml}></ListEditor>
-                </ResizableSider> */}
-            </Layout>
+                    <Layout>
+                        <Main package={pkg} syncYaml={syncYaml}></Main>
+                    </Layout>
+                    {/* <ResizableSider
+                        width={siderWidth}
+                        collapsedWidth={0}
+                        trigger={<div>|||</div>}
+                        zeroWidthTriggerStyle={{
+                            width: "18px",
+                            left: collapsed ? "-18px" : "-6px", // "-6px",
+                            height: "40px",
+                            margin: "-20px 0",
+                            top: "50vh",
+                            background: "var(--vscode-menu-separatorBackground)",
+                            borderStartStartRadius: "0px",
+                            borderStartEndRadius: "0px",
+                            borderEndStartRadius: "0px",
+                            borderEndEndRadius: "0px",
+                            zIndex: "1000",
+                        }}
+                        style={{
+                            background: "var(--vscode-sideBar-background)",
+                        }}
+                        collapsible
+                        collapsed={collapsed}
+                        onCollapse={(value) => setCollapsed(value)}
+                    >
+                        <ListEditor package={pkg} syncYaml={syncYaml}></ListEditor>
+                    </ResizableSider> */}
+                </Layout>
+            }
         </ConfigProvider>
     );
 }

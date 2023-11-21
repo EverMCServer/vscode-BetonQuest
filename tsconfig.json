@@ -7,6 +7,7 @@
 			"ES5",
 			"dom"
 		],
+		"sourceMap": true,
 		"rootDir": "src",
 		"jsx": "react-jsx",
 		"strict": true, /* enable all strict type-checking options */
