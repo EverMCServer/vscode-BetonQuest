@@ -63,8 +63,7 @@ export default class Package {
 
     // Create a new Event on the Package.
     createEvent(eventName: string): Event {
-        // this.yaml.addIn([new Scalar("events")], new Pair(new Scalar<string>(eventName), new Scalar<string>("")));
-        this.yaml.addIn([new Scalar("events")], this.yaml.createPair(new Scalar<string>(eventName), new Scalar<string>("")));
+        this.yamlAddIn([new Scalar("events")], this.yaml.createPair(new Scalar<string>(eventName), new Scalar<string>("")));
         return this.getEvent(eventName)!;
     }
 
@@ -102,7 +101,7 @@ export default class Package {
 
     // Create a new Condition on the Package.
     createCondition(conditionName: string): Event {
-        this.yaml.addIn([new Scalar("conditions")], this.yaml.createPair(new Scalar<string>(conditionName), new Scalar<string>("")));
+        this.yamlAddIn([new Scalar("conditions")], this.yaml.createPair(new Scalar<string>(conditionName), new Scalar<string>("")));
         return this.getCondition(conditionName)!;
     }
 
@@ -140,7 +139,7 @@ export default class Package {
 
     // Create a new Objective on the Package.
     createObjective(objectiveName: string): Event {
-        this.yaml.addIn([new Scalar("objectives")], this.yaml.createPair(new Scalar<string>(objectiveName), new Scalar<string>("")));
+        this.yamlAddIn([new Scalar("objectives")], this.yaml.createPair(new Scalar<string>(objectiveName), new Scalar<string>("")));
         return this.getObjective(objectiveName)!;
     }
 
@@ -182,7 +181,7 @@ export default class Package {
 
     // Create a new Item on the Package.
     createItem(itemName: string): Event {
-        this.yaml.addIn([new Scalar("items")], this.yaml.createPair(new Scalar<string>(itemName), new Scalar<string>("")));
+        this.yamlAddIn([new Scalar("items")], this.yaml.createPair(new Scalar<string>(itemName), new Scalar<string>("")));
         return this.getItem(itemName)!;
     }
 
@@ -223,7 +222,7 @@ export default class Package {
         if (yaml instanceof YAMLMap) {
             yaml.items.forEach((pair, i) => {
                 if (pair.value instanceof YAMLMap) {
-                    map.set(pair.key.toString(), new Conversation({yamlMap: pair.value}));
+                    map.set(pair.key.toString(), new Conversation({ yamlMap: pair.value }));
                 }
             });
         }
@@ -237,7 +236,7 @@ export default class Package {
         if (yaml instanceof YAMLMap) {
             yaml.items.forEach(pair => {
                 if (pair.key instanceof Scalar && pair.key.value === scriptName) {
-                    result = new Conversation({yamlMap: pair.value});
+                    result = new Conversation({ yamlMap: pair.value });
                 }
             });
         }
@@ -271,13 +270,15 @@ export default class Package {
     // Create a new Conversation
     createConversation(scriptName: string, quester: string = scriptName, isMultilingual: boolean = true, transitionName: string = 'en'): Conversation | undefined {
         const map = new YAMLMap(this.yaml.schema);
+        // Create conversation by translation
         if (isMultilingual) {
             map.addIn([new Scalar("quester")], this.yaml.createPair(new Scalar(transitionName), new Scalar(quester)));
         } else {
             map.add(new Pair(new Scalar("quester"), new Scalar(quester)));
         }
+        // Add node to the YAML
         try {
-            this.yaml.addIn([new Scalar("conversations")], this.yaml.createPair(new Scalar(scriptName), map));
+            this.yamlAddIn([new Scalar("conversations")], this.yaml.createPair(new Scalar(scriptName), map));
         } catch (e) {
             return undefined;
         }
@@ -287,6 +288,19 @@ export default class Package {
     // Remove a Conversation
     removeConversation(scriptName: string) {
         this.yaml.deleteIn(["conversations", scriptName]);
+    }
+
+    private yamlAddIn(path: Scalar[] | string[], value: any) {
+        // Overwrite invalid datatype
+        if (!(this.yaml.getIn(path) instanceof YAMLMap)) {
+            this.yaml.setIn(path, new YAMLMap(this.yaml.schema));
+        }
+        // Add value onto the YAML
+        try {
+            this.yaml.addIn(path, value);
+        } catch (e) {
+            throw e;
+        }
     }
 
 }
