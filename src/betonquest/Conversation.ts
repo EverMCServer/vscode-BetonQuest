@@ -4,7 +4,7 @@ import YAML, { Pair, Scalar, YAMLMap } from 'yaml';
 export default class Conversation {
     private yaml: YAMLMap;
 
-    constructor(yaml: {yamlMap?: YAMLMap, yamlText?: string, yamlParseOption?: (YAML.ParseOptions & YAML.DocumentOptions & YAML.SchemaOptions)}) {
+    constructor(yaml: { yamlMap?: YAMLMap, yamlText?: string, yamlParseOption?: (YAML.ParseOptions & YAML.DocumentOptions & YAML.SchemaOptions) }) {
         if (yaml.yamlMap) {
             this.yaml = yaml.yamlMap;
         } else if (yaml.yamlText) {
@@ -387,21 +387,21 @@ export class Option {
 
         // Fix incorrect named sections:
         // conditions vs condition
-        const condition = this.getStringOnYamlPath(["condition"]);
-        if (!this.getStringOnYamlPath(["conditions"]).length && condition.length) {
+        const condition = this.yaml.getIn(["condition"]);
+        if (!this.yaml.getIn(["conditions"]) && condition) {
             this.yaml.setIn([new Scalar("conditions")], condition);
             this.yaml.deleteIn(["condition"].map(e => new Scalar(e)));
         }
         // events vs event
-        const event = this.getStringOnYamlPath(["event"]);
-        if (!this.getStringOnYamlPath(["events"]).length && event.length) {
-            this.yaml.setIn([new Scalar("events")].map(e => new Scalar(e)), event);
+        const event = this.yaml.getIn(["event"]);
+        if (!this.yaml.getIn(["events"]) && event) {
+            this.yaml.setIn([new Scalar("events")], event);
             this.yaml.deleteIn(["event"]);
         }
         // pointers vs pointer
-        const pointer = this.getStringOnYamlPath(["pointer"]);
-        if (!this.getStringOnYamlPath(["pointers"]).length && pointer.length) {
-            this.yaml.setIn([new Scalar("pointers")].map(e => new Scalar(e)), pointer);
+        const pointer = this.yaml.getIn(["pointer"]);
+        if (!this.yaml.getIn(["pointers"]) && pointer) {
+            this.yaml.setIn([new Scalar("pointers")], pointer);
             this.yaml.deleteIn(["pointer"]);
         }
 
