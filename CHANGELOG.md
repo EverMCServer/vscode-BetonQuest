@@ -4,6 +4,16 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.1.2] - 2023-11-22
+
+### Added
+- Detect YAML errors when loading a Package into Editor
+- Detect YAML errors when loading a Conversation into Editor
+
+### Fixed
+- Fix "event" vs "events" detection
+- Fix creating Conversation on empty "conversations" key
+
 ## [0.1.1] - 2023-11-18
 
 ### Fixed

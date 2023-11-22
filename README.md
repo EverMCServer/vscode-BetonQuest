@@ -49,6 +49,13 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 
 ## Release Notes
 
+### 0.1.2
+
+- Detect YAML errors when loading a Package into Editor
+- Detect YAML errors when loading a Conversation into Editor
+- Fix "event" vs "events" detection
+- Fix creating Conversation on empty "conversations" key
+
 ### 0.1.1
 - Fix could not create new conversations with an empty YAML file
 
@@ -58,11 +65,5 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 - Comments and line orders are now kept the same when editing
 - Logic support for line connection / re-connection / modification
 - Fix various bugs on the Legacy Conversatino Editor related to connection and deletion
-
-### 0.0.10
-- Better supports for translation detection and selection
-- "stop", "final_events", "interceptor" editing
-- Optimized zoom
-- Various bugs fixed
 
 (For more detailes, please check [CHANGELOG.md](CHANGELOG.md))
