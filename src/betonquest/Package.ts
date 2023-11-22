@@ -254,11 +254,7 @@ export default class Package {
         const yaml = this.yaml.getIn(["conversations"]);
         if (yaml instanceof YAMLMap) {
             // Check duplicate
-            if (yaml.items.find(pair => {
-                if (pair.key instanceof Scalar && pair.key.value === newScriptName) {
-                    return true;
-                }
-            })) {
+            if (yaml.items.find(pair => pair.key instanceof Scalar && pair.key.value === newScriptName)) {
                 return false;
             }
 

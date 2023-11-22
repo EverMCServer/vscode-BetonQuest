@@ -20,10 +20,6 @@
 	},
 	"exclude": [
 		"node_modules",
-		".vscode-test",
-		"**/view/app/index.css",
-		"**/view/app/index.tsx",
-		"**/view/app/tsconfig.json",
-		"**/view/app/config.tsx"
+		".vscode-test"
 	]
 }

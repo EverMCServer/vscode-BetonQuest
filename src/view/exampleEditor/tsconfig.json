@@ -10,7 +10,7 @@
             "DOM"
         ],
         "jsx": "react",
-        "noUnusedLocals": true,
+        // "noUnusedLocals": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
         "experimentalDecorators": true,

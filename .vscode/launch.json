@@ -11,7 +11,8 @@
 			"request": "launch",
 			"runtimeExecutable": "${execPath}",
 			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}"
+				"--extensionDevelopmentPath=${workspaceFolder}",
+				"--config=./webpack.dev.js"
 			],
 			"sourceMaps": true,
 			"resolveSourceMapLocations": [

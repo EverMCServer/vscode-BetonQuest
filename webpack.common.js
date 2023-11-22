@@ -42,9 +42,6 @@ const extensionConfig = {
       },
     ],
   },
-  infrastructureLogging: {
-    level: "log", // enables logging required for problem matchers
-  },
 };
 
 /** @type WebpackConfig */
@@ -99,9 +96,6 @@ const reactConfig = {
       },
     ],
   },
-  infrastructureLogging: {
-    level: "log", // enables logging required for problem matchers
-  },
   plugins: [
     new webpack.DefinePlugin({
         process: {
@@ -113,4 +107,3 @@ const reactConfig = {
   ]
 };
 module.exports = [extensionConfig, reactConfig];
-
