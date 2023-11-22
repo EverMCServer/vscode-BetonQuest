@@ -1,17 +1,27 @@
-import YAML, { Pair, Scalar, YAMLMap } from 'yaml';
+import YAML, { Pair, Scalar, YAMLError, YAMLMap } from 'yaml';
 
 // Conversation
 export default class Conversation {
     private yaml: YAMLMap;
+    private yamlErrors?: YAMLError[];
 
     constructor(yaml: { yamlMap?: YAMLMap, yamlText?: string, yamlParseOption?: (YAML.ParseOptions & YAML.DocumentOptions & YAML.SchemaOptions) }) {
         if (yaml.yamlMap) {
             this.yaml = yaml.yamlMap;
         } else if (yaml.yamlText) {
-            this.yaml = YAML.parseDocument<YAMLMap<string>, false>(yaml.yamlText, yaml.yamlParseOption).contents;
+            const document = YAML.parseDocument<YAMLMap<string>, false>(yaml.yamlText, yaml.yamlParseOption);
+            this.yaml = document.contents;
+            if (document.errors.length) {
+                this.yamlErrors = document.errors;
+            }
         } else {
             this.yaml = new YAMLMap();
         }
+    }
+
+    // Get Yaml parse errors
+    getYamlErrors() {
+        return this.yamlErrors;
     }
 
     // Emit the Yaml text file.

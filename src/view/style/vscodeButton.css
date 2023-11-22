@@ -1,0 +1,26 @@
+.vscode-button {
+    box-sizing: border-box;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 5px;
+    margin: 4px 10px;
+    border: 1px solid var(--vscode-button-border,transparent);
+    border-radius: 2px;
+
+    color: var(--vscode-button-foreground);
+    background-color: var(--vscode-button-background);
+}
+
+.vscode-button:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}
+
+.vscode-button.vscode-button-secondary {
+    color: var(--vscode-button-secondaryForeground);
+    background-color: var(--vscode-button-secondaryBackground);
+}
+
+.vscode-button.vscode-button-secondary:hover {
+    background-color: var(--vscode-button-secondaryHoverBackground);
+}

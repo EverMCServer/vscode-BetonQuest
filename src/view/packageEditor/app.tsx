@@ -2,7 +2,6 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 
 import { vscode } from "./vscode";
-import { YAMLError } from "yaml";
 
 // test locale
 import { setLocale } from '../../i18n/i18n';
@@ -10,13 +9,14 @@ import L from '../../i18n/i18n';
 
 import { ConfigProvider, Layout } from "antd";
 // const { Content } = Layout;
+import { YAMLError } from "yaml";
 
 import Package from '../../betonquest/Package';
 
 import ResizableSider from '../components/ResizableSider';
 import Main from "./components/Main";
 import ListEditor from "./components/ListEditor";
-import YamlErrorPage from "./components/YamlErrorPage";
+import YamlErrorPage from "../components/YamlErrorPage";
 
 // Global variables from vscode
 declare global {
@@ -67,12 +67,12 @@ export default function app() {
                         const p = new Package(message.content);
                         // Check if parse error
                         const e = p.getYamlErrors();
-                        console.log("debug");
                         if (e.length) {
                             setYamlErrors(e);
                             break;
                         }
                         setYamlErrors(undefined);
+                        // Update Package
                         setPkg(p);
                         // Handle for initial document update
                         if (message.isInit) {
@@ -146,7 +146,7 @@ export default function app() {
                 },
             }}
         >
-            {yamlErrors ? <YamlErrorPage yamlErrors={yamlErrors} /> :
+            {yamlErrors ? <YamlErrorPage yamlErrors={yamlErrors} vscode={vscode} /> :
                 <Layout
                     style={{
                         height: '100vh'

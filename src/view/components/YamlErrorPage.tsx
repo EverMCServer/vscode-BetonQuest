@@ -1,10 +1,13 @@
 import * as React from "react";
 import { YAMLError } from "yaml";
 
-import { vscode } from "../vscode";
+import { WebviewApi } from "vscode-webview";
+
+import '../style/vscodeButton.css';
 
 interface YamlErrorProps {
     yamlErrors: YAMLError[],
+    vscode: WebviewApi<unknown>,
 }
 
 export default function yamlErrorPage(props: YamlErrorProps) {
@@ -47,7 +50,7 @@ export default function yamlErrorPage(props: YamlErrorProps) {
                                     textAlign: "left"
                                 }}
                                 onClick={() => {
-                                    vscode.postMessage({
+                                    props.vscode.postMessage({
                                         type: "cursor-postion",
                                         content: e.pos[0],
                                         activateDocuemnt: true,

@@ -9,9 +9,11 @@ import L from '../../i18n/i18n';
 
 import { ConfigProvider, Layout } from "antd";
 // const { Content } = Layout;
+import { YAMLError } from "yaml";
 
 import Conversation from "../../betonquest/Conversation";
 import ConversationEditor from "./components/ConversationEditor";
+import YamlErrorPage from "../components/YamlErrorPage";
 
 // Global variables from vscode
 declare global {
@@ -28,7 +30,8 @@ let syncYamlTimeoutHandler: number;
 
 export default function app() {
     // Get initial content data from vscode
-    const [conversation, _setConversation] = useState(new Conversation({yamlText: cachedYaml}));
+    const [conversation, _setConversation] = useState(new Conversation({ yamlText: cachedYaml }));
+    const [yamlErrors, setYamlErrors] = useState<YAMLError[]>();
 
     // Prevent unnecessary rendering
     const setConversation = (newConversation: Conversation) => {
@@ -54,7 +57,15 @@ export default function app() {
                 case 'update':
                     if (message.content !== conversation) { // Avoid duplicated update
                         // Update Conversation
-                        const p = new Conversation({yamlText: message.content});
+                        const p = new Conversation({ yamlText: message.content });
+                        // Check if parse error
+                        const e = p.getYamlErrors();
+                        if (e?.length) {
+                            setYamlErrors(e);
+                            break;
+                        }
+                        setYamlErrors(undefined);
+                        // Update Conversation
                         setConversation(p);
                         break;
                     }
@@ -99,15 +110,17 @@ export default function app() {
                 },
             }}
         >
-            <Layout
-                style={{
-                    height: '100vh'
-                }}
-            >
-                <Layout style={{ display: "block" }}>
-                    <ConversationEditor conversation={conversation} syncYaml={syncYaml} translationSelection={globalThis.initialConfig.translationSelection}></ConversationEditor>
+            {yamlErrors ? <YamlErrorPage yamlErrors={yamlErrors} vscode={vscode} /> :
+                <Layout
+                    style={{
+                        height: '100vh'
+                    }}
+                >
+                    <Layout style={{ display: "block" }}>
+                        <ConversationEditor conversation={conversation} syncYaml={syncYaml} translationSelection={globalThis.initialConfig.translationSelection}></ConversationEditor>
+                    </Layout>
                 </Layout>
-            </Layout>
+            }
         </ConfigProvider>
     );
 }
