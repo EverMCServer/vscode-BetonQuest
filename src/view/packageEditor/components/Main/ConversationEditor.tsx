@@ -226,7 +226,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
     const isEdgeChanging = useRef<boolean>(false);
 
-    const onEdgeUpdateStart = (event: React.MouseEvent<Element, MouseEvent>, edge: Edge<any>, handleType: HandleType) => {
+    const onEdgeUpdateStart = (event: ReactMouseEvent<Element, MouseEvent>, edge: Edge<any>, handleType: HandleType) => {
         // mark "update" status, prevent new node creation
         isEdgeChanging.current = true;
     };
@@ -682,7 +682,9 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
             // Center a node when cursor changed in Text Editor
             case "cursor-yaml-path":
-                centerAndSelectNode(message.content as string[]);
+                if (globalThis.activeTabKey === props.conversationName) { // Center only when the tab is active
+                    centerAndSelectNode(message.content as string[]);
+                }
         }
     };
 

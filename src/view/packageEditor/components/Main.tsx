@@ -25,7 +25,7 @@ interface MainProps {
 
 export default function main(props: MainProps) {
 
-    const [tabsActiveKey, setTabsActiveKey] = useState("");
+    const [activeTabKey, setActiveTabKey] = useState("");
     const [tabsItems, setTabsItems] = useState([] as Tab[]);
     const [modal, modalContextHolder] = Modal.useModal();
 
@@ -35,7 +35,7 @@ export default function main(props: MainProps) {
 
         // Iterate the tab objects, find the script key
         let lastIndex = -1;
-        let newActiveKey = tabsActiveKey;
+        let newActiveKey = activeTabKey;
         tabsItems.find((v, i) => {
             if (v.key === targetKey) {
                 props.package.removeConversation(targetKey);
@@ -58,12 +58,12 @@ export default function main(props: MainProps) {
                 newActiveKey = newPanes[0].key;
             }
         }
-        setTabsActiveKey(newActiveKey);
+        setActiveTabKey(newActiveKey);
     };
 
     // Handle tabs switching
     const onTabsChange = (newActiveKey: string) => {
-        setTabsActiveKey(newActiveKey);
+        setActiveTabKey(newActiveKey);
     };
 
     // Helper function to create new Conversation
@@ -84,7 +84,7 @@ export default function main(props: MainProps) {
             style: { height: "100%" }  // Maximize tab content height for ReactFlow
         });
         setTabsItems(newConvs);
-        setTabsActiveKey(key);
+        setActiveTabKey(key);
 
         // Sync yaml back to VSCode
         props.syncYaml();
@@ -203,10 +203,15 @@ export default function main(props: MainProps) {
             });
         });
         setTabsItems(initTabsItems);
-        if (initTabsItems.length && !initTabsItems.some(tabItem => tabItem.id === tabsActiveKey)) {
-            setTabsActiveKey(initTabsItems[0].key);
+        if (initTabsItems.length && !initTabsItems.some(tabItem => tabItem.id === activeTabKey)) {
+            setActiveTabKey(initTabsItems[0].key);
         }
     }, [props.package]);
+
+    // Update current active tab key on global variable
+    useEffect(() => {
+        globalThis.activeTabKey = activeTabKey;
+    }, [activeTabKey]);
 
     return (
         <>
@@ -217,7 +222,7 @@ export default function main(props: MainProps) {
                         type={"editable-card"}
                         onChange={onTabsChange}
                         destroyInactiveTabPane={false} // keep keep flowchart rendering when switch tabs
-                        activeKey={tabsActiveKey}
+                        activeKey={activeTabKey}
                         onEdit={onTabsEdit}
                         items={tabsItems}
                         // tabPosition="bottom"
