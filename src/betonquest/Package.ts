@@ -36,7 +36,12 @@ export default class Package {
 
     // Emit the Yaml text file.
     getYamlText(yamlToStringOptions?: YAML.ToStringOptions): string {
-        return this.yaml.toString({ nullStr: ``, lineWidth: 0, ...yamlToStringOptions });
+        return this.yaml.toString({
+            collectionStyle: 'block',
+            lineWidth: 0,
+            nullStr: ``,
+            ...yamlToStringOptions
+        });
     }
 
     private getEventsYaml() {
@@ -294,7 +299,7 @@ export default class Package {
     private yamlAddIn(path: Scalar[] | string[], value: any) {
         // Overwrite invalid datatype
         if (!(this.yaml.getIn(path) instanceof YAMLMap)) {
-            this.yaml.setIn(path, new YAMLMap(this.yaml.schema));
+            this.yaml.setIn(path, new YAMLMap(this.yaml.schema)); //
         }
         // Add value onto the YAML
         try {

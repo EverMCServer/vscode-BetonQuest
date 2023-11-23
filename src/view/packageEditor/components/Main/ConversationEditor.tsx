@@ -87,7 +87,7 @@ interface ConversationEditorProps {
 // 10. (DONE) cursor position
 // 11. (SKIP) load cursor position from props
 // 12. (DONE) fix document sync causing tab switched to first
-// 13. fix yaml output contains "{}"
+// 13. (DONE) fix yaml new option wrapped with "{}"
 // 14. (more...)
 // ==========================
 

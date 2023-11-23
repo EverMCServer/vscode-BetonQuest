@@ -26,7 +26,12 @@ export default class Conversation {
 
     // Emit the Yaml text file.
     getYamlText(yamlToStringOptions?: YAML.ToStringOptions): string {
-        return YAML.stringify(this.yaml, { nullStr: ``, lineWidth: 0, ...yamlToStringOptions }) || "";
+        return YAML.stringify(this.yaml, {
+            collectionStyle: 'block',
+            lineWidth: 0,
+            nullStr: ``,
+            ...yamlToStringOptions
+        }) || "";
     }
 
     getQuester(translation?: string): string {
