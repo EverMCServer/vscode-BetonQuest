@@ -4,6 +4,12 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.1.3] - 2023-11-23
+
+### Fixed
+- fix document sync causing tabs switched to the first one
+- fix yaml new option wrapped with "{}"
+
 ## [0.1.2] - 2023-11-22
 
 ### Added
