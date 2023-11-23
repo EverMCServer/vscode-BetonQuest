@@ -64,6 +64,9 @@ declare global {
     var initialConfig: {
         translationSelection?: string; // Conversation YAML's translation selection.
     };
+
+    // Save current active tab key
+    var activeTabKey: string;
 }
 
 interface ConversationEditorProps {
