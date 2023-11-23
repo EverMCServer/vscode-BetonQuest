@@ -203,7 +203,7 @@ export default function main(props: MainProps) {
             });
         });
         setTabsItems(initTabsItems);
-        if (initTabsItems.length && !initTabsItems.some(tabItem => tabItem.id === activeTabKey)) {
+        if (initTabsItems.length && !initTabsItems.some(tabItem => tabItem.key === activeTabKey)) {
             setActiveTabKey(initTabsItems[0].key);
         }
     }, [props.package]);
