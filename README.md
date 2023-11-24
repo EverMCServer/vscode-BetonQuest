@@ -49,6 +49,9 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 
 ## Release Notes
 
+### 0.1.4
+- fix wrong connections caused by free-hanging nodes
+
 ### 0.1.3
 - fix document sync causing tabs switched to the first one
 - fix yaml new option wrapped with "{}"
@@ -58,8 +61,5 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 - Detect YAML errors when loading a Conversation into Editor
 - Fix "event" vs "events" detection
 - Fix creating Conversation on empty "conversations" key
-
-### 0.1.1
-- Fix could not create new conversations with an empty YAML file
 
 (For more detailes, please check [CHANGELOG.md](CHANGELOG.md))

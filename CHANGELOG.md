@@ -4,6 +4,11 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.1.4] - 2023-11-24
+
+### Fixed
+- fix wrong connections caused by free-hanging nodes
+
 ## [0.1.3] - 2023-11-23
 
 ### Fixed
