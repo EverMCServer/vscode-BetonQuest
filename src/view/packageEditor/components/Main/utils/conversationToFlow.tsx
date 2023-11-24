@@ -26,7 +26,7 @@ export function conversationToFlow(
         translationSelection = undefined;
     }
 
-    // StartNodes
+    // Prepare Start node
     const startNode: Node<NodeData> = {
         id: "startNodeID",
         type: "startNode",
@@ -40,7 +40,7 @@ export function conversationToFlow(
     };
     const startNodes: Record<string, Node<NodeData>> = { startNodeID: startNode };
 
-    // NPC Nodes
+    // Prepare NPC nodes
     const npcNodes: Record<string, Node<NodeData>> = {};
     for (let i = 0; i < npcOptions.length && npcOptions; i++) {
         const option = npcOptions[i];
@@ -64,7 +64,7 @@ export function conversationToFlow(
         npcNodes[idKey] = dict;
     }
 
-    // Player Nodes
+    // Prepare Player nodes
     const playerNodes: Record<string, Node<NodeData>> = {};
     for (let i = 0; i < playerOptions.length && playerOptions; i++) {
         const option = playerOptions[i];
@@ -88,10 +88,10 @@ export function conversationToFlow(
         playerNodes[idKey] = dict;
     }
 
-    // Combine All Nodes
+    // Combine all nodes
     const allNodes = Object.assign({}, startNodes, npcNodes, playerNodes);
 
-    // Generate Lines
+    // Connect nodes from "first"
     const lines: Record<string, Edge> = {};
     const linkedNodesRef: Record<string, string[]> = {
         nodes: ["startNodeID"],
@@ -121,9 +121,7 @@ export function conversationToFlow(
         lastTargetNodeID = toNodeID;
     }
 
-    // Calculate Nodes' position, width and height
-
-    // Linked Nodes
+    // Calculate linked nodes' position, width and height
     let unlinkedNodes = Object.assign({}, allNodes);
     const linkedNodes = linkedNodesRef.nodes;
     let orderedNodes: Node[] = [];
@@ -156,7 +154,7 @@ export function conversationToFlow(
         delete unlinkedNodes[key];
     }
 
-    // Unlinked Nodes
+    // Handle free-hanging nodes
     const unusedNodeKeys = Object.keys(unlinkedNodes);
     for (let i = 0; i < unusedNodeKeys.length; i++) {
         const key = unusedNodeKeys[i];
@@ -183,12 +181,12 @@ export function conversationToFlow(
             node.height = 202 + 20 * count;
         }
 
-        // Remove Free-hanging lines
+        // Connect free-hanging nodes and their downstreams
         let pointers = node.data.option?.getPointerNames();
         for (let i = 0; pointers && i < pointers.length; i++) {
-            const targetNodeIsNPC = node.type === "npcNode";
-            const toNodeID = (targetNodeIsNPC ? "playerNode" : "npcNode") + "_" + pointers[i];
-            if (i === 0) {
+            const sourceNodeIsNPC = node.type === "npcNode";
+            const toNodeID = (sourceNodeIsNPC ? "playerNode" : "npcNode") + "_" + pointers[i];
+            if (i === 0 || sourceNodeIsNPC) {
                 linkIn(node.id, "handleOut", toNodeID, allNodes, lines, linkedNodesRef);
             } else {
                 linkIn(
@@ -208,6 +206,7 @@ export function conversationToFlow(
     return { nodes: orderedNodes, edges: Object.values(lines) };
 }
 
+// Iterate and connect all downstream nodes
 export function linkIn(
     sourceNodeID: string,
     sourceHandle: string,
