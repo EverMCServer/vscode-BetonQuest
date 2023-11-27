@@ -20,6 +20,7 @@ Create and link options with drag-and-drop:
 
 
 ### Feature Roadmap
+- [x] Web extension support. Just go to https://vscode.dev and try it.
 - [x] Edit `Conversations` with an interactive flowchart UI.
 - [ ] Basic `Events`, `Conditions`, `Objectives` Editors with fully [documentation](https://docs.betonquest.org/2.0-DEV/Documentation/Overview/) support.
 - [x] The legacy **1.x file structure** \[[1](https://docs.betonquest.org/1.12/User-Documentation/Reference/#packages)\] \[[2](https://docs.betonquest.org/1.12/User-Documentation/Conversations/)\] support.
@@ -49,17 +50,14 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 
 ## Release Notes
 
+### 0.1.5
+- Web extension supported! Just go to https://vscode.dev and try it.
+
 ### 0.1.4
-- fix wrong connections caused by free-hanging nodes
+- Fix wrong connections caused by free-hanging nodes
 
 ### 0.1.3
-- fix document sync causing tabs switched to the first one
-- fix yaml new option wrapped with "{}"
-
-### 0.1.2
-- Detect YAML errors when loading a Package into Editor
-- Detect YAML errors when loading a Conversation into Editor
-- Fix "event" vs "events" detection
-- Fix creating Conversation on empty "conversations" key
+- Fix document sync causing tabs switched to the first one
+- Fix yaml new option wrapped with "{}"
 
 (For more detailes, please check [CHANGELOG.md](CHANGELOG.md))
