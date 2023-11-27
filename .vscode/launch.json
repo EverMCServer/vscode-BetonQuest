@@ -14,24 +14,56 @@
 				"--extensionDevelopmentPath=${workspaceFolder}",
 				"--config=./webpack.dev.js"
 			],
-			"sourceMaps": true,
+			// "sourceMaps": true,
 			"resolveSourceMapLocations": [
 				"${workspaceFolder}/**",
 				"${workspaceFolder}/dist/**",
 				"${workspaceFolder}/out/**",
 				"!**/node_modules/**"
 			],
-			"sourceMapPathOverrides": {
-				"meteor://💻app/*": "${workspaceFolder}/*",
-				"webpack:///./~/*": "${workspaceFolder}/node_modules/*",
-				"webpack://?:*/*": "${workspaceFolder}/*"
-			},
+			// "sourceMapPathOverrides": {
+			// 	"meteor://💻app/*": "${workspaceFolder}/*",
+			// 	"webpack:///./~/*": "${workspaceFolder}/node_modules/*",
+			// 	"webpack://?:*/*": "${workspaceFolder}/*"
+			// },
 			"outFiles": [
 				"${workspaceFolder}/dist/**/*.js",
 				"${workspaceFolder}/out/**/*.js"
 			],
 			"pauseForSourceMap": true,
 			"preLaunchTask": "npm: watch"
+		},
+		{
+			"name": "Run Web Extension",
+			"type": "pwa-extensionHost",
+			"debugWebWorkerHost": true,
+			"request": "launch",
+			"args": [
+				"--extensionDevelopmentPath=${workspaceFolder}",
+				"--config=./webpack.dev.js",
+				"--extensionDevelopmentKind=web"
+			],
+			"resolveSourceMapLocations": [
+				"${workspaceFolder}/**",
+				"${workspaceFolder}/dist/**",
+				"${workspaceFolder}/out/**",
+				"!**/node_modules/**"
+			],
+			"outFiles": [
+				"${workspaceFolder}/dist/**/*.js",
+				"${workspaceFolder}/out/**/*.js"
+			],
+			"preLaunchTask": "npm: watch"
+		},
+		{
+			"name": "Run Web Extension in Browser",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceFolder}",
+			"runtimeExecutable": "npm",
+			"runtimeArgs": [
+				"run-script", "open-in-browser"
+			]
 		},
 		{
 			"name": "Extension Tests",

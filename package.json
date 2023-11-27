@@ -26,6 +26,7 @@
     "workspaceContains:**/package.yaml"
   ],
   "main": "./dist/extension.js",
+  "browser": "./dist/web/extension.js",
   "contributes": {
     "commands": [
       {
@@ -99,7 +100,9 @@
     "compile:extension": "tsc -p ./",
     "compile:views": "webpack --config webpack.prod.js",
     "watch:extension": "tsc -watch -p ./",
-    "watch:views": "webpack --watch --config webpack.dev.js"
+    "watch:views": "webpack --watch --config webpack.dev.js",
+    "run-in-browser": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. .",
+    "open-in-browser": "vscode-test-web --extensionDevelopmentPath=. ."
   },
   "devDependencies": {
     "@types/async-lock": "^1.4.0",
@@ -110,14 +113,19 @@
     "@types/react-dom": "^18.2.7",
     "@types/vscode": "^1.80.0",
     "@types/vscode-webview": "^1.57.1",
+    "@types/webpack-env": "^1.18.4",
     "@typescript-eslint/eslint-plugin": "^5.59.8",
     "@typescript-eslint/parser": "^5.59.8",
     "@vscode/test-electron": "^2.3.2",
+    "@vscode/test-web": "^0.0.48",
+    "assert": "^2.1.0",
     "css-loader": "^6.8.1",
     "eslint": "^8.41.0",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
     "npm-run-all": "^4.1.5",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
     "style-loader": "^3.3.3",
     "ts-loader": "^9.4.3",
     "typescript": "^5.1.3",

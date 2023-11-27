@@ -6,7 +6,7 @@ import { EventsEditorProvider } from "./eventsEditorProvider";
 import { PackageEditorProvider } from "./packageEditorProvider";
 // import { ExampleEditorProvider } from './exampleEditorProvider';
 import { setLocale } from "./i18n/i18n";
-import * as fs from 'fs';
+// import * as fs from 'fs';
 import * as path from 'path';
 
 // This method is called when your extension is activated
@@ -14,22 +14,29 @@ import * as path from 'path';
 export function activate(context: vscode.ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
-  // console.log(
-  //   'Congratulations, your extension "betonquest" is now active!'
-  // );
+  console.log(
+    'Congratulations, your extension "betonquest" is now active!'
+  );
 
   // Check if the custom editor's buttons should be shown.
   function checkCanActivateEditor(editor: vscode.TextEditor) {
+    // Set default value
+    vscode.commands.executeCommand('setContext', 'canActivateConversationEditor', false);
+    vscode.commands.executeCommand('setContext', 'canActivateEventsEditor', false);
+    vscode.commands.executeCommand('setContext', 'canActivatePackageEditor', false);
+
     // Show Conversation Editor activation button only when it is appropriate
     if (editor.document.fileName.match(/[\/\\]conversations[\/\\].+\.ya?ml$/gi)) {
       const dir = path.resolve(path.dirname(editor.document.fileName), "..");
 
       // Check for main.yml
-      const mainFile = path.join(dir, 'main.yml');
-      const mainExists = fs.existsSync(mainFile);
-
-      // Set the context variable based on the result
-      vscode.commands.executeCommand('setContext', 'canActivateConversationEditor', mainExists);
+      const mainFile = vscode.Uri.file(path.join(dir, 'main.yml'));
+      checkIfFileExists(mainFile).then(mainExists => {
+        if (mainExists) {
+          // Set the context variable based on the result
+          vscode.commands.executeCommand('setContext', 'canActivateConversationEditor', mainExists);
+        }
+      });
     }
 
     // Show Events, Conditions, Objectives, Items Editor activation button only when it is appropriate
@@ -42,36 +49,22 @@ export function activate(context: vscode.ExtensionContext) {
       const dir = path.dirname(editor.document.fileName);
 
       // Check for main.yml
-      const mainFile = path.join(dir, 'main.yml');
-      const mainExists = fs.existsSync(mainFile);
-
-      // Set the context variable based on the result
-      vscode.commands.executeCommand('setContext', 'canActivateEventsEditor', mainExists);
+      const mainFile = vscode.Uri.file(path.join(dir, 'main.yml'));
+      checkIfFileExists(mainFile).then(mainExists => {
+        if (mainExists) {
+          // Set the context variable based on the result
+          vscode.commands.executeCommand('setContext', 'canActivateEventsEditor', mainExists);
+        }
+      });
     }
 
     // Show Package Editor activation button only when it is appropriate
     if (editor.document.fileName.match(/[^\/\\]+\.ya?ml$/gi)) {
       // Iterate all parents dir to find "package.yml"
-      let d = path.dirname(editor.document.fileName);
-      let packageExists = false;
-
-      while (true) {
-        // Check for package.yml
-        const packageFile = path.join(d, 'package.yml');
-        packageExists = fs.existsSync(packageFile);
-
-        d = path.resolve(d, "..");
-
-        if (packageExists || vscode.workspace.workspaceFolders?.find(base => {
-          const u = base.uri.fsPath.toString();
-          return u === d || u.length >= d.length;
-        })) {
-          break;
-        }
-      }
-
-      // Set the context variable based on the result
-      vscode.commands.executeCommand('setContext', 'canActivatePackageEditor', packageExists);
+      checkIfFileExistsInAllParents(path.dirname(editor.document.fileName), 'package.yml').then(packageExists => {
+        // Set the context variable based on the result
+        vscode.commands.executeCommand('setContext', 'canActivatePackageEditor', packageExists);
+      });
     }
   }
   // Iterate all opened documents on start-up.
@@ -153,6 +146,37 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(EventsEditorProvider.register(context));
   // context.subscriptions.push(ExampleEditorProvider.register(context));
   context.subscriptions.push(PackageEditorProvider.register(context));
+}
+
+async function checkIfFileExists(filePath: vscode.Uri): Promise<boolean> {
+  try {
+      await vscode.workspace.fs.stat(filePath);
+      return true;
+  } catch (error) {
+      // If an error occurs, the file does not exist
+      return false;
+  }
+}
+
+function checkIfFileExistsInAllParents(filePath: string, fileName: string): Promise<boolean> {
+  let d = filePath;
+
+  return checkIfFileExists(vscode.Uri.file(path.join(d, fileName))).then(file => {
+    if (file) {
+      // Set the context variable based on the result
+      return true;
+    } else if (vscode.workspace.workspaceFolders?.find(base => {
+      const u = base.uri.fsPath.toString();
+      return u === d || u.length >= d.length;
+    })) {
+      // Break out recursion if all parent path are iterated
+      return false;
+    } else {
+      // Check parent
+      d = path.resolve(d, "..");
+      return checkIfFileExistsInAllParents(d, fileName);
+    }
+  });
 }
 
 // This method is called when your extension is deactivated

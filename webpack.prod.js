@@ -11,11 +11,18 @@ const common = require("./webpack.common.js");
 
 /** @type WebpackConfig */
 const extensionConfig = merge(common[0], {
-  // ...
+  mode: "production",
 });
 
 /** @type WebpackConfig */
 const reactConfig = merge(common[1], {
-  // ...
+  mode: "production",
 });
-module.exports = [extensionConfig, reactConfig];
+
+/** @type WebpackConfig */
+const webExtensionConfig = merge(common[2], {
+  mode: "production",
+	devtool: 'hidden-source-map',
+});
+
+module.exports = [extensionConfig, reactConfig, webExtensionConfig];
