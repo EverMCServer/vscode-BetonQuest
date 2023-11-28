@@ -19,11 +19,7 @@
     "url": "https://github.com/EverMCServer/vscode-BetonQuest.git"
   },
   "activationEvents": [
-    "workspaceContains:**/main.yml",
-    "workspaceContains:**/main.yaml",
-    "workspaceContains:**/conversations/*",
-    "workspaceContains:**/package.yml",
-    "workspaceContains:**/package.yaml"
+    "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "browser": "./dist/web/extension.js",
