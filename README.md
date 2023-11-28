@@ -50,14 +50,15 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 
 ## Release Notes
 
+### 0.1.6
+
+- Suggest YAML extension pack for grammar chacking
+- The extension is not activated under web envrionment
+
 ### 0.1.5
-- Web extension supported! Just go to https://vscode.dev and try it.
+- Web extension supported! Just go to https://vscode.dev and try it
 
 ### 0.1.4
 - Fix wrong connections caused by free-hanging nodes
-
-### 0.1.3
-- Fix document sync causing tabs switched to the first one
-- Fix yaml new option wrapped with "{}"
 
 (For more detailes, please check [CHANGELOG.md](CHANGELOG.md))

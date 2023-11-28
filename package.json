@@ -3,7 +3,7 @@
   "publisher": "EverMC",
   "displayName": "BetonQuest",
   "description": "A GUI for BetonQuest scripting",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -100,8 +100,7 @@
     "compile:views": "webpack --config webpack.prod.js",
     "watch:extension": "tsc -watch -p ./",
     "watch:views": "webpack --watch --config webpack.dev.js",
-    "run-in-browser": "vscode-test-web --browserType=chromium --extensionDevelopmentPath=. .",
-    "open-in-browser": "vscode-test-web --extensionDevelopmentPath=. ."
+    "open-in-browser": "vscode-test-web --extensionDevelopmentPath=."
   },
   "devDependencies": {
     "@types/async-lock": "^1.4.0",
