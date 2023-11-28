@@ -51,7 +51,7 @@ export default function app() {
 
     // Get document's content update from vscode
     useEffect(() => {
-        // notify vscode when webview startup completed.
+        // Notify vscode when webview startup completed.
         vscode.postMessage({
             type: "webview-lifecycle",
             content: "started",
@@ -77,9 +77,11 @@ export default function app() {
                         // Handle for initial document update
                         if (message.isInit) {
                             if (!p.getConversations().size) {
+                                // Fully expand the sider if there is no conversation.
                                 setSiderWidth(document.body.scrollWidth);
-                            } else if (!p.getAllEvents().length && !p.getAllConditions().length && !p.getAllObjectives().length && !p.getAllItems().length) {
-                                setCollapsed(true);
+                            } else if (p.getAllEvents().length || p.getAllConditions().length || p.getAllObjectives().length || p.getAllItems().length) {
+                                // Pops out the sider if there are any events, conditions, objectives or items.
+                                setCollapsed(false);
                             }
                         }
                         break;
@@ -120,23 +122,24 @@ export default function app() {
             theme={{
                 components: {
                     Layout: {
-                        colorBgBody: "",
+                        bodyBg: "",
                     },
                     Tabs: {
                         horizontalMargin: "0", // margin around tabs
 
-                        cardBg: "var(--vscode-tab-inactiveBackground)", // un-selected bg
-                        itemActiveColor: "var(--vscode-editor-foreground)", // selection click
-                        itemSelectedColor: "var(--vscode-editor-foreground)", // selected tab
-                        itemHoverColor: "var(--vscode-editor-foreground)", // hover
+                        cardBg: "var(--vscode-tab-inactiveBackground)", // un-selected tab bg
+                        itemColor: "var(--vscode-tab-inactiveForeground)", // un-selected tab text color
+                        itemActiveColor: "var(--vscode-tab-unfocusedActiveForeground)", // active tab text color
+                        itemSelectedColor: "var(--vscode-tab-activeForeground)", // selected tab text color
+                        itemHoverColor: "var(--vscode-tab-activeForeground)", // hover tab text color
                         cardGutter: 0, // gap between tabs
+                        inkBarColor:"var(--vscode-editor-foreground)", // color of the line below the selected tab
 
                         // Global
-                        colorText: "var(--vscode-editor-foreground)", // un-selected tab text & contents text
+                        colorText: "var(--vscode-tab-activeForeground)", // "+" and "..." button
                         colorBgContainer: "var(--vscode-tab-activeBackground)", // selected tab bg
                         colorTextDescription: "var(--vscode-disabledForeground)", // "delete" button
                         colorTextHeading: "var(--vscode-editor-foreground)", // "delete" button hover
-                        colorPrimary: "var(--vscode-editor-foreground)", // color of the line below the selected tab
 
                         borderRadius: 0, // tab radius
                         colorBorderSecondary: "transparent", // tab border color
@@ -155,7 +158,7 @@ export default function app() {
                     <Layout>
                         <Main package={pkg} syncYaml={syncYaml}></Main>
                     </Layout>
-                    {/* <ResizableSider
+                    <ResizableSider
                         width={siderWidth}
                         collapsedWidth={0}
                         trigger={<div>|||</div>}
@@ -180,7 +183,7 @@ export default function app() {
                         onCollapse={(value) => setCollapsed(value)}
                     >
                         <ListEditor package={pkg} syncYaml={syncYaml}></ListEditor>
-                    </ResizableSider> */}
+                    </ResizableSider>
                 </Layout>
             }
         </ConfigProvider>

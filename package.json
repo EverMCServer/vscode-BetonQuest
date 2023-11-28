@@ -132,7 +132,7 @@
   "dependencies": {
     "@dnd-kit/core": "^6.0.8",
     "@dnd-kit/sortable": "^7.0.2",
-    "antd": "^5.8.3",
+    "antd": "^5.11.5",
     "async-lock": "^1.4.0",
     "html-to-image": "^1.11.11",
     "module_name": "^1.0.0",

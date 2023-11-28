@@ -29,7 +29,7 @@ export default function yamlErrorPage(props: YamlErrorProps) {
                             fontSize: "large",
                             color: "var(--vscode-list-errorForeground)",
                         }}
-                    >You have error(s) on your YAML.</div>
+                    >There are error(s) on the YAML.</div>
                     <div>Please fix them before continue:</div>
                 </div>
                 <div
