@@ -76,11 +76,12 @@ export default function app() {
                         setPkg(p);
                         // Handle for initial document update
                         if (message.isInit) {
+                            // Fully expand the sider if there is no conversation.
                             if (!p.getConversations().size) {
-                                // Fully expand the sider if there is no conversation.
                                 setSiderWidth(document.body.scrollWidth);
-                            } else if (p.getAllEvents().length || p.getAllConditions().length || p.getAllObjectives().length || p.getAllItems().length) {
-                                // Pops out the sider if there are any events, conditions, objectives or items.
+                            }
+                            // Pops out the sider if there are any events, conditions, objectives or items.
+                            if (p.getAllEvents().length || p.getAllConditions().length || p.getAllObjectives().length || p.getAllItems().length) {
                                 setCollapsed(false);
                             }
                         }
@@ -133,7 +134,7 @@ export default function app() {
                         itemSelectedColor: "var(--vscode-tab-activeForeground)", // selected tab text color
                         itemHoverColor: "var(--vscode-tab-activeForeground)", // hover tab text color
                         cardGutter: 0, // gap between tabs
-                        inkBarColor:"var(--vscode-editor-foreground)", // color of the line below the selected tab
+                        inkBarColor: "var(--vscode-editor-foreground)", // color of the line below the selected tab
 
                         // Global
                         colorText: "var(--vscode-tab-activeForeground)", // "+" and "..." button
