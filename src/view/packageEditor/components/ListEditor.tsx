@@ -23,7 +23,7 @@ export default function listEditor(props: ListEditorProps) {
                 type="line"
                 // type="card"
                 // onChange={onTabsChange}
-                destroyInactiveTabPane={true}
+                destroyInactiveTabPane={false}
                 // activeKey={tabsActiveKey}
                 // onEdit={onTabsEdit}
                 // items={tabsItems}
@@ -32,27 +32,41 @@ export default function listEditor(props: ListEditorProps) {
                         key: "Events",
                         label: <div title="Events"><PiPlayFill /></div>,
                         children: <EventsEditor package={props.package} syncYaml={props.syncYaml}></EventsEditor>,
+                        style: {
+                            height: "calc(100% - 20px)"
+                            // overflowY: "auto",
+                            // height: "inherit"
+                        },
                     },
                     {
                         key: "Conditions",
                         label: <div title="Conditions"><AiOutlineQuestionCircle /></div>,
                         children: <ConditionsEditor package={props.package} syncYaml={props.syncYaml}></ConditionsEditor>,
+                        style: {
+                            height: "calc(100% - 20px)"
+                        },
                     },
                     {
                         key: "Objectives",
                         label: <div title="Objectives"><LuSearchCheck /></div>,
                         children: <ObjectivesEditor package={props.package} syncYaml={props.syncYaml}></ObjectivesEditor>,
+                        style: {
+                            height: "calc(100% - 20px)"
+                        },
                     },
                     {
                         key: "Items",
-                        label: <div title="Items"><LuSword /></div>, style: {},
+                        label: <div title="Items"><LuSword /></div>,
                         children: <ItemsEditor package={props.package} syncYaml={props.syncYaml}></ItemsEditor>,
+                        style: {
+                            height: "calc(100% - 20px)"
+                        },
                     },
                 ]}
                 // tabPosition="right"
                 size="small"
                 style={{
-                    height: "100%"
+                    height: "100vh"
                 }}
                 tabBarStyle={{
                     color: "var(--vscode-disabledForeground)", // un-activated tab text color

@@ -17,7 +17,7 @@ export default function eventsEditor(props: EventsEditorProps) {
         return pkg.getAllEvents().map((e, i) => {
             // Set default text editor for unknown kind.
             let editor: React.JSX.Element = <Default key={e.getName()} package={props.package} syncYaml={props.syncYaml} event={e}></Default>;
-            
+
             // Get editor by kinds.
             switch (e.getKind().toLowerCase()) {
                 case 'give':
@@ -30,6 +30,7 @@ export default function eventsEditor(props: EventsEditorProps) {
                 key: i,
                 label: e.getName(),
                 children: editor,
+                style: { margin: "8px 0" }
             };
         });
     };
@@ -42,50 +43,62 @@ export default function eventsEditor(props: EventsEditorProps) {
 
     return (
         <>
-        <ConfigProvider
-            theme={{
-                components: {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  Input: {
-                    borderRadius: 0,
-                    borderRadiusLG: 0,
-                    borderRadiusSM: 0,
-                  }
-                }
-            }}
-        >
-            <Input
-                placeholder="Search"
-                size="small"
-            ></Input>
-        </ConfigProvider>
-        <ConfigProvider
-            theme={{
-                components: {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  Collapse: {
-                    headerBg: 'var(--vscode-sideBarSectionHeader-background)',
-                    contentBg: 'var(--vscode-sideBar-dropBackground)',
-                    headerPadding: 2,
-                    contentPadding: 2,
-                    borderRadiusLG: 0,
+            <ConfigProvider
+                theme={{
+                    components: {
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        Input: {
+                            activeBorderColor: 'var(--vscode-focusBorder)',
+                            hoverBorderColor: '',
 
-                    // global
-                    colorBorder: 'var(--vscode-sideBarSectionHeader-border)',
-                    lineWidth: 1, // border line width
-                    colorText: '', // content default color of text
-                    colorTextHeading: 'var(--vscode-sideBarTitle-foreground)', // heading color of text
-                  },
-                },
-              }}
-        >
-            <Collapse
-                accordion
-                items={eventEditorList}
-                // ghost={true}
-                // bordered={false}
-            ></Collapse>
-        </ConfigProvider>
+                            // global
+                            colorText: 'var(--vscode-input-foreground)',
+                            colorTextPlaceholder: 'var(--vscode-input-placeholderForeground)',
+                            colorBgContainer: 'var(--vscode-input-background)',
+                            colorBorder: '',
+                            borderRadius: 0,
+                            borderRadiusLG: 0,
+                            borderRadiusSM: 0,
+                        },
+
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        Collapse: {
+                            headerBg: 'var(--vscode-sideBarSectionHeader-background)',
+                            contentBg: 'var(--vscode-sideBar-dropBackground)',
+                            headerPadding: 2,
+                            contentPadding: 0,
+                            borderRadiusLG: 0,
+
+                            // global
+                            colorBorder: 'var(--vscode-sideBarSectionHeader-border)',
+                            lineWidth: 1, // border line width
+                            colorText: '', // content default color of text
+                            colorTextHeading: 'var(--vscode-sideBarTitle-foreground)', // heading color of text
+                            marginSM: 12, // left margin of header text
+                        },
+                    },
+                }}
+            >
+                <Input
+                    placeholder="Search"
+                    size="small"
+                    style={{
+                        margin: "8px",
+                        width: "-webkit-fill-available",
+                    }}
+                ></Input>
+                <Collapse
+                    // accordion
+                    items={eventEditorList}
+                    // ghost={true}
+                    // bordered={false}
+                    defaultActiveKey={[0, 1, 2]}
+                    style={{
+                        overflowY: "auto",
+                        height: "inherit"
+                    }}
+                ></Collapse>
+            </ConfigProvider>
         </>
     );
 }

@@ -78,7 +78,7 @@ export default function app() {
                         if (message.isInit) {
                             // Fully expand the sider if there is no conversation.
                             if (!p.getConversations().size) {
-                                setSiderWidth(document.body.scrollWidth);
+                                setSiderWidth(document.body.scrollWidth-5);
                             }
                             // Pops out the sider if there are any events, conditions, objectives or items.
                             if (p.getAllEvents().length || p.getAllConditions().length || p.getAllObjectives().length || p.getAllItems().length) {
