@@ -8,7 +8,7 @@ import Give from "./EventsEditor/Give";
 
 interface EventsEditorProps {
     package: Package,
-    event: Event,
+    listElement: Event,
     syncYaml: Function,
 }
 
@@ -69,7 +69,7 @@ export default function(props: EventsEditorProps) {
                 <Col span={18}>
                     <Select
                         showSearch
-                        value={props.event.getKind()}
+                        value={props.listElement.getKind()}
                         placeholder="Please enter a kind"
                         defaultActiveFirstOption={false}
                         // suffixIcon={null}
@@ -83,7 +83,7 @@ export default function(props: EventsEditorProps) {
                             || false
                         }
                         onChange={(e) => {
-                            props.event.setKind(e);
+                            props.listElement.setKind(e);
                             props.syncYaml();
                             refreshUI();
                         }}
@@ -98,7 +98,7 @@ export default function(props: EventsEditorProps) {
                 </Col>
             </Row>
             <Divider />
-            {findEditor(props.event.getKind())}
+            {findEditor(props.listElement.getKind())}
         </div>
         </ConfigProvider>
     );

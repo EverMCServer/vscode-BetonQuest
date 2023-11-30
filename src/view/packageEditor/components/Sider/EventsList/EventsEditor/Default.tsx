@@ -6,7 +6,7 @@ import TextArea from "antd/es/input/TextArea";
 
 interface DefaultProps {
     package: Package,
-    event: Event,
+    listElement: Event,
     syncYaml: Function,
 }
 
@@ -19,10 +19,10 @@ export default function(props: DefaultProps) {
     };
 
     // UI update trigger #2
-    // const [event, setEvent] = useState(props.event);
+    // const [listElement, setListElement] = useState(props.listElement);
     // useEffect(()=>{
-    //     setEvent(props.event);
-    // }, [props.event]);
+    //     setListElement(props.listElement);
+    // }, [props.listElement]);
 
     return (
         <>
@@ -32,12 +32,12 @@ export default function(props: DefaultProps) {
                 </Col>
                 <Col span={18}>
                     <TextArea
-                        value={props.event.getOptions().join(" ")}
+                        value={props.listElement.getOptions().join(" ")}
                         onChange={(e) => {
                             if (e.target.value.includes("\n")) {
                                 return;
                             }
-                            props.event.setOptions(e.target.value.split(" "));
+                            props.listElement.setOptions(e.target.value.split(" "));
                             props.syncYaml();
                             refreshUI();
                         }}
