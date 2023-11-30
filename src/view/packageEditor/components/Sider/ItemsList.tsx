@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Package from "../../../../betonquest/Package";
 
-interface ItemsEditorProps {
+interface ItemsListProps {
     package: Package,
     syncYaml: Function,
 }
 
-export default function itemsEditor(props: ItemsEditorProps) {
+export default function itemsList(props: ItemsListProps) {
 
     return (
         <>
-            Items Editor...<br />
+            Items List...<br />
         </>
     );
 }

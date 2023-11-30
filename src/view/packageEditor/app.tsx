@@ -15,7 +15,7 @@ import Package from '../../betonquest/Package';
 
 import ResizableSider from '../components/ResizableSider';
 import Main from "./components/Main";
-import ListEditor from "./components/ListEditor";
+import Sider from "./components/Sider";
 import YamlErrorPage from "../components/YamlErrorPage";
 
 // Global variables from vscode
@@ -122,9 +122,11 @@ export default function app() {
         <ConfigProvider
             theme={{
                 components: {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
                     Layout: {
                         bodyBg: "",
                     },
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
                     Tabs: {
                         horizontalMargin: "0", // margin around tabs
 
@@ -183,7 +185,7 @@ export default function app() {
                         collapsed={collapsed}
                         onCollapse={(value) => setCollapsed(value)}
                     >
-                        <ListEditor package={pkg} syncYaml={syncYaml}></ListEditor>
+                        <Sider package={pkg} syncYaml={syncYaml}></Sider>
                     </ResizableSider>
                 </Layout>
             }

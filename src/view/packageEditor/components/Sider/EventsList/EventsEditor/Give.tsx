@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import Package from "../../../../../betonquest/Package";
-import Event from "../../../../../betonquest/Event";
+import Package from "../../../../../../betonquest/Package";
+import Event from "../../../../../../betonquest/Event";
 
-interface GiveProps {
+interface Props {
     package: Package,
     event: Event,
     syncYaml: Function,
 }
 
-export default function give(props: GiveProps) {
+export default function give(props: Props) {
 
     // const [event, setEvent] = useState(props.event);
 

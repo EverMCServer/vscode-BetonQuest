@@ -1,21 +1,21 @@
 import React from "react";
 import Package from "../../../betonquest/Package";
 import { Tabs } from "antd";
-import EventsEditor from "./ListEditor/EventsEditor";
 import { PiPlayFill } from "react-icons/pi";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 import { LuSearchCheck, LuSword } from "react-icons/lu";
-import Condition from "../../../betonquest/Condition";
-import ConditionsEditor from "./ListEditor/ConditionsEditor";
-import ObjectivesEditor from "./ListEditor/ObjectivesEditor";
-import ItemsEditor from "./ListEditor/ItemsEditor";
+
+import EventsList from "./Sider/EventsList";
+import ConditionsList from "./Sider/ConditionsList";
+import ObjectivesList from "./Sider/ObjectivesList";
+import ItemsList from "./Sider/ItemsList";
 
 interface ListEditorProps {
     package: Package,
     syncYaml: Function,
 }
 
-export default function listEditor(props: ListEditorProps) {
+export default function sider(props: ListEditorProps) {
 
     return (
         <>
@@ -31,7 +31,7 @@ export default function listEditor(props: ListEditorProps) {
                     {
                         key: "Events",
                         label: <div title="Events"><PiPlayFill /></div>,
-                        children: <EventsEditor package={props.package} syncYaml={props.syncYaml}></EventsEditor>,
+                        children: <EventsList package={props.package} syncYaml={props.syncYaml}></EventsList>,
                         style: {
                             height: "calc(100% - 20px)"
                             // overflowY: "auto",
@@ -41,7 +41,7 @@ export default function listEditor(props: ListEditorProps) {
                     {
                         key: "Conditions",
                         label: <div title="Conditions"><AiOutlineQuestionCircle /></div>,
-                        children: <ConditionsEditor package={props.package} syncYaml={props.syncYaml}></ConditionsEditor>,
+                        children: <ConditionsList package={props.package} syncYaml={props.syncYaml}></ConditionsList>,
                         style: {
                             height: "calc(100% - 20px)"
                         },
@@ -49,7 +49,7 @@ export default function listEditor(props: ListEditorProps) {
                     {
                         key: "Objectives",
                         label: <div title="Objectives"><LuSearchCheck /></div>,
-                        children: <ObjectivesEditor package={props.package} syncYaml={props.syncYaml}></ObjectivesEditor>,
+                        children: <ObjectivesList package={props.package} syncYaml={props.syncYaml}></ObjectivesList>,
                         style: {
                             height: "calc(100% - 20px)"
                         },
@@ -57,7 +57,7 @@ export default function listEditor(props: ListEditorProps) {
                     {
                         key: "Items",
                         label: <div title="Items"><LuSword /></div>,
-                        children: <ItemsEditor package={props.package} syncYaml={props.syncYaml}></ItemsEditor>,
+                        children: <ItemsList package={props.package} syncYaml={props.syncYaml}></ItemsList>,
                         style: {
                             height: "calc(100% - 20px)"
                         },

@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Package from "../../../../betonquest/Package";
 
-interface ConditionsEditorProps {
+interface ConditionsListProps {
     package: Package,
     syncYaml: Function,
 }
 
-export default function conditionsEditor(props: ConditionsEditorProps) {
+export default function conditionsList(props: ConditionsListProps) {
 
     return (
         <>
-            Conditions Editor...<br />
+            Conditions List...<br />
         </>
     );
 }
