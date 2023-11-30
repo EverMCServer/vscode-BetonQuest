@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Input, Row, Col, Divider, ConfigProvider } from "antd";
+import { Input, Row, Col, Divider, ConfigProvider, Select } from "antd";
 
 import Package from "../../../../../betonquest/Package";
 import Event from "../../../../../betonquest/Event";
@@ -25,6 +25,18 @@ export default function(props: EventsEditorProps) {
     // useEffect(()=>{
     //     setEvent(props.event);
     // }, [props.event]);
+
+    // All kinds
+    const kinds = [
+        {
+            value: 'unknown',
+            display: 'Unknown'
+        },
+        {
+            value: 'give',
+            display: 'Give'
+        },
+    ];
 
     // Find editor by kind
     const findEditor = (kind: string) => {
@@ -55,16 +67,34 @@ export default function(props: EventsEditorProps) {
                     <span>Kind:</span>
                 </Col>
                 <Col span={18}>
-                    <Input
+                    <Select
+                        showSearch
                         value={props.event.getKind()}
+                        placeholder="Please enter a kind"
+                        defaultActiveFirstOption={false}
+                        // suffixIcon={null}
+                        filterOption={(input, option) =>
+                            option?.value
+                                .toLowerCase()
+                                .includes(input.toLowerCase())
+                            || option?.label
+                                .toLowerCase()
+                                .includes(input.toLowerCase())
+                            || false
+                        }
                         onChange={(e) => {
-                            props.event.setKind(e.target.value);
+                            props.event.setKind(e);
                             props.syncYaml();
                             refreshUI();
                         }}
+                        notFoundContent={null}
+                        options={(kinds || []).map((d) => ({
+                            value: d.value,
+                            label: d.display,
+                        }))}
                         size="small"
-                        // style={{ width: "100%" }}
-                    ></Input>
+                        style={{ width: "100%" }}
+                    />
                 </Col>
             </Row>
             <Divider />
