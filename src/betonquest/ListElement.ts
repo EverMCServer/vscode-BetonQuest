@@ -1,5 +1,7 @@
 import { Pair, Scalar } from "yaml";
 
+export type ListElementType = 'events' | 'conditions' | 'objectives' | 'conversations' | 'items';
+
 export default class ListElement {
     private yaml: Pair<Scalar<string>, Scalar<string>>;
 

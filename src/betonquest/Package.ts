@@ -4,6 +4,7 @@ import Event from './Event';
 import Condition from './Condition';
 import Objective from './Objective';
 import Item from './Item';
+import ListElement, { ListElementType } from './ListElement';
 
 export default class Package {
 
@@ -44,161 +45,174 @@ export default class Package {
         });
     }
 
-    private getEventsYaml() {
-        return this.yaml.get("events") as YAMLMap<Scalar<string>, Scalar<string>> | undefined;
+    private getListElementsYaml(type: string) {
+        const yaml = this.yaml.get(type);
+        if (yaml instanceof YAMLMap) {
+            return yaml;
+        }
+        return undefined;
     }
+
+    private createElementByType(type: ListElementType, pair: Pair<Scalar<string>, Scalar<string>>) {
+        // Fix null value
+        if (pair.value instanceof Scalar) {
+            if (!pair.value.value) {
+                pair.value.value = "";
+            }
+        }
+
+        switch (type) {
+            case "events":
+                return new Event(pair);
+            case "conditions":
+                return new Condition(pair);
+            case "objectives":
+                return new Objective(pair);
+            case "items":
+                return new Item(pair);
+            default:
+                return new ListElement(pair);
+        }
+    };
+
+    private getListElements<T extends ListElement>(type: ListElementType, name: string): T | undefined {
+        const index = this.getListElementsYaml(type)?.items.findIndex(pair => pair.key.value === name);
+        if (index && index !== -1) {
+            const pair = this.getListElementsYaml(type)!.items[index];
+            return this.createElementByType(type, pair) as T;
+        }
+        return undefined;
+    }
+
+    private getListElementsByNames<T extends ListElement>(type: ListElementType, names: string[]): (T | undefined)[] {
+        return names.map(name => {
+            return this.getListElements(type, name);
+        });
+    }
+
+    private getAllListElements<T extends ListElement>(type: ListElementType): T[] {
+        return this.getListElementsYaml(type)?.items.map(pair => {
+            return this.createElementByType(type, pair) as T;
+        }) || [];
+    }
+
+    private createListElement<T extends ListElement>(type: ListElementType, name: string): T {
+        this.yamlAddIn([new Scalar(type)], this.yaml.createPair(new Scalar<string>(name), new Scalar<string>("")));
+        return this.getListElements(type, name)! as T;
+    }
+
+    private removeListElement(type: ListElementType, name: string) {
+        this.yaml.deleteIn([type, name]);
+    }
+
+    // ----==== Events ====----
 
     // Get an Event by name.
     getEvent(eventName: string): Event | undefined {
-        const index = this.getEventsYaml()?.items.findIndex(pair => pair.key.value === eventName);
-        if (index) {
-            return new Event(this.getEventsYaml()!.items[index]);
-        }
-        return undefined;
+        return this.getListElements("events", eventName);
     }
 
     // Get multiple Events by names.
     getEvents(eventNames: string[]): (Event | undefined)[] {
-        return eventNames.map(value => {
-            return this.getEvent(value);
-        });
+        return this.getListElementsByNames("events", eventNames);
     }
 
     // Get all Events from the Package.
     getAllEvents(): Event[] {
-        return this.getEventsYaml()?.items.map(pair => {
-            return new Event(pair);
-        }) || [];
+        return this.getAllListElements("events");
     }
 
     // Create a new Event on the Package.
     createEvent(eventName: string): Event {
-        this.yamlAddIn([new Scalar("events")], this.yaml.createPair(new Scalar<string>(eventName), new Scalar<string>("")));
-        return this.getEvent(eventName)!;
+        return this.createListElement("events", eventName);
     }
 
     // Delete a Event from the package.
     removeEvent(eventName: string) {
-        this.yaml.deleteIn(["events", eventName]);
+        this.removeListElement("events", eventName);
     }
 
-    private getConditionsYaml() {
-        return this.yaml.get("conditions") as YAMLMap<Scalar<string>, Scalar<string>> | undefined;
-    }
+    // ----==== Conditions ====----
 
     // Get a Condition by name.
     getCondition(conditionName: string): Condition | undefined {
-        const index = this.getConditionsYaml()?.items.findIndex(pair => pair.key.value === conditionName);
-        if (index) {
-            return new Condition(this.getConditionsYaml()!.items[index]);
-        }
-        return undefined;
+        return this.getListElements("conditions", conditionName);
     }
 
     // Get multiple Conditions by names.
     getConditions(conditionNames: string[]): (Condition | undefined)[] {
-        return conditionNames.map(value => {
-            return this.getCondition(value);
-        });
+        return this.getListElementsByNames("conditions", conditionNames);
     }
 
     // get all Conditions from the Package.
     getAllConditions(): Condition[] {
-        return this.getConditionsYaml()?.items.map(pair => {
-            return new Condition(pair);
-        }) || [];
+        return this.getAllListElements("conditions");
     }
 
     // Create a new Condition on the Package.
-    createCondition(conditionName: string): Event {
-        this.yamlAddIn([new Scalar("conditions")], this.yaml.createPair(new Scalar<string>(conditionName), new Scalar<string>("")));
-        return this.getCondition(conditionName)!;
+    createCondition(conditionName: string): Condition {
+        return this.createListElement("conditions", conditionName);
     }
 
     // Delete a Condition from the package.
     removeCondition(conditionName: string) {
-        this.yaml.deleteIn(["conditions", conditionName]);
+        this.removeListElement("conditions", conditionName);
     }
 
-    private getObjectivesYaml() {
-        return this.yaml.get("objectives") as YAMLMap<Scalar<string>, Scalar<string>> | undefined;
-    }
+    // ----==== Objectives ====----
 
-    // Get an Objective by name.
     getObjective(objectiveName: string): Objective | undefined {
-        const index = this.getObjectivesYaml()?.items.findIndex(pair => pair.key.value === objectiveName);
-        if (index) {
-            return new Objective(this.getObjectivesYaml()!.items[index]);
-        }
-        return undefined;
+        return this.getListElements("objectives", objectiveName);
     }
 
     // Get multiple Objectives by names.
     getObjectives(objectiveNames: string[]): (Objective | undefined)[] {
-        return objectiveNames.map(value => {
-            return this.getObjective(value);
-        });
+        return this.getListElementsByNames("objectives", objectiveNames);
     }
 
     // Get all Objectives from the Package.
     getAllObjectives(): Objective[] {
-        return this.getObjectivesYaml()?.items.map(pair => {
-            return new Objective(pair);
-        }) || [];
+        return this.getAllListElements("objectives");
     }
 
     // Create a new Objective on the Package.
-    createObjective(objectiveName: string): Event {
-        this.yamlAddIn([new Scalar("objectives")], this.yaml.createPair(new Scalar<string>(objectiveName), new Scalar<string>("")));
-        return this.getObjective(objectiveName)!;
+    createObjective(objectiveName: string): Objective {
+        return this.createListElement("objectives", objectiveName);
     }
 
     // Delete a Objective from the package.
     removeObjective(objectiveName: string) {
-        this.yaml.deleteIn(["objectives", objectiveName]);
+        this.removeListElement("objectives", objectiveName);
     }
 
-    private getItemsYaml() {
-        return this.yaml.get("items") as YAMLMap<Scalar<string>, Scalar<string>> | undefined;
-    }
+    // ----==== Items ====----
 
     // Get an Item by name.
     getItem(itemName: string): Item | undefined {
-        const index = this.getItemsYaml()?.items.findIndex(pair => pair.key.value === itemName);
-        if (index !== undefined) {
-            return new Item(this.getItemsYaml()!.items[index]);
-        }
-        return undefined;
+        return this.getListElements("items", itemName);
     }
 
     // Get multiple Items by names.
     getItems(itemNames: string[]): (Item | undefined)[] {
-        return itemNames.map(value => {
-            return this.getItem(value);
-        });
+        return this.getListElementsByNames("items", itemNames);
     }
 
     // Get all Items from the Package.
     getAllItems(): Item[] {
-        const yaml = this.getItemsYaml();
-        if (yaml) {
-            return yaml.items.map(pair => {
-                return new Item(pair);
-            }) || [];
-        }
-        return [];
+        return this.getAllListElements("items");
     }
 
     // Create a new Item on the Package.
-    createItem(itemName: string): Event {
-        this.yamlAddIn([new Scalar("items")], this.yaml.createPair(new Scalar<string>(itemName), new Scalar<string>("")));
-        return this.getItem(itemName)!;
+    createItem(itemName: string): Item {
+        return this.createListElement("items", itemName);
     }
 
     // Delete a Item from the package.
     removeItem(itemName: string) {
-        this.yaml.deleteIn(["items", itemName]);
+        this.removeListElement("items", itemName);
     }
+
+    // ----==== Conversations ====----
 
     private getConversationsYaml() {
         return this.yaml.get("conversations") as YAMLMap<
@@ -225,7 +239,6 @@ export default class Package {
     }
 
     // Get all conversations
-    // TODO: return array instead, for key renaming etc
     getConversations(): Map<string, Conversation> {
         const map = new Map<string, Conversation>();
         const yaml = this.yaml.getIn(["conversations"]);
