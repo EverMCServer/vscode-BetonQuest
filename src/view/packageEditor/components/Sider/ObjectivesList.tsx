@@ -7,7 +7,7 @@ export default function objectivesList(props: BaseListProps) {
 
     return (
         <>
-           <CommonList {...props} editor={ObjectivesEditor} listElements={props.package.getAllObjectives()} />
+           <CommonList {...props} type='objectives' listElements={props.package.getAllObjectives()}editor={ObjectivesEditor} />
         </>
     );
 }

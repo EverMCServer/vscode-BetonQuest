@@ -6,6 +6,6 @@ import CommonList, { BaseListProps } from "./CommonList";
 export default function eventsList(props: BaseListProps) {
 
     return (
-        <CommonList {...props} editor={EventsEditor} listElements={props.package.getAllEvents()} />
+        <CommonList {...props} type='events' listElements={props.package.getAllEvents()} editor={EventsEditor} />
     );
 }

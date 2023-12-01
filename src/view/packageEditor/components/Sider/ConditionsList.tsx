@@ -7,7 +7,7 @@ export default function conditionsList(props: BaseListProps) {
 
     return (
         <>
-           <CommonList {...props} editor={ConditionsEditor} listElements={props.package.getAllConditions()} />
+           <CommonList {...props} type='conditions' listElements={props.package.getAllConditions()} editor={ConditionsEditor} />
         </>
     );
 }

@@ -96,7 +96,7 @@ export default class Package {
         }) || [];
     }
 
-    private createListElement<T extends ListElement>(type: ListElementType, name: string): T {
+    createListElement<T extends ListElement>(type: ListElementType, name: string): T {
         this.yamlAddIn([new Scalar(type)], this.yaml.createPair(new Scalar<string>(name), new Scalar<string>("")));
         return this.getListElements(type, name)! as T;
     }
