@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Package from "../../../../../../betonquest/Package";
-import Event from "../../../../../../betonquest/Event";
+import Objective from "../../../../../../betonquest/Objective";
 import { Col, Row } from "antd";
 import TextArea from "antd/es/input/TextArea";
 
 interface DefaultProps {
     package: Package,
     syncYaml: Function,
-    listElement: Event,
+    listElement: Objective,
 }
 
 export default function(props: DefaultProps) {

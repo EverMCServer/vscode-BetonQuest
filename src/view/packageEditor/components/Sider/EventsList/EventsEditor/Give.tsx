@@ -4,8 +4,8 @@ import Event from "../../../../../../betonquest/Event";
 
 interface Props {
     package: Package,
-    listElement: Event,
     syncYaml: Function,
+    listElement: Event,
 }
 
 export default function give(props: Props) {

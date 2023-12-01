@@ -11,6 +11,10 @@ export default class ListElement {
         return this.yaml.key.value;
     }
 
+    toString(): string {
+        return this.yaml.value?.value || "";
+    }
+
     getKind(): string {
         const cont = this.yaml.value?.value.split(" ");
         if (cont && cont.length) {
@@ -38,9 +42,5 @@ export default class ListElement {
     setOptions(options: string[]) {
         const kind = this.getKind();
         this.yaml.value!.value = [kind, ...options].join(" ");
-    }
-
-    toString(): string {
-        return this.yaml.value?.value || "";
     }
 }

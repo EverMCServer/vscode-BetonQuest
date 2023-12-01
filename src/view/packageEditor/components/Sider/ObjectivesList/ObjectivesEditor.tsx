@@ -1,12 +1,11 @@
 import React from "react";
 
-import Event from "../../../../../betonquest/Event";
+import Objective from "../../../../../betonquest/Objective";
 import { ListElementEditorProps } from "../CommonList/CommonEditor";
 import CommonEditor from "../CommonList/CommonEditor";
-import Default from "./EventsEditor/Default";
-import Give from "./EventsEditor/Give";
+import Default from "./ObjectivesEditor/Default";
 
-export default function(props: ListElementEditorProps<Event>) {
+export default function(props: ListElementEditorProps<Objective>) {
 
     // All kinds
     const kinds = [
@@ -18,8 +17,9 @@ export default function(props: ListElementEditorProps<Event>) {
         {
             value: 'give',
             display: 'Give',
-            editor: Give,
+            editor: Default,
         },
+        // ...
     ];
 
     return (

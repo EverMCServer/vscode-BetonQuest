@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Package from "../../../../betonquest/Package";
 
-interface ObjectivesListProps {
-    package: Package,
-    syncYaml: Function,
-}
+import ObjectivesEditor from "./ObjectivesList/ObjectivesEditor";
+import CommonList, { BaseListProps } from "./CommonList";
 
-export default function objectivesList(props: ObjectivesListProps) {
+export default function objectivesList(props: BaseListProps) {
 
     return (
         <>
-            Objectives List...<br />
+           <CommonList {...props} editor={ObjectivesEditor} listElements={props.package.getAllObjectives()} />
         </>
     );
 }

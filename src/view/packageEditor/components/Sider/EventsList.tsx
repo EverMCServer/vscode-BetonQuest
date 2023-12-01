@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import Package from "../../../../betonquest/Package";
 import EventsEditor from "./EventsList/EventsEditor";
-import CommonList from "./CommonList";
+import CommonList, { BaseListProps } from "./CommonList";
 
-interface EventsListProps {
-    package: Package,
-    syncYaml: Function,
-}
-
-export default function eventsList(props: EventsListProps) {
+export default function eventsList(props: BaseListProps) {
 
     return (
         <CommonList {...props} editor={EventsEditor} listElements={props.package.getAllEvents()} />

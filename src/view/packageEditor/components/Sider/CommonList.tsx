@@ -4,18 +4,24 @@ import Package from "../../../../betonquest/Package";
 import { Button, Collapse, CollapseProps, Input } from "antd";
 import { VscEdit, VscGear } from "react-icons/vsc";
 import ListElement from "../../../../betonquest/ListElement";
+import { ListElementEditorProps } from "./CommonList/CommonEditor";
 
-interface CommonListProps {
+interface CommonListProps<T extends ListElement> {
     package: Package,
     syncYaml: Function,
-    listElements: ListElement[],
-    editor: (props: any) => React.JSX.Element,
+    listElements: T[],
+    editor: (props: ListElementEditorProps<T>) => React.JSX.Element,
 }
 
-export default function(props: CommonListProps) {
+export interface BaseListProps {
+    package: Package,
+    syncYaml: Function,
+}
+
+export default function<T extends ListElement>(props: CommonListProps<T>) {
 
     // Convert all ListElements into coresponding ListElement's Editor
-    const getListElementEditorList = (allElements: ListElement[]): CollapseProps['items'] => {
+    const getListElementEditorList = (allElements: T[]): CollapseProps['items'] => {
         return allElements.map((e, i) => {
             return {
                 key: i,

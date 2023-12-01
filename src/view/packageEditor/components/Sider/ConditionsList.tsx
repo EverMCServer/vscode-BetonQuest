@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Package from "../../../../betonquest/Package";
 
-interface ConditionsListProps {
-    package: Package,
-    syncYaml: Function,
-}
+import CommonList, { BaseListProps } from "./CommonList";
+import ConditionsEditor from "./ConditionsList/ConditionsEditor";
 
-export default function conditionsList(props: ConditionsListProps) {
+export default function conditionsList(props: BaseListProps) {
 
     return (
         <>
-            Conditions List...<br />
+           <CommonList {...props} editor={ConditionsEditor} listElements={props.package.getAllConditions()} />
         </>
     );
 }
