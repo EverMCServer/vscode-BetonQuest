@@ -3,23 +3,19 @@ import { Input, Row, Col, Divider, ConfigProvider, Select } from "antd";
 
 import Package from "../../../../../betonquest/Package";
 import ListElement from "../../../../../betonquest/ListElement";
+import { BaseListProps } from "../CommonList";
 
-interface CommonEditorProps<T extends ListElement> {
-    package: Package,
-    syncYaml: Function,
+export interface ListElementEditorProps<T extends ListElement> extends BaseListProps {
     listElement: T,
+}
+
+interface CommonEditorProps<T extends ListElement> extends ListElementEditorProps<T> {
     kinds: {
         value: string,
         display: string,
         editor: (props: ListElementEditorProps<T>) => React.JSX.Element,
     }[],
     defaultEditor: (props: ListElementEditorProps<T>) => React.JSX.Element,
-}
-
-export interface ListElementEditorProps<T extends ListElement> {
-    package: Package,
-    syncYaml: Function,
-    listElement: T,
 }
 
 export default function<T extends ListElement>(props: CommonEditorProps<T>) {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 
+import Condition from "../../../../betonquest/Condition";
 import CommonList, { BaseListProps } from "./CommonList";
 import ConditionsEditor from "./ConditionsList/ConditionsEditor";
 
@@ -7,7 +8,7 @@ export default function conditionsList(props: BaseListProps) {
 
     return (
         <>
-           <CommonList {...props} type='conditions' listElements={props.package.getAllConditions()} editor={ConditionsEditor} />
+           <CommonList<Condition> {...props} type='conditions' editor={ConditionsEditor} />
         </>
     );
 }

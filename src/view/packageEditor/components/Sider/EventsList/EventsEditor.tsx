@@ -23,6 +23,6 @@ export default function(props: ListElementEditorProps<Event>) {
     ];
 
     return (
-        <CommonEditor {...props} kinds={kinds} defaultEditor={Default} />
+        <CommonEditor<Event> {...props} kinds={kinds} defaultEditor={Default} />
     );
 }

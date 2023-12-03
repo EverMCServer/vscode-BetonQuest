@@ -1,6 +1,6 @@
 import { Pair, Scalar } from "yaml";
 
-export type ListElementType = 'events' | 'conditions' | 'objectives' | 'conversations' | 'items';
+export type ListElementType = 'events' | 'conditions' | 'objectives' | 'conversations' | 'items' | 'unknown';
 
 export default class ListElement {
     private yaml: Pair<Scalar<string>, Scalar<string>>;
@@ -11,6 +11,10 @@ export default class ListElement {
 
     getName(): string {
         return this.yaml.key.value;
+    }
+
+    setName(name: string) {
+        this.yaml.key.value = name.trim();
     }
 
     toString(): string {

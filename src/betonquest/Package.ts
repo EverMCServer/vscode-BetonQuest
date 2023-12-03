@@ -75,7 +75,7 @@ export default class Package {
         }
     };
 
-    private getListElements<T extends ListElement>(type: ListElementType, name: string): T | undefined {
+    getListElements<T extends ListElement>(type: ListElementType, name: string): T | undefined {
         const index = this.getListElementsYaml(type)?.items.findIndex(pair => pair.key.value === name);
         if (index && index !== -1) {
             const pair = this.getListElementsYaml(type)!.items[index];
@@ -84,13 +84,13 @@ export default class Package {
         return undefined;
     }
 
-    private getListElementsByNames<T extends ListElement>(type: ListElementType, names: string[]): (T | undefined)[] {
+    getListElementsByNames<T extends ListElement>(type: ListElementType, names: string[]): (T | undefined)[] {
         return names.map(name => {
             return this.getListElements(type, name);
         });
     }
 
-    private getAllListElements<T extends ListElement>(type: ListElementType): T[] {
+    getAllListElements<T extends ListElement>(type: ListElementType): T[] {
         return this.getListElementsYaml(type)?.items.map(pair => {
             return this.createElementByType(type, pair) as T;
         }) || [];

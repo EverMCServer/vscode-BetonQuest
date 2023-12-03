@@ -23,6 +23,6 @@ export default function(props: ListElementEditorProps<Objective>) {
     ];
 
     return (
-        <CommonEditor {...props} kinds={kinds} defaultEditor={Default} />
+        <CommonEditor<Objective> {...props} kinds={kinds} defaultEditor={Default} />
     );
 }

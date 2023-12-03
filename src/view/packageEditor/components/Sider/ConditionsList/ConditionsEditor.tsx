@@ -23,6 +23,6 @@ export default function(props: ListElementEditorProps<Condition>) {
     ];
 
     return (
-        <CommonEditor {...props} kinds={kinds} defaultEditor={Default} />
+        <CommonEditor<Condition> {...props} kinds={kinds} defaultEditor={Default} />
     );
 }
