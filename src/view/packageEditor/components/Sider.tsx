@@ -53,7 +53,7 @@ export default function sider(props: ListEditorProps) {
                         colorTextPlaceholder: 'var(--vscode-input-placeholderForeground)',
                         colorTextQuaternary: 'var(--vscode-input-placeholderForeground)', // suffix icon "down arrow" color
                         colorIcon: 'var(--vscode-input-placeholderForeground)', // "clear" button color
-                        colorIconHover: 'var(--vscode-list-hoverForeground)', // "clear" button color when hovering
+                        colorIconHover: 'var(--vscode-list-hoverForeground)', // "clear" button color when hover
                         colorBorder: 'var(--vscode-checkbox-border)', // border color
                         colorPrimary: 'var(--vscode-focusBorder)', // active / focus border color
                         colorPrimaryHover: 'var(--vscode-input-foreground)', // hover color border
@@ -70,11 +70,39 @@ export default function sider(props: ListEditorProps) {
                         // global
                         colorText: 'var(--vscode-input-foreground)',
                         colorTextPlaceholder: 'var(--vscode-input-placeholderForeground)',
+                        colorTextQuaternary: 'var(--vscode-input-placeholderForeground)', // suffix icon color
+                        colorTextTertiary: 'var(--vscode-input-foreground)', // suffix icon color when hover
                         colorBgContainer: 'var(--vscode-input-background)',
                         colorBorder: 'var(--vscode-checkbox-border)',
                         borderRadius: 0,
                         borderRadiusLG: 0,
                         borderRadiusSM: 0,
+                    },
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    Button: {
+                        defaultColor: 'var(--vscode-button-foreground)', // text color of button
+                        defaultBg: 'var(--vscode-button-secondaryBackground)', // background color of button, secondary / default
+                        // ?: 'var(--vscode-button-secondaryHoverBackground)', // background color of button when hover, secondary / default
+                        defaultBorderColor: '', // border color, secondary / default
+                        colorPrimaryHover: '', // background color of primary button when hover, secondary / default button border+text color when hover
+
+                        // global
+                        colorPrimary: 'var(--vscode-button-background)', // background color of button, primary
+                        colorPrimaryActive: 'var(--vscode-button-hoverBackground)', // text color of button when clicked, primary
+                        // colorPrimaryHover: 'var(--vscode-button-hoverBackground)', // background color of button when hover, primary
+                        // controlOutline: '', // primay button shadow
+                        primaryShadow: '', // primay button shadow
+
+                        // controlTmpOutline: '', // secondary / default button shadow
+                        defaultShadow: '', // secondary / default button shadow
+
+                        borderRadius: 2,
+                        borderRadiusLG: 2,
+                        borderRadiusSM: 2,
+                    },
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    Popover: {
+                        //
                     },
                 },
             }}
