@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Layout, SiderProps } from "antd";
 
 import "./ResizableSider.css";
 
 interface ResizableSiderProps extends SiderProps {
+  // Default width
+  width: number;
+
   // Minimun drag width
   minWidth?: number;
 
@@ -13,8 +16,13 @@ interface ResizableSiderProps extends SiderProps {
 
 let isResizing: boolean = false;
 
-const resizableSider:React.FC<ResizableSiderProps> = ({ children, ...props }) => {
-  const [siderWidth, setSiderWidth] = useState(props.width);
+const resizableSider: React.FC<ResizableSiderProps> = ({ children, ...props }) => {
+  const [siderWidth, _setSiderWidth] = useState(props.width);
+  const cachedSiderWidth = useRef(siderWidth);
+  function setSiderWidth(width: number) {
+    cachedSiderWidth.current = width;
+    _setSiderWidth(width);
+  }
 
   const cbHandleMouseMove = React.useCallback(handleMousemove, []);
   const cbHandleMouseUp = React.useCallback(handleMouseup, []);
@@ -44,17 +52,46 @@ const resizableSider:React.FC<ResizableSiderProps> = ({ children, ...props }) =>
   function handleMousemove(e: MouseEvent) {
     let offsetRight =
       document.body.offsetWidth - (e.clientX - document.body.offsetLeft);
-    let minWidth = props.minWidth || document.body.scrollWidth/4;
-    let maxWidth = props.maxWidth || document.body.scrollWidth;
-    if (offsetRight > minWidth && offsetRight < maxWidth) {
+    let minWidth = props.minWidth || 220;
+    let maxWidth = props.maxWidth || document.body.offsetWidth;
+    if (maxWidth > document.body.offsetWidth) {
+      maxWidth = document.body.offsetWidth;
+    }
+
+    // Stick to the side if near boundry
+    if (offsetRight > maxWidth - 20 && document.body.offsetWidth === maxWidth) {
+      setSiderWidth(maxWidth);
+      return;
+    }
+
+    if (offsetRight >= minWidth && offsetRight <= maxWidth) {
       setSiderWidth(offsetRight);
     }
   }
 
+  // Adjust width when screen resized
+  useEffect(() => {
+    const cbHandleWindowResize = () => {
+      setTimeout(() => {
+        let maxWidth = props.maxWidth || document.body.offsetWidth;
+        if (maxWidth > document.body.offsetWidth) {
+          maxWidth = document.body.offsetWidth;
+        }
+        if (cachedSiderWidth.current > maxWidth) {
+          _setSiderWidth(maxWidth);
+        }
+      }, 0);
+    };
+    window.addEventListener("resize", cbHandleWindowResize);
+    return () => {
+      window.removeEventListener("resize", cbHandleWindowResize);
+    };
+  }, []);
+
   return (
     <Layout.Sider {...props} width={siderWidth}>
       <div className="sidebar-dragger" onMouseDown={handleMousedown} />
-      <div className="sidebar-content" style={{height: "100%"}}>{children}</div>
+      <div className="sidebar-content" style={{ height: "100%" }}>{children}</div>
     </Layout.Sider>
   );
 };
