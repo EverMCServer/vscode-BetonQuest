@@ -24,3 +24,10 @@
 .vscode-button.vscode-button-secondary:hover {
     background-color: var(--vscode-button-secondaryHoverBackground);
 }
+
+.vscode-button-outline:focus {
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: 2px;
+    outline-color: var(--vscode-focusBorder);
+}

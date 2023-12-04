@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 
 import { Button, Collapse, CollapseProps, Input } from "antd";
 import { ItemType } from "rc-collapse/es/interface";
+import { VSCodeButton } from '@vscode/webview-ui-toolkit/react';
 
 import Package from "../../../../betonquest/Package";
 import ListElement, { ListElementType } from "../../../../betonquest/ListElement";
 import CollapseLabel from "./CommonList/CollapseLabel";
 import CollapseExtra from "./CommonList/CollapseExtra";
 import { ListElementEditorProps } from "./CommonList/CommonEditor";
+
+import '../../../style/vscodeButton.css';
 
 export interface BaseListProps {
     package: Package,
@@ -128,16 +131,51 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
                     activeKey={collapseActiveKeys}
                     onChange={setCollapseActiveKeys}
                 ></Collapse>
-                <Button
+                {/* <Button
                     type="primary"
                     onClick={onElementAdd}
+                    className="vscode-button-outline"
                     style={{
-                        margin: "24px 8px",
+                        margin: "24px 20px",
                         width: "-webkit-fill-available",
                     }}
                 >
                     Add
-                </Button>
+                </Button> */}
+                <VSCodeButton
+                    appearance="primary"
+                    onClick={onElementAdd}
+                    className="vscode-button-outline"
+                    style={{
+                        margin: "24px 20px",
+                        height: "32px",
+                        width: "-webkit-fill-available",
+                    }}
+                >
+                    <span style={{
+                        width: "auto",
+                        fontSize: "14px",
+                    }}>
+                        Add
+                    </span>
+                </VSCodeButton>
+                {/* <VSCodeButton
+                    appearance="secondary"
+                    onClick={onElementAdd}
+                    className="vscode-button-outline"
+                    style={{
+                        margin: "24px 20px",
+                        height: "32px",
+                        width: "-webkit-fill-available",
+                    }}
+                >
+                    <span style={{
+                        width: "auto",
+                        fontSize: "14px",
+                    }}>
+                        Add
+                    </span>
+                </VSCodeButton> */}
             </div>
         </>
     );

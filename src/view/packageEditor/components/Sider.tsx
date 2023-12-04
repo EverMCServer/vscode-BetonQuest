@@ -87,6 +87,8 @@ export default function sider(props: ListEditorProps) {
                         colorPrimaryHover: '', // background color of primary button when hover, secondary / default button border+text color when hover
 
                         // global
+                        lineWidth: 0, // all button border line width
+
                         colorPrimary: 'var(--vscode-button-background)', // background color of button, primary
                         colorPrimaryActive: 'var(--vscode-button-hoverBackground)', // text color of button when clicked, primary
                         // colorPrimaryHover: 'var(--vscode-button-hoverBackground)', // background color of button when hover, primary
@@ -99,6 +101,10 @@ export default function sider(props: ListEditorProps) {
                         borderRadius: 2,
                         borderRadiusLG: 2,
                         borderRadiusSM: 2,
+
+                        colorPrimaryBorder: 'var(--vscode-focusBorder)', // focus outline border color
+                        lineWidthFocus: 1, // focus outline border width
+                        // ?: 10, // focus outline border offset
                     },
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     Popover: {
