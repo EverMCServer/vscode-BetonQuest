@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Input, Row, Col, Divider, ConfigProvider, Select } from "antd";
+import React, { useState } from "react";
+import { Row, Col, Divider, ConfigProvider, Select } from "antd";
 
-import Package from "../../../../../betonquest/Package";
 import ListElement from "../../../../../betonquest/ListElement";
 import { BaseListProps } from "../CommonList";
 
 export interface ListElementEditorProps<T extends ListElement> extends BaseListProps {
     listElement: T,
+    kindSelectDefaultOpen?: boolean,
 }
 
 interface CommonEditorProps<T extends ListElement> extends ListElementEditorProps<T> {
@@ -18,7 +18,7 @@ interface CommonEditorProps<T extends ListElement> extends ListElementEditorProp
     defaultEditor: (props: ListElementEditorProps<T>) => React.JSX.Element,
 }
 
-export default function<T extends ListElement>(props: CommonEditorProps<T>) {
+export default function <T extends ListElement>(props: CommonEditorProps<T>) {
 
     // UI update trigger #1
     const [getTrigger, setTrigger] = useState(false);
@@ -31,6 +31,23 @@ export default function<T extends ListElement>(props: CommonEditorProps<T>) {
     // useEffect(()=>{
     //     setListElement(props.listElement);
     // }, [props.listElement]);
+
+    // Handle kind search
+    const onKindFilter = (input: string, option: {
+        value: string;
+        label: string;
+    } | undefined) => {
+        try {
+            const patten = new RegExp(input, 'i');
+            return (
+                option?.value.match(patten)
+                || option?.label.match(patten)
+            ) ? true : false;
+        } catch (e) {
+            // Handle regex patten error
+            return false;
+        }
+    };
 
     // Find editor by kind
     const findEditor = (kind: string) => {
@@ -52,45 +69,39 @@ export default function<T extends ListElement>(props: CommonEditorProps<T>) {
                 }
             }}
         >
-        <div style={{padding: "0 8px"}}>
-            <Row justify="space-between" style={{padding: "8px 0"}}>
-                <Col span={4}>
-                    <span>Kind:</span>
-                </Col>
-                <Col span={18}>
-                    <Select
-                        showSearch
-                        value={props.listElement.getKind()}
-                        placeholder="Please enter a kind"
-                        defaultActiveFirstOption={false}
-                        // suffixIcon={null}
-                        filterOption={(input, option) =>
-                            option?.value
-                                .toLowerCase()
-                                .includes(input.toLowerCase())
-                            || option?.label
-                                .toLowerCase()
-                                .includes(input.toLowerCase())
-                            || false
-                        }
-                        onChange={(e) => {
-                            props.listElement.setKind(e);
-                            props.syncYaml();
-                            refreshUI();
-                        }}
-                        notFoundContent={null}
-                        options={(props.kinds || []).map((d) => ({
-                            value: d.value,
-                            label: d.display,
-                        }))}
-                        size="small"
-                        style={{ width: "100%" }}
-                    />
-                </Col>
-            </Row>
-            <Divider />
-            {findEditor(props.listElement.getKind())}
-        </div>
+            <div style={{ padding: "0 8px" }}>
+                <Row justify="space-between" style={{ padding: "8px 0" }}>
+                    <Col span={4}>
+                        <span>Kind:</span>
+                    </Col>
+                    <Col span={18}>
+                        <Select
+                            showSearch
+                            defaultOpen={props.kindSelectDefaultOpen}
+                            autoFocus={props.kindSelectDefaultOpen}
+                            value={props.listElement.getKind()}
+                            placeholder="Please enter a kind"
+                            defaultActiveFirstOption={false}
+                            // suffixIcon={null}
+                            filterOption={onKindFilter}
+                            onChange={(e) => {
+                                props.listElement.setKind(e);
+                                props.syncYaml();
+                                refreshUI();
+                            }}
+                            notFoundContent={null}
+                            options={props.kinds.map((d) => ({
+                                value: d.value,
+                                label: d.display,
+                            }))}
+                            size="small"
+                            style={{ width: "100%" }}
+                        />
+                    </Col>
+                </Row>
+                <Divider />
+                {findEditor(props.listElement.getKind())}
+            </div>
         </ConfigProvider>
     );
 }

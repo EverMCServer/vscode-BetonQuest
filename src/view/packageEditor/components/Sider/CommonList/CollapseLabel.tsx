@@ -5,6 +5,7 @@ import { VscEdit } from "react-icons/vsc";
 import { CommonListProps } from "../CommonList";
 import ListElement from "../../../../../betonquest/ListElement";
 import { Input, Popover } from "antd";
+import { SpecialCharactersRegex } from "../../../../../utils/yaml";
 
 let editPopoverTimeout: string | number | NodeJS.Timeout | undefined;
 
@@ -66,7 +67,7 @@ export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
                 return;
             default:
                 // Prevent disallowed characters (special YAML characters)
-                if (e.key.match(/{|}|\[|\]|&|\*|#|\?|\||-|<|>|=|!|%|@|:|`|,|'|"| |\t|\n|\r/i)) {
+                if (e.key.match(SpecialCharactersRegex)) {
                     e.stopPropagation();
                     e.preventDefault();
                     return;

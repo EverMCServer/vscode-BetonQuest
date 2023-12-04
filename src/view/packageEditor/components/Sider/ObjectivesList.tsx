@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import Objective from "../../../../betonquest/Objective";
 import ObjectivesEditor from "./ObjectivesList/ObjectivesEditor";

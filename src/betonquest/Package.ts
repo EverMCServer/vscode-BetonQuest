@@ -76,10 +76,13 @@ export default class Package {
     };
 
     getListElements<T extends ListElement>(type: ListElementType, name: string): T | undefined {
-        const index = this.getListElementsYaml(type)?.items.findIndex(pair => pair.key.value === name);
-        if (index && index !== -1) {
-            const pair = this.getListElementsYaml(type)!.items[index];
-            return this.createElementByType(type, pair) as T;
+        const yaml = this.getListElementsYaml(type);
+        if (yaml !== undefined) {
+            const index = yaml.items.findIndex(pair => pair.key.value === name);
+            if (index !== -1) {
+                const pair = yaml.items[index];
+                return this.createElementByType(type, pair) as T;
+            }
         }
         return undefined;
     }

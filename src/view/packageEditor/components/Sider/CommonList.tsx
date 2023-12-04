@@ -20,30 +20,30 @@ export interface CommonListProps<T extends ListElement> extends BaseListProps {
     editor: (props: ListElementEditorProps<T>) => React.JSX.Element,
 }
 
-export default function<T extends ListElement>(props: CommonListProps<T>) {
+export default function <T extends ListElement>(props: CommonListProps<T>) {
 
-    // UI update trigger #1
-    const [getTrigger, setTrigger] = useState(false);
-    const refreshUI = () => {
-        setTrigger(!getTrigger);
-    };
+    // // UI update trigger #1
+    // const [getTrigger, setTrigger] = useState(false);
+    // const refreshUI = () => {
+    //     setTrigger(!getTrigger);
+    // };
 
     // Cache all ListElements
     const [listElements, setListElements] = useState<T[]>(props.package.getAllListElements(props.type));
 
     // Convert all ListElements into coresponding ListElement's Editor
-    const getListElementEditor = (e: T, key?: string | number): ItemType => {
+    const getListElementEditor = (e: T, kindSelectDefaultOpen?: boolean): ItemType => {
         return {
-            key: key?? e.getName(),
+            key: e.getName(),
             label: <CollapseLabel {...props} listElement={e}></CollapseLabel>,
-            children: <props.editor key={e.getName()} {...props} listElement={e}></props.editor>,
+            children: <props.editor key={e.getName()} {...props} listElement={e} kindSelectDefaultOpen={kindSelectDefaultOpen}></props.editor>,
             style: { margin: "8px 0" },
             extra: <CollapseExtra {...props} listElement={e} />
         };
     };
     const getListElementEditorList = (allElements: T[]): CollapseProps['items'] => {
-        return allElements.map((e, i) => {
-            return getListElementEditor(e, i);
+        return allElements.map(e => {
+            return getListElementEditor(e);
         });
     };
 
@@ -58,11 +58,16 @@ export default function<T extends ListElement>(props: CommonListProps<T>) {
     // Handle search
     const onElementSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.value.length > 0) {
-            const patten = new RegExp(e.target.value, 'i');
-            const filteredElements = listElements.filter(element => {
-                return element.getName().match(patten) || element.toString().match(patten);
-            });
-            setListElementEditorList(getListElementEditorList(filteredElements));
+            try {
+                const patten = new RegExp(e.target.value, 'i');
+                const filteredElements = listElements.filter(element => {
+                    return element.getName().match(patten) || element.toString().match(patten);
+                });
+                setListElementEditorList(getListElementEditorList(filteredElements));
+            } catch (e) {
+                // Handle regex patten error
+                setListElementEditorList([]);
+            }
         } else {
             setListElementEditorList(getListElementEditorList(listElements));
         }
@@ -81,8 +86,16 @@ export default function<T extends ListElement>(props: CommonListProps<T>) {
         const newListElements = [...listElements, newListElement];
         // Append to cached listElements
         setListElements(newListElements);
+        // Create new editor
+        const newListElementEditor = getListElementEditor(newListElement, true); // kindSelectDefaultOpen=true: expand kind select by default
         // Append new editor to elementEditorList
-        setListElementEditorList(listElementEditorList?.concat(getListElementEditor(newListElement)));
+        setListElementEditorList(listElementEditorList?.concat(newListElementEditor));
+        // Expand editor
+        if (typeof collapseActiveKeys === 'string') {
+            setCollapseActiveKeys([collapseActiveKeys, newListElement.getName()]);
+        } else {
+            setCollapseActiveKeys([...collapseActiveKeys, newListElement.getName()]);
+        }
         props.syncYaml();
     };
 
@@ -112,7 +125,7 @@ export default function<T extends ListElement>(props: CommonListProps<T>) {
                     items={listElementEditorList}
                     // ghost={true}
                     // bordered={false}
-                    defaultActiveKey={collapseActiveKeys}
+                    activeKey={collapseActiveKeys}
                     onChange={setCollapseActiveKeys}
                 ></Collapse>
                 <Button
