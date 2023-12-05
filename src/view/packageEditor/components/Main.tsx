@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Input, Modal, Radio, Select, Space, Tabs } from "antd";
+import { Button, Input, Modal, Radio, Select, Space, Tabs } from "antd";
 import type { Tab } from 'rc-tabs/lib/interface';
 import { VscTrash } from "react-icons/vsc";
 
@@ -247,10 +247,12 @@ export default function main(props: MainProps) {
                             justifyContent: "center", // x
                         }}
                     >
-                        <a
-                            className="vscode-button vscode-button-secondary"
+                        <Button
+                            type="default"
                             onClick={() => { onConversationCreate(); }}
-                        >Click here to create a new Conversation</a>
+                        >
+                            Click here to create a new Conversation
+                        </Button>
                     </div>
             }
             {modalContextHolder}

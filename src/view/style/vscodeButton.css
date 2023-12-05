@@ -1,33 +1,37 @@
-.vscode-button {
-    box-sizing: border-box;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-    padding: 4px 5px;
-    margin: 4px 10px;
-    border: 1px solid var(--vscode-button-border,transparent);
-    border-radius: 2px;
+/* Override Ant Design's Button styles */
 
+.ant-btn {
+    height: fit-content;
+    border: 1px solid var(--vscode-button-border,transparent)!important;
+    border-radius: 2px!important;
+    box-shadow: none;
+    transition: none!important;
+}
+.ant-btn:not(.ant-btn-disabled):focus-visible {
+    outline: 1px solid var(--vscode-focusBorder)!important;
+    outline-offset: 2px!important;
+}
+
+.ant-btn-primary {
     color: var(--vscode-button-foreground);
     background-color: var(--vscode-button-background);
 }
-
-.vscode-button:hover {
-    background-color: var(--vscode-button-hoverBackground);
+.ant-btn-primary:not(.ant-btn-disabled):hover {
+    background-color: var(--vscode-button-hoverBackground)!important;
+}
+.ant-btn-primary:not(.ant-btn-disabled):active {
+    background-color: var(--vscode-button-hoverBackground)!important;
 }
 
-.vscode-button.vscode-button-secondary {
+.ant-btn-default {
     color: var(--vscode-button-secondaryForeground);
     background-color: var(--vscode-button-secondaryBackground);
 }
-
-.vscode-button.vscode-button-secondary:hover {
-    background-color: var(--vscode-button-secondaryHoverBackground);
+.ant-btn-default:not(.ant-btn-disabled):hover {
+    color: var(--vscode-button-secondaryForeground)!important;
+    background-color: var(--vscode-button-secondaryHoverBackground)!important;
 }
-
-.vscode-button-outline:focus {
-    outline-width: 1px;
-    outline-style: solid;
-    outline-offset: 2px;
-    outline-color: var(--vscode-focusBorder);
+.ant-btn-default:not(.ant-btn-disabled):active {
+    color: var(--vscode-button-secondaryForeground)!important;
+    background-color: var(--vscode-button-secondaryHoverBackground)!important;
 }

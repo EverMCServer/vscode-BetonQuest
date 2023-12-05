@@ -1,7 +1,7 @@
 import * as React from "react";
 import { YAMLError } from "yaml";
-
 import { WebviewApi } from "vscode-webview";
+import { Button } from "antd";
 
 import '../style/vscodeButton.css';
 
@@ -31,22 +31,18 @@ export default function yamlErrorPage(props: YamlErrorProps) {
                         }}
                     >There are error(s) on the YAML.</div>
                     <div>Please fix them before continue:</div>
-                </div>
-                <div
-                    style={{
-                        whiteSpace: "pre-wrap",
-                    }}
-                >{props.yamlErrors.map((e, i) => {
+                </div>{props.yamlErrors.map((e, i) => {
                     return (
-                        <div
-                            className="vscode-button vscode-button-secondary"
+                        <Button
                             key={i}
+                            type="default"
                             style={{
-                                margin: "12px 0"
+                                margin: "12px 0",
                             }}
                         >
                             <div
                                 style={{
+                                    whiteSpace: "pre-wrap",
                                     textAlign: "left"
                                 }}
                                 onClick={() => {
@@ -57,9 +53,9 @@ export default function yamlErrorPage(props: YamlErrorProps) {
                                     });
                                 }}
                             >#{i + 1 + ": " + e.message}</div>
-                        </div>
+                        </Button>
                     );
-                })}</div>
+                })}
             </div>
         </div>
     );

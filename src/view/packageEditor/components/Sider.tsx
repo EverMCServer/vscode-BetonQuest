@@ -80,31 +80,33 @@ export default function sider(props: ListEditorProps) {
                     },
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     Button: {
-                        defaultColor: 'var(--vscode-button-foreground)', // text color of button
-                        defaultBg: 'var(--vscode-button-secondaryBackground)', // background color of button, secondary / default
-                        // ?: 'var(--vscode-button-secondaryHoverBackground)', // background color of button when hover, secondary / default
-                        defaultBorderColor: '', // border color, secondary / default
-                        colorPrimaryHover: '', // background color of primary button when hover, secondary / default button border+text color when hover
+                        // See "style/vscodeButton.css"
 
-                        // global
-                        lineWidth: 0, // all button border line width
+                        // defaultColor: 'var(--vscode-button-foreground)', // text color of button
+                        // defaultBg: 'var(--vscode-button-secondaryBackground)', // background color of button, secondary / default
+                        // // ?: 'var(--vscode-button-secondaryHoverBackground)', // background color of button when hover, secondary / default
+                        // defaultBorderColor: '', // border color, secondary / default
+                        // colorPrimaryHover: '', // background color of primary button when hover, secondary / default button border+text color when hover
 
-                        colorPrimary: 'var(--vscode-button-background)', // background color of button, primary
-                        colorPrimaryActive: 'var(--vscode-button-hoverBackground)', // text color of button when clicked, primary
-                        // colorPrimaryHover: 'var(--vscode-button-hoverBackground)', // background color of button when hover, primary
-                        // controlOutline: '', // primay button shadow
-                        primaryShadow: '', // primay button shadow
+                        // // global
+                        // lineWidth: 0, // all button border line width
 
-                        // controlTmpOutline: '', // secondary / default button shadow
-                        defaultShadow: '', // secondary / default button shadow
+                        // colorPrimary: 'var(--vscode-button-background)', // background color of button, primary
+                        // colorPrimaryActive: 'var(--vscode-button-hoverBackground)', // text color of button when clicked, primary
+                        // // colorPrimaryHover: 'var(--vscode-button-hoverBackground)', // background color of button when hover, primary
+                        // // controlOutline: '', // primay button shadow
+                        // primaryShadow: '', // primay button shadow
 
-                        borderRadius: 2,
-                        borderRadiusLG: 2,
-                        borderRadiusSM: 2,
+                        // // controlTmpOutline: '', // secondary / default button shadow
+                        // defaultShadow: '', // secondary / default button shadow
 
-                        colorPrimaryBorder: 'var(--vscode-focusBorder)', // focus outline border color
-                        lineWidthFocus: 1, // focus outline border width
-                        // ?: 10, // focus outline border offset
+                        // borderRadius: 2,
+                        // borderRadiusLG: 2,
+                        // borderRadiusSM: 2,
+
+                        // colorPrimaryBorder: 'var(--vscode-focusBorder)', // focus outline border color
+                        // lineWidthFocus: 1, // focus outline border width
+                        // // ?: 10, // focus outline border offset
                     },
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     Popover: {
