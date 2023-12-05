@@ -7,6 +7,8 @@ import ListElement from "../../../../../betonquest/ListElement";
 import { Input, Popover } from "antd";
 import { SpecialCharactersRegex } from "../../../../../utils/yaml";
 
+import "../../../../style/vscodePopover.css";
+
 let editPopoverTimeout: string | number | NodeJS.Timeout | undefined;
 
 interface CollapseLabelProps<T extends ListElement> extends CommonListProps<T> {

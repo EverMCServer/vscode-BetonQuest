@@ -110,7 +110,7 @@ export default function sider(props: ListEditorProps) {
                     },
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     Popover: {
-                        //
+                        // See "style/vscodePopover.css"
                     },
                 },
             }}
