@@ -1,3 +1,5 @@
+/* Override Ant Design's Popover styles */
+
 .ant-popover {
     /* --antd-arrow-background-color: var(--vscode-notifications-background); */
 }
@@ -24,5 +26,15 @@
 }
 
 .ant-popover-inner-content {
+    color: var(--vscode-notifications-foreground)!important;
+}
+
+/* Override Ant Design's Popconfirm styles */
+
+.ant-popconfirm-title {
+    color: var(--vscode-notifications-foreground)!important;
+}
+
+.ant-popconfirm-description {
     color: var(--vscode-notifications-foreground)!important;
 }

@@ -113,12 +113,15 @@ export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
                     </span>
                     &nbsp;
                     <VscEdit
-                        style={{ color: 'var(--vscode-input-placeholderForeground)' }}
+                        style={{
+                            color: 'var(--vscode-activityBar-inactiveForeground)',
+                        }}
                         onClick={e => {
                             e.stopPropagation();
                             setIsTitleEditing(true);
                             setTitleEditValue(title); // Reset editor initial value
                         }}
+                        title="Rename"
                     />
                 </>
             }

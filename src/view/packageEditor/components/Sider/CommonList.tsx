@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { Button, Collapse, CollapseProps, Input } from "antd";
 import { ItemType } from "rc-collapse/es/interface";
@@ -31,16 +31,22 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
     // };
 
     // Cache all ListElements
-    const [listElements, setListElements] = useState<T[]>(props.package.getAllListElements(props.type));
+    const [listElements, _setListElements] = useState<T[]>(props.package.getAllListElements(props.type));
+    const listElementsCache = useRef(listElements);
+    const setListElements = (newListElements: T[]) => {
+        listElementsCache.current = newListElements;
+        _setListElements(newListElements);
+    };
 
     // Convert all ListElements into coresponding ListElement's Editor
     const getListElementEditor = (e: T, kindSelectDefaultOpen?: boolean): ItemType => {
+        const name = e.getName();
         return {
-            key: e.getName(),
+            key: name,
             label: <CollapseLabel {...props} listElement={e}></CollapseLabel>,
-            children: <props.editor key={e.getName()} {...props} listElement={e} kindSelectDefaultOpen={kindSelectDefaultOpen}></props.editor>,
+            children: <props.editor key={name} {...props} listElement={e} kindSelectDefaultOpen={kindSelectDefaultOpen}></props.editor>,
             style: { margin: "8px 0" },
-            extra: <CollapseExtra {...props} listElement={e} />
+            extra: <CollapseExtra {...props} name={name} removeElement={onElementRemove} />
         };
     };
     const getListElementEditorList = (allElements: T[]): CollapseProps['items'] => {
@@ -49,7 +55,13 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
         });
     };
 
-    const [listElementEditorList, setListElementEditorList] = useState(getListElementEditorList(listElements));
+    // Cache all ListElements' Editor
+    const [listElementEditorList, _setListElementEditorList] = useState(getListElementEditorList(listElements));
+    const listElementEditorListCache = useRef(listElementEditorList);
+    const setListElementEditorList = (newListElementEditorList: CollapseProps['items']) => {
+        listElementEditorListCache.current = newListElementEditorList;
+        _setListElementEditorList(newListElementEditorList);
+    };
 
     useEffect(() => {
         const newListElements = props.package.getAllListElements<T>(props.type);
@@ -98,6 +110,19 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
         } else {
             setCollapseActiveKeys([...collapseActiveKeys, newListElement.getName()]);
         }
+        props.syncYaml();
+    };
+
+    const onElementRemove = (type: ListElementType, name: string) => {
+        // Remove from cached listElements
+        const newListElements = listElementsCache.current.filter(e => e.getName() !== name);
+        setListElements(newListElements);
+        // Remove from elementEditorList
+        const newListElementEditorList = listElementEditorListCache.current?.filter(e => e.key !== name);
+        setListElementEditorList(newListElementEditorList);
+
+        // Remove from package
+        props.package.removeListElement(type, name);
         props.syncYaml();
     };
 

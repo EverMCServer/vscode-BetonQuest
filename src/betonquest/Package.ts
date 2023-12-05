@@ -104,7 +104,7 @@ export default class Package {
         return this.getListElements(type, name)! as T;
     }
 
-    private removeListElement(type: ListElementType, name: string) {
+    removeListElement(type: ListElementType, name: string) {
         this.yaml.deleteIn([type, name]);
     }
 
