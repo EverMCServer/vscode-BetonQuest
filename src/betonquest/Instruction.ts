@@ -1,11 +1,57 @@
 import { Pair, Scalar } from "yaml";
 
+type MandatoryArgumentsPatten = ('string' | 'number' | 'string[]')[];
+
+type MandatoryArguments = (string | number | string[])[];
+
+type OptionalArgumentsPatten = Map<string, 'string' | 'number' | 'string[]' | 'null'>;
+
+type OptionalArguments = Map<string, string | number | string[] | null>;
+
+type ArgumentsPatten = {
+    mandatory: MandatoryArgumentsPatten,
+    optional?: OptionalArgumentsPatten,
+    optionalAtFirst?: boolean,
+};
+
+type Arguments = {
+    mandatory: MandatoryArguments,
+    optional?: OptionalArguments,
+    optionalAtFirst?: boolean,
+};
+
+// Example
+const t: ArgumentsPatten = {
+    mandatory: ["string", "string", "number"],
+    optional: new Map([
+        ["a", "null"],
+        ["b", "number"],
+    ]),
+};
+
+// Example
+const a: Arguments = {
+    mandatory: ["add", "exp", 10],
+    optional: new Map([
+        ["a", null],
+        ["b", 1],
+    ]),
+};
+
 export default class Instruction {
+    // Original YAML entry, with a key
     private yaml: Pair<Scalar<string>, Scalar<string>>;
 
-    constructor(pair: Pair<Scalar<string>, Scalar<string>>) {
-        // set default value
-        if (pair.value !instanceof Scalar) {
+    // Cache parsed configs
+    private configs: string[];
+
+    private arguments?: Arguments;
+
+    private patten?: ArgumentsPatten;
+
+    constructor(pair: Pair<Scalar<string>, Scalar<string>>, patten?: ArgumentsPatten) {
+        // Set default value
+        if (pair.value! instanceof Scalar) {
             pair.value = new Scalar("");
         }
 
@@ -18,6 +64,10 @@ export default class Instruction {
         // }
 
         this.yaml = pair;
+
+        this.patten = patten;
+
+        this.configs = this.parseConfigs(); // TODO: with patten
     }
 
     private getKind(): string {
@@ -29,15 +79,24 @@ export default class Instruction {
     }
 
     toString(): string {
-        return this.getConfigs().join(" ");
+        return this.configs.join(" ");
     }
 
     setString(configString: string) {
         const kind = this.getKind();
         this.yaml.value!.value = [kind, configString].join(" ");
+        this.configs = this.parseConfigs();
     }
 
-    private getConfigs(): string[] {
+    getRawConfigs(): string[] {
+        return this.configs;
+    }
+
+    setRawConfigs(configs: string[]) {
+        this.setConfigs(configs);
+    }
+
+    private parseConfigs(): string[] {
         if (!this.yaml.value) {
             return [];
         }
@@ -49,7 +108,7 @@ export default class Instruction {
         let result: string[] = [];
         while ((array1 = regex.exec(this.yaml.value.value)) !== null) {
             // keep quotes
-            if (array1[0]!== undefined) {
+            if (array1[0] !== undefined) {
                 result.push(array1[0]);
             }
 
@@ -70,58 +129,59 @@ export default class Instruction {
         this.yaml.value!.value = [kind, ...configs].join(" ");
     }
 
-    getValue() {
+    getMandatoryArgument(index: number, escape: boolean = false) {
         // TODO
     }
 
-    setValue() {
+    setMandatoryArgument(index: number, value: string, escape: boolean = false) {
         // TODO: Excape "\" and "\n" and ":"
     }
 
-    getOption(optionName: string) {
-        const configs = this.getConfigs();
+    getOption(optionName: string): string {
         const regex = new RegExp(`^${optionName}:`, "i");
-        return configs.find(e => e.toLowerCase().match(regex))?.replace(regex, "") || "";
+        return this.configs.find(e => e.match(regex))?.replace(regex, "") || "";
     }
 
     setOption(optionName: string, optionValue: string, addToHead: boolean = false) {
-        const configs = this.getConfigs();
         const regex = new RegExp(`^${optionName}:`, "i");
 
         // replace old option if exists
-        if (configs.find(e => e.toLowerCase().match(regex))) {
-            configs.splice(configs.findIndex(e => e.toLowerCase().match(regex)), 1, `${optionName}:${optionValue}`);
+        if (this.configs.find(e => e.match(regex))) {
+            this.configs = this.configs.splice(this.configs.findIndex(e => e.match(regex)), 1, `${optionName}:${optionValue}`);
         } else {
             if (addToHead) {
-                configs.unshift(`${optionName}:${optionValue}`);
+                this.configs.unshift(`${optionName}:${optionValue}`);
             } else {
-                configs.push(`${optionName}:${optionValue}`);
+                this.configs.push(`${optionName}:${optionValue}`);
             }
         }
 
-        this.setConfigs(configs);
+        this.setConfigs(this.configs);
+    }
+
+    removeOption(optionName: string) {
+        const regex = new RegExp(`^${optionName}:`, "i");
+        this.setConfigs(this.configs.filter(e => !e.match(regex)));
     }
 
     hasArgument(argumentName: string) {
-        const configs = this.getConfigs();
-        return configs.some(e => e.toLowerCase().match(`^${argumentName.toLowerCase()}`));
+        const regex = new RegExp(`^${argumentName}$`, "i");
+        return this.configs.some(e => e.match(regex));
     }
 
     setArgument(argumentName: string, addToHead: boolean = false) {
-        const configs = this.getConfigs();
         if (!this.hasArgument(argumentName)) {
             if (addToHead) {
-                configs.unshift(argumentName);
+                this.configs.unshift(argumentName);
             } else {
-                configs.push(argumentName);
+                this.configs.push(argumentName);
             }
-            this.setConfigs(configs);
+            this.setConfigs(this.configs);
         }
     }
 
     removeArgument(argumentName: string) {
-        const configs = this.getConfigs();
-        configs.filter(e => !e.toLowerCase().match(`^${argumentName.toLowerCase()}`));
-        this.setConfigs(configs);
+        const regex = new RegExp(`^${argumentName}$`, "i");
+        this.setConfigs(this.configs.filter(e => !e.match(regex)));
     }
 }
