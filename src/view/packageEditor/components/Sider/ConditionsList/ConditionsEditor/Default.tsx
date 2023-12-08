@@ -32,12 +32,12 @@ export default function(props: DefaultProps) {
                 </Col>
                 <Col span={18}>
                     <TextArea
-                        value={props.listElement.getOptions().join(" ")}
+                        value={props.listElement.getArgumentString()}
                         onChange={(e) => {
                             if (e.target.value.includes("\n")) {
                                 return;
                             }
-                            props.listElement.setOptions(e.target.value.split(" "));
+                            props.listElement.setArgumentString(e.target.value);
                             props.syncYaml();
                             refreshUI();
                         }}

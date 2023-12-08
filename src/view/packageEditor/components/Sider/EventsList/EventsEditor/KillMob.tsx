@@ -16,19 +16,19 @@ export default function(props: Props) {
     //     setEvent(props.event);
     // }, [props.event]);
 
-    // e.g. emerald:5,emerald_block:9,important_sign notify backpack
+    // e.g. killmob ZOMBIE 100;200;300;world 40 name:Bolec marked:quest_mob
     console.log(props.listElement.parseArguments({
-        mandatory: ['string[,]'],
+        mandatory: ['string', 'string', 'int'],
         optional: new Map([
-            ['notify', 'boolean'],
-            ['backpack', 'boolean']
+            ['name', 'string'],
+            ['marked', 'string']
         ]),
     }));
 
     return (
         <>
-            {/* Events "give" Editor... for Event "{event.getName()}"<br /> */}
-            Events "give" Editor... for Event "{props.listElement.getName()}"<br />
+            {/* Events "killmob" Editor... for Event "{event.getName()}"<br /> */}
+            Events "killmob" Editor... for Event "{props.listElement.getName()}"<br />
             {}
         </>
     );
