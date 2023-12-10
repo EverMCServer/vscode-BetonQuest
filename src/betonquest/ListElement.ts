@@ -21,7 +21,7 @@ type MandatoryArguments = (string | number | string[])[];
  * * int - interger
  * * float - number with a decimal point
  * * string[,] - string array, separated by comma
- * * null - argument only, no value
+ * * boolean - argument only, no value
  */
 type OptionalArgumentsPattern = Map<string, 'string' | 'int' | 'float' | 'string[,]' | 'boolean'>;
 

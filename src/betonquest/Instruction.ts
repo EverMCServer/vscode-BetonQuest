@@ -1,16 +1,48 @@
 import { Pair, Scalar } from "yaml";
 
-type MandatoryArgumentsPatten = ('string' | 'number' | 'string[]')[];
+/**
+ * Mandatory arguments' pattern
+ * 
+ * * string - string
+ * * int - interger
+ * * float - number with a decimal point
+ * * string[,] - string array, separated by comma
+ * * string[|] - string array, separated by "|""
+ * * \* - all string till the end, including spaces and optional arguments
+ */
+type MandatoryArgumentsPattern = (
+    'string' |
+    'int' |
+    'float' |
+    'string[,]' |
+    'string[|]' |
+    'ItemName:number[,]' |
+    '*')[];
 
 type MandatoryArguments = (string | number | string[])[];
 
-type OptionalArgumentsPatten = Map<string, 'string' | 'number' | 'string[]' | 'null'>;
+/**
+ * Optional arguments' pattern
+ * 
+ * * string - string
+ * * int - interger
+ * * float - number with a decimal point
+ * * string[,] - string array, separated by comma
+ * * boolean - argument only, no value
+ */
+type OptionalArgumentsPattern = Map<string,
+'string' |
+'int' |
+'float' |
+'string[,]' |
+'ItemName:number[,]' |
+'boolean'>;
 
-type OptionalArguments = Map<string, string | number | string[] | null>;
+type OptionalArguments = Map<string, string | number | string[] | boolean | undefined>;
 
-type ArgumentsPatten = {
-    mandatory: MandatoryArgumentsPatten,
-    optional?: OptionalArgumentsPatten,
+type ArgumentsPattern = {
+    mandatory: MandatoryArgumentsPattern,
+    optional?: OptionalArgumentsPattern,
     optionalAtFirst?: boolean,
 };
 
@@ -18,24 +50,6 @@ type Arguments = {
     mandatory: MandatoryArguments,
     optional?: OptionalArguments,
     optionalAtFirst?: boolean,
-};
-
-// Example
-const t: ArgumentsPatten = {
-    mandatory: ["string", "string", "number"],
-    optional: new Map([
-        ["a", "null"],
-        ["b", "number"],
-    ]),
-};
-
-// Example
-const a: Arguments = {
-    mandatory: ["add", "exp", 10],
-    optional: new Map([
-        ["a", null],
-        ["b", 1],
-    ]),
 };
 
 export default class Instruction {
@@ -47,9 +61,9 @@ export default class Instruction {
 
     private arguments?: Arguments;
 
-    private patten?: ArgumentsPatten;
+    private patten?: ArgumentsPattern;
 
-    constructor(pair: Pair<Scalar<string>, Scalar<string>>, patten?: ArgumentsPatten) {
+    constructor(pair: Pair<Scalar<string>, Scalar<string>>, patten?: ArgumentsPattern) {
         // Set default value
         if (pair.value! instanceof Scalar) {
             pair.value = new Scalar("");
