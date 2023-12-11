@@ -10,7 +10,7 @@ interface DefaultProps {
     listElement: Condition,
 }
 
-export default function(props: DefaultProps) {
+export default function (props: DefaultProps) {
 
     // UI update trigger #1
     const [getTrigger, setTrigger] = useState(false);
@@ -24,20 +24,25 @@ export default function(props: DefaultProps) {
     //     setListElement(props.listElement);
     // }, [props.listElement]);
 
+    const [args, setArgs] = useState(props.listElement.getArguments());
+    useEffect(() => {
+        setArgs(props.listElement.getArguments());
+    }, [props.listElement]);
+
     return (
         <>
-            <Row justify="space-between" style={{padding: "8px 0"}}>
+            <Row justify="space-between" style={{ padding: "8px 0" }}>
                 <Col span={4}>
                     <span>Value:&nbsp;</span>
                 </Col>
                 <Col span={18}>
                     <TextArea
-                        value={props.listElement.getArgumentString()}
+                        value={args.toString()}
                         onChange={(e) => {
                             if (e.target.value.includes("\n")) {
                                 return;
                             }
-                            props.listElement.setArgumentString(e.target.value);
+                            args.setMandatoryArguments(0, e.target.value);
                             props.syncYaml();
                             refreshUI();
                         }}
