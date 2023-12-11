@@ -28,17 +28,21 @@ export default class ListElement {
     }
 
     getKind(): string {
-        const cont = this.yaml.value?.value.split(" ");
-        if (cont && cont.length) {
-            return cont[0];
+        const instructions = this.yaml.value?.value.split(" ");
+        if (instructions && instructions.length) {
+            return instructions[0];
         }
         return "";
     }
 
     setKind(kind: string) {
-        let cont = this.yaml.value?.value.split(" ") || [];
-        cont[0] = kind;
-        this.yaml.value!.value = cont.join(" ");
+        let instructions = this.yaml.value?.value.split(" ") || [];
+
+        // Reset / remove all arguments when siwtching kind
+        if (instructions.length>0 && instructions[0] !== kind) {
+            this.yaml.value!.value = kind;
+            this.arguments = this.getArguments();
+        }
     }
 
     getArguments(pattern?: ArgumentsPattern): Arguments {

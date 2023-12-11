@@ -24,6 +24,16 @@ type MandatoryArgumentsPattern = (
 type MandatoryArgumentType = string | number | string[] | [string, number][];
 class MandatoryArguments extends Array<MandatoryArgumentType> { };
 
+const mandatoryArgumentsDefault = [
+    "",
+    1,
+    0.0,
+    [],
+    [],
+    [],
+    ""
+];
+
 /**
  * Optional arguments' pattern
  * 
@@ -48,7 +58,9 @@ class OptionalArguments extends Map<string, OptionalArgumentType> { };
 
 export type ArgumentsPattern = {
     mandatory: MandatoryArgumentsPattern,
+    mandatoryDefault: MandatoryArguments,
     optional?: OptionalArgumentsPattern,
+    optionalDefault?: OptionalArguments,
     optionalAtFirst?: boolean,
 };
 
@@ -64,7 +76,7 @@ export default class Arguments {
 
     constructor(
         pair: Pair<Scalar<string>, Scalar<string>>,
-        pattern: ArgumentsPattern = { mandatory: ['*'] }
+        pattern: ArgumentsPattern = { mandatory: ['*'], mandatoryDefault: [""] }
     ) {
         this.yaml = pair;
         this.pattern = pattern;
@@ -135,22 +147,22 @@ export default class Arguments {
         // Parse mandatory arguments
         for (let i = 0; i < pattern.mandatory.length; i++) {
             if (pattern.mandatory[i] === 'string') {
-                this.mandatory[i] = argStrs[i];
+                this.mandatory[i] = argStrs[i] || mandatoryArgumentsDefault[i];
             } else if (pattern.mandatory[i] === 'int') {
-                this.mandatory[i] = parseInt(argStrs[i]);
+                this.mandatory[i] = argStrs[i]? parseInt(argStrs[i]) : mandatoryArgumentsDefault[i];
             } else if (pattern.mandatory[i] === 'float') {
-                this.mandatory[i] = parseFloat(argStrs[i]);
+                this.mandatory[i] = argStrs[i]? parseFloat(argStrs[i]) : mandatoryArgumentsDefault[i];
             } else if (pattern.mandatory[i] === 'string[,]') {
-                this.mandatory[i] = argStrs[i].split(",");
+                this.mandatory[i] = argStrs[i]?.split(",") || mandatoryArgumentsDefault[i];
             } else if (pattern.mandatory[i] === 'string[|]') {
-                this.mandatory[i] = argStrs[i].split("|");
+                this.mandatory[i] = argStrs[i]?.split("|") || mandatoryArgumentsDefault[i];
             } else if (pattern.mandatory[i] === 'string:number[,]') {
-                this.mandatory[i] = argStrs[i].split(",").map(v => {
+                this.mandatory[i] = argStrs[i]?.split(",").map(v => {
                     const arg = v.split(":");
                     return [arg[0], parseInt(arg[1])] as [string, number];
-                });
+                }) || mandatoryArgumentsDefault[i];
             } else if (pattern.mandatory[i] === '*') {
-                this.mandatory[i] = argStrs.slice(i).join(" ");
+                this.mandatory[i] = argStrs.slice(i).join(" ") || mandatoryArgumentsDefault[i];
                 break;
             }
         }

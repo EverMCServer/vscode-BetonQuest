@@ -14,10 +14,19 @@ interface Props {
 // e.g. killmob ZOMBIE 100;200;300;world 40 name:Bolec marked:quest_mob
 const pattern: ArgumentsPattern = {
     mandatory: ['string', 'string', 'int'],
+    mandatoryDefault: [
+        'ZOMBIE',
+        '100;200;300;world',
+        1
+    ],
     optional: new Map([
         ['name', 'string'],
         ['marked', 'string']
     ]),
+    optionalDefault: new Map([
+        ['name', ''],
+        ['marked', '']
+    ])
 };
 
 const colSpanLeft = 8;
