@@ -41,11 +41,14 @@ export default class ListElement {
         this.yaml.value!.value = cont.join(" ");
     }
 
-    getArguments(): Arguments {
+    getArguments(pattern?: ArgumentsPattern): Arguments {
+        if (pattern) {
+            this.arguments = this.parseArguments(pattern);
+        }
         return this.arguments;
     }
 
-    parseArguments(pattern?: ArgumentsPattern): Arguments {
+    private parseArguments(pattern?: ArgumentsPattern): Arguments {
         return new Arguments(this.yaml, pattern);
     }
 

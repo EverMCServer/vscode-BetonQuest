@@ -76,14 +76,22 @@ export default class Arguments {
         return this.unmarshalArguments();
     }
 
-    setMandatoryArguments(index: number, value: MandatoryArgumentType) {
+    getMandatoryArgument(index: number): MandatoryArgumentType {
+        return this.mandatory[index];
+    }
+
+    getOptionalArgument(key: string): OptionalArgumentType {
+        return this.optional?.get(key);
+    }
+
+    setMandatoryArgument(index: number, value: MandatoryArgumentType) {
         this.mandatory[index] = value;
 
         // Update YAML
         this.updateYaml();
     }
 
-    setOptionalArguments(name: string, value: OptionalArgumentType) {
+    setOptionalArgument(name: string, value: OptionalArgumentType) {
         if (!this.optional) {
             this.optional = new Map();
         }
@@ -282,11 +290,14 @@ export default class Arguments {
             } else if (type === 'string:number[,]') {
                 optionalStrs.push(`${key}:${(value as [string, number][]).map(v => `${v[0]}:${v[1]}`).join(",")}`);
             } else { // if (type === 'string')
-                optionalStrs.push(`${key}:${(value as string)}`);
+                const valueStr = value as string;
+                if (valueStr.length > 0) {
+                    optionalStrs.push(`${key}:${valueStr}`);
+                }
             }
         });
 
-        return optionalStrs.join('');
+        return optionalStrs.join(' ');
     }
 
 };

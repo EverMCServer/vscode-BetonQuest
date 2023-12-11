@@ -17,7 +17,7 @@ export default function(props: Props) {
     // }, [props.event]);
 
     // e.g. emerald:5,emerald_block:9,important_sign notify backpack
-    console.log(props.listElement.parseArguments({
+    console.log(props.listElement.getArguments({
         mandatory: ['string[,]'],
         optional: new Map([
             ['notify', 'boolean'],

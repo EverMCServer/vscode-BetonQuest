@@ -42,7 +42,7 @@ export default function (props: DefaultProps) {
                             if (e.target.value.includes("\n")) {
                                 return;
                             }
-                            args.setMandatoryArguments(0, e.target.value);
+                            args.setMandatoryArgument(0, e.target.value);
                             props.syncYaml();
                             refreshUI();
                         }}
