@@ -6,13 +6,8 @@ export type ListElementType = 'events' | 'conditions' | 'objectives' | 'conversa
 export default class ListElement {
     protected yaml: Pair<Scalar<string>, Scalar<string>>;
 
-    protected arguments: Arguments;
-
     constructor(pair: Pair<Scalar<string>, Scalar<string>>) {
         this.yaml = pair;
-
-        // Initialize arguments
-        this.arguments = this.parseArguments();
     }
 
     getName(): string {
@@ -39,20 +34,15 @@ export default class ListElement {
         let instructions = this.yaml.value?.value.split(" ") || [];
 
         // Reset / remove all arguments when siwtching kind
-        if (instructions.length>0 && instructions[0] !== kind) {
+        if (instructions.length > 0 && instructions[0] !== kind) {
+            instructions[0] = kind;
+            this.yaml.value!.value = instructions.join(" ");
+        } else if (instructions.length === 0) {
             this.yaml.value!.value = kind;
-            this.arguments = this.getArguments();
         }
     }
 
     getArguments(pattern?: ArgumentsPattern): Arguments {
-        if (pattern) {
-            this.arguments = this.parseArguments(pattern);
-        }
-        return this.arguments;
-    }
-
-    private parseArguments(pattern?: ArgumentsPattern): Arguments {
         return new Arguments(this.yaml, pattern);
     }
 

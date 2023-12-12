@@ -74,9 +74,9 @@ conversations:
         text: 
           en: asdf
 `);
-    console.log(pkg);
-    const ev = pkg.createEvent("a");
-    ev.setKind("asaaa");
+    // console.log(pkg);
+    // const ev = pkg.createEvent("a");
+    // ev.setKind("asaaa");
     // console.log(pkg.getEvent("a"));
     // pkg.newConversation("new_NPC");
     // pkg.reloadYaml();

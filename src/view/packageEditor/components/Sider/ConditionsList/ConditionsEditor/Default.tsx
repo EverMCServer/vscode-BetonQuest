@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Package from "../../../../../../betonquest/Package";
-import Condition from "../../../../../../betonquest/Condition";
 import { Col, Row } from "antd";
 import TextArea from "antd/es/input/TextArea";
+
+import Package from "../../../../../../betonquest/Package";
+import Condition from "../../../../../../betonquest/Condition";
+import Arguments from "../../../../../../betonquest/Arguments";
 
 interface DefaultProps {
     package: Package,
@@ -24,7 +26,7 @@ export default function (props: DefaultProps) {
     //     setListElement(props.listElement);
     // }, [props.listElement]);
 
-    const [args, setArgs] = useState(props.listElement.getArguments());
+    const [args, setArgs] = useState<Arguments>();
     useEffect(() => {
         setArgs(props.listElement.getArguments());
     }, [props.listElement]);
@@ -37,12 +39,12 @@ export default function (props: DefaultProps) {
                 </Col>
                 <Col span={18}>
                     <TextArea
-                        value={args.toString()}
+                        value={args?.toString()}
                         onChange={(e) => {
                             if (e.target.value.includes("\n")) {
                                 return;
                             }
-                            args.setMandatoryArgument(0, e.target.value);
+                            args?.setMandatoryArgument(0, e.target.value);
                             props.syncYaml();
                             refreshUI();
                         }}

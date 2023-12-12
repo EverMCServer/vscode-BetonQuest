@@ -3,7 +3,7 @@ import { Col, Divider, Input, InputNumber, Row } from "antd";
 
 import Package from "../../../../../../betonquest/Package";
 import Event from "../../../../../../betonquest/Event";
-import { ArgumentsPattern } from "../../../../../../betonquest/Arguments";
+import Arguments, { ArgumentsPattern } from "../../../../../../betonquest/Arguments";
 
 interface Props {
     package: Package,
@@ -13,11 +13,11 @@ interface Props {
 
 // e.g. killmob ZOMBIE 100;200;300;world 40 name:Bolec marked:quest_mob
 const pattern: ArgumentsPattern = {
-    mandatory: ['string', 'string', 'int'],
+    mandatory: ['string', 'string', 'float'],
     mandatoryDefault: [
         'ZOMBIE',
         '100;200;300;world',
-        1
+        1.0
     ],
     optional: new Map([
         ['name', 'string'],
@@ -44,9 +44,9 @@ export default function (props: Props) {
     //     setEvent(props.event);
     // }, [props.event]);
 
-    const [args, setArgs] = useState(props.listElement.getArguments(pattern));
+    const [args, setArgs] = useState<Arguments>();
     useEffect(() => {
-        setArgs(props.listElement.getArguments());
+        setArgs(props.listElement.getArguments(pattern));
     }, [props.listElement]);
 
     return (
@@ -61,9 +61,9 @@ export default function (props: Props) {
                 </Col>
                 <Col span={colSpanRight}>
                     <Input
-                        value={args.getMandatoryArgument(0) as string}
+                        value={args?.getMandatoryArgument(0) as string}
                         onChange={(e) => {
-                            args.setMandatoryArgument(0, e.target.value);
+                            args?.setMandatoryArgument(0, e.target.value);
                             props.syncYaml();
                             refreshUI();
                         }}
@@ -77,9 +77,9 @@ export default function (props: Props) {
                 </Col>
                 <Col span={colSpanRight}>
                     <Input
-                        value={args.getMandatoryArgument(1) as string}
+                        value={args?.getMandatoryArgument(1) as string}
                         onChange={(e) => {
-                            args.setMandatoryArgument(1, e.target.value);
+                            args?.setMandatoryArgument(1, e.target.value);
                             props.syncYaml();
                             refreshUI();
                         }}
@@ -90,14 +90,14 @@ export default function (props: Props) {
             </Row>
             <Row justify="space-between" style={{ padding: "8px 0" }}>
                 <Col span={colSpanLeft}>
-                    <span>Amount:</span>
+                    <span>Radius:</span>
                 </Col>
                 <Col span={colSpanRight}>
                     <InputNumber
                         defaultValue={1}
-                        value={args.getMandatoryArgument(2) as number}
+                        value={args?.getMandatoryArgument(2) as number}
                         onChange={(value) => {
-                            args.setMandatoryArgument(2, value || 1);
+                            args?.setMandatoryArgument(2, value || 1);
                             props.syncYaml();
                             refreshUI();
                         }}
@@ -117,9 +117,9 @@ export default function (props: Props) {
                 </Col>
                 <Col span={colSpanRight}>
                     <Input
-                        value={args.getOptionalArgument('name') as string}
+                        value={args?.getOptionalArgument('name') as string}
                         onChange={(e) => {
-                            args.setOptionalArgument('name', e.target.value);
+                            args?.setOptionalArgument('name', e.target.value);
                             props.syncYaml();
                             refreshUI();
                         }}
@@ -133,9 +133,9 @@ export default function (props: Props) {
                 </Col>
                 <Col span={colSpanRight}>
                     <Input
-                        value={args.getOptionalArgument('marked') as string}
+                        value={args?.getOptionalArgument('marked') as string}
                         onChange={(e) => {
-                            args.setOptionalArgument('marked', e.target.value);
+                            args?.setOptionalArgument('marked', e.target.value);
                             props.syncYaml();
                             refreshUI();
                         }}
