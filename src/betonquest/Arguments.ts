@@ -17,7 +17,7 @@ type MandatoryArgumentsPattern = (
     'float' |
     'string[,]' |
     'string[|]' |
-    'string:number[,]' |
+    '[string:number][,]' |
     '*'
 )[];
 
@@ -40,7 +40,7 @@ type OptionalArgumentsPattern = Map<string,
     'float' |
     'string[,]' |
     'boolean' |
-    'string:number[,]'
+    '[string:number][,]'
 >;
 
 type OptionalArgumentType = string | number | string[] | boolean | [string, number][] | undefined;
@@ -147,7 +147,7 @@ export default class Arguments {
                 this.mandatory[i] = argStrs[i]?.split(",") || this.pattern.mandatoryDefault[i];
             } else if (pat === 'string[|]') {
                 this.mandatory[i] = argStrs[i]?.split("|") || this.pattern.mandatoryDefault[i];
-            } else if (pat === 'string:number[,]') {
+            } else if (pat === '[string:number][,]') {
                 this.mandatory[i] = argStrs[i]?.split(",").map(v => {
                     const arg = v.split(":");
                     return [arg[0], parseInt(arg[1])] as [string, number];
@@ -173,7 +173,7 @@ export default class Arguments {
                             optionalArguments.set(k, argStr.split(":")[1].split(","));
                         } else if (value === 'boolean') {
                             optionalArguments.set(k, true);
-                        } else if (value === 'string:number[,]') {
+                        } else if (value === '[string:number][,]') {
                             this.mandatory[i] = argStrs[i].split(",").map(v => {
                                 const arg = v.split(":");
                                 return [arg[0], parseInt(arg[1])] as [string, number];
@@ -262,7 +262,7 @@ export default class Arguments {
                 element = (value as string[]).join(",");
             } else if (type === 'string[|]') {
                 element = (value as string[]).join("|");
-            } else if (type === 'string:number[,]') {
+            } else if (type === '[string:number][,]') {
                 element = (value as [string, number][]).map(v => `${v[0]}:${v[1]}`).join(",");
             } else { // if (type === 'string' || '*')
                 element = value as string;
@@ -290,7 +290,7 @@ export default class Arguments {
                 if (value) {
                     optionalStrs.push(`${key}`);
                 }
-            } else if (type === 'string:number[,]') {
+            } else if (type === '[string:number][,]') {
                 optionalStrs.push(`${key}:${(value as [string, number][]).map(v => `${v[0]}:${v[1]}`).join(",")}`);
             } else { // if (type === 'string')
                 const valueStr = value as string;

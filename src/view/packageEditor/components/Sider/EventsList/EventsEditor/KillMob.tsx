@@ -51,7 +51,6 @@ export default function (props: Props) {
 
     return (
         <>
-            {/* Events "killmob" Editor... for Event "{props.listElement.getName()}"<br /> */}
             <Divider orientation="left" plain>
                 Mandatory Arguments
             </Divider>
