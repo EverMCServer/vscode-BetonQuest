@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { Checkbox, Col, Divider, Input, Row } from "antd";
 
 import Package from "../../../../../../betonquest/Package";
 import Event from "../../../../../../betonquest/Event";
 import Arguments, { ArgumentsPattern } from "../../../../../../betonquest/Arguments";
-import { Checkbox, Col, Divider, Input, InputNumber, Row } from "antd";
 
 interface Props {
     package: Package,
@@ -20,10 +20,6 @@ const pattern: ArgumentsPattern = {
     optional: new Map([
         ['notify', 'boolean'],
         ['backpack', 'boolean']
-    ]),
-    optionalDefault: new Map([
-        ['notify', true],
-        ['backpack', undefined],
     ])
 };
 

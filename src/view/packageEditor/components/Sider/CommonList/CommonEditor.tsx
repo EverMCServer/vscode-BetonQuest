@@ -3,18 +3,22 @@ import { Row, Col, Divider, ConfigProvider, Select } from "antd";
 
 import ListElement from "../../../../../betonquest/ListElement";
 import { BaseListProps } from "../CommonList";
+import { ArgumentsPattern } from "../../../../../betonquest/Arguments";
 
 export interface ListElementEditorProps<T extends ListElement> extends BaseListProps {
     listElement: T,
     kindSelectDefaultOpen?: boolean,
 }
 
+export type Kind<T extends ListElement> = {
+    value: string,
+    display: string,
+    editor: (props: ListElementEditorProps<T>) => React.JSX.Element,
+    argumentsPattern: ArgumentsPattern,
+};
+
 interface CommonEditorProps<T extends ListElement> extends ListElementEditorProps<T> {
-    kinds: {
-        value: string,
-        display: string,
-        editor: (props: ListElementEditorProps<T>) => React.JSX.Element,
-    }[],
+    kinds: Kind<T>[],
     defaultEditor: (props: ListElementEditorProps<T>) => React.JSX.Element,
 }
 

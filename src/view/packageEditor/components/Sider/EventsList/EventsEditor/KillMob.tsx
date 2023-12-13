@@ -22,10 +22,6 @@ const pattern: ArgumentsPattern = {
     optional: new Map([
         ['name', 'string'],
         ['marked', 'string']
-    ]),
-    optionalDefault: new Map([
-        ['name', ''],
-        ['marked', '']
     ])
 };
 

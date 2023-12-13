@@ -50,7 +50,6 @@ export type ArgumentsPattern = {
     mandatory: MandatoryArgumentsPattern,
     mandatoryDefault: MandatoryArguments, // Default values when instruction is empty
     optional?: OptionalArgumentsPattern,
-    optionalDefault?: OptionalArguments, // Default values when instruction is empty
     optionalAtFirst?: boolean,
 };
 

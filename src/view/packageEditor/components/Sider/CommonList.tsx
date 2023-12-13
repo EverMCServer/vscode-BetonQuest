@@ -163,7 +163,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
                         width: "-webkit-fill-available",
                     }}
                 >
-                    Add
+                    New
                 </Button>
             </div>
         </>

@@ -1,23 +1,35 @@
 import React from "react";
 
 import Objective from "../../../../../betonquest/Objective";
-import { ListElementEditorProps } from "../CommonList/CommonEditor";
+import { Kind, ListElementEditorProps } from "../CommonList/CommonEditor";
 import CommonEditor from "../CommonList/CommonEditor";
 import Default from "./ObjectivesEditor/Default";
 
 export default function(props: ListElementEditorProps<Objective>) {
 
     // All kinds
-    const kinds = [
+    const kinds: Kind<Objective>[] = [
         {
             value: 'unknown',
             display: 'Unknown',
             editor: Default,
+            argumentsPattern: {
+                mandatory: ['*'],
+                mandatoryDefault: [
+                    ""
+                ]
+            }
         },
         {
             value: 'give',
             display: 'Give',
             editor: Default,
+            argumentsPattern: {
+                mandatory: ['*'],
+                mandatoryDefault: [
+                    ""
+                ]
+            }
         },
         // ...
     ];
