@@ -1,4 +1,5 @@
 import React from "react";
+import { Input } from "antd";
 
 import Event from "../../../../../betonquest/Event";
 import { Kind, ListElementEditorProps } from "../CommonList/CommonEditor";
@@ -6,6 +7,8 @@ import CommonEditor from "../CommonList/CommonEditor";
 import Default from "./EventsEditor/Default";
 import Give from "./EventsEditor/Give";
 import KillMob from "./EventsEditor/KillMob";
+
+const textInput = <Input />;
 
 export default function (props: ListElementEditorProps<Event>) {
 
@@ -15,11 +18,10 @@ export default function (props: ListElementEditorProps<Event>) {
             value: 'unknown',
             display: 'Unknown',
             editor: Default,
-            argumentsPattern: {
-                mandatory: ['*'],
-                mandatoryDefault: [
-                    ""
-                ]
+            argumentsConfig: {
+                mandatory: [
+                    { jsx: textInput, name: 'unspecified', type: '*', placeholder: '' },
+                ],
             }
         },
         {
@@ -27,15 +29,15 @@ export default function (props: ListElementEditorProps<Event>) {
             display: 'Give',
             editor: Give,
             // e.g. emerald:5,emerald_block:9,important_sign notify backpack
-            argumentsPattern: {
-                mandatory: ['[string:number][,]'],
-                mandatoryDefault: [
-                    [["emerald", 5], ["emerald_block", 9], ["important_sign", 1]]
+            argumentsConfig: {
+                // default: "emerald:5,emerald_block:9,important_sign notify backpack",
+                mandatory: [
+                    { jsx: textInput, name: 'item_list', type: '[string:number][,]', placeholder: [["emerald", 5], ["emerald_block", 9], ["important_sign", 1]] },
                 ],
-                optional: new Map([
-                    ['notify', 'boolean'],
-                    ['backpack', 'boolean']
-                ])
+                optional: [
+                    { jsx: textInput, name: 'notify', type: 'boolean' },
+                    { jsx: textInput, name: 'backpack', type: 'boolean' }
+                ]
             }
         },
         {
@@ -43,17 +45,16 @@ export default function (props: ListElementEditorProps<Event>) {
             display: 'Kill Mob',
             editor: KillMob,
             // e.g. killmob ZOMBIE 100;200;300;world 40 name:Bolec marked:quest_mob
-            argumentsPattern: {
-                mandatory: ['string', 'string', 'float'],
-                mandatoryDefault: [
-                    'ZOMBIE',
-                    '100;200;300;world',
-                    1.0
+            argumentsConfig: {
+                mandatory: [
+                    { jsx: textInput, name: 'entity_type', type: 'string', placeholder: 'ZOMBIE' },
+                    { jsx: textInput, name: 'location', type: 'string', placeholder: '100;200;300;world' },
+                    { jsx: textInput, name: 'float', type: 'string', placeholder: 1.0 },
                 ],
-                optional: new Map([
-                    ['name', 'string'],
-                    ['marked', 'string']
-                ])
+                optional: [
+                    { jsx: textInput, name: 'name', type: 'string' },
+                    { jsx: textInput, name: 'marked', type: 'string' }
+                ]
             }
         }
     ];

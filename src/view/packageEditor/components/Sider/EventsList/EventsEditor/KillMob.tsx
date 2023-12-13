@@ -13,16 +13,15 @@ interface Props {
 
 // e.g. killmob ZOMBIE 100;200;300;world 40 name:Bolec marked:quest_mob
 const pattern: ArgumentsPattern = {
-    mandatory: ['string', 'string', 'float'],
-    mandatoryDefault: [
-        'ZOMBIE',
-        '100;200;300;world',
-        1.0
+    mandatory: [
+        { name: 'entity_type', type: 'string', placeholder: 'ZOMBIE' },
+        { name: 'location', type: 'string', placeholder: '100;200;300;world' },
+        { name: 'radius', type: 'float', placeholder: 1.0 },
     ],
-    optional: new Map([
-        ['name', 'string'],
-        ['marked', 'string']
-    ])
+    optional: [
+        { name: 'name', type: 'string' },
+        { name: 'marked', type: 'string' }
+    ]
 };
 
 const colSpanLeft = 8;

@@ -13,14 +13,14 @@ interface Props {
 
 // e.g. emerald:5,emerald_block:9,important_sign notify backpack
 const pattern: ArgumentsPattern = {
-    mandatory: ['[string:number][,]'],
-    mandatoryDefault: [
-        [["emerald", 5], ["emerald_block", 9], ["important_sign", 1]]
+    mandatory: [
+        { name: 'item_list', type: '[string:number][,]', placeholder: [["emerald", 5], ["emerald_block", 9], ["important_sign", 1]] },
     ],
-    optional: new Map([
-        ['notify', 'boolean'],
-        ['backpack', 'boolean']
-    ])
+    optional: [
+        { name: 'notify', type: 'boolean' },
+        { name: 'backpack', type: 'boolean' }
+    ]
+
 };
 
 const colSpanLeft = 4;

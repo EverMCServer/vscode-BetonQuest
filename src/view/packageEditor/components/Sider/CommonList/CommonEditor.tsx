@@ -14,7 +14,17 @@ export type Kind<T extends ListElement> = {
     value: string,
     display: string,
     editor: (props: ListElementEditorProps<T>) => React.JSX.Element,
-    argumentsPattern: ArgumentsPattern,
+    argumentsConfig: ArgumentsPattern
+    // argumentsConfig: ArgumentsPattern & {
+    //     mandatory: {
+    //         jsx: React.JSX.Element,
+    //         config?: any
+    //     }[],
+    //     optional?: {
+    //         jsx: React.JSX.Element,
+    //         config?: any
+    //     }[]
+    // },
 };
 
 interface CommonEditorProps<T extends ListElement> extends ListElementEditorProps<T> {

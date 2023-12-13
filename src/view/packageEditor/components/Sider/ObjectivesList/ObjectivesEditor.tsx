@@ -13,22 +13,20 @@ export default function(props: ListElementEditorProps<Objective>) {
             value: 'unknown',
             display: 'Unknown',
             editor: Default,
-            argumentsPattern: {
-                mandatory: ['*'],
-                mandatoryDefault: [
-                    ""
-                ]
+            argumentsConfig: {
+                mandatory: [
+                    { name: 'unspecified', type: '*', placeholder: '' },
+                ],
             }
         },
         {
             value: 'give',
             display: 'Give',
             editor: Default,
-            argumentsPattern: {
-                mandatory: ['*'],
-                mandatoryDefault: [
-                    ""
-                ]
+            argumentsConfig: {
+                mandatory: [
+                    { name: 'unspecified', type: '*', placeholder: '' },
+                ],
             }
         },
         // ...
