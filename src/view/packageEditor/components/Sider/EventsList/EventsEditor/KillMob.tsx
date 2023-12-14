@@ -8,9 +8,9 @@ import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
 // e.g. killmob ZOMBIE 100;200;300;world 40 name:Bolec marked:quest_mob
 const pattern: ArgumentsPattern = {
     mandatory: [
-        { name: 'entity_type', type: 'string', placeholder: 'ZOMBIE' },
-        { name: 'location', type: 'string', placeholder: '100;200;300;world' },
-        { name: 'radius', type: 'float', placeholder: 1.0 },
+        { name: 'entity_type', type: 'string', defaultValue: 'ZOMBIE' },
+        { name: 'location', type: 'string', defaultValue: '100;200;300;world' },
+        { name: 'radius', type: 'float', defaultValue: 1.0 },
     ],
     optional: [
         { name: 'name', key: 'name', type: 'string' },

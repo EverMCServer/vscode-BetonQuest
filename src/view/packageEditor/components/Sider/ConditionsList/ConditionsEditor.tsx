@@ -15,7 +15,7 @@ export default function(props: ListElementEditorProps<Condition>) {
             editorBody: Default,
             argumentsPattern: {
                 mandatory: [
-                    { name: 'unspecified', type: '*', placeholder: '' },
+                    { name: 'unspecified', type: '*', defaultValue: '' },
                 ],
             }
         },
@@ -25,7 +25,7 @@ export default function(props: ListElementEditorProps<Condition>) {
             editorBody: Default,
             argumentsPattern: {
                 mandatory: [
-                    { name: 'unspecified', type: '*', placeholder: '' },
+                    { name: 'unspecified', type: '*', defaultValue: '' },
                 ],
             }
         },

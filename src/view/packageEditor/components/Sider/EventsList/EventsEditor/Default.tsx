@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Col, Row } from "antd";
-import TextArea from "antd/es/input/TextArea";
+import { Col, Divider, Row } from "antd";
 
 import Event from "../../../../../../betonquest/Event";
-import Arguments from "../../../../../../betonquest/Arguments";
+import Arguments, { MandatoryArgumentDataType, OptionalArgumentDataType } from "../../../../../../betonquest/Arguments";
 import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
+
+const colSpanLeft = 4;
+const colSpanRight = 18;
 
 export default function (props: ListElementEditorBodyProps<Event>) {
 
@@ -22,33 +24,66 @@ export default function (props: ListElementEditorBodyProps<Event>) {
 
     const [args, setArgs] = useState<Arguments>();
     useEffect(() => {
-        setArgs(props.listElement.getArguments());
+        setArgs(props.listElement.getArguments(props.argumentsPattern));
     }, [props.listElement]);
 
     return (
         <>
-            <Row justify="space-between" style={{ padding: "8px 0" }}>
-                <Col span={4}>
-                    <span>Value:&nbsp;</span>
-                </Col>
-                <Col span={18}>
-                    <TextArea
-                        value={args?.toString()}
-                        onChange={(e) => {
-                            console.log("hi");
-                            // if (e.target.value.includes("\n")) {
-                            //     return;
-                            // }
-                            args?.setMandatoryArgument(0, e.target.value);
-                            props.syncYaml();
-                            refreshUI();
-                        }}
-                        size="small"
-                        placeholder={"(none)"}
-                        autoSize={{ minRows: 2, maxRows: 6 }}
-                    ></TextArea>
-                </Col>
-            </Row>
+            {props.argumentsPattern.optional &&
+                <Divider orientation="left" plain>
+                    Mandatory Arguments
+                </Divider>
+            }
+            {props.argumentsPattern.mandatory.map((arg, index) => {
+                return (
+                    <Row justify="space-between" style={{ padding: "8px 0" }} key={index}>
+                        <Col span={colSpanLeft}>
+                            <span>{arg.name}:&nbsp;</span>
+                        </Col>
+                        <Col span={colSpanRight}>
+                            {arg.jsx && <arg.jsx
+                                value={args?.getMandatoryArgument(index)}
+                                defaultValue={arg.defaultValue}
+                                placeholder={arg.placeholder}
+                                onChange={(value: MandatoryArgumentDataType) => {
+                                    args?.setMandatoryArgument(index, value);
+                                    props.syncYaml();
+                                    refreshUI();
+                                }}
+                                config={arg.config}
+                            />}
+                        </Col>
+                    </Row>
+                );
+            })}
+            {props.argumentsPattern.optional &&
+                <>
+                    <Divider orientation="left" plain>
+                        Optional Arguments
+                    </Divider>
+                    {props.argumentsPattern.optional?.map((arg, index) => {
+                        return (
+                            <Row justify="space-between" style={{ padding: "8px 0" }} key={index}>
+                                <Col span={colSpanLeft}>
+                                    <span>{arg.name}:&nbsp;</span>
+                                </Col>
+                                <Col span={colSpanRight}>
+                                    {arg.jsx && <arg.jsx
+                                        value={args?.getOptionalArgument(arg.key)}
+                                        placeholder={arg.placeholder}
+                                        onChange={(value: OptionalArgumentDataType) => {
+                                            args?.setOptionalArgument(arg.key, value);
+                                            props.syncYaml();
+                                            refreshUI();
+                                        }}
+                                        config={arg.config}
+                                    />}
+                                </Col>
+                            </Row>
+                        );
+                    })}
+                </>
+            }
         </>
     );
 }

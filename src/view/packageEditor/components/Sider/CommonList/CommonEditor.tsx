@@ -70,7 +70,13 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
     // Find editor by kind
     const getEditorBody = (kind: string) => {
         const k = props.kinds.find(e => e.value === kind);
-        return k && (k.editorBody && <k.editorBody {...props} argumentsPattern={k.argumentsPattern} /> || <props.defaultEditorBody {...props} argumentsPattern={k.argumentsConfig} />);
+
+        // Create arguments' editor by kind.argumentsConfig
+        return (k && (k.editorBody &&
+            <k.editorBody {...props} argumentsPattern={k.argumentsPattern} />
+            ||
+            <props.defaultEditorBody {...props} argumentsPattern={k.argumentsPattern}></props.defaultEditorBody>)
+        );
     };
 
     return (

@@ -8,7 +8,7 @@ import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
 // e.g. emerald:5,emerald_block:9,important_sign notify backpack
 const pattern: ArgumentsPattern = {
     mandatory: [
-        { name: 'item_list', type: '[string:number][,]', placeholder: [["emerald", 5], ["emerald_block", 9], ["important_sign", 1]] },
+        { name: 'item_list', type: '[string:number][,]', defaultValue: [["emerald", 5], ["emerald_block", 9], ["important_sign", 1]] },
     ],
     optional: [
         { name: 'notify', key: 'notify', type: 'boolean' },
