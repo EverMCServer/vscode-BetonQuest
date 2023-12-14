@@ -12,8 +12,8 @@ export default function(props: ListElementEditorProps<Objective>) {
         {
             value: 'unknown',
             display: 'Unknown',
-            editor: Default,
-            argumentsConfig: {
+            editorBody: Default,
+            argumentsPattern: {
                 mandatory: [
                     { name: 'unspecified', type: '*', placeholder: '' },
                 ],
@@ -22,8 +22,8 @@ export default function(props: ListElementEditorProps<Objective>) {
         {
             value: 'give',
             display: 'Give',
-            editor: Default,
-            argumentsConfig: {
+            editorBody: Default,
+            argumentsPattern: {
                 mandatory: [
                     { name: 'unspecified', type: '*', placeholder: '' },
                 ],
@@ -33,6 +33,6 @@ export default function(props: ListElementEditorProps<Objective>) {
     ];
 
     return (
-        <CommonEditor<Objective> {...props} kinds={kinds} defaultEditor={Default} />
+        <CommonEditor<Objective> {...props} kinds={kinds} defaultEditorBody={Default} />
     );
 }

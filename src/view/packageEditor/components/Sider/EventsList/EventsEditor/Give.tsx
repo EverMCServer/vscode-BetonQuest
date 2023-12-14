@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Checkbox, Col, Divider, Input, Row } from "antd";
 
-import Package from "../../../../../../betonquest/Package";
 import Event from "../../../../../../betonquest/Event";
 import Arguments, { ArgumentsPattern } from "../../../../../../betonquest/Arguments";
-
-interface Props {
-    package: Package,
-    syncYaml: Function,
-    listElement: Event,
-}
+import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
 
 // e.g. emerald:5,emerald_block:9,important_sign notify backpack
 const pattern: ArgumentsPattern = {
@@ -26,7 +20,7 @@ const pattern: ArgumentsPattern = {
 const colSpanLeft = 4;
 const colSpanRight = 18;
 
-export default function (props: Props) {
+export default function (props: ListElementEditorBodyProps<Event>) {
 
     // UI update trigger #1
     const [getTrigger, setTrigger] = useState(false);

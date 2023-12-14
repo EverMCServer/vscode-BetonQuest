@@ -2,17 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Col, Row } from "antd";
 import TextArea from "antd/es/input/TextArea";
 
-import Package from "../../../../../../betonquest/Package";
 import Condition from "../../../../../../betonquest/Condition";
 import Arguments from "../../../../../../betonquest/Arguments";
+import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
 
-interface DefaultProps {
-    package: Package,
-    syncYaml: Function,
-    listElement: Condition,
-}
-
-export default function (props: DefaultProps) {
+export default function (props: ListElementEditorBodyProps<Condition>) {
 
     // UI update trigger #1
     const [getTrigger, setTrigger] = useState(false);

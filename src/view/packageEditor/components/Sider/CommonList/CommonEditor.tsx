@@ -10,11 +10,15 @@ export interface ListElementEditorProps<T extends ListElement> extends BaseListP
     kindSelectDefaultOpen?: boolean,
 }
 
+export interface ListElementEditorBodyProps<T extends ListElement> extends ListElementEditorProps<T> {
+    argumentsPattern: ArgumentsPattern,
+}
+
 export type Kind<T extends ListElement> = {
     value: string,
     display: string,
-    editor: (props: ListElementEditorProps<T>) => React.JSX.Element,
-    argumentsConfig: ArgumentsPattern
+    editorBody?: (props: ListElementEditorBodyProps<T>) => React.JSX.Element,
+    argumentsPattern: ArgumentsPattern
     // argumentsConfig: ArgumentsPattern & {
     //     mandatory: {
     //         jsx: React.JSX.Element,
@@ -29,7 +33,7 @@ export type Kind<T extends ListElement> = {
 
 interface CommonEditorProps<T extends ListElement> extends ListElementEditorProps<T> {
     kinds: Kind<T>[],
-    defaultEditor: (props: ListElementEditorProps<T>) => React.JSX.Element,
+    defaultEditorBody: (props: ListElementEditorBodyProps<T>) => React.JSX.Element,
 }
 
 export default function <T extends ListElement>(props: CommonEditorProps<T>) {
@@ -64,9 +68,9 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
     };
 
     // Find editor by kind
-    const findEditor = (kind: string) => {
+    const getEditorBody = (kind: string) => {
         const k = props.kinds.find(e => e.value === kind);
-        return k && <k.editor {...props} /> || <props.defaultEditor {...props} />;
+        return k && (k.editorBody && <k.editorBody {...props} argumentsPattern={k.argumentsPattern} /> || <props.defaultEditorBody {...props} argumentsPattern={k.argumentsConfig} />);
     };
 
     return (
@@ -114,7 +118,7 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
                     </Col>
                 </Row>
                 <Divider />
-                {findEditor(props.listElement.getKind())}
+                {getEditorBody(props.listElement.getKind())}
             </div>
         </ConfigProvider>
     );

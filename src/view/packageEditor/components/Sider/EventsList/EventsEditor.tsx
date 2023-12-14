@@ -17,8 +17,7 @@ export default function (props: ListElementEditorProps<Event>) {
         {
             value: 'unknown',
             display: 'Unknown',
-            editor: Default,
-            argumentsConfig: {
+            argumentsPattern: {
                 mandatory: [
                     { jsx: textInput, name: 'unspecified', type: '*', placeholder: '' },
                 ],
@@ -27,9 +26,9 @@ export default function (props: ListElementEditorProps<Event>) {
         {
             value: 'give',
             display: 'Give',
-            editor: Give,
+            editorBody: Give,
             // e.g. emerald:5,emerald_block:9,important_sign notify backpack
-            argumentsConfig: {
+            argumentsPattern: {
                 // default: "emerald:5,emerald_block:9,important_sign notify backpack",
                 mandatory: [
                     { jsx: textInput, name: 'item_list', type: '[string:number][,]', placeholder: [["emerald", 5], ["emerald_block", 9], ["important_sign", 1]] },
@@ -43,9 +42,9 @@ export default function (props: ListElementEditorProps<Event>) {
         {
             value: 'killmob',
             display: 'Kill Mob',
-            editor: KillMob,
+            editorBody: KillMob,
             // e.g. killmob ZOMBIE 100;200;300;world 40 name:Bolec marked:quest_mob
-            argumentsConfig: {
+            argumentsPattern: {
                 mandatory: [
                     { jsx: textInput, name: 'entity_type', type: 'string', placeholder: 'ZOMBIE' },
                     { jsx: textInput, name: 'location', type: 'string', placeholder: '100;200;300;world' },
@@ -60,6 +59,6 @@ export default function (props: ListElementEditorProps<Event>) {
     ];
 
     return (
-        <CommonEditor<Event> {...props} kinds={kinds} defaultEditor={Default} />
+        <CommonEditor<Event> {...props} kinds={kinds} defaultEditorBody={Default} />
     );
 }

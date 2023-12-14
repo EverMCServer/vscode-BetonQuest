@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Col, Divider, Input, InputNumber, Row } from "antd";
 
-import Package from "../../../../../../betonquest/Package";
 import Event from "../../../../../../betonquest/Event";
 import Arguments, { ArgumentsPattern } from "../../../../../../betonquest/Arguments";
-
-interface Props {
-    package: Package,
-    syncYaml: Function,
-    listElement: Event,
-}
+import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
 
 // e.g. killmob ZOMBIE 100;200;300;world 40 name:Bolec marked:quest_mob
 const pattern: ArgumentsPattern = {
@@ -27,7 +21,7 @@ const pattern: ArgumentsPattern = {
 const colSpanLeft = 8;
 const colSpanRight = 14;
 
-export default function (props: Props) {
+export default function (props: ListElementEditorBodyProps<Event>) {
 
     // UI update trigger #1
     const [getTrigger, setTrigger] = useState(false);
