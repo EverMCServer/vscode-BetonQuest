@@ -5,8 +5,6 @@ import { VscTrash, VscWarning } from "react-icons/vsc";
 import { CommonListProps } from "../CommonList";
 import ListElement, { ListElementType } from "../../../../../betonquest/ListElement";
 
-import "../../../../style/vscodePopover.css";
-
 interface CollapseExtraProps<T extends ListElement> extends CommonListProps<T> {
     name: string,
     removeElement: (type: ListElementType, name: string) => void,

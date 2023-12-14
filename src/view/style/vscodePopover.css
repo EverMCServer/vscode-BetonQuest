@@ -5,36 +5,36 @@
 }
 
 .ant-popover-arrow::after {
-    background-color: var(--vscode-notifications-background)!important;
+    background-color: var(--vscode-notifications-background) !important;
     /* border: 1px solid var(--vscode-notifications-border); */
     border: 1px solid var(--vscode-editorWidget-border);
     outline-color: var(--vscode-contrastBorder);
-    box-shadow: var(--vscode-widget-shadow) 2px 2px 5px!important;
+    box-shadow: var(--vscode-widget-shadow) 2px 2px 5px !important;
 }
 
 .ant-popover-inner {
-    background-color: var(--vscode-notifications-background)!important;
+    background-color: var(--vscode-notifications-background) !important;
     /* border :1px solid var(--vscode-notifications-border); */
-    border :1px solid var(--vscode-editorWidget-border);
-    border-radius: 4px!important;
+    border: 1px solid var(--vscode-editorWidget-border);
+    border-radius: 4px !important;
     outline-color: var(--vscode-contrastBorder);
-    box-shadow: var(--vscode-widget-shadow) 0px 0px 8px 2px!important;
+    box-shadow: var(--vscode-widget-shadow) 0px 0px 8px 2px !important;
 }
 
 .ant-popover-title {
-    color: var(--vscode-notifications-foreground)!important;
+    color: var(--vscode-notifications-foreground) !important;
 }
 
 .ant-popover-inner-content {
-    color: var(--vscode-notifications-foreground)!important;
+    color: var(--vscode-notifications-foreground) !important;
 }
 
 /* Override Ant Design's Popconfirm styles */
 
 .ant-popconfirm-title {
-    color: var(--vscode-notifications-foreground)!important;
+    color: var(--vscode-notifications-foreground) !important;
 }
 
 .ant-popconfirm-description {
-    color: var(--vscode-notifications-foreground)!important;
+    color: var(--vscode-notifications-foreground) !important;
 }

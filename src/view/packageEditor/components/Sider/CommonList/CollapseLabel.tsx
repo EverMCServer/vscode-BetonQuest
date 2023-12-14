@@ -7,8 +7,6 @@ import ListElement from "../../../../../betonquest/ListElement";
 import { Input, Popover } from "antd";
 import { SpecialCharactersRegex } from "../../../../../utils/yaml";
 
-import "../../../../style/vscodePopover.css";
-
 let editPopoverTimeout: string | number | NodeJS.Timeout | undefined;
 
 interface CollapseLabelProps<T extends ListElement> extends CommonListProps<T> {
@@ -82,7 +80,7 @@ export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
     const [editPopoverMessage, setEditPopoverMessage] = useState<React.ReactNode>("");
 
     return (
-        <>
+        <div style={{ padding: "0 0 4px 0" }}>
             {isTitleEditing ?
                 <Popover
                     content={editPopoverMessage}
@@ -125,6 +123,6 @@ export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
                     />
                 </>
             }
-        </>
+        </div>
     );
 }

@@ -3,8 +3,6 @@ import { YAMLError } from "yaml";
 import { WebviewApi } from "vscode-webview";
 import { Button } from "antd";
 
-import '../style/vscodeButton.css';
-
 interface YamlErrorProps {
     yamlErrors: YAMLError[],
     vscode: WebviewApi<unknown>,

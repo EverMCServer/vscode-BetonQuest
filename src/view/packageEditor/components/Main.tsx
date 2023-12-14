@@ -8,7 +8,6 @@ import ConversationTabLabel from "./Main/ConversationTabLabel";
 import Package from "../../../betonquest/Package";
 import { allLanguages } from "../../../i18n/i18n";
 
-import "../../style/vscodeButton.css";
 import "./Main.css";
 
 // Global variables from vscode

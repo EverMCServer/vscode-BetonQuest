@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Row, Col, Divider, ConfigProvider, Select } from "antd";
+import { Row, Col, Divider, Select } from "antd";
 
 import ListElement from "../../../../../betonquest/ListElement";
 import { BaseListProps } from "../CommonList";
@@ -80,52 +80,38 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
     };
 
     return (
-        <ConfigProvider
-            theme={{
-                components: {
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    Divider: {
-                        // global
-                        marginLG: 0, // The margin of the Divider
-                        lineWidth: 1,
-                        colorSplit: 'var(--vscode-sideBarSectionHeader-border)',
-                    }
-                }
-            }}
-        >
-            <div style={{ padding: "0 8px" }}>
-                <Row justify="space-between" style={{ padding: "8px 0" }}>
-                    <Col span={4}>
-                        <span>Kind:</span>
-                    </Col>
-                    <Col span={18}>
-                        <Select
-                            showSearch
-                            defaultOpen={props.kindSelectDefaultOpen}
-                            autoFocus={props.kindSelectDefaultOpen}
-                            value={props.listElement.getKind()}
-                            placeholder="Please enter a kind"
-                            defaultActiveFirstOption={false}
-                            // suffixIcon={null}
-                            filterOption={onKindFilter}
-                            onChange={(e) => {
-                                props.listElement.setKind(e);
-                                props.syncYaml();
-                                refreshUI();
-                            }}
-                            notFoundContent={null}
-                            options={props.kinds.map((d) => ({
-                                value: d.value,
-                                label: d.display,
-                            }))}
-                            size="small"
-                            style={{ width: "100%" }}
-                        />
-                    </Col>
-                </Row>
-                <Divider />
-                {getEditorBody(props.listElement.getKind())}
-            </div>
-        </ConfigProvider>
+        <div style={{ padding: "0 8px" }}>
+            <Row justify="space-between" style={{ margin: "8px 0" }}>
+                <Col span={4}>
+                    <span>Kind:</span>
+                </Col>
+                <Col span={18}>
+                    <Select
+                        showSearch
+                        defaultOpen={props.kindSelectDefaultOpen}
+                        autoFocus={props.kindSelectDefaultOpen}
+                        value={props.listElement.getKind()}
+                        placeholder="Please enter a kind"
+                        defaultActiveFirstOption={false}
+                        // suffixIcon={null}
+                        filterOption={onKindFilter}
+                        onChange={(e) => {
+                            props.listElement.setKind(e);
+                            props.syncYaml();
+                            refreshUI();
+                        }}
+                        notFoundContent={null}
+                        options={props.kinds.map((d) => ({
+                            value: d.value,
+                            label: d.display,
+                        }))}
+                        size="small"
+                        style={{ width: "100%" }}
+                    />
+                </Col>
+            </Row>
+            <Divider />
+            {getEditorBody(props.listElement.getKind())}
+        </div>
     );
 }

@@ -9,8 +9,6 @@ import CollapseLabel from "./CommonList/CollapseLabel";
 import CollapseExtra from "./CommonList/CollapseExtra";
 import { ListElementEditorProps } from "./CommonList/CommonEditor";
 
-import '../../../style/vscodeButton.css';
-
 export interface BaseListProps {
     package: Package,
     syncYaml: Function,
@@ -45,7 +43,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
             key: name,
             label: <CollapseLabel {...props} listElement={e}></CollapseLabel>,
             children: <props.editor key={name} {...props} listElement={e} kindSelectDefaultOpen={kindSelectDefaultOpen}></props.editor>,
-            style: { margin: "8px 0" },
+            style: { padding: "4px 0 0 0" },
             extra: <CollapseExtra {...props} name={name} removeElement={onElementRemove} />
         };
     };

@@ -1,0 +1,15 @@
+/* Override Ant Design's Divider styles */
+
+.ant-divider,
+.ant-divider::before,
+.ant-divider::after {
+    border-block-start-color: var(--vscode-sideBarSectionHeader-border) !important;
+}
+
+.ant-divider.ant-divider-horizontal {
+    margin: 8px 0;
+}
+
+.ant-divider span.ant-divider-inner-text {
+    color: var(--vscode-editor-foreground)
+}

@@ -37,7 +37,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
             }
             {props.argumentsPattern.mandatory.map((arg, index) => {
                 return (
-                    <Row justify="space-between" style={{ padding: "8px 0" }} key={index}>
+                    <Row justify="space-between" style={{ padding: "0 0 8px 0" }} key={index}>
                         <Col span={colSpanLeft}>
                             <span>
                                 {arg.name}&nbsp;
@@ -73,7 +73,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                     </Divider>
                     {props.argumentsPattern.optional?.map((arg, index) => {
                         return (
-                            <Row justify="space-between" style={{ padding: "8px 0" }} key={index}>
+                            <Row justify="space-between" style={{ padding: "0 0 8px 0" }} key={index}>
                                 <Col span={colSpanLeft}>
                                     <span>{arg.name}&nbsp;
                                         {arg.tooltip && <>
