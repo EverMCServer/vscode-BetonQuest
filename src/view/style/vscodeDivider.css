@@ -7,7 +7,8 @@
 }
 
 .ant-divider.ant-divider-horizontal {
-    margin: 8px 0;
+    margin: 0;
+    padding: 8px 0;
 }
 
 .ant-divider span.ant-divider-inner-text {
