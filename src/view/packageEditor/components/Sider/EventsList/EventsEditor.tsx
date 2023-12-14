@@ -20,6 +20,7 @@ export default function (props: ListElementEditorProps<Event>) {
         {
             value: 'unknown',
             display: 'Unknown',
+            description: 'Unknown Event',
             argumentsPattern: {
                 mandatory: [
                     { jsx: TextArea, name: 'Value', type: '*', defaultValue: '' },
@@ -29,6 +30,7 @@ export default function (props: ListElementEditorProps<Event>) {
         {
             value: 'give',
             display: 'Give',
+            description: 'Gives the player predefined items.',
             // editorBody: Give,
             // e.g. emerald:5,emerald_block:9,important_sign notify backpack
             argumentsPattern: {
@@ -46,6 +48,7 @@ export default function (props: ListElementEditorProps<Event>) {
         {
             value: 'killmob',
             display: 'Kill Mob',
+            description: 'Kills all mobs of given type at the location.',
             // editorBody: KillMob,
             // e.g. killmob ZOMBIE 100;200;300;world 40 name:Bolec marked:quest_mob
             argumentsPattern: {

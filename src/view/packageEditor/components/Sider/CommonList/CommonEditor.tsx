@@ -17,6 +17,7 @@ export interface ListElementEditorBodyProps<T extends ListElement> extends ListE
 export type Kind<T extends ListElement> = {
     value: string,
     display: string,
+    description: string,
     editorBody?: (props: ListElementEditorBodyProps<T>) => React.JSX.Element,
     argumentsPattern: ArgumentsPattern
     // argumentsConfig: ArgumentsPattern & {
@@ -72,11 +73,14 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
         const k = props.kinds.find(e => e.value === kind);
 
         // Create arguments' editor by kind.argumentsConfig
-        return (k && (k.editorBody &&
-            <k.editorBody {...props} argumentsPattern={k.argumentsPattern} />
-            ||
-            <props.defaultEditorBody {...props} argumentsPattern={k.argumentsPattern}></props.defaultEditorBody>)
-        );
+        return (<>
+            {k?.description && <div style={{ padding: "0 0 8px 0" }}>{k.description}</div>}
+            {k && (k.editorBody &&
+                <k.editorBody {...props} argumentsPattern={k.argumentsPattern} />
+                ||
+                <props.defaultEditorBody {...props} argumentsPattern={k.argumentsPattern}></props.defaultEditorBody>)
+            }
+        </>);
     };
 
     return (

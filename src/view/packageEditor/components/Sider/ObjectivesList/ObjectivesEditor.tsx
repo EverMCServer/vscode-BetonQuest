@@ -12,16 +12,7 @@ export default function(props: ListElementEditorProps<Objective>) {
         {
             value: 'unknown',
             display: 'Unknown',
-            editorBody: Default,
-            argumentsPattern: {
-                mandatory: [
-                    { name: 'unspecified', type: '*', defaultValue: '' },
-                ],
-            }
-        },
-        {
-            value: 'give',
-            display: 'Give',
+            description: 'Unknown Objective',
             editorBody: Default,
             argumentsPattern: {
                 mandatory: [
