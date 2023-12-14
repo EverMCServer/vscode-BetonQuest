@@ -56,6 +56,7 @@ type ArgumentsPatternMandatory = {
 
 type ArgumentsPatternOptional = {
     name: string,
+    key: string,
     type: OptionalArgumentType,
     jsx?: React.JSX.Element,
     config?: any
@@ -177,26 +178,26 @@ export default class Arguments {
             pattern.optional.forEach(pat => {
                 for (let i = 0; i < argStrs.length; i++) {
                     const argStr = argStrs[i];
-                    if (argStr.startsWith(pat.name)) {
+                    if (argStr.startsWith(pat.key)) {
                         if (pat.type === 'int') {
-                            optionalArguments.set(pat.name, parseInt(argStr.split(":")[1]));
+                            optionalArguments.set(pat.key, parseInt(argStr.split(":")[1]));
                         } else if (pat.type === 'float') {
-                            optionalArguments.set(pat.name, parseFloat(argStr.split(":")[1]));
+                            optionalArguments.set(pat.key, parseFloat(argStr.split(":")[1]));
                         } else if (pat.type === 'string[,]') {
-                            optionalArguments.set(pat.name, argStr.split(":")[1].split(","));
+                            optionalArguments.set(pat.key, argStr.split(":")[1].split(","));
                         } else if (pat.type === 'boolean') {
-                            optionalArguments.set(pat.name, true);
+                            optionalArguments.set(pat.key, true);
                         } else if (pat.type === '[string:number][,]') {
                             this.mandatory[i] = argStrs[i].split(",").map(v => {
                                 const arg = v.split(":");
                                 return [arg[0], parseInt(arg[1])] as [string, number];
                             });
                         } else { // if (value.pattern === 'string')
-                            optionalArguments.set(pat.name, argStr.split(":")[1]);
+                            optionalArguments.set(pat.key, argStr.split(":")[1]);
                         }
                         break;
                     } else {
-                        optionalArguments.set(pat.name, undefined);
+                        optionalArguments.set(pat.key, undefined);
                     }
                 }
             });
@@ -291,24 +292,24 @@ export default class Arguments {
     private unmarshalOptionalArguments(): string {
         const optionalStrs: string[] = [];
         this.pattern.optional?.forEach(pat => {
-            const value = this.optional?.get(pat.name);
+            const value = this.optional?.get(pat.key);
 
             if (pat.type === 'int') {
-                optionalStrs.push(`${pat.name}:${(value as number).toString()}`);
+                optionalStrs.push(`${pat.key}:${(value as number).toString()}`);
             } else if (pat.type === 'float') {
-                optionalStrs.push(`${pat.name}:${(value as number).toString()}`);
+                optionalStrs.push(`${pat.key}:${(value as number).toString()}`);
             } else if (pat.type === 'string[,]') {
-                optionalStrs.push(`${pat.name}:${(value as string[]).join(",")}`);
+                optionalStrs.push(`${pat.key}:${(value as string[]).join(",")}`);
             } else if (pat.type === 'boolean') {
                 if (value) {
-                    optionalStrs.push(`${pat.name}`);
+                    optionalStrs.push(`${pat.key}`);
                 }
             } else if (pat.type === '[string:number][,]') {
-                optionalStrs.push(`${pat.name}:${(value as [string, number][]).map(v => `${v[0]}:${v[1]}`).join(",")}`);
+                optionalStrs.push(`${pat.key}:${(value as [string, number][]).map(v => `${v[0]}:${v[1]}`).join(",")}`);
             } else { // if (type === 'string')
                 const valueStr = value as string;
                 if (valueStr && valueStr.length > 0) {
-                    optionalStrs.push(`${pat.name}:${valueStr}`);
+                    optionalStrs.push(`${pat.key}:${valueStr}`);
                 }
             }
         });

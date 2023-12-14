@@ -17,8 +17,8 @@ const pattern: ArgumentsPattern = {
         { name: 'item_list', type: '[string:number][,]', placeholder: [["emerald", 5], ["emerald_block", 9], ["important_sign", 1]] },
     ],
     optional: [
-        { name: 'notify', type: 'boolean' },
-        { name: 'backpack', type: 'boolean' }
+        { name: 'notify', key: 'notify', type: 'boolean' },
+        { name: 'backpack', key: 'backpack', type: 'boolean' }
     ]
 
 };

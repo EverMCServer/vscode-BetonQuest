@@ -19,8 +19,8 @@ const pattern: ArgumentsPattern = {
         { name: 'radius', type: 'float', placeholder: 1.0 },
     ],
     optional: [
-        { name: 'name', type: 'string' },
-        { name: 'marked', type: 'string' }
+        { name: 'name', key: 'name', type: 'string' },
+        { name: 'marked', key: 'marked', type: 'string' }
     ]
 };
 

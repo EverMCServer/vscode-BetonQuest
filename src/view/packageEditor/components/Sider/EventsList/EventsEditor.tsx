@@ -35,8 +35,8 @@ export default function (props: ListElementEditorProps<Event>) {
                     { jsx: textInput, name: 'item_list', type: '[string:number][,]', placeholder: [["emerald", 5], ["emerald_block", 9], ["important_sign", 1]] },
                 ],
                 optional: [
-                    { jsx: textInput, name: 'notify', type: 'boolean' },
-                    { jsx: textInput, name: 'backpack', type: 'boolean' }
+                    { jsx: textInput, name: 'notify', key: 'notify', type: 'boolean' },
+                    { jsx: textInput, name: 'backpack', key: 'backpack', type: 'boolean' }
                 ]
             }
         },
@@ -52,8 +52,8 @@ export default function (props: ListElementEditorProps<Event>) {
                     { jsx: textInput, name: 'float', type: 'string', placeholder: 1.0 },
                 ],
                 optional: [
-                    { jsx: textInput, name: 'name', type: 'string' },
-                    { jsx: textInput, name: 'marked', type: 'string' }
+                    { jsx: textInput, name: 'name', key: 'name', type: 'string' },
+                    { jsx: textInput, name: 'marked', key: 'marked', type: 'string' }
                 ]
             }
         }
