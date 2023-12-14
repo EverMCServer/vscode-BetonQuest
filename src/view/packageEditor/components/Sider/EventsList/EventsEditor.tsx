@@ -35,11 +35,11 @@ export default function (props: ListElementEditorProps<Event>) {
                 mandatory: [
                     // { jsx: ItemList, name: 'Item List', type: 'ItemList', default: [["emerald", 5], ["emerald_block", 9], ["important_sign", 1]] },
                     // { jsx: ItemList, name: 'Item List', type: '[string:number][,]', default: [["emerald", 5], ["emerald_block", 9], ["important_sign", 1]] },
-                    { jsx: Input, name: 'Item List', type: 'string', defaultValue: 'emerald:5,emerald_block:9,important_sign', placeholder: 'e.g. emerald:5' },
+                    { jsx: Input, name: 'Item List', type: 'string', defaultValue: 'emerald:5,emerald_block:9,important_sign', placeholder: 'e.g. emerald:5', tooltip: 'List of Items, seprated by ","' },
                 ],
                 optional: [
-                    { jsx: Checkbox, name: 'Notify', key: 'notify', type: 'boolean' },
-                    { jsx: Checkbox, name: 'Backpack', key: 'backpack', type: 'boolean' }
+                    { jsx: Checkbox, name: 'Notify', key: 'notify', type: 'boolean', tooltip: 'Display a simple message to the player about receiving items' },
+                    { jsx: Checkbox, name: 'Backpack', key: 'backpack', type: 'boolean', tooltip: 'Forces quest items to be placed in the backpack' }
                 ]
             }
         },
@@ -56,8 +56,8 @@ export default function (props: ListElementEditorProps<Event>) {
                     { jsx: Number, name: 'Radius', type: 'string', defaultValue: 1.0 },
                 ],
                 optional: [
-                    { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. Super_Zombie' },
-                    { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob' }
+                    { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. Super_Zombie', tooltip: 'The name of the mob which should get killed' },
+                    { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Kill only mobs that with the same mark using the spawn mob event' }
                 ]
             }
         }

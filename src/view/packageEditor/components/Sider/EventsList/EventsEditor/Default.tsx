@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Col, Divider, Row } from "antd";
+import { Col, Divider, Row, Tooltip } from "antd";
 
 import Event from "../../../../../../betonquest/Event";
 import Arguments, { MandatoryArgumentDataType, OptionalArgumentDataType } from "../../../../../../betonquest/Arguments";
 import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
+import { VscQuestion } from "react-icons/vsc";
 
 const colSpanLeft = 4;
 const colSpanRight = 18;
@@ -38,7 +39,16 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                 return (
                     <Row justify="space-between" style={{ padding: "8px 0" }} key={index}>
                         <Col span={colSpanLeft}>
-                            <span>{arg.name}:&nbsp;</span>
+                            <span>
+                                {arg.name}&nbsp;
+                                {arg.tooltip && <>
+                                    <sup>
+                                        <Tooltip placement="topRight" title={<span color="var(--vscode-notifications-foreground)">{arg.tooltip}</span>} color="var(--vscode-notifications-background)">
+                                            <VscQuestion />
+                                        </Tooltip>
+                                    </sup>&nbsp;
+                                </>}
+                            </span>
                         </Col>
                         <Col span={colSpanRight}>
                             {arg.jsx && <arg.jsx
@@ -65,7 +75,15 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                         return (
                             <Row justify="space-between" style={{ padding: "8px 0" }} key={index}>
                                 <Col span={colSpanLeft}>
-                                    <span>{arg.name}:&nbsp;</span>
+                                    <span>{arg.name}&nbsp;
+                                        {arg.tooltip && <>
+                                            <sup>
+                                                <Tooltip placement="topRight" title={<span color="var(--vscode-notifications-foreground)">{arg.tooltip}</span>} color="var(--vscode-notifications-background)">
+                                                    <VscQuestion />
+                                                </Tooltip>
+                                            </sup>&nbsp;
+                                        </>}
+                                    </span>
                                 </Col>
                                 <Col span={colSpanRight}>
                                     {arg.jsx && <arg.jsx

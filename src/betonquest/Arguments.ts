@@ -51,6 +51,7 @@ type ArgumentsPatternMandatory = {
     type: MandatoryArgumentType,
     defaultValue: MandatoryArgumentDataType,
     jsx?: (props: any) => React.JSX.Element,
+    tooltip?: string,
     placeholder?: string,
     config?: any
 };
@@ -60,6 +61,7 @@ type ArgumentsPatternOptional = {
     key: string,
     type: OptionalArgumentType,
     jsx?: (props: any) => React.JSX.Element,
+    tooltip?: string,
     placeholder?: string,
     config?: any
 };
