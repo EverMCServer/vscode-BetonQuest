@@ -25,18 +25,18 @@ export default function (props: ListElementEditorProps<Event>) {
             argumentsPattern: {
                 mandatory: [
                     { jsx: TextArea, name: 'Value', type: '*', defaultValue: '' },
-                ],
+                ]
             }
         },
         {
             value: 'chat',
             display: 'Chat',
-            description: 'send the given message as the player.',
+            description: 'Send the given message as the player.',
             argumentsPattern: {
                 mandatory: [
                     { jsx: TextAreaList, name: 'Messages', type: 'string[|]', defaultValue: [''] },
                 ],
-                doNotSplit: true
+                keepWhitespaces: true
             }
         },
         {
@@ -74,6 +74,22 @@ export default function (props: ListElementEditorProps<Event>) {
                     { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. Super_Zombie', tooltip: 'The name of the mob which should get killed' },
                     { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Kill only mobs that with the same mark using the spawn mob event' }
                 ]
+            }
+        },
+        {
+            value: 'notify',
+            display: 'Notify',
+            description: 'Send notifications to the player.',
+            argumentsPattern: {
+                mandatory: [
+                    { jsx: TextArea, name: 'Message', type: 'string', defaultValue: 'Notice', escapeCharacters: [':', '\n'] },
+                ],
+                optional: [
+                    { jsx: TextArea, name: 'Category', key: 'category', type: 'string', placeholder: 'e.g. info', tooltip: 'Will load all settings from that Notification Category' },
+                    { jsx: Input, name: 'IO', key: 'io', type: 'string', placeholder: 'e.g. bossbar', tooltip: 'Any NotifyIO Overrides the "category" settings' },
+                    // TODO: Seprated editor body. https://docs.betonquest.org/2.0-DEV/Documentation/Visual-Effects/Notifications/Notification-IO%27s-%26-Categories/
+                ],
+                keepWhitespaces: true
             }
         }
     ];

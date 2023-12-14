@@ -72,6 +72,7 @@ export type ArgumentsPattern = {
     mandatory: ArgumentsPatternMandatory[],
     optional?: ArgumentsPatternOptional[],
     optionalAtFirst?: boolean,
+    keepWhitespaces?: boolean, // Do not split by whitespaces. Used by "chat", "command", "sudo", "opsudo", "notify" etc.
 };
 
 export default class Arguments {
@@ -131,25 +132,43 @@ export default class Arguments {
             this.pattern = pattern;
         }
 
-        // Split arguments by whitespaces, with respect to quotes ("")
-        const regex = /(?=[^\S]*)(?:(\"[^\"]*?\")|(\'[^\']*?\'))(?=[^\S]+|$)|(\S+)/g; // keep quotes
-        // const regex = /(?=[^\S]*)(?:\"([^\"]*?)\"|\'([^\']*?)\')(?=[^\S]+|$)|(\S+)/g; // without quotes
-        let array1: RegExpExecArray | null;
+        // Split arguments
         let argStrs: string[] = [];
-        while ((array1 = regex.exec(this.getArgumentString())) !== null) {
-            // keep quotes
-            if (array1[0] !== undefined) {
-                argStrs.push(array1[0]);
+        if (pattern.keepWhitespaces && (!pattern.optional || !pattern.optional.length)) {
+            // Keep the whole arguments without spliting
+            argStrs = [this.getArgumentString()];
+        } else {
+            // Split arguments by whitespaces, with respect to quotes ("")
+            const regex = /(?=[^\S]*)(?:(\"[^\"]*?\")|(\'[^\']*?\'))(?=[^\S]+|$)|(\S+)/g; // keep quotes
+            // const regex = /(?=[^\S]*)(?:\"([^\"]*?)\"|\'([^\']*?)\')(?=[^\S]+|$)|(\S+)/g; // without quotes
+            let array1: RegExpExecArray | null;
+            while ((array1 = regex.exec(this.getArgumentString())) !== null) {
+                // keep quotes
+                if (array1[0] !== undefined) {
+                    argStrs.push(array1[0]);
+                }
+
+                // // without quotes
+                // if (array1[1] !== undefined) {
+                //     argStrs.push(array1[1]);
+                // } else if (array1[2]!== undefined) {
+                //     argStrs.push(array1[2]);
+                // } else if (array1[3]!== undefined) {
+                //     argStrs.push(array1[3]);
+                // }
             }
 
-            // // without quotes
-            // if (array1[1] !== undefined) {
-            //     argStrs.push(array1[1]);
-            // } else if (array1[2]!== undefined) {
-            //     argStrs.push(array1[2]);
-            // } else if (array1[3]!== undefined) {
-            //     argStrs.push(array1[3]);
-            // }
+            // Keep whitespaces only for the mandatory part. e.g. "notify"
+            if (pattern.keepWhitespaces && pattern.optional && pattern.optional.length) {
+                argStrs = argStrs.some((v, i) => {
+                    if (v.match(/(?<!\\):/g)) {
+                        argStrs = [argStrs.slice(0, i).join(" "), ...argStrs.slice(i)];
+
+                        return true;
+                    }
+                    return false;
+                }) ? argStrs : [this.getArgumentString()];
+            }
         }
 
         console.log("debug");
