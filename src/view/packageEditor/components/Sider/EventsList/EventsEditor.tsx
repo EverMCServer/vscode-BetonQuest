@@ -12,6 +12,7 @@ import TextArea from "../CommonList/Input/TextArea";
 import Input from "../CommonList/Input/Input";
 import Checkbox from "../CommonList/Input/Checkbox";
 import Number from "../CommonList/Input/Number";
+import TextAreaList from "../CommonList/Input/TextAreaList";
 
 export default function (props: ListElementEditorProps<Event>) {
 
@@ -25,6 +26,17 @@ export default function (props: ListElementEditorProps<Event>) {
                 mandatory: [
                     { jsx: TextArea, name: 'Value', type: '*', defaultValue: '' },
                 ],
+            }
+        },
+        {
+            value: 'chat',
+            display: 'Chat',
+            description: 'send the given message as the player.',
+            argumentsPattern: {
+                mandatory: [
+                    { jsx: TextAreaList, name: 'Messages', type: 'string[|]', defaultValue: [''] },
+                ],
+                doNotSplit: true
             }
         },
         {

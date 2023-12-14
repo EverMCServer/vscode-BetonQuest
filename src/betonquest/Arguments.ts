@@ -50,6 +50,7 @@ type ArgumentsPatternMandatory = {
     name: string,
     type: MandatoryArgumentType,
     defaultValue: MandatoryArgumentDataType,
+    escapeCharacters?: string[],
     jsx?: (props: any) => React.JSX.Element,
     tooltip?: string,
     placeholder?: string,
@@ -60,6 +61,7 @@ type ArgumentsPatternOptional = {
     name: string,
     key: string,
     type: OptionalArgumentType,
+    escapeCharacters?: string[],
     jsx?: (props: any) => React.JSX.Element,
     tooltip?: string,
     placeholder?: string,
@@ -93,7 +95,7 @@ export default class Arguments {
     }
 
     toString(): string {
-        return this.unmarshalArguments();
+        return this.marshalArguments();
     }
 
     getMandatoryArgument(index: number): MandatoryArgumentDataType {
@@ -155,23 +157,35 @@ export default class Arguments {
         // Parse mandatory arguments
         for (let i = 0; i < pattern.mandatory.length; i++) {
             const pat = pattern.mandatory[i];
+            let argStr = argStrs[i];
+
+            // Un-Escape special characters
+            const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [];
+
+            // Set value by type
             if (pat.type === 'string') {
-                this.mandatory[i] = argStrs[i] || pat.defaultValue;
+                this.mandatory[i] = this.unescapeCharacters(escapeCharacters, argStr ? argStr : pat.defaultValue as string);
             } else if (pat.type === 'int') {
-                this.mandatory[i] = argStrs[i] ? parseInt(argStrs[i]) : pat.defaultValue;
+                this.mandatory[i] = argStr ? parseInt(argStr) : pat.defaultValue;
             } else if (pat.type === 'float') {
-                this.mandatory[i] = argStrs[i] ? parseFloat(argStrs[i]) : pat.defaultValue;
+                this.mandatory[i] = argStr ? parseFloat(argStr) : pat.defaultValue;
             } else if (pat.type === 'string[,]') {
-                this.mandatory[i] = argStrs[i]?.split(",") || pat.defaultValue;
+                this.mandatory[i] = argStr?.split(/(?<!\\),/g)
+                    .map(v => this.unescapeCharacters([...escapeCharacters, ','], v))
+                    || pat.defaultValue;
             } else if (pat.type === 'string[|]') {
-                this.mandatory[i] = argStrs[i]?.split("|") || pat.defaultValue;
+                this.mandatory[i] = argStr?.split(/(?<!\\)\|/g)
+                    .map(v => this.unescapeCharacters([...escapeCharacters, '|'], v))
+                    || pat.defaultValue;
             } else if (pat.type === '[string:number][,]') {
-                this.mandatory[i] = argStrs[i]?.split(",").map(v => {
-                    const arg = v.split(":");
-                    return [arg[0], parseInt(arg[1])] as [string, number];
+                this.mandatory[i] = argStr?.split(/(?<!\\),/g).map(v => {
+                    const arg = v.split(/(?<!\\):/);
+                    return [this.unescapeCharacters([...escapeCharacters, ','], arg[0]), parseInt(arg[1])] as [string, number];
                 }) || pat.defaultValue;
             } else if (pat.type === '*') {
-                this.mandatory[i] = argStrs.slice(i).join(" ") || pat.defaultValue;
+                this.mandatory[i] = argStrs.slice(i)
+                    .map(v => this.unescapeCharacters(escapeCharacters, v))
+                    .join(" ") || pat.defaultValue;
                 break;
             }
         }
@@ -181,23 +195,31 @@ export default class Arguments {
             const optionalArguments: OptionalArguments = new Map();
             pattern.optional.forEach(pat => {
                 for (let i = 0; i < argStrs.length; i++) {
-                    const argStr = argStrs[i];
+                    let argStr = argStrs[i];
+
+                    // Un-Escape special characters
+                    const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [':'];
+
+                    // Set value by type
+                    const argStrValue = argStr.split(":")[1];
                     if (argStr.startsWith(pat.key)) {
                         if (pat.type === 'int') {
-                            optionalArguments.set(pat.key, parseInt(argStr.split(":")[1]));
+                            optionalArguments.set(pat.key, parseInt(argStrValue));
                         } else if (pat.type === 'float') {
-                            optionalArguments.set(pat.key, parseFloat(argStr.split(":")[1]));
+                            optionalArguments.set(pat.key, parseFloat(argStrValue));
                         } else if (pat.type === 'string[,]') {
-                            optionalArguments.set(pat.key, argStr.split(":")[1].split(","));
+                            optionalArguments.set(pat.key, argStrValue.split(/(?<!\\),/g)
+                                .map(v => this.unescapeCharacters([...escapeCharacters, ','], v)));
                         } else if (pat.type === 'boolean') {
                             optionalArguments.set(pat.key, true);
                         } else if (pat.type === '[string:number][,]') {
-                            this.mandatory[i] = argStrs[i].split(",").map(v => {
-                                const arg = v.split(":");
-                                return [arg[0], parseInt(arg[1])] as [string, number];
-                            });
+                            this.mandatory[i] = argStrValue.split(/(?<!\\),/g)
+                                .map(v => {
+                                    const arg = v.split(/(?<!\\):/);
+                                    return [this.unescapeCharacters([...escapeCharacters, ','], arg[0]), parseInt(arg[1])] as [string, number];
+                                });
                         } else { // if (value.pattern === 'string')
-                            optionalArguments.set(pat.key, argStr.split(":")[1]);
+                            optionalArguments.set(pat.key, this.unescapeCharacters([...escapeCharacters], argStrValue));
                         }
                         break;
                     } else {
@@ -228,9 +250,9 @@ export default class Arguments {
             this.yaml.value = new Scalar("");
         }
 
-        const argStr = this.unmarshalArguments();
+        const argStr = this.marshalArguments();
         if (argStr.length > 0) {
-            this.yaml.value.value = this.getKind() + " " + this.unmarshalArguments();
+            this.yaml.value.value = this.getKind() + " " + this.marshalArguments();
         } else {
             this.yaml.value.value = this.getKind();
         }
@@ -244,12 +266,12 @@ export default class Arguments {
     }
 
     // Convert mandatory and optional arguments to string
-    private unmarshalArguments(): string {
+    private marshalArguments(): string {
         // Convert mandatory arguments to string
-        const mandatoryStr = this.unmarshalMandatoryArguments();
+        const mandatoryStr = this.marshalMandatoryArguments();
 
         // Convert optional arguments to string
-        const optionalStr = this.unmarshalOptionalArguments();
+        const optionalStr = this.marshalOptionalArguments();
 
         // Concat mandatory and optional arguments
         let str = mandatoryStr;
@@ -265,25 +287,35 @@ export default class Arguments {
     }
 
     // Convert mandatory arguments to string
-    private unmarshalMandatoryArguments(): string {
+    private marshalMandatoryArguments(): string {
         const mandatoryStrs: string[] = [];
 
+        // Set value by type
         for (let i = 0; i < this.pattern.mandatory.length; i++) {
             let element = "";
             const pat = this.pattern.mandatory[i];
-            const value = this.mandatory[i];
+            let value = this.mandatory[i];
+
+            // Escape special characters
+            const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [];
+
+            // Set value by type
             if (pat.type === 'int') {
                 element = (value as number).toString();
             } else if (pat.type === 'float') {
                 element = (value as number).toString();
             } else if (pat.type === 'string[,]') {
-                element = (value as string[]).join(",");
+                element = (value as string[])
+                    .map(str => this.escapeCharacters([...escapeCharacters, ','], str))
+                    .join(",");
             } else if (pat.type === 'string[|]') {
-                element = (value as string[]).join("|");
+                element = (value as string[])
+                    .map(str => this.escapeCharacters([...escapeCharacters, '|'], str))
+                    .join("|");
             } else if (pat.type === '[string:number][,]') {
                 element = (value as [string, number][]).map(v => `${v[0]}:${v[1]}`).join(",");
             } else { // if (type === 'string' || '*')
-                element = value as string;
+                element = this.escapeCharacters(escapeCharacters, value as string);
             }
 
             mandatoryStrs.push(element);
@@ -293,32 +325,83 @@ export default class Arguments {
     }
 
     // Convert optional arguments to string
-    private unmarshalOptionalArguments(): string {
+    private marshalOptionalArguments(): string {
         const optionalStrs: string[] = [];
         this.pattern.optional?.forEach(pat => {
             const value = this.optional?.get(pat.key);
 
+            // Escape special characters
+            const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [':'];
+
+            // Set value by type
             if (pat.type === 'int') {
                 optionalStrs.push(`${pat.key}:${(value as number).toString()}`);
             } else if (pat.type === 'float') {
                 optionalStrs.push(`${pat.key}:${(value as number).toString()}`);
             } else if (pat.type === 'string[,]') {
-                optionalStrs.push(`${pat.key}:${(value as string[]).join(",")}`);
+                optionalStrs.push(`${pat.key}:${(value as string[])
+                    .map(v => this.escapeCharacters([...escapeCharacters, ','], v))
+                    .join(",")}`);
             } else if (pat.type === 'boolean') {
                 if (value) {
                     optionalStrs.push(`${pat.key}`);
                 }
             } else if (pat.type === '[string:number][,]') {
-                optionalStrs.push(`${pat.key}:${(value as [string, number][]).map(v => `${v[0]}:${v[1]}`).join(",")}`);
+                optionalStrs.push(`${pat.key}:${(value as [string, number][])
+                    .map(v => `${this.escapeCharacters([...escapeCharacters, ','], v[0])}:${v[1]}`)
+                    .join(",")}`);
             } else { // if (type === 'string')
                 const valueStr = value as string;
                 if (valueStr && valueStr.length > 0) {
-                    optionalStrs.push(`${pat.key}:${valueStr}`);
+                    optionalStrs.push(`${pat.key}:${this.escapeCharacters(escapeCharacters, valueStr)}`);
                 }
             }
         });
 
         return optionalStrs.join(' ');
+    }
+
+    private unescapeCharacters(characters: string[], str: string): string {
+        characters.forEach(c => {
+            if (!c.length) {
+                return;
+            }
+            let from = `\\\\${c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`;
+            let to = c;
+            // Handle special escapes
+            if (c === ' ') {
+                str = str.replace(new RegExp('(?<!\\\\)_', 'g'), to);
+                str = str.replace(new RegExp('\\\\_', 'g'), '_'); // unescape "_" it self
+            } else if (c === '\n') {
+                str = str.replace(new RegExp('(?<!\\\\)\\\\n', 'g'), to);
+                str = str.replace(new RegExp(`\\\\\\\\n`, 'g'), '\\n'); // escape "\\n" it self
+            } else {
+                // Normal unescape
+                str = str.replace(new RegExp(from, 'g'), to);
+            }
+        });
+        return str;
+    }
+
+    private escapeCharacters(characters: string[], str: string): string {
+        characters.forEach(c => {
+            if (!c.length) {
+                return;
+            }
+            let from = c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            let to = `\\${c}`;
+            // Handle special escapes
+            if (c === ' ') {
+                to = '_';
+                str = str.replace(new RegExp(to, 'g'), `\\${to}`); // escape "_" it self
+            } else if (c === '\n') {
+                to = '\\n';
+                str = str.replace(new RegExp(`\\${to}`, 'g'), `\\${to}`); // escape "\\n" it self
+            }
+            // Normal escape
+            str = str.replace(new RegExp(from, 'g'), to);
+        });
+        return str;
     }
 
 };
