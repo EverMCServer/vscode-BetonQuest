@@ -8,11 +8,12 @@ import Default from "./EventsEditor/Default";
 import Give from "./EventsEditor/Give";
 import KillMob from "./EventsEditor/KillMob";
 
-import TextArea from "../CommonList/Input/TextArea";
 import Input from "../CommonList/Input/Input";
+import InputList from "../CommonList/Input/InputList";
+import TextArea from "../CommonList/Input/TextArea";
+import TextAreaList from "../CommonList/Input/TextAreaList";
 import Checkbox from "../CommonList/Input/Checkbox";
 import Number from "../CommonList/Input/Number";
-import TextAreaList from "../CommonList/Input/TextAreaList";
 
 export default function (props: ListElementEditorProps<Event>) {
 
@@ -85,7 +86,7 @@ export default function (props: ListElementEditorProps<Event>) {
                     { jsx: TextArea, name: 'Message', type: 'string', defaultValue: 'Notice', escapeCharacters: [':', '\n'] },
                 ],
                 optional: [
-                    { jsx: TextArea, name: 'Category', key: 'category', type: 'string', placeholder: 'e.g. info', tooltip: 'Will load all settings from that Notification Category' },
+                    { jsx: InputList, name: 'Category', key: 'category', type: 'string[,]', placeholder: 'e.g. info', tooltip: 'Will load all settings from that Notification Category' },
                     { jsx: Input, name: 'IO', key: 'io', type: 'string', placeholder: 'e.g. bossbar', tooltip: 'Any NotifyIO Overrides the "category" settings' },
                     // TODO: Seprated editor body. https://docs.betonquest.org/2.0-DEV/Documentation/Visual-Effects/Notifications/Notification-IO%27s-%26-Categories/
                 ],

@@ -212,8 +212,16 @@ export default class Arguments {
         // Parse optional arguments
         if (pattern.optional && pattern.optional.length > 0 && !pattern.mandatory.some(v => v.type === '*')) { // Skip when mandatory pattern is "*"
             const optionalArguments: OptionalArguments = new Map();
+            let iFrom = 0;
+            let iTo = argStrs.length;
+            if (pattern.optionalAtFirst) {
+                iTo = argStrs.length - pattern.mandatory.length;
+            } else {
+                iFrom = pattern.mandatory.length - 1;
+            }
+
             pattern.optional.forEach(pat => {
-                for (let i = 0; i < argStrs.length; i++) {
+                for (let i = iFrom; i < iTo; i++) {
                     let argStr = argStrs[i];
 
                     // Un-Escape special characters
@@ -242,6 +250,7 @@ export default class Arguments {
                         }
                         break;
                     } else {
+                        // Set default value
                         optionalArguments.set(pat.key, undefined);
                     }
                 }
@@ -353,26 +362,34 @@ export default class Arguments {
             const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [':'];
 
             // Set value by type
-            if (pat.type === 'int') {
-                optionalStrs.push(`${pat.key}:${(value as number).toString()}`);
-            } else if (pat.type === 'float') {
-                optionalStrs.push(`${pat.key}:${(value as number).toString()}`);
-            } else if (pat.type === 'string[,]') {
-                optionalStrs.push(`${pat.key}:${(value as string[])
-                    .map(v => this.escapeCharacters([...escapeCharacters, ','], v))
-                    .join(",")}`);
-            } else if (pat.type === 'boolean') {
-                if (value) {
-                    optionalStrs.push(`${pat.key}`);
-                }
-            } else if (pat.type === '[string:number][,]') {
-                optionalStrs.push(`${pat.key}:${(value as [string, number][])
-                    .map(v => `${this.escapeCharacters([...escapeCharacters, ','], v[0])}:${v[1]}`)
-                    .join(",")}`);
-            } else { // if (type === 'string')
-                const valueStr = value as string;
-                if (valueStr && valueStr.length > 0) {
-                    optionalStrs.push(`${pat.key}:${this.escapeCharacters(escapeCharacters, valueStr)}`);
+            if (value !== undefined) {
+                if (pat.type === 'int') {
+                    optionalStrs.push(`${pat.key}:${(value as number).toString()}`);
+                } else if (pat.type === 'float') {
+                    optionalStrs.push(`${pat.key}:${(value as number).toString()}`);
+                } else if (pat.type === 'string[,]') {
+                    const valueArray = value as string[];
+                    if (valueArray.length > 1 || valueArray[0].length > 0) {
+                        optionalStrs.push(`${pat.key}:${valueArray
+                            .map(v => this.escapeCharacters([...escapeCharacters, ','], v))
+                            .join(",")}`);
+                    }
+                } else if (pat.type === 'boolean') {
+                    if (value) {
+                        optionalStrs.push(`${pat.key}`);
+                    }
+                } else if (pat.type === '[string:number][,]') {
+                    const valueArray = value as [string, number][];
+                    if (valueArray.length > 1 || valueArray[0][0].length > 0) {
+                        optionalStrs.push(`${pat.key}:${valueArray
+                            .map(v => `${this.escapeCharacters([...escapeCharacters, ','], v[0])}:${v[1]}`)
+                            .join(",")}`);
+                    }
+                } else { // if (type === 'string')
+                    const valueStr = value as string;
+                    if (valueStr.length > 0) {
+                        optionalStrs.push(`${pat.key}:${this.escapeCharacters(escapeCharacters, valueStr)}`);
+                    }
                 }
             }
         });

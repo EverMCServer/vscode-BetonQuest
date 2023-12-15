@@ -1,5 +1,5 @@
 import React from "react";
-import TextArea from "antd/es/input/TextArea";
+import { Input } from "antd";
 import { InputProps } from "./Common";
 
 export default function (props: InputProps) {
@@ -7,7 +7,7 @@ export default function (props: InputProps) {
     return (
         <>
             {valueArray.map((value, index) =>
-                <TextArea
+                <Input
                     key={index}
                     value={value}
                     onChange={(e) => {
@@ -19,7 +19,6 @@ export default function (props: InputProps) {
                         props.onChange(valueUpdate);
                     }}
                     placeholder={props.placeholder}
-                    autoSize={{ minRows: props.config?.minRows || 2, maxRows: props.config?.maxRows || 6 }}
                     size="small"
                 />
             )}
