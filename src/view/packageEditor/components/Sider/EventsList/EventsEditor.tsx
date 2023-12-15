@@ -59,6 +59,14 @@ export default function (props: ListElementEditorProps<Event>) {
             }
         },
         {
+            value: 'kill',
+            display: 'Kill',
+            description: 'Kills the player',
+            argumentsPattern: {
+                mandatory: []
+            }
+        },
+        {
             value: 'killmob',
             display: 'Kill Mob',
             description: 'Kills all mobs of given type at the location.',
