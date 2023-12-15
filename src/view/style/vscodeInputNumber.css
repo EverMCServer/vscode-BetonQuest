@@ -1,0 +1,37 @@
+/* Override Ant Design's InputNumber styles */
+
+.ant-input-number {
+    border-radius: 0;
+    border-color: var(--vscode-checkbox-border);
+}
+
+.ant-input-number:focus, .ant-input-number:focus-visible, .ant-input-number:focus-within {
+    border-color: var(--vscode-focusBorder) !important;
+}
+
+.ant-input-number:hover {
+    border-color: var(--vscode-input-foreground);
+}
+
+.ant-input-number .ant-input-number-input-wrap input {
+    border-radius: 0;
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+}
+
+.ant-input-number .ant-input-number-handler-wrap {
+    border-radius: 0;
+    background-color: var(--vscode-input-background);
+}
+
+.ant-input-number .ant-input-number-handler-wrap .ant-input-number-handler {
+    border-color: var(--vscode-checkbox-border);
+}
+
+.ant-input-number .ant-input-number-handler-wrap .ant-input-number-handler span {
+    color: var(--vscode-input-placeholderForeground);
+}
+
+.ant-input-number .ant-input-number-handler-wrap .ant-input-number-handler:hover span {
+    color: var(--vscode-input-foreground);
+}

@@ -26,14 +26,14 @@ export default function (props: InputProps) {
                         props.onChange(valueUpdate);
                     }}
                     suffix={
-                        valueArray.length > 1 && <VscClose
+                        valueArray.length > 1 ? <VscClose
                             title="Remove"
                             onClick={() => {
                                 let valueUpdate = props.value as string[] || [""];
                                 valueUpdate = [...valueUpdate.slice(0, index), ...valueUpdate.slice(index + 1)];
                                 props.onChange(valueUpdate);
                             }}
-                        />
+                        /> : <span />
                     }
                 />
             )}
