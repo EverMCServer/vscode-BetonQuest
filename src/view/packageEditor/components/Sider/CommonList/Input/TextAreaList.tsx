@@ -11,9 +11,6 @@ export default function (props: InputProps) {
                     key={index}
                     value={value}
                     onChange={(e) => {
-                        // if (e.target.value.includes("\n")) {
-                        //     return;
-                        // }
                         let valueUpdate = props.value as string[] || [""];
                         valueUpdate[index] = e.target.value;
                         props.onChange(valueUpdate);
@@ -21,6 +18,7 @@ export default function (props: InputProps) {
                     placeholder={props.placeholder}
                     autoSize={{ minRows: props.config?.minRows || 2, maxRows: props.config?.maxRows || 6 }}
                     size="small"
+                    style={index > 0 ? { marginTop: 4 } : undefined}
                 />
             )}
         </>
