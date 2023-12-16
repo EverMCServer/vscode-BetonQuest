@@ -97,69 +97,69 @@ const reactConfig = {
   },
   plugins: [
     new webpack.DefinePlugin({
-        process: {
-          env: {
-            LOG_TOKENS: undefined
-          }
+      process: {
+        env: {
+          LOG_TOKENS: undefined
         }
+      }
     })
   ]
 };
 
 /** @type WebpackConfig */
 const webExtensionConfig = {
-	target: 'webworker', // extensions run in a webworker context
-	entry: {
-		'extension': './src/extension.ts'
-	},
-	output: {
-		filename: '[name].js',
-		path: path.resolve(__dirname, './dist/web'),
-		libraryTarget: 'commonjs',
-		devtoolModuleFilenameTemplate: '../../[resource-path]'
-	},
-	resolve: {
-		mainFields: ['browser', 'module', 'main'], // look for `browser` entry point in imported node modules
-		extensions: ['.ts', '.js'], // support ts-files and js-files
-		alias: {
-			// provides alternate implementation for node module and source files
-		},
-		fallback: {
-			// Webpack 5 no longer polyfills Node.js core modules automatically.
-			// see https://webpack.js.org/configuration/resolve/#resolvefallback
-			// for the list of Node.js core module polyfills.
-			'assert': require.resolve('assert'),
-			'path': require.resolve('path-browserify'),
+  target: 'webworker', // extensions run in a webworker context
+  entry: {
+    'extension': './src/extension.ts'
+  },
+  output: {
+    filename: '[name].js',
+    path: path.resolve(__dirname, './dist/web'),
+    libraryTarget: 'commonjs',
+    devtoolModuleFilenameTemplate: '../../[resource-path]'
+  },
+  resolve: {
+    mainFields: ['browser', 'module', 'main'], // look for `browser` entry point in imported node modules
+    extensions: ['.ts', '.js'], // support ts-files and js-files
+    alias: {
+      // provides alternate implementation for node module and source files
+    },
+    fallback: {
+      // Webpack 5 no longer polyfills Node.js core modules automatically.
+      // see https://webpack.js.org/configuration/resolve/#resolvefallback
+      // for the list of Node.js core module polyfills.
+      'assert': require.resolve('assert'),
+      'path': require.resolve('path-browserify'),
       // 'process': require.resolve('process/browser'),
       'process/browser': require.resolve('process/browser'),
-		}
-	},
-	module: {
-		rules: [{
-			test: /\.ts$/,
-			exclude: /node_modules/,
-			use: [{
-				loader: 'ts-loader'
-			}]
-		}]
-	},
-	plugins: [
-		new webpack.optimize.LimitChunkCountPlugin({
-			maxChunks: 1 // disable chunks by default since web extensions must be a single bundle
-		}),
-		new webpack.ProvidePlugin({
-			process: 'process/browser', // provide a shim for the global `process` variable
-		}),
-	],
-	externals: {
-		'vscode': 'commonjs vscode', // ignored because it doesn't exist
-	},
-	performance: {
-		hints: false
-	},
-	infrastructureLogging: {
-		level: "log", // enables logging required for problem matchers
-	},
+    }
+  },
+  module: {
+    rules: [{
+      test: /\.ts$/,
+      exclude: /node_modules/,
+      use: [{
+        loader: 'ts-loader'
+      }]
+    }]
+  },
+  plugins: [
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1 // disable chunks by default since web extensions must be a single bundle
+    }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser', // provide a shim for the global `process` variable
+    }),
+  ],
+  externals: {
+    'vscode': 'commonjs vscode', // ignored because it doesn't exist
+  },
+  performance: {
+    hints: false
+  },
+  infrastructureLogging: {
+    level: "log", // enables logging required for problem matchers
+  },
 };
 
 module.exports = [extensionConfig, reactConfig, webExtensionConfig];

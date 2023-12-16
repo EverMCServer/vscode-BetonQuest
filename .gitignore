@@ -1,6 +1,7 @@
 out
 dist
 node_modules
+src/api/DataType/*.json
 .vscode-test/
 .vscode-test-web/
 *.vsix
