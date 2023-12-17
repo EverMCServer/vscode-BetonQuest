@@ -14,6 +14,7 @@ import TextArea from "../CommonList/Input/TextArea";
 import TextAreaList from "../CommonList/Input/TextAreaList";
 import Checkbox from "../CommonList/Input/Checkbox";
 import Number from "../CommonList/Input/Number";
+import EntityType from "../CommonList/Input/EntityType";
 
 export default function (props: ListElementEditorProps<Event>) {
 
@@ -74,8 +75,7 @@ export default function (props: ListElementEditorProps<Event>) {
             // e.g. killmob ZOMBIE 100;200;300;world 40 name:Bolec marked:quest_mob
             argumentsPattern: {
                 mandatory: [
-                    // { jsx: Input, name: 'Entity Type', type: 'entity', defaultValue: 'ZOMBIE' },
-                    { jsx: Input, name: 'Entity Type', type: 'string', defaultValue: 'ZOMBIE', placeholder: 'e.g. ZOMBIE' },
+                    { jsx: EntityType, name: 'Entity Type', type: 'string', defaultValue: 'ZOMBIE', placeholder: 'e.g. ZOMBIE' },
                     { jsx: Input, name: 'Location', type: 'string', defaultValue: '100;200;300;world', placeholder: 'e.g. 100;200;300;world' },
                     { jsx: Number, name: 'Radius', type: 'string', defaultValue: 1.0 },
                 ],

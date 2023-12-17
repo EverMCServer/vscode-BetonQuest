@@ -31,13 +31,13 @@ export default function (props: ListElementEditorBodyProps<Event>) {
     return (
         <>
             {props.argumentsPattern.optional &&
-                <Divider orientation="left" plain>
-                    Mandatory Arguments
+                <Divider orientation="center" plain>
+                    <u>Mandatory Arguments</u>
                 </Divider>
             }
             {props.argumentsPattern.mandatory.map((arg, index) => {
                 return (
-                    <Row justify="space-between" style={{ padding: "0 0 16px 0" }} key={index}>
+                    <Row justify="space-between" style={{ padding: "0 8px 16px 8px" }} key={index}>
                         <Col span={colSpanLeft}>
                             <span>
                                 {arg.name}&nbsp;
@@ -68,12 +68,12 @@ export default function (props: ListElementEditorBodyProps<Event>) {
             })}
             {props.argumentsPattern.optional &&
                 <>
-                    <Divider orientation="left" plain>
-                        Optional Arguments
+                    <Divider orientation="center" plain>
+                        <u>Optional Arguments</u>
                     </Divider>
                     {props.argumentsPattern.optional?.map((arg, index) => {
                         return (
-                            <Row justify="space-between" style={{ padding: "0 0 16px 0" }} key={index}>
+                            <Row justify="space-between" style={{ padding: "0 8px 16px 8px" }} key={index}>
                                 <Col span={colSpanLeft}>
                                     <span>{arg.name}&nbsp;
                                         {arg.tooltip && <>

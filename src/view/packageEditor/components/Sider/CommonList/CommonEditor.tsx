@@ -74,7 +74,7 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
 
         // Create arguments' editor by kind.argumentsConfig
         return (<>
-            {k?.description && <div style={{ padding: "0 0 8px 0" }}>{k.description}</div>}
+            {k?.description && <div style={{ padding: "0 8px 8px 8px" }}><b>{k.description}</b></div>}
             {k && (k.editorBody &&
                 <k.editorBody {...props} argumentsPattern={k.argumentsPattern} />
                 ||
