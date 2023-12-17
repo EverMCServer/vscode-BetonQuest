@@ -1,12 +1,15 @@
+/**
+ * Bukkit's EntityType
+ */
 export default class EntityType {
     private bukkitId: string; // e.g. ENDER_CRYSTAL
-    private minecraftId: string; // e.g. end_crystal
-    private legacyIds: string[]; // e.g. ['ender_crystal']
+    private minecraftId?: string; // e.g. end_crystal
+    private legacyIds?: string[]; // e.g. ['ender_crystal']
 
-    constructor(bukkitId: string, minecraftId: string, legacyIds: string[]) {
+    constructor(bukkitId: string, minecraftId?: string, legacyIds?: string[]) {
         this.bukkitId = bukkitId.toUpperCase();
-        this.minecraftId = minecraftId.toLowerCase();
-        this.legacyIds = legacyIds.map(v => v.toLowerCase());
+        this.minecraftId = minecraftId?.toLowerCase();
+        this.legacyIds = legacyIds?.map(v => v.toLowerCase());
     }
 
     getBukkitId() {
@@ -26,8 +29,8 @@ export default class EntityType {
         const regexp = new RegExp(`${pattern}`, 'i');
 
         return regexp.test(this.bukkitId)
-            || regexp.test(this.minecraftId)
-            || this.legacyIds.some(v => regexp.test(v));
-    }
+        || (this.minecraftId ? regexp.test(this.minecraftId) : false)
+        || (this.legacyIds ? this.legacyIds.some(v => regexp.test(v)) : false);
+}
 
 }

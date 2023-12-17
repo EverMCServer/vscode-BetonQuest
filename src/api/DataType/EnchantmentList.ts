@@ -1,9 +1,9 @@
 import Enchantment from "./Enchantment";
 import list from "./EnchantmentList.json";
 
-const enchantmentList: Enchantment[] = list.map(v => new Enchantment(v.bukkitId, v.minecraftId, v.legacyIds));
-
 /**
- * All Enchantments
+ * All Bukkit's Enchantments
  */
-export default enchantmentList;
+const ENCHANTMENT_LIST: Enchantment[] = list.map(v => new Enchantment(v.bukkitId, v.minecraftId, v.legacyIds));
+
+export default ENCHANTMENT_LIST;

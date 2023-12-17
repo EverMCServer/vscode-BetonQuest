@@ -1,8 +1,11 @@
+/**
+ * Bukkit's Material
+ */
 export default class Material {
     private bukkitId: string; // e.g. STONE
-    private numberId: number; // e.g. 22948
+    private numberId?: number; // e.g. 22948
 
-    constructor(bukkitId: string, numberId: number) {
+    constructor(bukkitId: string, numberId?: number) {
         this.bukkitId = bukkitId.toUpperCase();
         this.numberId = numberId;
     }

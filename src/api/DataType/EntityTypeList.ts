@@ -1,9 +1,9 @@
 import EntityType from "./EntityType";
 import list from "./EntityTypeList.json";
 
-const entityType: EntityType[] = list.map(v => new EntityType(v.bukkitId, v.minecraftId, v.legacyIds));
-
 /**
- * All EntityTypes
+ * All Bukkit's EntityTypes
  */
-export default entityType;
+const ENTITY_TYPE_LIST: EntityType[] = list.map(v => new EntityType(v.bukkitId, v.minecraftId, v.legacyIds));
+
+export default ENTITY_TYPE_LIST;

@@ -1,9 +1,9 @@
 import Material from "./Material";
 import list from "./MaterialList.json";
 
-const materialList: Material[] = list.map(v => new Material(v.bukkitId, v.numberId));
-
 /**
- * All Materials
+ * All Bukkit's Materials
  */
-export default materialList;
+const MATERIAL_LIST: Material[] = list.map(v => new Material(v.bukkitId, v.numberId));
+
+export default MATERIAL_LIST;

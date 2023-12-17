@@ -1,12 +1,15 @@
+/**
+ * Bukkit's Enchantment
+ */
 export default class Enchantment {
     private bukkitId: string; // e.g. PROTECTION_FALL
-    private minecraftId: string; // e.g. efficiency
-    private legacyIds: string[]; // e.g. ['dig_speed']
+    private minecraftId?: string; // e.g. efficiency
+    private legacyIds?: string[]; // e.g. ['dig_speed']
 
-    constructor(bukkitId: string, minecraftId: string, legacyIds: string[]) {
+    constructor(bukkitId: string, minecraftId?: string, legacyIds?: string[]) {
         this.bukkitId = bukkitId.toUpperCase();
-        this.minecraftId = minecraftId.toLowerCase();
-        this.legacyIds = legacyIds.map(v => v.toLowerCase());
+        this.minecraftId = minecraftId?.toLowerCase();
+        this.legacyIds = legacyIds?.map(v => v.toLowerCase());
     }
 
     getBukkitId() {
@@ -26,8 +29,8 @@ export default class Enchantment {
         const regexp = new RegExp(`${pattern}`, 'i');
 
         return regexp.test(this.bukkitId)
-            || regexp.test(this.minecraftId)
-            || this.legacyIds.some(v => regexp.test(v));
+            || (this.minecraftId ? regexp.test(this.minecraftId) : false)
+            || (this.legacyIds ? this.legacyIds.some(v => regexp.test(v)) : false);
     }
 
 }

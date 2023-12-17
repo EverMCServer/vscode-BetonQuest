@@ -1,16 +1,20 @@
+import Material from "../../api/DataType/Material";
+import MATERIAL_LIST from "../../api/DataType/MaterialList";
+import Enchantment from "./Enchantment";
+
 /**
  * BetonQuest's Item
  * 
- * Document: https://docs.betonquest.org/2.0-DEV/Documentation/Features/Items/
+ * Reference: https://docs.betonquest.org/2.0-DEV/Documentation/Features/Items/
  */
 export default class Item {
 
     // General properties
-    private isQuestItem: boolean;
-    private material: string;
+    private material: Material;
+    private questItem: boolean;
     private name?: string;
     private lore?: string;
-    // private enchants?: Enchants;
+    private enchantments: Enchantment[];
     private unbreakable?: boolean;
     private customModelData?: string;
     private noCustomModelData?: boolean;
@@ -30,21 +34,21 @@ export default class Item {
 
     // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/item/QuestItem.java#L91
     constructor(
+        bukkitId: string,
         isQuestItem: boolean,
-        material: string,
         name?: string,
         lore?: string,
-        // enchants: Enchants,
+        enchantments?: Enchantment[],
         unbreakable?: boolean,
         customModelData?: string,
         noCustomModelData?: boolean,
         flags?: string[],
         ) {
-        this.isQuestItem = isQuestItem;
-        this.material = material;
+        this.material = this.getMaterialByBukkitId(bukkitId.toUpperCase());
+        this.questItem = isQuestItem;
         this.name = name;
         this.lore = lore;
-        // this.enchants = enchants;
+        this.enchantments = enchantments || [];
         this.unbreakable = unbreakable;
         this.customModelData = customModelData;
         this.noCustomModelData = noCustomModelData;
@@ -52,10 +56,24 @@ export default class Item {
     }
 
     toString(): string {
+        return this.material.getBukkitId();
+    }
+
+    getMaterial(): Material {
         return this.material;
     }
 
-    fromString(material: string): void {
-        this.material = material;
+    isQuestItem(): boolean {
+        return this.questItem;
+    }
+
+    setQuestItem(isQuestItem: boolean) {
+        this.questItem = isQuestItem;
+    }
+
+    // TODO...
+
+    private getMaterialByBukkitId(bukkitId: string): Material {
+        return MATERIAL_LIST.find(e => e.getBukkitId() === bukkitId) || new Material(bukkitId);
     }
 };
