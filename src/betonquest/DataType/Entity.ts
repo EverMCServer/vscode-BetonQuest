@@ -1,5 +1,5 @@
-import EntityType from "../../api/DataType/EntityType";
-import ENTITY_TYPE_LIST from "../../api/DataType/EntityTypeList";
+import EntityType from "../../bukkit/DataType/EntityType";
+import ENTITY_TYPE_LIST from "../../bukkit/Data/EntityTypeList";
 
 /**
  * BetonQuest's Entity

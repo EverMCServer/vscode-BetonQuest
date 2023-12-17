@@ -96,7 +96,7 @@
     "vscode:prepublish": "npm run compile",
     "compile": "npm-run-all generate-list compile:*",
     "watch": "npm-run-all generate-list -p watch:*",
-    "generate-list": "ts-node src/api/generateList.ts",
+    "generate-list": "ts-node src/bukkit/generateData.ts",
     "compile:extension": "tsc -p ./",
     "compile:views": "webpack --config webpack.prod.js",
     "watch:extension": "tsc -watch -p ./",

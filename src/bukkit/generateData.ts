@@ -1,7 +1,8 @@
 // Script to generate all available DataType lists
 
-import EntityType from "./DataType/EntityType";
 import * as fs from "fs";
+
+import EntityType from "./DataType/EntityType";
 import Material from "./DataType/Material";
 import Enchantment from "./DataType/Enchantment";
 
@@ -12,14 +13,19 @@ const BUKKIT_ENTITY_TYPE_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGO
 const BUKKIT_MATERIAL_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/Material.java?at=refs%2Fheads%2Fmaster';
 const BUKKIT_ENCHANTMENT_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/enchantments/Enchantment.java?at=refs%2Fheads%2Fmaster';
 
-const pathEntityTypeList = OUTPUT_DIR + "/DataType/EntityTypeList.json";
+console.log("Generating EntityTypeList.json ...");
+const pathEntityTypeList = OUTPUT_DIR + "/Data/EntityTypeList.json";
 generateEntityTypeList(pathEntityTypeList);
 
-const pathMaterialList = OUTPUT_DIR + "/DataType/MaterialList.json";
+console.log("Generating MaterialList.json ...");
+const pathMaterialList = OUTPUT_DIR + "/Data/MaterialList.json";
 generateMaterialList(pathMaterialList);
 
-const pathEnchantmentList = OUTPUT_DIR + "/DataType/EnchantmentList.json";
+console.log("Generating EnchantmentList.json ...");
+const pathEnchantmentList = OUTPUT_DIR + "/Data/EnchantmentList.json";
 generateEnchantmentList(pathEnchantmentList);
+
+console.log("All data succesfully generated.");
 
 // Bukkit's EntityTypes
 // https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/browse/src/main/java/org/bukkit/entity/EntityType.java

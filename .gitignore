@@ -1,7 +1,7 @@
 out
 dist
 node_modules
-src/api/DataType/*.json
+src/bukkit/Data/*.json
 .vscode-test/
 .vscode-test-web/
 *.vsix

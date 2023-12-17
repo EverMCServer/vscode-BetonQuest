@@ -1,4 +1,4 @@
-import EntityType from "./EntityType";
+import EntityType from "../DataType/EntityType";
 import list from "./EntityTypeList.json";
 
 /**

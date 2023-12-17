@@ -1,4 +1,4 @@
-import Enchantment from "./Enchantment";
+import Enchantment from "../DataType/Enchantment";
 import list from "./EnchantmentList.json";
 
 /**

@@ -1,5 +1,5 @@
-import BukkitEnchantment from "../../api/DataType/Enchantment";
-import ENCHANTMENT_LIST from "../../api/DataType/EnchantmentList";
+import BukkitEnchantment from "../../bukkit/DataType/Enchantment";
+import ENCHANTMENT_LIST from "../../bukkit/Data/EnchantmentList";
 
 /**
  * BetonQuest's Enchant, for serving Item

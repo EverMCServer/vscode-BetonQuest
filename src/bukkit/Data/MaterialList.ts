@@ -1,4 +1,4 @@
-import Material from "./Material";
+import Material from "../DataType/Material";
 import list from "./MaterialList.json";
 
 /**

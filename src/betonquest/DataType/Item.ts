@@ -1,5 +1,5 @@
-import Material from "../../api/DataType/Material";
-import MATERIAL_LIST from "../../api/DataType/MaterialList";
+import Material from "../../bukkit/DataType/Material";
+import MATERIAL_LIST from "../../bukkit/Data/MaterialList";
 import Enchantment from "./Enchantment";
 
 /**
