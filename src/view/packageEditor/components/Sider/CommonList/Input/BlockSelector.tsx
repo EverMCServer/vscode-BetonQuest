@@ -3,7 +3,7 @@ import { Divider, Select } from "antd";
 
 import { InputProps } from "./Common";
 import MATERIAL_LIST from "../../../../../../bukkit/Data/MaterialList";
-import { CASE_INSENSITIVE, compile as compileJavaRegex } from "java-regex-js";
+import { compile as compileJavaRegex } from "java-regex-js";
 import Input from "./Input";
 import { set } from "yaml/dist/schema/yaml-1.1/set";
 
@@ -32,7 +32,7 @@ export default function (props: InputProps) {
             return;
         }
 
-        const pattern1 = /^(?:(.*?)(?<!\{[^\}]*|\?|\\):(?![^\{]*\}))?(?:(.*?)(?<!\{[^\}]*|\?|\\):(?![^\{]*\}))?(.+)$/mi;
+        const pattern1 = /^(?:(.*?)(?<!\{[^\}]*|\(\?|\\):(?![^\{]*\}))?(?:(.*?)(?<!\{[^\}]*|\(\?|\\):(?![^\{]*\}))?(.+)$/mi;
         const [_, mNamespace, mTag, mBlockId] = pattern1.exec(props.value) ?? [];
         setNamespace(mNamespace || "");
         setTag(mTag || "");
@@ -58,68 +58,69 @@ export default function (props: InputProps) {
 
     return (
         <>
-        <span>Namespace:</span>
-        <Input
-            value={namespace}
-            defaultValue={"minecraft"}
-            placeholder="minecraft"
-            onChange={(e) => {
-                setNamespace(e);
-                setValue(e, tag, blockId);
-            }}
-        ></Input>
-        <Divider />
-        <span>Tag:</span>
-        <Input
-            value={tag}
-            defaultValue={""}
-            placeholder=""
-            onChange={(e) => {
-                setTag(e);
-                setValue(namespace, e, blockId);
-            }}
-        ></Input>
-        <Divider />
-        <span>Block:</span>
-        <Select
-            value={blockId}
-            // defaultValue={props.value}
-            defaultActiveFirstOption={false}
-            // onSelect={(e) => {
-            //     props.onChange(e);
-            // }}
-            onChange={(e) => {
-                setBlockId(e);
-                setValue(namespace, tag, e);
-            }}
-            options={options}
-            showSearch
-            onSearch={searchString => {
-                if (
-                    searchString.length > 0
-                    // Allow normal EntityType syntax, or RegExp
-                    && searchString.match(/^[a-z0-9_\[\]\{\}\(\)\?\:\=\!\.\*\+\<\>\^\$\\]+$/mi)
-                    && !bukkitOptions.some(e => e.label === searchString.toUpperCase())
-                ) {
-                    try {
-                        // new RegExp(searchString, 'mi');
-                        compileJavaRegex(searchString); // test if it could build Java's RegExp
-                        setOptions([{ value: searchString, label: searchString }, ...bukkitOptions]);
-                    } catch (e) {
-                        console.log("bad regex:", e);
+            <span>Namespace:</span>
+            <Input
+                value={namespace}
+                defaultValue={"minecraft"}
+                placeholder="minecraft"
+                onChange={(e) => {
+                    setNamespace(e);
+                    setValue(e, tag, blockId);
+                }}
+            ></Input>
+            <Divider />
+            <span>Tag:</span>
+            <Input
+                value={tag}
+                defaultValue={""}
+                placeholder=""
+                onChange={(e) => {
+                    setTag(e);
+                    setValue(namespace, e, blockId);
+                }}
+            ></Input>
+            <Divider />
+            <span>Block:</span>
+            <Select
+                value={blockId}
+                // defaultValue={props.value}
+                defaultActiveFirstOption={false}
+                // onSelect={(e) => {
+                //     props.onChange(e);
+                // }}
+                onChange={(e) => {
+                    setBlockId(e);
+                    setValue(namespace, tag, e);
+                }}
+                options={options}
+                showSearch
+                onSearch={searchString => {
+                    if (
+                        searchString.length > 0
+                        // Allow normal EntityType syntax, or RegExp
+                        && searchString.match(/^[a-z0-9_,\[\]\{\}\(\)\?\:\=\!\.\*\+\<\>\^\$\\]+$/mi)
+                        && !bukkitOptions.some(e => e.label === searchString.toUpperCase())
+                    ) {
+                        try {
+                            // new RegExp(searchString, 'mi');
+                            compileJavaRegex(searchString); // test if it could build Java's RegExp
+                            setOptions([{ value: searchString, label: searchString }, ...bukkitOptions]);
+                        } catch (e) {
+                            console.log("bad regex:", e);
+                            setOptions(bukkitOptions);
+                        }
+                    } else {
                         setOptions(bukkitOptions);
                     }
-                } else {
-                    setOptions(bukkitOptions);
-                }
-            }}
-            filterOption={(input, option) => {
-                try {
-                    // compileJavaRegex(input);
-                    // const regexp = new RegExp(input, 'mi');
-                    // return option?.label ? regexp.test(option.value) || regexp.test(option.label) || option.value === input : false;
-                        const regexp = compileJavaRegex(`.*?${input}.*`, CASE_INSENSITIVE);
-                        return option?.label ? regexp(option.value) || regexp(option.label) || option.value === input : false;
+                }}
+                filterOption={(input, option) => {
+                    try {
+                        // compileJavaRegex(input);
+                        // const regexp = new RegExp(input, 'mi');
+                        // return option?.label ? regexp.test(option.value) || regexp.test(option.label) || option.value === input : false;
+                        const regexp = compileJavaRegex(input);
+                        // const regexp = compileJavaRegex(`.*?${input}.*`, CASE_INSENSITIVE);
+                        return option?.label ? regexp(option.value) || regexp(option.label) || option.value.includes(input.toUpperCase()) || option.value === input : false;
                     } catch {
                         return false;
                     }
