@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { Button, Collapse, CollapseProps, Input } from "antd";
 import { ItemType } from "rc-collapse/es/interface";
+import { VscChevronRight } from "react-icons/vsc";
 
 import Package from "../../../../betonquest/Package";
 import ListElement, { ListElementType } from "../../../../betonquest/ListElement";
@@ -147,6 +148,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
             >
                 <Collapse
                     // accordion
+                    expandIcon={({ isActive }) => <VscChevronRight style={{ marginLeft: "8px", transform: isActive ? 'rotate(90deg)' : undefined }} />}
                     items={listElementEditorList}
                     // ghost={true}
                     // bordered={false}
