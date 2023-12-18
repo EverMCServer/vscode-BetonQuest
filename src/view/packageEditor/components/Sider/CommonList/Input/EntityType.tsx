@@ -18,8 +18,6 @@ export default function (props: InputProps) {
         setValue(props.value);
     }, [props.value]);
 
-    console.log("a");
-
     return (
         <Select
             value={value}

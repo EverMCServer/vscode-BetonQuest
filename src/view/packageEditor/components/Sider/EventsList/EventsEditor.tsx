@@ -15,6 +15,7 @@ import TextAreaList from "../CommonList/Input/TextAreaList";
 import Checkbox from "../CommonList/Input/Checkbox";
 import Number from "../CommonList/Input/Number";
 import EntityType from "../CommonList/Input/EntityType";
+import BlockSelector from "../CommonList/Input/BlockSelector";
 
 export default function (props: ListElementEditorProps<Event>) {
 
@@ -99,6 +100,20 @@ export default function (props: ListElementEditorProps<Event>) {
                     // TODO: Seprated editor body. https://docs.betonquest.org/2.0-DEV/Documentation/Visual-Effects/Notifications/Notification-IO%27s-%26-Categories/
                 ],
                 keepWhitespaces: true
+            }
+        },
+        {
+            value: 'setblock',
+            display: 'Set Block',
+            description: 'Changes the block at the given position.',
+            argumentsPattern: {
+                mandatory: [
+                    { jsx: BlockSelector, name: 'Block Selector', type: 'string', defaultValue: 'AIR', placeholder: 'e.g. AIR', tooltip: 'Block Selector' },
+                    { jsx: Input, name: 'Location', type: 'string', defaultValue: '100;200;300;world', placeholder: 'e.g. 100;200;300;world' },
+                ],
+                optional: [
+                    { jsx: Checkbox, name: 'ignorePhysics', key: 'ignorePhysics', type: 'boolean', tooltip: 'Deactivate the physics of the block' },
+                ]
             }
         }
     ];
