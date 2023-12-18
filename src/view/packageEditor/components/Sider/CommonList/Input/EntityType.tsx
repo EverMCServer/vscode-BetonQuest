@@ -36,21 +36,15 @@ export default function (props: InputProps) {
             onSearch={searchString => {
                 if (
                     searchString.length > 0
-                    // Allow normal EntityType syntax, or RegExp
-                    && searchString.match(/^[a-z0-9_\[\]\{\}\(\)\?\:\=\!\.\*\+\<\>\^\$\\]+$/mi)
                     && !bukkitOptions.some(e => e.label === searchString.toUpperCase())
                 ) {
-                    try {
-                        new RegExp(searchString, 'mi'); // test if it could build RegExp
-                        setOptions([{ value: searchString, label: searchString }, ...bukkitOptions]);
-                    } catch { }
+                    setOptions([{ value: searchString, label: searchString }, ...bukkitOptions]);
                 } else {
                     setOptions(bukkitOptions);
                 }
             }}
             filterOption={(input, option) => {
                 try {
-                    input += (input.endsWith(']') && !input.endsWith('[]')) ? '[]' : '';
                     const regexp = new RegExp(input, 'mi');
                     return option?.label ? regexp.test(option.value) || regexp.test(option.label) : false;
                 } catch {
