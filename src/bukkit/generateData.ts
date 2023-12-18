@@ -83,6 +83,22 @@ function generateMaterialList(savePath: string) {
             const cache: {
                 bukkitId: string,
                 bukkitNumberId: number
+
+                flags: {
+                    block?: boolean,
+                    edible?: boolean,
+                    record?: boolean,
+                    solid?: boolean,
+                    air?: boolean,
+                    transparent?: boolean,
+                    flammable?: boolean,
+                    burnable?: boolean,
+                    fuel?: boolean,
+                    occluding?: boolean,
+                    item?: boolean,
+                    interactable?: boolean,
+                    [key: string]: any
+                }
             }[] = [];
 
             // RegExp to extract all Bukkit's MATERIAL IDs
@@ -90,13 +106,28 @@ function generateMaterialList(savePath: string) {
             let array1: RegExpExecArray | null;
             while ((array1 = patternExtract.exec(text)) !== null) {
                 if (array1[1] && array1[2]) {
-                    cache.push({ bukkitId: array1[1], bukkitNumberId: parseInt(array1[2]) });
+                    cache.push({ bukkitId: array1[1], bukkitNumberId: parseInt(array1[2]), flags: {} });
+                }
+            }
+
+            // RegExp to extract flags, "isBlock" etc.
+            const flagsString = ["block", "edible", "record", "solid", "air", "transparent", "flammable", "burnable", "fuel", "occluding", "item", "interactable"];
+            for (let i = 0; i < flagsString.length; i++) {
+                const flag = flagsString[i];
+                const [textFlags] = text.match(new RegExp(`public boolean is${flag}\(.*?\)\s*\{(.+?)\}`, "mis")) ?? [""];
+                const patternExtractFlag = /\s*case\s+([a-z_]+)/gi;
+                while ((array1 = patternExtractFlag.exec(textFlags)) !== null) {
+                    if (array1[1]) {
+                        const material = cache.find(e => e.bukkitId === array1![1]);
+                        if (material) {
+                            material.flags[flag] = true;
+                        }
+                    }
                 }
             }
 
             // Create the Material list
-            const materialList: Material[] = cache.map(v => new Material(v.bukkitId, v.bukkitNumberId));
-
+            const materialList: Material[] = cache.map(v => new Material(v.bukkitId, v.bukkitNumberId, v.flags));
 
             if (materialList.length < 1) {
                 throw new Error(`Unexpeted error while parsing Bukkit's Material with url: ${BUKKIT_MATERIAL_SOURCE} body: ${text}.`);
