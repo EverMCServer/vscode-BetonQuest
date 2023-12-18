@@ -16,6 +16,8 @@ export default function (props: InputProps) {
         setValueArray(props.value as string[] || [""]);
     }, [props.value]);
 
+    const [focusIndex, setFocusIndex] = useState<number>();
+
     return (
         <>
             {valueArray.map((value, index) =>
@@ -30,9 +32,11 @@ export default function (props: InputProps) {
                         refreshUI();
                     }}
                     placeholder={props.placeholder}
+                    autoFocus={index === focusIndex}
                     onPressEnter={() => {
                         const valueUpdate = [...valueArray.slice(0, index + 1), "", ...valueArray.slice(index + 1)];
                         setValueArray(valueUpdate);
+                        setFocusIndex(index + 1);
                         props.onChange(valueUpdate);
                         refreshUI();
                     }}
@@ -44,6 +48,7 @@ export default function (props: InputProps) {
                             onClick={() => {
                                 const valueUpdate = [...valueArray.slice(0, index), ...valueArray.slice(index + 1)];
                                 setValueArray(valueUpdate);
+                                setFocusIndex(index);
                                 props.onChange(valueUpdate);
                                 refreshUI();
                             }}

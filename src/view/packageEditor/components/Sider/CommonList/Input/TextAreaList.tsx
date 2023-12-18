@@ -14,6 +14,8 @@ export default function (props: InputProps) {
 
     const valueArray = props.value as string[] || [""];
 
+    const [focusIndex, setFocusIndex] = useState<number>();
+
     return (
         <>
             {valueArray.map((value, index) =>
@@ -31,6 +33,7 @@ export default function (props: InputProps) {
                             refreshUI();
                         }}
                         placeholder={props.placeholder}
+                        autoFocus={index === focusIndex}
                         autoSize={{ minRows: props.config?.minRows || 2, maxRows: props.config?.maxRows || 6 }}
                         size="small"
                     />
@@ -54,6 +57,7 @@ export default function (props: InputProps) {
                     onClick={() => {
                         const valueUpdate = valueArray;
                         valueUpdate.push("");
+                        setFocusIndex(valueArray.length - 1);
                         props.onChange(valueUpdate);
                         refreshUI();
                     }}
