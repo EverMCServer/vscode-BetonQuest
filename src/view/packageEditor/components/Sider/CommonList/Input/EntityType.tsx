@@ -27,6 +27,7 @@ export default function (props: InputProps) {
             //     props.onChange(e);
             // }}
             onChange={(e) => {
+                setValue(e);
                 props.onChange(e);
             }}
             options={options}

@@ -24,7 +24,7 @@ export default function (props: InputProps) {
     const [blockId, setBlockId] = useState<string>("");
     const [state, setState] = useState<Map<string, string>>(new Map<string, string>());
     useEffect(() => {
-        if (props.value === "") {
+        if (!props.value) {
             setNamespace("");
             setTag("");
             setBlockId("");
@@ -41,7 +41,7 @@ export default function (props: InputProps) {
 
     const setValue = useCallback((namespace: string, tag: string, blockId: string) => {
         let value = "";
-        if (namespace){
+        if (namespace) {
             value = namespace + ":";
         }
         if (tag) {
@@ -54,7 +54,7 @@ export default function (props: InputProps) {
             value += blockId;
         }
         props.onChange(value);
-    },  [props.onChange]);
+    }, [props.onChange]);
 
     return (
         <>
@@ -64,6 +64,7 @@ export default function (props: InputProps) {
             defaultValue={"minecraft"}
             placeholder="minecraft"
             onChange={(e) => {
+                setNamespace(e);
                 setValue(e, tag, blockId);
             }}
         ></Input>
@@ -74,6 +75,7 @@ export default function (props: InputProps) {
             defaultValue={""}
             placeholder=""
             onChange={(e) => {
+                setTag(e);
                 setValue(namespace, e, blockId);
             }}
         ></Input>
@@ -87,6 +89,7 @@ export default function (props: InputProps) {
             //     props.onChange(e);
             // }}
             onChange={(e) => {
+                setBlockId(e);
                 setValue(namespace, tag, e);
             }}
             options={options}
@@ -115,20 +118,20 @@ export default function (props: InputProps) {
                     // compileJavaRegex(input);
                     // const regexp = new RegExp(input, 'mi');
                     // return option?.label ? regexp.test(option.value) || regexp.test(option.label) || option.value === input : false;
-                    const regexp = compileJavaRegex(`.*?${input}.*`, CASE_INSENSITIVE);
-                    return option?.label ? regexp(option.value) || regexp(option.label) || option.value === input : false;
-                } catch {
-                    return false;
-                }
-            }}
-            notFoundContent={null}
-            popupMatchSelectWidth={false}
-            placeholder={props.placeholder}
-            size="small"
-            style={{ width: '100%' }}
-        />
-        <Divider />
-        <div></div>
+                        const regexp = compileJavaRegex(`.*?${input}.*`, CASE_INSENSITIVE);
+                        return option?.label ? regexp(option.value) || regexp(option.label) || option.value === input : false;
+                    } catch {
+                        return false;
+                    }
+                }}
+                notFoundContent={null}
+                popupMatchSelectWidth={false}
+                placeholder={props.placeholder}
+                size="small"
+                style={{ width: '100%' }}
+            />
+            <Divider />
+            <div></div>
         </>
     );
 }

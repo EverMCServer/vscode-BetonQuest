@@ -11,11 +11,11 @@ const colSpanRight = 18;
 
 export default function (props: ListElementEditorBodyProps<Event>) {
 
-    // UI update trigger #1
-    const [getTrigger, setTrigger] = useState(false);
-    const refreshUI = () => {
-        setTrigger(!getTrigger);
-    };
+    // // UI update trigger #1
+    // const [getTrigger, setTrigger] = useState(false);
+    // const refreshUI = () => {
+    //     setTrigger(!getTrigger);
+    // };
 
     // UI update trigger #2
     // const [listElement, setListElement] = useState(props.listElement);
@@ -58,7 +58,6 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                 onChange={(value: MandatoryArgumentDataType) => {
                                     args?.setMandatoryArgument(index, value);
                                     props.syncYaml();
-                                    refreshUI();
                                 }}
                                 config={arg.config}
                             />}
@@ -92,7 +91,6 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                         onChange={(value: OptionalArgumentDataType) => {
                                             args?.setOptionalArgument(arg.key, value);
                                             props.syncYaml();
-                                            refreshUI();
                                         }}
                                         config={arg.config}
                                     />}

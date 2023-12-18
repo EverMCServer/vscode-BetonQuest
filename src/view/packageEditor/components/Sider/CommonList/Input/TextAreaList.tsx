@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Space } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { VscClose } from "react-icons/vsc";
@@ -6,7 +6,14 @@ import { VscClose } from "react-icons/vsc";
 import { InputProps } from "./Common";
 
 export default function (props: InputProps) {
+    // UI update trigger
+    const [getTrigger, setTrigger] = useState(false);
+    const refreshUI = () => {
+        setTrigger(!getTrigger);
+    };
+
     const valueArray = props.value as string[] || [""];
+
     return (
         <>
             {valueArray.map((value, index) =>
@@ -18,9 +25,10 @@ export default function (props: InputProps) {
                     <TextArea
                         value={value}
                         onChange={(e) => {
-                            let valueUpdate = props.value as string[] || [""];
+                            const valueUpdate = valueArray;
                             valueUpdate[index] = e.target.value;
                             props.onChange(valueUpdate);
+                            refreshUI();
                         }}
                         placeholder={props.placeholder}
                         autoSize={{ minRows: props.config?.minRows || 2, maxRows: props.config?.maxRows || 6 }}
@@ -30,9 +38,9 @@ export default function (props: InputProps) {
                         type="default"
                         size="small"
                         onClick={() => {
-                            let valueUpdate = props.value as string[] || [""];
-                            valueUpdate = [...valueUpdate.slice(0, index), ...valueUpdate.slice(index + 1)];
+                            const valueUpdate = [...valueArray.slice(0, index), ...valueArray.slice(index + 1)];
                             props.onChange(valueUpdate);
+                            refreshUI();
                         }}
                     >
                         <VscClose />
@@ -44,9 +52,10 @@ export default function (props: InputProps) {
                     type="primary"
                     size="small"
                     onClick={() => {
-                        let valueUpdate = props.value as string[] || [""];
+                        const valueUpdate = valueArray;
                         valueUpdate.push("");
                         props.onChange(valueUpdate);
+                        refreshUI();
                     }}
                 >
                     Add

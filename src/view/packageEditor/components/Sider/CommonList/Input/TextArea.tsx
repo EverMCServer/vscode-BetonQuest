@@ -1,15 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TextArea from "antd/es/input/TextArea";
+
 import { InputProps } from "./Common";
 
 export default function (props: InputProps) {
+    const [value, setValue] = useState(props.value as string);
+    useEffect(() => {
+        setValue(props.value as string);
+    }, [props.value]);
+
     return (
         <TextArea
-            value={props.value as string}
+            value={value}
             onChange={(e) => {
                 // if (e.target.value.includes("\n")) {
                 //     return;
                 // }
+                setValue(e.target.value);
                 props.onChange(e.target.value);
             }}
             placeholder={props.placeholder}
