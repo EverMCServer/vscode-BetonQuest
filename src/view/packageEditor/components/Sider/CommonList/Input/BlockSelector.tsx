@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Divider, Select } from "antd";
+import { Button, Divider, Select } from "antd";
+import { compile as compileJavaRegex } from "java-regex-js";
 
 import { InputProps } from "./Common";
 import MATERIAL_LIST from "../../../../../../bukkit/Data/MaterialList";
-import { compile as compileJavaRegex } from "java-regex-js";
 import Input from "./Input";
-import { set } from "yaml/dist/schema/yaml-1.1/set";
 
 const bukkitOptions = MATERIAL_LIST.filter(e => e.isBlock()).map(e => {
     return {
@@ -32,14 +31,34 @@ export default function (props: InputProps) {
             return;
         }
 
+        // Seprate components by colon
         const pattern1 = /^(?:(.*?)(?<!\{[^\}]*|\(\?|\\):(?![^\{]*\}))?(?:(.*?)(?<!\{[^\}]*|\(\?|\\):(?![^\{]*\}))?(.+)$/mi;
-        const [_, mNamespace, mTag, mBlockId] = pattern1.exec(props.value) ?? [];
+        let [_, mNamespace, mTag, mBlockId] = pattern1.exec(props.value) ?? [];
         setNamespace(mNamespace || "");
         setTag(mTag || "");
+
+        // Seprate state, if any
+        let mStateStr = "";
+        if (mBlockId.endsWith(']')) {
+            const pattern2 = /^(.+)\[(.*)\]$/mi;
+            [_, mBlockId, mStateStr] = pattern2.exec(mBlockId) ?? [, mBlockId, ""];
+        }
         setBlockId(mBlockId || "");
+
+        if (mStateStr) {
+            const state = new Map<string, string>();
+            const pairs = mStateStr.split(",");
+            for (const pair of pairs) {
+                const [key, value] = pair.split("=");
+                state.set(key, value);
+            }
+            setState(state);
+        } else {
+            setState(new Map<string, string>());
+        }
     }, [props.value]);
 
-    const setValue = useCallback((namespace: string, tag: string, blockId: string) => {
+    const setValue = useCallback((namespace: string, tag: string, blockId: string, state: Map<string, string>) => {
         let value = "";
         if (namespace) {
             value = namespace + ":";
@@ -53,6 +72,15 @@ export default function (props: InputProps) {
         if (blockId) {
             value += blockId;
         }
+        if (state.size > 0) {
+            let pairs: string[] = [];
+            state.forEach((value, key) => {
+                pairs.push(key + "=" + value);
+            });
+            value += "[";
+            value += pairs.join(",");
+            value += "]";
+        }
         props.onChange(value);
     }, [props.onChange]);
 
@@ -65,7 +93,7 @@ export default function (props: InputProps) {
                 placeholder="minecraft"
                 onChange={(e) => {
                     setNamespace(e);
-                    setValue(e, tag, blockId);
+                    setValue(e, tag, blockId, state);
                 }}
             ></Input>
             <Divider />
@@ -76,7 +104,7 @@ export default function (props: InputProps) {
                 placeholder=""
                 onChange={(e) => {
                     setTag(e);
-                    setValue(namespace, e, blockId);
+                    setValue(namespace, e, blockId, state);
                 }}
             ></Input>
             <Divider />
@@ -90,7 +118,7 @@ export default function (props: InputProps) {
                 // }}
                 onChange={(e) => {
                     setBlockId(e);
-                    setValue(namespace, tag, e);
+                    setValue(namespace, tag, e, state);
                 }}
                 options={options}
                 showSearch
@@ -132,6 +160,49 @@ export default function (props: InputProps) {
                 style={{ width: '100%' }}
             />
             <Divider />
+            <span>State:</span>
+            {state.size > 0 ?
+                Array.from(state.entries()).map(([key, value]) =>
+                    <div key={key}>
+                        <Input
+                            value={value}
+                            defaultValue={""}
+                            onChange={(e) => {
+                                const newState = new Map(state);
+                                newState.set(key, e);
+                                setState(newState);
+                                setValue(namespace, tag, blockId, newState);
+                            }}
+                        ></Input>
+                        <Button
+                            type="primary"
+                            size="small"
+                            onClick={() => {
+                                const newState = new Map(state);
+                                newState.delete(key);
+                                setState(newState);
+                                setValue(namespace, tag, blockId, newState);
+                            }}
+                        >
+                            Remove
+                        </Button>
+                    </div>
+                )
+                :
+                <></>
+            }
+            <Button
+                type="primary"
+                size="small"
+                onClick={() => {
+                    const newState = new Map(state);
+                    newState.set("", "");
+                    setState(newState);
+                    setValue(namespace, tag, blockId, newState);
+                }}
+            >
+                Add
+            </Button>
             <div></div>
         </>
     );
