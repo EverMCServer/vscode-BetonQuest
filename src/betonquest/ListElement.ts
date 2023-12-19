@@ -33,7 +33,7 @@ export default class ListElement {
     setKind(kind: string) {
         let instructions = this.yaml.value?.value.split(" ") || [];
 
-        // Reset / remove all arguments when siwtching kind
+        // Set kind
         if (instructions.length > 0 && instructions[0] !== kind) {
             instructions[0] = kind;
             this.yaml.value!.value = instructions.join(" ");

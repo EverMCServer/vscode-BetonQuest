@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Col, Divider, Row, Tooltip } from "antd";
 
 import Event from "../../../../../../betonquest/Event";
-import Arguments, { MandatoryArgumentDataType, OptionalArgumentDataType } from "../../../../../../betonquest/Arguments";
+import { MandatoryArgumentDataType, OptionalArgumentDataType } from "../../../../../../betonquest/Arguments";
 import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
 import { VscQuestion } from "react-icons/vsc";
 
@@ -23,10 +23,8 @@ export default function (props: ListElementEditorBodyProps<Event>) {
     //     setListElement(props.listElement);
     // }, [props.listElement]);
 
-    const [args, setArgs] = useState<Arguments>();
-    useEffect(() => {
-        setArgs(props.listElement.getArguments(props.argumentsPattern));
-    }, [props.listElement]);
+    // Arguments should be parsed everytime. Do NOT cache it.
+    const args = props.listElement.getArguments(props.argumentsPattern);
 
     return (
         <>

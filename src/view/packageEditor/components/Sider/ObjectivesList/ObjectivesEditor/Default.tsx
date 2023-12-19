@@ -3,7 +3,6 @@ import { Col, Row } from "antd";
 import TextArea from "antd/es/input/TextArea";
 
 import Objective from "../../../../../../betonquest/Objective";
-import Arguments from "../../../../../../betonquest/Arguments";
 import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
 
 export default function (props: ListElementEditorBodyProps<Objective>) {
@@ -20,10 +19,8 @@ export default function (props: ListElementEditorBodyProps<Objective>) {
     //     setListElement(props.listElement);
     // }, [props.listElement]);
 
-    const [args, setArgs] = useState<Arguments>();
-    useEffect(() => {
-        setArgs(props.listElement.getArguments());
-    }, [props.listElement]);
+    // Arguments should be parsed everytime. Do NOT cache it.
+    const args = props.listElement.getArguments(props.argumentsPattern);
 
     return (
         <>
