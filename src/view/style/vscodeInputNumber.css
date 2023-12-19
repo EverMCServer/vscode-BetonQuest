@@ -3,6 +3,7 @@
 .ant-input-number {
     border-radius: 0;
     border-color: var(--vscode-checkbox-border);
+    background-color: transparent;
 }
 
 .ant-input-number:focus, .ant-input-number:focus-visible, .ant-input-number:focus-within {

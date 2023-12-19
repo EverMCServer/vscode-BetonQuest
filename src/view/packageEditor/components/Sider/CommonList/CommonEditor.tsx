@@ -5,6 +5,8 @@ import ListElement from "../../../../../betonquest/ListElement";
 import { BaseListProps } from "../CommonList";
 import { ArgumentsPattern } from "../../../../../betonquest/Arguments";
 
+import styles from "./CommonEditor.module.css";
+
 export interface ListElementEditorProps<T extends ListElement> extends BaseListProps {
     listElement: T,
     kindSelectDefaultOpen?: boolean,
@@ -91,6 +93,7 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
                 </Col>
                 <Col span={18}>
                     <Select
+                        className={styles.select}
                         showSearch
                         defaultOpen={props.kindSelectDefaultOpen}
                         autoFocus={props.kindSelectDefaultOpen}

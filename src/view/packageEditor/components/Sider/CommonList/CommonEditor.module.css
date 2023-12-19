@@ -1,0 +1,3 @@
+:local(.select) :global(.ant-select-selection-item) {
+    font-weight: 700;
+}
