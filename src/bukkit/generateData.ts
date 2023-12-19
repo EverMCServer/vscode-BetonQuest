@@ -118,9 +118,8 @@ async function generateMaterialList(savePath: string) {
         const flagsString = ["block", "edible", "record", "solid", "air", "transparent", "flammable", "burnable", "fuel", "occluding", "gravity", "item", "interactable"];
         for (let i = 0; i < flagsString.length; i++) {
             const flag = flagsString[i];
-            console.log("\n\n  ", flag);
+            console.log(`  Converting flag "${flag}" ...`);
             const [textFlags] = text.match(new RegExp(`public boolean (?:i|ha)s${flag}\s*\(.*?\)\s*\{.*?switch\s*\(.+?\)\s*\{(.+?)\}`, "mis")) ?? [""];
-            console.log("  ", textFlags);
             const patternExtractFlag = /\s*case\s+([a-z_]+)/gi;
             while ((array1 = patternExtractFlag.exec(textFlags)) !== null) {
                 if (array1[1]) {
