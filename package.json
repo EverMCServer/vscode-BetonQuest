@@ -119,6 +119,7 @@
     "@vscode/test-web": "^0.0.48",
     "assert": "^2.1.0",
     "css-loader": "^6.8.1",
+    "css-modules-typescript-loader": "^4.0.1",
     "eslint": "^8.41.0",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",

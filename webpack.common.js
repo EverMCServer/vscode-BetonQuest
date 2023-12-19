@@ -69,7 +69,7 @@ const reactConfig = {
   },
   resolve: {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
-    extensions: [".ts", ".js", ".tsx", ".jsx"],
+    extensions: [".ts", ".js", ".tsx", ".jsx", ".css"],
   },
   module: {
     rules: [
@@ -84,12 +84,28 @@ const reactConfig = {
       },
       {
         test: /\.css$/,
+        exclude: /\.module\.css$/,
         use: [
           {
             loader: "style-loader",
           },
           {
             loader: "css-loader",
+          },
+        ],
+      },
+      {
+        test: /\.module\.css$/,
+        use: [
+          {
+            loader: "style-loader",
+          },
+          {
+            loader: "css-modules-typescript-loader",
+          },
+          {
+            loader: "css-loader",
+            options: { modules: true },
           },
         ],
       },
