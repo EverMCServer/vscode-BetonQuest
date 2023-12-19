@@ -18,6 +18,7 @@ const MATERIAL_LIST: Material[] = list.map(v => new Material(
         burnable: v.burnable,
         fuel: v.fuel,
         occluding: v.occluding,
+        gravity: v.gravity,
         item: v.item,
         interactable: v.interactable
     }

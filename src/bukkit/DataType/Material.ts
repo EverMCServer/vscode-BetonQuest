@@ -15,8 +15,16 @@ export default class Material {
     private burnable?: boolean;
     private fuel?: boolean;
     private occluding?: boolean;
+    private gravity?: boolean;
     private item?: boolean;
     private interactable?: boolean;
+
+    private hardness?: number;
+    private blastResistance?: number;
+    private slipperiness?: number;
+    private craftingRemainingItem?: Material;
+    private equipmentSlot?: string;
+
 
     constructor(
         bukkitId: string,
@@ -32,6 +40,7 @@ export default class Material {
             burnable?: boolean,
             fuel?: boolean,
             occluding?: boolean,
+            gravity?: boolean,
             item?: boolean,
             interactable?: boolean,
         }
@@ -50,6 +59,7 @@ export default class Material {
             this.burnable = flags.burnable;
             this.fuel = flags.fuel;
             this.occluding = flags.occluding;
+            this.gravity = flags.gravity;
             this.item = flags.item;
             this.interactable = flags.interactable;
         }
@@ -108,6 +118,10 @@ export default class Material {
 
     isOccluding() {
         return this.occluding;
+    }
+
+    hasGravity() {
+        return this.gravity;
     }
 
     isItem() {

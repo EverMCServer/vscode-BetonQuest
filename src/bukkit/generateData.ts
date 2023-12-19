@@ -7,7 +7,7 @@ import Material from "./DataType/Material";
 import Enchantment from "./DataType/Enchantment";
 
 // Config
-const OUTPUT_DIR = __dirname;
+const OUTPUT_DIR = __dirname + "/Data";
 
 const BUKKIT_ENTITY_TYPE_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/entity/EntityType.java?at=refs%2Fheads%2Fmaster';
 const BUKKIT_MATERIAL_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/Material.java?at=refs%2Fheads%2Fmaster';
@@ -15,15 +15,15 @@ const BUKKIT_ENCHANTMENT_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGO
 
 (async () => {
     console.log("Generating EntityTypeList.json ...");
-    const pathEntityTypeList = OUTPUT_DIR + "/Data/EntityTypeList.json";
+    const pathEntityTypeList = OUTPUT_DIR + "/EntityTypeList.json";
     await generateEntityTypeList(pathEntityTypeList);
 
     console.log("Generating MaterialList.json ...");
-    const pathMaterialList = OUTPUT_DIR + "/Data/MaterialList.json";
+    const pathMaterialList = OUTPUT_DIR + "/MaterialList.json";
     await generateMaterialList(pathMaterialList);
 
     console.log("Generating EnchantmentList.json ...");
-    const pathEnchantmentList = OUTPUT_DIR + "/Data/EnchantmentList.json";
+    const pathEnchantmentList = OUTPUT_DIR + "/EnchantmentList.json";
     await generateEnchantmentList(pathEnchantmentList);
 
     console.log("All data succesfully generated.");
@@ -98,6 +98,7 @@ async function generateMaterialList(savePath: string) {
                 burnable?: boolean,
                 fuel?: boolean,
                 occluding?: boolean,
+                gravity?: boolean,
                 item?: boolean,
                 interactable?: boolean,
                 [key: string]: any
@@ -114,10 +115,12 @@ async function generateMaterialList(savePath: string) {
         }
 
         // RegExp to extract flags, "isBlock" etc.
-        const flagsString = ["block", "edible", "record", "solid", "air", "transparent", "flammable", "burnable", "fuel", "occluding", "item", "interactable"];
+        const flagsString = ["block", "edible", "record", "solid", "air", "transparent", "flammable", "burnable", "fuel", "occluding", "gravity", "item", "interactable"];
         for (let i = 0; i < flagsString.length; i++) {
             const flag = flagsString[i];
-            const [textFlags] = text.match(new RegExp(`public boolean is${flag}\(.*?\)\s*\{(.+?)\}`, "mis")) ?? [""];
+            console.log("\n\n  ", flag);
+            const [textFlags] = text.match(new RegExp(`public boolean (?:i|ha)s${flag}\s*\(.*?\)\s*\{.*?switch\s*\(.+?\)\s*\{(.+?)\}`, "mis")) ?? [""];
+            console.log("  ", textFlags);
             const patternExtractFlag = /\s*case\s+([a-z_]+)/gi;
             while ((array1 = patternExtractFlag.exec(textFlags)) !== null) {
                 if (array1[1]) {
