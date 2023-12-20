@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, Divider, Select } from "antd";
+import { Button, Divider, Input, Select, Space } from "antd";
 import { compile as compileJavaRegex } from "java-regex-js";
 
 import { InputProps } from "./Common";
 import MATERIAL_LIST from "../../../../../../bukkit/Data/MaterialList";
-import Input from "./Input";
+import { VscClose, VscTrash } from "react-icons/vsc";
 
 const bukkitOptions = MATERIAL_LIST.filter(e => e.isBlock()).map(e => {
     return {
@@ -21,13 +21,13 @@ export default function (props: InputProps) {
     const [namespace, setNamespace] = useState<string>("");
     const [tag, setTag] = useState<string>("");
     const [blockId, setBlockId] = useState<string>("");
-    const [state, setState] = useState<Map<string, string>>(new Map<string, string>());
+    const [state, setState] = useState<[string, string][]>([]);
     useEffect(() => {
         if (!props.value) {
             setNamespace("");
             setTag("");
             setBlockId("");
-            setState(new Map<string, string>());
+            setState([]);
             return;
         }
 
@@ -46,19 +46,19 @@ export default function (props: InputProps) {
         setBlockId(mBlockId || "");
 
         if (mStateStr) {
-            const state = new Map<string, string>();
+            const state: [string, string][] = [];
             const pairs = mStateStr.split(",");
             for (const pair of pairs) {
                 const [key, value] = pair.split("=");
-                state.set(key, value);
+                state.push([key, value]);
             }
             setState(state);
         } else {
-            setState(new Map<string, string>());
+            setState([]);
         }
     }, [props.value]);
 
-    const setValue = useCallback((namespace: string, tag: string, blockId: string, state: Map<string, string>) => {
+    const setValue = useCallback((namespace: string, tag: string, blockId: string, state: [string, string][]) => {
         let value = "";
         if (namespace) {
             value = namespace + ":";
@@ -72,13 +72,9 @@ export default function (props: InputProps) {
         if (blockId) {
             value += blockId;
         }
-        if (state.size > 0) {
-            let pairs: string[] = [];
-            state.forEach((value, key) => {
-                pairs.push(key + "=" + value);
-            });
+        if (state.length > 0) {
             value += "[";
-            value += pairs.join(",");
+            value += state.map(e => e.join("=")).join(",");
             value += "]";
         }
         props.onChange(value);
@@ -92,10 +88,16 @@ export default function (props: InputProps) {
                 defaultValue={"minecraft"}
                 placeholder="minecraft"
                 onChange={(e) => {
-                    setNamespace(e);
-                    setValue(e, tag, blockId, state);
+                    // Filter illigal characters
+                    if (e.target.value.match(/[^a-z0-9_\[\]\{\}\(\)\<\>\?\:\=\!\.\*\+\^\$\\,]/i)) {
+                        return;
+                    }
+                    // Update namespace
+                    setNamespace(e.target.value);
+                    setValue(e.target.value, tag, blockId, state);
                 }}
-            ></Input>
+                size="small"
+            />
             <Divider />
             <span>Tag:</span>
             <Input
@@ -103,10 +105,16 @@ export default function (props: InputProps) {
                 defaultValue={""}
                 placeholder=""
                 onChange={(e) => {
-                    setTag(e);
-                    setValue(namespace, e, blockId, state);
+                    // Filter illigal characters
+                    if (e.target.value.match(/[^a-z0-9_\/\[\]\{\}\(\)\<\>\?\:\=\!\.\*\+\^\$\\,]/i)) {
+                        return;
+                    }
+                    // Update tag
+                    setTag(e.target.value);
+                    setValue(namespace, e.target.value, blockId, state);
                 }}
-            ></Input>
+                size="small"
+            />
             <Divider />
             <span>Block:</span>
             <Select
@@ -126,15 +134,15 @@ export default function (props: InputProps) {
                     if (
                         searchString.length > 0
                         // Allow normal EntityType syntax, or RegExp
-                        && searchString.match(/^[a-z0-9_,\[\]\{\}\(\)\?\:\=\!\.\*\+\<\>\^\$\\]+$/mi)
+                        && searchString.match(/^[a-z0-9_\[\]\{\}\(\)\<\>\?\:\=\!\.\*\+\^\$\\,]+$/mi)
                         && !bukkitOptions.some(e => e.label === searchString.toUpperCase())
                     ) {
                         try {
                             // new RegExp(searchString, 'mi');
                             compileJavaRegex(searchString); // test if it could build Java's RegExp
                             setOptions([{ value: searchString, label: searchString }, ...bukkitOptions]);
-                        } catch (e) {
-                            console.log("bad regex:", e);
+                        } catch (e: any) {
+                            console.log("bad regex:", e.message);
                             setOptions(bukkitOptions);
                         }
                     } else {
@@ -160,50 +168,93 @@ export default function (props: InputProps) {
                 style={{ width: '100%' }}
             />
             <Divider />
-            <span>State:</span>
-            {state.size > 0 ?
-                Array.from(state.entries()).map(([key, value]) =>
-                    <div key={key}>
-                        <Input
-                            value={value}
-                            defaultValue={""}
-                            onChange={(e) => {
-                                const newState = new Map(state);
-                                newState.set(key, e);
-                                setState(newState);
-                                setValue(namespace, tag, blockId, newState);
+            <div>State:</div>
+            {/* <Space direction="vertical"> */}
+            {state.map(([key, value], index) =>
+                <Space.Compact block key={index} style={{ width: '100%' }}>
+                    <Input
+                        value={key}
+                        defaultValue={""}
+                        onChange={(e) => {
+                            // Filter illigal characters
+                            if (e.target.value.match(/[^a-z0-9_\[\]\{\}\(\)\<\>\?\:\=\!\.\*\+\^\$\\,]/i)) {
+                                return;
+                            }
+                            // Update key
+                            const newState = [...state];
+                            newState[index][0] = e.target.value;
+                            setState(newState);
+                            setValue(namespace, tag, blockId, newState);
+                        }}
+                        size="small"
+                    />
+                    <Input
+                        // className="site-input-split"
+                        style={{
+                            width: 30,
+                            borderLeft: 0,
+                            borderRight: 0,
+                            pointerEvents: 'none',
+                        }}
+                        placeholder="="
+                        disabled
+                        size="small"
+                    />
+                    <Input
+                        value={value}
+                        defaultValue={""}
+                        onChange={(e) => {
+                            // Filter illigal characters
+                            if (e.target.value.match(/[^a-z0-9_\[\]\{\}\(\)\<\>\?\:\=\!\.\*\+\^\$\\,]/i)) {
+                                return;
+                            }
+                            // Update value
+                            const newState = [...state];
+                            newState[index][1] = e.target.value;
+                            setState(newState);
+                            setValue(namespace, tag, blockId, newState);
+                        }}
+                        size="small"
+                    />
+                    <Button
+                        onClick={() => {
+                            // Remove state
+                            const newState = [...state.slice(0, index), ...state.slice(index + 1)];
+                            setState(newState);
+                            setValue(namespace, tag, blockId, newState);
+                        }}
+                        style={{
+                            marginLeft: 1,
+                            padding: 0
+                        }}
+                        type="default"
+                        size="small"
+                        title="Remove"
+                    >
+                        <VscClose
+                            style={{
+                                verticalAlign: "middle",
+                                textAlign: "center"
                             }}
-                        ></Input>
-                        <Button
-                            type="primary"
-                            size="small"
-                            onClick={() => {
-                                const newState = new Map(state);
-                                newState.delete(key);
-                                setState(newState);
-                                setValue(namespace, tag, blockId, newState);
-                            }}
-                        >
-                            Remove
-                        </Button>
-                    </div>
-                )
-                :
-                <></>
-            }
-            <Button
-                type="primary"
-                size="small"
-                onClick={() => {
-                    const newState = new Map(state);
-                    newState.set("", "");
-                    setState(newState);
-                    setValue(namespace, tag, blockId, newState);
-                }}
-            >
-                Add
-            </Button>
-            <div></div>
+                        />
+                    </Button>
+                </Space.Compact>
+            )}
+            {/* </Space> */}
+            <div>
+                <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => {
+                        const newState = [...state];
+                        newState.push(["", ""]);
+                        setState(newState);
+                        setValue(namespace, tag, blockId, newState);
+                    }}
+                >
+                    Add
+                </Button>
+            </div>
         </>
     );
 }
