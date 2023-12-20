@@ -19,6 +19,9 @@
     background-color: var(--vscode-input-background);
     color: var(--vscode-input-foreground);
 }
+.ant-input-number .ant-input-number-input-wrap input::placeholder {
+    color: var(--vscode-input-placeholderForeground);
+}
 
 .ant-input-number .ant-input-number-handler-wrap {
     border-radius: 0;

@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Button, Divider, Input, Select, Space } from "antd";
+import { VscClose } from "react-icons/vsc";
 import { compile as compileJavaRegex } from "java-regex-js";
 
 import { InputProps } from "./Common";
 import MATERIAL_LIST from "../../../../../../bukkit/Data/MaterialList";
-import { VscClose, VscTrash } from "react-icons/vsc";
 
 const bukkitOptions = MATERIAL_LIST.filter(e => e.isBlock()).map(e => {
     return {

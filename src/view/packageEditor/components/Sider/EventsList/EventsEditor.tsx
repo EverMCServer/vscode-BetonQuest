@@ -16,6 +16,7 @@ import Checkbox from "../CommonList/Input/Checkbox";
 import Number from "../CommonList/Input/Number";
 import EntityType from "../CommonList/Input/EntityType";
 import BlockSelector from "../CommonList/Input/BlockSelector";
+import BaseLocation from "../CommonList/Input/BaseLocation";
 
 export default function (props: ListElementEditorProps<Event>) {
 
@@ -77,7 +78,7 @@ export default function (props: ListElementEditorProps<Event>) {
             argumentsPattern: {
                 mandatory: [
                     { jsx: EntityType, name: 'Entity Type', type: 'string', defaultValue: 'ZOMBIE', placeholder: 'e.g. ZOMBIE' },
-                    { jsx: Input, name: 'Location', type: 'string', defaultValue: '100;200;300;world', placeholder: 'e.g. 100;200;300;world' },
+                    { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 90, 0] } },
                     { jsx: Number, name: 'Radius', type: 'string', defaultValue: 1.0 },
                 ],
                 optional: [
@@ -109,10 +110,10 @@ export default function (props: ListElementEditorProps<Event>) {
             argumentsPattern: {
                 mandatory: [
                     { jsx: BlockSelector, name: 'Block Selector', type: 'string', defaultValue: 'AIR', placeholder: 'e.g. AIR', tooltip: 'Block Selector' },
-                    { jsx: Input, name: 'Location', type: 'string', defaultValue: '100;200;300;world', placeholder: 'e.g. 100;200;300;world' },
+                    { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
                 ],
                 optional: [
-                    { jsx: Checkbox, name: 'ignorePhysics', key: 'ignorePhysics', type: 'boolean', tooltip: 'Deactivate the physics of the block' },
+                    { jsx: Checkbox, name: 'Ignore Physics', key: 'ignorePhysics', type: 'boolean', tooltip: 'Deactivate the physics of the block' },
                 ]
             }
         }
