@@ -116,7 +116,7 @@
     "@typescript-eslint/eslint-plugin": "^5.59.8",
     "@typescript-eslint/parser": "^5.59.8",
     "@vscode/test-electron": "^2.3.2",
-    "@vscode/test-web": "^0.0.48",
+    "@vscode/test-web": "^0.0.50",
     "assert": "^2.1.0",
     "css-loader": "^6.8.1",
     "css-modules-typescript-loader": "^4.0.1",
