@@ -116,7 +116,7 @@ export default function (props: InputProps) {
                 size="small"
             />
             <Divider />
-            <span>Block:</span>
+            <span><sup>*</sup>Block ID:</span>
             <Select
                 value={blockId}
                 // defaultValue={props.value}

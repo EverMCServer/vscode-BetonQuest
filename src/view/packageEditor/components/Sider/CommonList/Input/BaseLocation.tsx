@@ -45,12 +45,12 @@ export default function (props: InputProps) {
 
         props.onChange(value);
     }, [props.onChange]);
-console.log("a");
+
     return (
         <Space direction="vertical" style={{ width: "100%" }}>
             <Space.Compact block>
                 <Input
-                    placeholder="X"
+                    placeholder="* X"
                     style={{
                         width: "min-content",
                         borderRight: 0,
@@ -73,7 +73,7 @@ console.log("a");
             </Space.Compact>
             <Space.Compact block>
                 <Input
-                    placeholder="Y"
+                    placeholder="* Y"
                     style={{
                         width: "min-content",
                         borderRight: 0,
@@ -96,7 +96,7 @@ console.log("a");
             </Space.Compact>
             <Space.Compact block>
                 <Input
-                    placeholder="Z"
+                    placeholder="* Z"
                     style={{
                         width: "min-content",
                         borderRight: 0,
@@ -119,7 +119,7 @@ console.log("a");
             </Space.Compact>
             <Space.Compact block>
                 <Input
-                    placeholder="World"
+                    placeholder="* World"
                     style={{
                         width: "min-content",
                         borderRight: 0,
