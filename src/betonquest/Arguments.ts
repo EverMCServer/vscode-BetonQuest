@@ -18,11 +18,16 @@ type MandatoryArgumentType = (
     'string[,]' |
     'string[|]' |
     'string[^]' |
-    '[string:number][,]' |
+    '[string:number?][,]' |
     '*'
 );
 
-export type MandatoryArgumentDataType = string | number | string[] | [string, number][];
+export type MandatoryArgumentDataType =
+    string |
+    number |
+    string[] |
+    [string, number?][]
+    ;
 class MandatoryArguments extends Array<MandatoryArgumentDataType> { };
 
 /**
@@ -41,10 +46,19 @@ type OptionalArgumentType = (
     'float' |
     'string[,]' |
     'boolean' |
-    '[string:number][,]'
+    // '[string:number][,]'
+    '[string:number?][,]'
 );
 
-export type OptionalArgumentDataType = string | number | string[] | boolean | [string, number][] | undefined;
+export type OptionalArgumentDataType =
+    string |
+    number |
+    string[] |
+    boolean |
+    // [string, number][] |
+    [string, number?][] |
+    undefined
+    ;
 class OptionalArguments extends Map<string, OptionalArgumentDataType> { };
 
 type ArgumentsPatternMandatory = {
@@ -54,7 +68,7 @@ type ArgumentsPatternMandatory = {
     escapeCharacters?: string[],
     jsx?: (props: any) => React.ReactNode,
     tooltip?: string,
-    placeholder?: string,
+    placeholder?: string | string[],
     config?: any
 };
 
@@ -65,7 +79,7 @@ type ArgumentsPatternOptional = {
     escapeCharacters?: string[],
     jsx?: (props: any) => React.ReactNode,
     tooltip?: string,
-    placeholder?: string,
+    placeholder?: string | string[],
     config?: any
 };
 
@@ -203,11 +217,17 @@ export default class Arguments {
                 this.mandatory[i] = argStr?.replace(/^\^/, "").split(/(?<!\\)\s?\^/g)
                     .map(v => this.unescapeCharacters([...escapeCharacters, '^'], v))
                     || pat.defaultValue;
-            } else if (pat.type === '[string:number][,]') {
-                this.mandatory[i] = argStr?.split(/(?<!\\),/g).map(v => {
-                    const arg = v.split(/(?<!\\):/);
-                    return [this.unescapeCharacters([...escapeCharacters, ','], arg[0]), parseInt(arg[1])] as [string, number];
-                }) || pat.defaultValue;
+            } else if (pat.type === '[string:number?][,]') {
+                let parseError = false;
+                const parsedArg: [string, number?][] = argStr?.split(/(?<!\\),/g).map(v => {
+                    const arg = /(.*?)(?<!\\):?(\d*)$/.exec(v);
+                    if (arg === null) {
+                        parseError = true;
+                        return ["", undefined];
+                    }
+                    return [this.unescapeCharacters([...escapeCharacters, ',', ':'], arg[1]), arg[2].length ? parseInt(arg[2]) : undefined];
+                });
+                this.mandatory[i] = parseError ? pat.defaultValue : parsedArg;
             } else if (pat.type === '*') {
                 this.mandatory[i] = argStrs.slice(i)
                     .map(v => this.unescapeCharacters(escapeCharacters, v))
@@ -246,12 +266,17 @@ export default class Arguments {
                                 .map(v => this.unescapeCharacters([...escapeCharacters, ','], v)));
                         } else if (pat.type === 'boolean') {
                             optionalArguments.set(pat.key, true);
-                        } else if (pat.type === '[string:number][,]') {
-                            this.mandatory[i] = argStrValue.split(/(?<!\\),/g)
-                                .map(v => {
-                                    const arg = v.split(/(?<!\\):/);
-                                    return [this.unescapeCharacters([...escapeCharacters, ','], arg[0]), parseInt(arg[1])] as [string, number];
-                                });
+                        } else if (pat.type === '[string:number?][,]') {
+                            let parseError = false;
+                            const parsedArg: [string, number?][] = argStr?.split(/(?<!\\),/g).map(v => {
+                                const arg = /(.*?)(?<!\\):?(\d*)$/.exec(v);
+                                if (arg === null) {
+                                    parseError = true;
+                                    return ["", undefined];
+                                }
+                                return [this.unescapeCharacters([...escapeCharacters, ',', ':'], arg[1]), arg[2].length ? parseInt(arg[2]) : undefined];
+                            });
+                            this.mandatory[i] = parseError ? [] : parsedArg;
                         } else { // if (value.pattern === 'string')
                             optionalArguments.set(pat.key, this.unescapeCharacters([...escapeCharacters], argStrValue));
                         }
@@ -351,8 +376,13 @@ export default class Arguments {
                 element = "^" + (value as string[])
                     .map(str => this.escapeCharacters([...escapeCharacters, '^'], str))
                     .join(" ^");
-            } else if (pat.type === '[string:number][,]') {
-                element = (value as [string, number][]).map(v => `${v[0]}:${v[1]}`).join(",");
+            } else if (pat.type === '[string:number?][,]') {
+                element = (value as [string, number?][])
+                    .map(([s, n]) => {
+                        s = this.escapeCharacters([...escapeCharacters, ',', ':'], s);
+                        return n !== undefined ? `${s}:${n}` : s;
+                    })
+                    .join(",");
             } else { // if (type === 'string' || '*')
                 element = this.escapeCharacters(escapeCharacters, value as string);
             }
@@ -389,13 +419,14 @@ export default class Arguments {
                     if (value) {
                         optionalStrs.push(`${pat.key}`);
                     }
-                } else if (pat.type === '[string:number][,]') {
-                    const valueArray = value as [string, number][];
-                    if (valueArray.length > 1 || valueArray[0][0].length > 0) {
-                        optionalStrs.push(`${pat.key}:${valueArray
-                            .map(v => `${this.escapeCharacters([...escapeCharacters, ','], v[0])}:${v[1]}`)
-                            .join(",")}`);
-                    }
+                } else if (pat.type === '[string:number?][,]') {
+                    optionalStrs.push(`${pat.key}:${(value as [string, number?][])
+                        .map(([s, n]) => {
+                            s = this.escapeCharacters([...escapeCharacters, ',', ':'], s);
+                            return n !== undefined ? `${s}:${n}` : s;
+                        })
+                        .join(",")
+                        }`);
                 } else { // if (type === 'string')
                     const valueStr = value as string;
                     if (valueStr.length > 0) {

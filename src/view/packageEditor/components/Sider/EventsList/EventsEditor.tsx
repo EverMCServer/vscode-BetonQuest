@@ -19,6 +19,7 @@ import BlockSelector from "../CommonList/Input/BlockSelector";
 import BaseLocation from "../CommonList/Input/BaseLocation";
 import Select from "../CommonList/Input/Select";
 import { DefaultOptionType } from "antd/es/select";
+import ItemList from "../CommonList/Input/ItemList";
 
 // All kinds
 const kinds: Kind<Event>[] = [
@@ -50,9 +51,8 @@ const kinds: Kind<Event>[] = [
         // e.g. emerald:5,emerald_block:9,important_sign notify backpack
         argumentsPattern: {
             mandatory: [
-                // { jsx: ItemList, name: 'Item List', type: 'ItemList', default: [["emerald", 5], ["emerald_block", 9], ["important_sign", 1]] },
-                // { jsx: ItemList, name: 'Item List', type: '[string:number][,]', default: [["emerald", 5], ["emerald_block", 9], ["important_sign", 1]] },
-                { jsx: Input, name: 'Item List', type: 'string', defaultValue: 'emerald:5,emerald_block:9,important_sign', placeholder: 'e.g. emerald:5', tooltip: 'List of Items, seprated by ","' },
+                // { jsx: ItemList, name: 'Item List', type: 'ItemList', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
+                { jsx: ItemList, name: 'Item List', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
             ],
             optional: [
                 { jsx: Checkbox, name: 'Notify', key: 'notify', type: 'boolean', tooltip: 'Display a simple message to the player about receiving items' },
@@ -106,7 +106,7 @@ const kinds: Kind<Event>[] = [
             mandatory: [
                 { jsx: EntityType, name: 'Entity Type', type: 'string', defaultValue: 'ZOMBIE', placeholder: 'e.g. ZOMBIE' },
                 { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 90, 0] } },
-                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 0.0 },
+                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 0.0, config: { min: 0 } },
             ],
             optional: [
                 { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. Super_Zombie', tooltip: 'The name of the mob which should get killed' },
