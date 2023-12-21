@@ -17,6 +17,8 @@ import Number from "../CommonList/Input/Number";
 import EntityType from "../CommonList/Input/EntityType";
 import BlockSelector from "../CommonList/Input/BlockSelector";
 import BaseLocation from "../CommonList/Input/BaseLocation";
+import Select from "../CommonList/Input/Select";
+import { DefaultOptionType } from "antd/es/select";
 
 export default function (props: ListElementEditorProps<Event>) {
 
@@ -47,7 +49,6 @@ export default function (props: ListElementEditorProps<Event>) {
             value: 'give',
             display: 'Give',
             description: 'Gives the player predefined items.',
-            // editorBody: Give,
             // e.g. emerald:5,emerald_block:9,important_sign notify backpack
             argumentsPattern: {
                 mandatory: [
@@ -58,6 +59,32 @@ export default function (props: ListElementEditorProps<Event>) {
                 optional: [
                     { jsx: Checkbox, name: 'Notify', key: 'notify', type: 'boolean', tooltip: 'Display a simple message to the player about receiving items' },
                     { jsx: Checkbox, name: 'Backpack', key: 'backpack', type: 'boolean', tooltip: 'Forces quest items to be placed in the backpack' }
+                ]
+            }
+        },
+        {
+            value: 'hunger',
+            display: 'Hunger',
+            description: 'Changes the food level of the player.',
+            argumentsPattern: {
+                mandatory: [
+                    { jsx: Select, name: 'Modification', type: 'string', defaultValue: 'set', placeholder: 'e.g. set', config: {
+                        options: [
+                        {
+                            label: 'Set', // TODO: i18n
+                            value: 'set'
+                        },
+                        {
+                            label: 'Give +', // TODO: i18n
+                            value: 'give'
+                        },
+                        {
+                            label: 'Take -', // TODO: i18n
+                            value: 'take'
+                        },
+                    ] as DefaultOptionType[] }
+                },
+                    { jsx: Number, name: 'Amount', type: 'float', defaultValue: 1.0, tooltip: 'For "set", the amount can be any value.\nFor "give" or "take", the final value will be limited between 0 and 20.' },
                 ]
             }
         },
@@ -79,7 +106,7 @@ export default function (props: ListElementEditorProps<Event>) {
                 mandatory: [
                     { jsx: EntityType, name: 'Entity Type', type: 'string', defaultValue: 'ZOMBIE', placeholder: 'e.g. ZOMBIE' },
                     { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 90, 0] } },
-                    { jsx: Number, name: 'Radius', type: 'string', defaultValue: 1.0 },
+                    { jsx: Number, name: 'Radius', type: 'float', defaultValue: 1.0 },
                 ],
                 optional: [
                     { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. Super_Zombie', tooltip: 'The name of the mob which should get killed' },

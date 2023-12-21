@@ -6,8 +6,8 @@ import ENTITY_TYPE_LIST from "../../../../../../bukkit/Data/EntityTypeList";
 
 const bukkitOptions = ENTITY_TYPE_LIST.map(e => {
     return {
-        value: e.getBukkitId(),
-        label: e.getBukkitId() // TODO: i18n
+        label: e.getBukkitId(), // TODO: i18n
+        value: e.getBukkitId()
     };
 });
 
