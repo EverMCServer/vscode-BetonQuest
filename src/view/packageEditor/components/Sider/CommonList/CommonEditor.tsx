@@ -19,7 +19,7 @@ export interface ListElementEditorBodyProps<T extends ListElement> extends ListE
 export type Kind<T extends ListElement> = {
     value: string,
     display: string,
-    description: string,
+    description: React.ReactNode,
     editorBody?: (props: ListElementEditorBodyProps<T>) => React.JSX.Element,
     argumentsPattern: ArgumentsPattern
     // argumentsConfig: ArgumentsPattern & {

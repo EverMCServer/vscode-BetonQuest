@@ -17,6 +17,7 @@ type MandatoryArgumentType = (
     'float' |
     'string[,]' |
     'string[|]' |
+    'string[^]' |
     '[string:number][,]' |
     '*'
 );
@@ -51,7 +52,7 @@ type ArgumentsPatternMandatory = {
     type: MandatoryArgumentType,
     defaultValue: MandatoryArgumentDataType,
     escapeCharacters?: string[],
-    jsx?: (props: any) => React.JSX.Element,
+    jsx?: (props: any) => React.ReactNode,
     tooltip?: string,
     placeholder?: string,
     config?: any
@@ -62,7 +63,7 @@ type ArgumentsPatternOptional = {
     key: string,
     type: OptionalArgumentType,
     escapeCharacters?: string[],
-    jsx?: (props: any) => React.JSX.Element,
+    jsx?: (props: any) => React.ReactNode,
     tooltip?: string,
     placeholder?: string,
     config?: any
@@ -146,8 +147,8 @@ export default class Arguments {
             while ((array1 = regex.exec(this.getArgumentString())) !== null) {
                 // with quotes
                 let matched = array1[0];
-                // remove the leading seprator whitespace, if any
-                matched = matched.replace(/^\s/, "");
+                // remove the tailing seprator whitespace, if any
+                matched = matched.replace(/\s$/, "");
                 argStrs.push(matched);
 
                 // // without quotes
@@ -197,6 +198,10 @@ export default class Arguments {
             } else if (pat.type === 'string[|]') {
                 this.mandatory[i] = argStr?.split(/(?<!\\)\|/g)
                     .map(v => this.unescapeCharacters([...escapeCharacters, '|'], v))
+                    || pat.defaultValue;
+            } else if (pat.type === 'string[^]') {
+                this.mandatory[i] = argStr?.replace(/^\^/, "").split(/(?<!\\)\s?\^/g)
+                    .map(v => this.unescapeCharacters([...escapeCharacters, '^'], v))
                     || pat.defaultValue;
             } else if (pat.type === '[string:number][,]') {
                 this.mandatory[i] = argStr?.split(/(?<!\\),/g).map(v => {
@@ -342,6 +347,10 @@ export default class Arguments {
                 element = (value as string[])
                     .map(str => this.escapeCharacters([...escapeCharacters, '|'], str))
                     .join("|");
+            } else if (pat.type === 'string[^]') {
+                element = "^" + (value as string[])
+                    .map(str => this.escapeCharacters([...escapeCharacters, '^'], str))
+                    .join(" ^");
             } else if (pat.type === '[string:number][,]') {
                 element = (value as [string, number][]).map(v => `${v[0]}:${v[1]}`).join(",");
             } else { // if (type === 'string' || '*')

@@ -104,6 +104,17 @@ export default function (props: ListElementEditorProps<Event>) {
             }
         },
         {
+            value: 'run',
+            display: 'Run Events',
+            description: <><div style={{ marginBottom: 8 }}>Specify multiple instructions in one, long instruction.</div><div>Actual instruction need to be specified, not an event name. Don't use conditions here, it behaves strangely.</div></>,
+            argumentsPattern: {
+                mandatory: [
+                    { jsx: TextAreaList, name: 'Event Instruction', type: 'string[^]', defaultValue: '', placeholder: 'e.g. give item:1', tooltip: 'Actual instruction need to be specified, not an event name.' },
+                ],
+                keepWhitespaces: true
+            }
+        },
+        {
             value: 'setblock',
             display: 'Set Block',
             description: 'Changes the block at the given position.',
