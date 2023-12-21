@@ -139,14 +139,16 @@ export default class Arguments {
             argStrs = [this.getArgumentString()];
         } else {
             // Split arguments by whitespaces, with respect to quotes ("")
-            const regex = /(?=[^\S]*)(?:(\"[^\"]*?\")|(\'[^\']*?\'))(?=[^\S]+|$)|(\S+)/g; // keep quotes
-            // const regex = /(?=[^\S]*)(?:\"([^\"]*?)\"|\'([^\']*?)\')(?=[^\S]+|$)|(\S+)/g; // without quotes
+            const regex = /(?:\"[^\"]*?\"|\'[^\']*?\')\s*|\S+\s*/g; // keep quotes and whitespaces
+            // const regex = /((?:\"[^\"]*?\"|\'[^\']*?\'))|(\S+)/g; // keep quotes
+            // const regex = /(?:\"([^\"]*?)\"|\'([^\']*?)\')|(\S+)/g; // without quotes or whitespaces
             let array1: RegExpExecArray | null;
             while ((array1 = regex.exec(this.getArgumentString())) !== null) {
-                // keep quotes
-                if (array1[0] !== undefined) {
-                    argStrs.push(array1[0]);
-                }
+                // with quotes
+                let matched = array1[0];
+                // remove the leading seprator whitespace, if any
+                matched = matched.replace(/^\s/, "");
+                argStrs.push(matched);
 
                 // // without quotes
                 // if (array1[1] !== undefined) {
