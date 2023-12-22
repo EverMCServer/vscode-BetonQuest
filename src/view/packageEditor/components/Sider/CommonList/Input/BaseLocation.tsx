@@ -1,46 +1,52 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Input, InputNumber, Space } from "antd";
+import { Input, InputNumber, Space, Tooltip } from "antd";
 
 import { InputProps } from "./Common";
 
 // https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Data-Formats/#block-selectors
 
 export default function (props: InputProps) {
-    const [defaultX, defaultY, defaultZ, defaultWorld, defaultPitch, defaultYaw] = props.config?.defaultValue || [0.5, 64, 0.5, "world", 90, 0];
+    const [defaultX, defaultY, defaultZ, defaultWorld, defaultYaw, defaultPitch] = props.config?.defaultValue || [0.5, 64, 0.5, "world", 0, 0];
 
     const [x, setX] = useState<number>(defaultX);
     const [y, setY] = useState<number>(defaultY);
     const [z, setZ] = useState<number>(defaultZ);
     const [world, setWorld] = useState<string>(defaultWorld);
-    const [pitch, setPitch] = useState<number | null>(null);
     const [yaw, setYaw] = useState<number | null>(null);
+    const [pitch, setPitch] = useState<number | null>(null);
     useEffect(() => {
         if (!props.value) {
             setX(defaultX);
             setY(defaultY);
             setZ(defaultZ);
             setWorld(defaultWorld);
-            setPitch(null);
             setYaw(null);
+            setPitch(null);
             return;
         }
 
         // parse coordinate
-        const [_, x, y, z, world, pitch, yaw] = /^([0-9\.]+?);([0-9\.]+?);([0-9\.]+?);([a-z0-9_]+?)(?:;([0-9\.]+?))?(?:;([0-9\.]+?))?$/mi.exec(props.value as string) ?? ["", "0.5", "64", "0.5", "world", undefined, undefined];
+        const [_, x, y, z, world, pitch, yaw] = /^([0-9\.]+?);([0-9\.]+?);([0-9\.]+?);([a-z0-9_]+?)(?:;([+-0-9\.]+?))?(?:;([+-0-9\.]+?))?$/mi.exec(props.value as string) ?? [defaultX, defaultY, defaultZ, defaultWorld, undefined, undefined];
         if (x && y && z && world) {
             setX(parseFloat(x));
             setY(parseFloat(y));
             setZ(parseFloat(z));
             setWorld(world);
-            setPitch(pitch ? parseFloat(pitch) : null);
             setYaw(yaw ? parseFloat(yaw) : null);
+            setPitch(pitch ? parseFloat(pitch) : null);
         }
     }, [props.value]);
 
-    const setValue = useCallback((x: number, y: number, z: number, world: string, pitch: number | null, yaw: number | null) => {
+    const setValue = useCallback((x: number, y: number, z: number, world: string, yaw: number | null, pitch: number | null) => {
         let value = `${x};${y};${z};${world}`;
-        if (pitch || yaw) {
-            value += `;${pitch||defaultPitch};${yaw||defaultYaw}`;
+        if (yaw || pitch) {
+            value += `;${yaw || defaultYaw};${pitch || defaultPitch}`;
+            if (yaw === null) {
+                setYaw(defaultYaw);
+            }
+            if (pitch === null) {
+                setPitch(defaultPitch);
+            }
         }
 
         props.onChange(value);
@@ -133,35 +139,10 @@ export default function (props: InputProps) {
                     placeholder="world"
                     onChange={e => {
                         setWorld(e.target.value);
-                        setValue(x, y, z, e.target.value || defaultWorld, pitch, yaw);
+                        setValue(x, y, z, e.target.value || defaultWorld, yaw, pitch);
                     }}
                     size="small"
                     title="Name of the world"
-                    style={{ width: "inherit" }}
-                />
-            </Space.Compact>
-            <Space.Compact block>
-                <Input
-                    placeholder="Pitch"
-                    style={{
-                        width: "min-content",
-                        borderRight: 0,
-                        pointerEvents: 'none',
-                    }}
-                    disabled
-                    size="small"
-                />
-                <InputNumber
-                    value={pitch}
-                    placeholder="(none)"
-                    min={-90}
-                    max={90}
-                    onChange={e => {
-                        setPitch(e);
-                        setValue(x, y, z, world, e, yaw);
-                    }}
-                    size="small"
-                    title="Pitch"
                     style={{ width: "inherit" }}
                 />
             </Space.Compact>
@@ -176,19 +157,58 @@ export default function (props: InputProps) {
                     disabled
                     size="small"
                 />
-                <InputNumber
-                    value={yaw}
-                    placeholder="(none)"
-                    min={-180}
-                    max={180}
-                    onChange={e => {
-                        setYaw(e);
-                        setValue(x, y, z, world, pitch, e);
+                <Tooltip
+                    title={<div>
+                        <div>-180.0: north</div>
+                        <div>-90.0: east</div>
+                        <div>0.0: south</div>
+                        <div>90.0: west</div>
+                    </div>}
+                >
+                    <InputNumber
+                        value={yaw}
+                        placeholder="(none)"
+                        onChange={e => {
+                            setYaw(e);
+                            setValue(x, y, z, world, e, pitch);
+                        }}
+                        size="small"
+                        style={{ width: "inherit" }}
+                    />
+                </Tooltip>
+            </Space.Compact>
+            <Space.Compact block>
+                <Input
+                    placeholder="Pitch"
+                    style={{
+                        width: "min-content",
+                        borderRight: 0,
+                        pointerEvents: 'none',
                     }}
+                    disabled
                     size="small"
-                    title="Yaw"
-                    style={{ width: "inherit" }}
                 />
+                <Tooltip
+                    title={<div>
+                        <div>0.0: look horizontally</div>
+                        <div>90.0: look straight down</div>
+                        <div>-90.0: look straight up</div>
+                    </div>}
+                >
+                    <InputNumber
+                        value={pitch}
+                        placeholder="(none)"
+                        min={-90}
+                        max={90}
+                        onChange={e => {
+                            setPitch(e);
+                            setValue(x, y, z, world, yaw, e);
+                        }}
+                        size="small"
+                        title="Pitch"
+                        style={{ width: "inherit" }}
+                    />
+                </Tooltip>
             </Space.Compact>
         </Space>
     );
