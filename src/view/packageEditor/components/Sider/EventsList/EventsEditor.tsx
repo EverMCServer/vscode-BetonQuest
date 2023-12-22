@@ -124,8 +124,8 @@ const kinds: Kind<Event>[] = [
                 { jsx: Number, name: 'Radius', type: 'float', defaultValue: 0.0, config: { min: 0 } },
             ],
             optional: [
-                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. Super_Zombie', tooltip: 'The name of the mob which should get killed' },
-                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Kill only mobs that with the same mark using the spawn mob event' }
+                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. Super_Zombie', tooltip: 'The name of the mob which should be removed' },
+                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Remove only mobs that with the same mark using the spawn mob event' }
             ]
         }
     },
@@ -182,7 +182,7 @@ const kinds: Kind<Event>[] = [
     },
     {
         value: 'damage',
-        display: 'Damage player',
+        display: 'Damage Player',
         description: 'Damages the player by specified amount of damage.',
         // e.g. damage 20
         argumentsPattern: {
@@ -222,8 +222,12 @@ const kinds: Kind<Event>[] = [
             mandatory: [
                 { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] } },
                 {
-                    jsx: Select, name: 'Action', type: 'string', defaultValue: 'set', placeholder: 'e.g. set', config: {
+                    jsx: Select, name: 'Action', type: 'string', defaultValue: 'toggle', placeholder: 'e.g. toggle', config: {
                         options: [
+                            {
+                                label: 'Toggle', // TODO: i18n
+                                value: 'toggle'
+                            },
                             {
                                 label: 'On (open)', // TODO: i18n
                                 value: 'on'
@@ -231,11 +235,7 @@ const kinds: Kind<Event>[] = [
                             {
                                 label: 'Off (close)', // TODO: i18n
                                 value: 'off'
-                            },
-                            {
-                                label: 'Toggle', // TODO: i18n
-                                value: 'toggle'
-                            },
+                            }
                         ] as DefaultOptionType[]
                     }
                 },
@@ -258,12 +258,154 @@ const kinds: Kind<Event>[] = [
     //         ]
     //     }
     // },
+    // TODO: Spigot Effects list
+    {
+        value: 'deleffect',
+        display: 'Remove Potion Effect',
+        description: 'Removes the specified potion effects from the player.',
+        // e.g. deleffect ABSORPTION,BLINDNESS
+        argumentsPattern: {
+            mandatory: [
+                { jsx: InputList, name: 'Effects', type: 'string[,]', placeholder: 'any', defaultValue: [''], tooltip: 'Leave it blank for "any" Effects' },
+            ]
+        }
+    },
+    // TODO: Spigot Effects list
+    {
+        value: 'effect',
+        display: 'Apply Potion Effect',
+        description: 'Adds a specified potion effect to player.',
+        // e.g. effect BLINDNESS 30 1 ambient icon
+        argumentsPattern: {
+            mandatory: [
+                { jsx: InputList, name: 'Effects', type: 'string[,]', placeholder: 'any', defaultValue: [''], tooltip: 'Leave it blank for "any" Effects' },
+                { jsx: Number, name: 'Duration', type: 'float', defaultValue: 0.0, tooltip: 'How long the effect will last in seconds', config: { min: 0 } },
+                { jsx: Number, name: 'Level', type: 'int', defaultValue: 0, tooltip: 'Level of the effect', config: { min: 0 } },
+            ],
+            optional: [
+                { jsx: Checkbox, name: 'Ambient', key: 'ambient', type: 'boolean', tooltip: 'Make potion particles appear more invisible (just like beacon effects)' },
+                { jsx: Checkbox, name: 'Hide Particles', key: 'hidden', type: 'boolean', tooltip: 'Hide particles completely' },
+                { jsx: Checkbox, name: 'Hide Icon', key: 'noicon', type: 'boolean', tooltip: 'Hide the icon from user UI' },
+            ]
+        }
+    },
+    // TODO: Seprated standalone Editor
+    // https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Building-Blocks/Events-List/#give-experience-experience
+    {
+        value: 'experience',
+        display: 'Give Experience',
+        description: 'Manipulates player\'s experience.',
+        // e.g. experience -2 action:addLevel
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on Modification types' },
+                {
+                    jsx: Select, name: 'Modification', type: 'string', defaultValue: 'action:addExperience', tooltip: 'action:addExperience only adds experience points, action:addLevel adds a level and keeps the current percentage. action:setExperienceBar sets the progress of the bar with decimal values between 0 and 1. action:setLevel sets only the level.', placeholder: 'e.g. action:addExperience', config: {
+                        options: [
+                            {
+                                label: 'Add Experience', // TODO: i18n
+                                value: 'action:addExperience'
+                            },
+                            {
+                                label: 'Set Experience Bar', // TODO: i18n
+                                value: 'action:setExperienceBar'
+                            },
+                            {
+                                label: 'Add Level', // TODO: i18n
+                                value: 'action:addLevel'
+                            },
+                            {
+                                label: 'Set Level', // TODO: i18n
+                                value: 'action:setLevel'
+                            },
+                        ] as DefaultOptionType[]
+                    }
+                },
+            ]
+        }
+    },
+    {
+        value: 'explosion',
+        display: 'Explosion',
+        description: 'Creates an explosion.',
+        // e.g. explosion 0 1 4 100;64;-100;survival
+        argumentsPattern: {
+            mandatory: [
+                {
+                    jsx: Select, name: 'With Fire?', type: 'string', defaultValue: '0', placeholder: 'e.g. 0', config: {
+                        options: [
+                            {
+                                label: 'No', // TODO: i18n
+                                value: '0'
+                            },
+                            {
+                                label: 'Yes', // TODO: i18n
+                                value: '1'
+                            },
+                        ] as DefaultOptionType[]
+                    }
+                },
+                {
+                    jsx: Select, name: 'Destroy Blocks?', type: 'string', defaultValue: '0', placeholder: 'e.g. 0', config: {
+                        options: [
+                            {
+                                label: 'No', // TODO: i18n
+                                value: '0'
+                            },
+                            {
+                                label: 'Yes', // TODO: i18n
+                                value: '1'
+                            },
+                        ] as DefaultOptionType[]
+                    }
+                },
+                { jsx: Number, name: 'Power Level', type: 'float', defaultValue: 0, tooltip: 'TNT is level 4' },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
+            ]
+        }
+    },
+    // TODO: New optional data type: select
+    // TODO: ... Or a seprated standalone editor
+    {
+        value: 'folder',
+        display: 'Run multiple events',
+        description: 'Runs multiple events in sequence.',
+        // e.g. folder event1,event2,event3 delay:5 period:1
+        argumentsPattern: {
+            mandatory: [
+                { jsx: InputList, name: 'Event Names', type: 'string[,]', defaultValue: [''], placeholder: 'e.g. event1', tooltip: 'Names of other events' },
+            ],
+            optional: [
+                { jsx: Number, name: 'Delay', key: 'delay', type: 'float', placeholder: '(none)', tooltip: 'The delay before the folder starts executing it\'s events' },
+                { jsx: Number, name: 'Period', key: 'period', type: 'float', placeholder: '(none)', tooltip: 'The interval between each event of the folder' },
+                // {
+                //     jsx: Select, name: 'Duration Unit', key: 'minutes', type: 'select', placeholder: 'e.g. 0', config: {
+                //         options: [
+                //             {
+                //                 label: 'Minutes', // TODO: i18n
+                //                 value: 'minutes'
+                //             },
+                //             {
+                //                 label: 'Ticks', // TODO: i18n
+                //                 value: 'ticks'
+                //             },
+                //         ] as DefaultOptionType[]
+                //     }
+                // },
+                { jsx: Checkbox, name: 'Minutes?', key: 'minutes', type: 'boolean', tooltip: 'Unit of the time duration' },
+                { jsx: Checkbox, name: 'Ticks?', key: 'ticks', type: 'boolean', tooltip: 'Unit of the time duration' },
+                { jsx: Number, name: 'Random Pick', key: 'random', type: 'int', placeholder: '(none)', tooltip: 'Number of events to be randomly picked' },
+                { jsx: Checkbox, name: 'Cancel on Logout', key: 'cancelOnLogout', type: 'boolean', tooltip: 'Terminates the remaining events execution when the player disconnected' },
+            ],
+            keepWhitespaces: true,
+        },
+    },
     // TODO
     // {
     //     value: 'kind',
     //     display: 'Name',
     //     description: 'desc.',
-    //     // e.g.
+    //     // e.g. 
     //     argumentsPattern: {
     //         mandatory: [
     //             { jsx: TextAreaList, name: 'Name', type: 'string', defaultValue: '' },
@@ -351,7 +493,7 @@ const kinds: Kind<Event>[] = [
             optional: [
                 { jsx: InputList, name: 'Category', key: 'category', type: 'string[,]', placeholder: 'e.g. info', tooltip: 'Will load all settings from that Notification Category' },
                 { jsx: Input, name: 'IO', key: 'io', type: 'string', placeholder: 'e.g. bossbar', tooltip: 'Any NotifyIO Overrides the "category" settings' },
-                // TODO: Seprated editor body. https://docs.betonquest.org/2.0-DEV/Documentation/Visual-Effects/Notifications/Notification-IO%27s-%26-Categories/
+                // TODO: Seprated standalone body. https://docs.betonquest.org/2.0-DEV/Documentation/Visual-Effects/Notifications/Notification-IO%27s-%26-Categories/
             ],
             keepWhitespaces: true
         }
