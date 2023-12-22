@@ -35,6 +35,38 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        value: 'cancel',
+        display: 'Cancel (cancel)',
+        description: 'Cancel a quest predefined in a Quest Canceler.',
+        argumentsPattern: {
+            mandatory: [
+                { jsx: TextAreaList, name: 'Canceler', type: 'string', defaultValue: [''] },
+            ]
+        }
+    },
+    // TODO: match mandatory with key
+    // TODO: variable support
+    // {
+    //     value: 'burn',
+    //     display: 'Burn',
+    //     description: 'Set fire on player.',
+    //     // e.g. burn duration:4
+    //     // e.g. burn duration:%point.punishment.amount%
+    //     argumentsPattern: {
+    //         mandatory: [
+    //             { jsx: TextAreaList, name: 'Duration', key: 'duration', type: 'string', defaultValue: 0, tooltip: 'The duration the player will burn (in seconds).' },
+    //         ]
+    //     }
+    // },
+    {
+        value: 'cancelconversation',
+        display: 'Cancel Conversation',
+        description: 'Cancels the active conversation of the player.',
+        argumentsPattern: {
+            mandatory: [],
+        }
+    },
+    {
         value: 'chat',
         display: 'Chat',
         description: 'Send the given message as the player.',
@@ -45,6 +77,199 @@ const kinds: Kind<Event>[] = [
             keepWhitespaces: true
         }
     },
+    {
+        value: 'chestclear',
+        display: 'Chest Clear',
+        description: 'Removes all items from a chest at specified location.',
+        // e.g. chestclear 100;200;300;world
+        argumentsPattern: {
+            mandatory: [
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
+            ]
+        }
+    },
+    {
+        value: 'chestgive',
+        display: 'Chest Give',
+        description: 'Puts items in a chest at specified location.',
+        // e.g. chestgive 100;200;300;world emerald:5,sword
+        argumentsPattern: {
+            mandatory: [
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
+                { jsx: ItemList, name: 'Item List', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
+            ]
+        }
+    },
+    {
+        value: 'chesttake',
+        display: 'Chest Take',
+        description: 'Removes items from a chest at specified location.',
+        // e.g. chesttake 100;200;300;world emerald:5,sword
+        argumentsPattern: {
+            mandatory: [
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
+                { jsx: ItemList, name: 'Item List', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
+            ]
+        }
+    },
+    {
+        value: 'clear',
+        display: 'Clear Entities',
+        description: 'Removes (instead of kills) all specified mobs from the specified area.',
+        // e.g. clear ZOMBIE,CREEPER 100;200;300;world 10 name:Monster
+        argumentsPattern: {
+            mandatory: [
+                { jsx: EntityType, name: 'Entity Type', type: 'string', defaultValue: 'ZOMBIE', placeholder: 'e.g. ZOMBIE' },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] } },
+                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 0.0, config: { min: 0 } },
+            ],
+            optional: [
+                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. Super_Zombie', tooltip: 'The name of the mob which should get killed' },
+                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Kill only mobs that with the same mark using the spawn mob event' }
+            ]
+        }
+    },
+    {
+        value: 'compass',
+        display: 'Compass',
+        description: 'Adds or removes a compass destination for the player.',
+        // e.g. compass add beton
+        argumentsPattern: {
+            mandatory: [
+                {
+                    jsx: Select, name: 'Action', type: 'string', defaultValue: 'set', placeholder: 'e.g. set', config: {
+                        options: [
+                            {
+                                label: 'Set', // TODO: i18n
+                                value: 'set'
+                            },
+                            {
+                                label: 'Give +', // TODO: i18n
+                                value: 'give'
+                            },
+                            {
+                                label: 'Take -', // TODO: i18n
+                                value: 'take'
+                            },
+                        ] as DefaultOptionType[]
+                    }
+                },
+                { jsx: Input, name: 'Compass', type: 'string', defaultValue: '', placeholder: 'e.g. some_compass', tooltip: 'A name defined in the "compass" section' },
+            ]
+        }
+    },
+    {
+        value: 'command',
+        display: 'Command',
+        description: 'Runs specified command from the console.',
+        // e.g. command kill %player%|ban %player%
+        argumentsPattern: {
+            mandatory: [
+                { jsx: TextAreaList, name: 'Commands', type: 'string[|]', defaultValue: '' },
+            ]
+        }
+    },
+    {
+        value: 'conversation',
+        display: 'Conversation',
+        description: 'Starts a conversation at location of the player.',
+        // e.g. conversation village_smith
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Input, name: 'Conversation ID', type: 'string', defaultValue: '', placeholder: 'e.g. village_smith', tooltip: 'ID of the conversation' },
+            ]
+        }
+    },
+    {
+        value: 'damage',
+        display: 'Damage player',
+        description: 'Damages the player by specified amount of damage.',
+        // e.g. damage 20
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'Damage points' },
+            ]
+        }
+    },
+    {
+        value: 'deletepoint',
+        display: 'Delete Point',
+        description: 'Clear all player points in a specified category.',
+        // e.g. deletepoint npc_attitude
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. npc_attitude', tooltip: 'ID of the point' },
+            ]
+        }
+    },
+    {
+        value: 'deleteglobalpoint',
+        display: 'Delete Global Point',
+        description: 'Removes the specified category from the global points list.',
+        // e.g. deleteglobalpoint bonus
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. bonus', tooltip: 'ID of the global point' },
+            ]
+        }
+    },
+    {
+        value: 'door',
+        display: 'Door',
+        description: 'Opens and closes doors, trapdoors and fence gates.',
+        // e.g. door 100;200;300;world off
+        argumentsPattern: {
+            mandatory: [
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] } },
+                {
+                    jsx: Select, name: 'Action', type: 'string', defaultValue: 'set', placeholder: 'e.g. set', config: {
+                        options: [
+                            {
+                                label: 'On (open)', // TODO: i18n
+                                value: 'on'
+                            },
+                            {
+                                label: 'Off (close)', // TODO: i18n
+                                value: 'off'
+                            },
+                            {
+                                label: 'Toggle', // TODO: i18n
+                                value: 'toggle'
+                            },
+                        ] as DefaultOptionType[]
+                    }
+                },
+            ]
+        }
+    },
+    // TODO: match mandatory with key
+    // TODO: variable support
+    // {
+    //     value: 'drop',
+    //     display: 'Drop Item',
+    //     description: 'Drops (place) the defined items at a defined location.',
+    //     // e.g. 
+    //     argumentsPattern: {
+    //         mandatory: [
+    //             { jsx: ItemList, name: 'Item List', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
+    //         ],
+    //         optional: [
+    //             { jsx: BaseLocation, name: 'Location', key: 'location', type: 'string', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] } },
+    //         ]
+    //     }
+    // },
+    // TODO
+    // {
+    //     value: 'kind',
+    //     display: 'Name',
+    //     description: 'desc.',
+    //     // e.g.
+    //     argumentsPattern: {
+    //         mandatory: [
+    //             { jsx: TextAreaList, name: 'Name', type: 'string', defaultValue: '' },
+    //         ]
+    //     }
+    // },
     {
         value: 'give',
         display: 'Give',
