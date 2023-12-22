@@ -38,6 +38,7 @@ export default function (props: InputProps) {
                         size="small"
                     />
                     {valueArray.length > 1 && <Button
+                        style={{ height: 'inherit' }}
                         type="default"
                         size="small"
                         onClick={() => {
@@ -46,7 +47,7 @@ export default function (props: InputProps) {
                             refreshUI();
                         }}
                     >
-                        <VscClose />
+                        <VscClose style={{ verticalAlign: 'middle' }} />
                     </Button>}
                 </Space.Compact>
             )}

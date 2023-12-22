@@ -37,7 +37,7 @@ export default function (props: InputProps) {
                             props.onChange(newItemList);
                             setValueArray(newItemList);
                         }}
-                        placeholder={props.placeholder? (props.placeholder as string[])[0] : undefined}
+                        placeholder={props.placeholder ? (props.placeholder as string[])[0] : undefined}
                         autoFocus={index === focusIndex}
                         size="small"
                         style={{ width: 'inherit' }}
@@ -59,13 +59,14 @@ export default function (props: InputProps) {
                             props.onChange(newItemList);
                             setValueArray(newItemList);
                         }}
-                        placeholder={props.placeholder? (props.placeholder as string[])[1] : undefined}
+                        placeholder={props.placeholder ? (props.placeholder as string[])[1] : undefined}
                         min={props.config?.min}
                         max={props.config?.max}
                         step={props.config?.step}
                         size="small"
                     />
                     {valueArray.length > 1 && <Button
+                        style={{ height: 'inherit', marginLeft: 1 }}
                         type="default"
                         size="small"
                         onClick={() => {
@@ -73,7 +74,7 @@ export default function (props: InputProps) {
                             props.onChange(valueUpdate);
                         }}
                     >
-                        <VscClose />
+                        <VscClose style={{ verticalAlign: 'middle' }} />
                     </Button>}
                 </Space.Compact>
             )}

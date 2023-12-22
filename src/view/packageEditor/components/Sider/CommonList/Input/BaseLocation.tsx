@@ -161,7 +161,7 @@ export default function (props: InputProps) {
                         setValue(x, y, z, world, e, yaw);
                     }}
                     size="small"
-                    title="Yaw"
+                    title="Pitch"
                     style={{ width: "inherit" }}
                 />
             </Space.Compact>
