@@ -5,17 +5,20 @@ import { Kind, ListElementEditorProps } from "../CommonList/CommonEditor";
 import CommonEditor from "../CommonList/CommonEditor";
 import Default from "./ConditionsEditor/Default";
 
+import TextArea from "../CommonList/Input/TextArea";
+
 // All kinds
 const kinds: Kind<Condition>[] = [
     {
-        value: 'unknown',
-        display: 'Unknown',
-        description: 'Unknown Condition',
+        value: '*',
+        display: '*',
+        description: undefined,
         editorBody: Default,
         argumentsPattern: {
             mandatory: [
-                { name: 'unspecified', type: '*', defaultValue: '' },
+                { jsx: TextArea, name: 'Value', type: '*', defaultValue: '' },
             ],
+            keepWhitespaces: true
         }
     },
     // ...

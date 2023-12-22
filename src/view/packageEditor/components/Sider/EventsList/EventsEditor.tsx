@@ -24,13 +24,14 @@ import ItemList from "../CommonList/Input/ItemList";
 // All kinds
 const kinds: Kind<Event>[] = [
     {
-        value: 'unknown',
-        display: 'Unknown',
-        description: 'Unknown Event',
+        value: '*',
+        display: '*',
+        description: undefined,
         argumentsPattern: {
             mandatory: [
                 { jsx: TextArea, name: 'Value', type: '*', defaultValue: '' },
-            ]
+            ],
+            keepWhitespaces: true
         }
     },
     {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Row, Col, Divider, Select } from "antd";
 
 import ListElement from "../../../../../betonquest/ListElement";
@@ -22,16 +22,6 @@ export type Kind<T extends ListElement> = {
     description: React.ReactNode,
     editorBody?: (props: ListElementEditorBodyProps<T>) => React.JSX.Element,
     argumentsPattern: ArgumentsPattern
-    // argumentsConfig: ArgumentsPattern & {
-    //     mandatory: {
-    //         jsx: React.JSX.Element,
-    //         config?: any
-    //     }[],
-    //     optional?: {
-    //         jsx: React.JSX.Element,
-    //         config?: any
-    //     }[]
-    // },
 };
 
 interface CommonEditorProps<T extends ListElement> extends ListElementEditorProps<T> {
@@ -53,6 +43,27 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
     //     setListElement(props.listElement);
     // }, [props.listElement]);
 
+    const optionsCache = useRef(props.kinds.slice(1).map(k => ({
+        value: k.value,
+        label: k.display,
+    })));
+
+    const [options, setOptions] = useState<{ label: string, value: string }[]>(optionsCache.current);
+    useEffect(() => {
+        setOptions(optionsCache.current);
+    }, [props.kinds]);
+
+    const onKindSearch = (input: string) => {
+        const opt = optionsCache.current.slice();
+        if (input.match(/^[a-zA-Z]+$/g)) {
+            opt.unshift({
+                value: input,
+                label: input,
+            });
+        }
+        setOptions(opt);
+    };
+
     // Handle kind search
     const onKindFilter = (input: string, option: {
         value: string;
@@ -72,7 +83,7 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
 
     // Find editor by kind
     const getEditorBody = (kind: string) => {
-        const k = props.kinds.find(e => e.value === kind);
+        const k = props.kinds.find(e => e.value === kind) || props.kinds.find(e => e.value === '*');
 
         // Create arguments' editor by kind.argumentsConfig
         return (<>
@@ -101,17 +112,15 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
                         placeholder="Please enter a kind"
                         defaultActiveFirstOption={false}
                         // suffixIcon={null}
-                        filterOption={onKindFilter}
                         onChange={(e) => {
                             props.listElement.setKind(e);
                             props.syncYaml();
                             refreshUI();
                         }}
+                        onSearch={onKindSearch}
+                        filterOption={onKindFilter}
                         notFoundContent={null}
-                        options={props.kinds.map((d) => ({
-                            value: d.value,
-                            label: d.display,
-                        }))}
+                        options={options}
                         size="small"
                         style={{ width: "100%" }}
                     />
