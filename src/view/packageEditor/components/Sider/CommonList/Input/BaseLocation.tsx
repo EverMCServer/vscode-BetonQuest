@@ -26,7 +26,7 @@ export default function (props: InputProps) {
         }
 
         // parse coordinate
-        const [_, x, y, z, world, pitch, yaw] = /^([0-9\.]+?);([0-9\.]+?);([0-9\.]+?);([a-z0-9_]+?)(?:;([+-0-9\.]+?))?(?:;([+-0-9\.]+?))?$/mi.exec(props.value as string) ?? [defaultX, defaultY, defaultZ, defaultWorld, undefined, undefined];
+        const [_, x, y, z, world, yaw, pitch] = /^([\+\-]?[0-9\.]+?);([\+\-]?[0-9\.]+?);([\+\-]?[0-9\.]+?);([a-z0-9_]+?)(?:;([\+\-]?[0-9\.]+?))?(?:;([\+\-]?[0-9\.]+?))?$/mi.exec(props.value as string) ?? [defaultX, defaultY, defaultZ, defaultWorld, undefined, undefined];
         if (x && y && z && world) {
             setX(parseFloat(x));
             setY(parseFloat(y));
@@ -70,7 +70,7 @@ export default function (props: InputProps) {
                     placeholder={`${defaultX}`}
                     onChange={e => {
                         setX(e || defaultX);
-                        setValue(e || defaultX, y, z, world, pitch, yaw);
+                        setValue(e || defaultX, y, z, world, yaw, pitch);
                     }}
                     size="small"
                     title="X"
@@ -93,7 +93,7 @@ export default function (props: InputProps) {
                     placeholder={`${defaultY}`}
                     onChange={e => {
                         setY(e || defaultY);
-                        setValue(x, e || defaultY, z, world, pitch, yaw);
+                        setValue(x, e || defaultY, z, world, yaw, pitch);
                     }}
                     size="small"
                     title="Y"
@@ -116,7 +116,7 @@ export default function (props: InputProps) {
                     placeholder={`${defaultZ}`}
                     onChange={e => {
                         setZ(e || defaultZ);
-                        setValue(x, y, e || defaultZ, world, pitch, yaw);
+                        setValue(x, y, e || defaultZ, world, yaw, pitch);
                     }}
                     size="small"
                     title="Z"
