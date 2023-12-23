@@ -161,8 +161,6 @@ export default class Arguments {
             while ((array1 = regex.exec(this.getArgumentString())) !== null) {
                 // with quotes
                 let matched = array1[0];
-                // remove the tailing seprator whitespace, if any
-                matched = matched.replace(/\s$/, "");
                 argStrs.push(matched);
 
                 // // without quotes
@@ -175,25 +173,46 @@ export default class Arguments {
                 // }
             }
 
-            // Keep whitespaces only for the mandatory part. e.g. "notify"
+            // Keep whitespaces only for the mandatory part. e.g. "notify", "log"
             if (pattern.keepWhitespaces && pattern.optional && pattern.optional.length) {
-                argStrs = argStrs.some((v, i) => {
-                    if (v.match(/(?<!\\):/g)) {
-                        argStrs = [argStrs.slice(0, i).join(" "), ...argStrs.slice(i)];
-
-                        return true;
-                    }
-                    return false;
-                }) ? argStrs : [this.getArgumentString()];
+                let newArgStrs = [this.getArgumentString()];
+                if (pattern!.optionalAtFirst) {
+                    argStrs.every((v, i) => {
+                        if (/(?<!\\):/g.test(v)) {
+                            newArgStrs = [...argStrs.slice(0, i + 1).map(value => value.replace(/\s$/, "")), argStrs.slice(i + 1).join('')];
+                            return true;
+                        }
+                        return false;
+                    });
+                } else {
+                    argStrs.some((v, i) => {
+                        if (/(?<!\\):/g.test(v)) {
+                            newArgStrs = [argStrs.slice(0, i).join(''), ...argStrs.slice(i).map(value => value.replace(/\s$/, ""))];
+                            return true;
+                        }
+                        return false;
+                    });
+                }
+                argStrs = newArgStrs;
+            } else {
+                // remove the tailing seprator whitespace, if any
+                argStrs = argStrs.map(value => value.replace(/\s$/, ""));
             }
         }
 
         console.log("debug");
 
         // Parse mandatory arguments
-        for (let i = 0; i < pattern.mandatory.length; i++) {
+        let iFrom = 0;
+        let iTo = pattern.mandatory.length;
+        if (pattern.optionalAtFirst) {
+            iFrom = argStrs.length - pattern.mandatory.length;
+            iTo = argStrs.length;
+        }
+        const argStrsMandatory = argStrs.slice(iFrom, iTo);
+        for (let i = 0; i < argStrsMandatory.length; i++) {
             const pat = pattern.mandatory[i];
-            let argStr = argStrs[i];
+            let argStr = argStrsMandatory[i];
 
             // Un-Escape special characters
             const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [];
@@ -229,7 +248,7 @@ export default class Arguments {
                 });
                 this.mandatory[i] = parseError ? pat.defaultValue : parsedArg;
             } else if (pat.type === '*') {
-                this.mandatory[i] = argStrs.slice(i)
+                this.mandatory[i] = argStrsMandatory.slice(i)
                     .map(v => this.unescapeCharacters(escapeCharacters, v))
                     .join(" ") || pat.defaultValue;
                 break;
@@ -237,7 +256,10 @@ export default class Arguments {
         }
 
         // Parse optional arguments
-        if (pattern.optional && pattern.optional.length > 0 && !pattern.mandatory.some(v => v.type === '*')) { // Skip when mandatory pattern is "*"
+        if (pattern.optional
+            && pattern.optional.length > 0
+            && !(!pattern.optionalAtFirst && pattern.mandatory.some(v => v.type === '*')) // Skip when mandatory pattern is "*"
+            ) {
             const optionalArguments: OptionalArguments = new Map();
             let iFrom = 0;
             let iTo = argStrs.length;

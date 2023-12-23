@@ -40,7 +40,7 @@ const kinds: Kind<Event>[] = [
         description: 'Cancel a quest predefined in a Quest Canceler.',
         argumentsPattern: {
             mandatory: [
-                { jsx: TextAreaList, name: 'Canceler', type: 'string', defaultValue: [''] },
+                { jsx: Input, name: 'Canceler', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S+$/] } },
             ]
         }
     },
@@ -124,8 +124,8 @@ const kinds: Kind<Event>[] = [
                 { jsx: Number, name: 'Radius', type: 'float', defaultValue: 0.0, config: { min: 0 } },
             ],
             optional: [
-                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. Super_Zombie', tooltip: 'The name of the mob which should be removed' },
-                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Remove only mobs that with the same mark using the spawn mob event' }
+                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. Super_Zombie', tooltip: 'The name of the mob which should be removed', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Remove only mobs that with the same mark using the spawn mob event', config: { allowedPatterns: [/^\S+$/] } }
             ]
         }
     },
@@ -137,12 +137,8 @@ const kinds: Kind<Event>[] = [
         argumentsPattern: {
             mandatory: [
                 {
-                    jsx: Select, name: 'Action', type: 'string', defaultValue: 'set', placeholder: 'e.g. set', config: {
+                    jsx: Select, name: 'Action', type: 'string', defaultValue: 'add', placeholder: 'e.g. add', config: {
                         options: [
-                            {
-                                label: 'Set', // TODO: i18n
-                                value: 'set'
-                            },
                             {
                                 label: 'Give +', // TODO: i18n
                                 value: 'give'
@@ -151,10 +147,14 @@ const kinds: Kind<Event>[] = [
                                 label: 'Take -', // TODO: i18n
                                 value: 'take'
                             },
-                        ] as DefaultOptionType[]
+                             {
+                                label: 'Set =', // TODO: i18n
+                                value: 'set'
+                            },
+                       ] as DefaultOptionType[]
                     }
                 },
-                { jsx: Input, name: 'Compass', type: 'string', defaultValue: '', placeholder: 'e.g. some_compass', tooltip: 'A name defined in the "compass" section' },
+                { jsx: Input, name: 'Compass', type: 'string', defaultValue: '', placeholder: 'e.g. some_compass', tooltip: 'A name defined in the "compass" section', config: { allowedPatterns: [/^\S+$/] } },
             ]
         }
     },
@@ -176,7 +176,7 @@ const kinds: Kind<Event>[] = [
         // e.g. conversation village_smith
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Conversation ID', type: 'string', defaultValue: '', placeholder: 'e.g. village_smith', tooltip: 'ID of the conversation' },
+                { jsx: Input, name: 'Conversation ID', type: 'string', defaultValue: '', placeholder: 'e.g. village_smith', tooltip: 'ID of the conversation', config: { allowedPatterns: [/^\S+$/] } },
             ]
         }
     },
@@ -198,7 +198,7 @@ const kinds: Kind<Event>[] = [
         // e.g. deletepoint npc_attitude
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. npc_attitude', tooltip: 'ID of the point' },
+                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. npc_attitude', tooltip: 'ID of the point', config: { allowedPatterns: [/^\S+$/] } },
             ]
         }
     },
@@ -209,7 +209,7 @@ const kinds: Kind<Event>[] = [
         // e.g. deleteglobalpoint bonus
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. bonus', tooltip: 'ID of the global point' },
+                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. bonus', tooltip: 'ID of the global point', config: { allowedPatterns: [/^\S+$/] } },
             ]
         }
     },
@@ -400,18 +400,6 @@ const kinds: Kind<Event>[] = [
             keepWhitespaces: true,
         },
     },
-    // TODO
-    // {
-    //     value: 'kind',
-    //     display: 'Name',
-    //     description: 'desc.',
-    //     // e.g. 
-    //     argumentsPattern: {
-    //         mandatory: [
-    //             { jsx: TextAreaList, name: 'Name', type: 'string', defaultValue: '' },
-    //         ]
-    //     }
-    // },
     {
         value: 'give',
         display: 'Give',
@@ -425,6 +413,74 @@ const kinds: Kind<Event>[] = [
             optional: [
                 { jsx: Checkbox, name: 'Notify', key: 'notify', type: 'boolean', tooltip: 'Display a simple message to the player about receiving items' },
                 { jsx: Checkbox, name: 'Backpack', key: 'backpack', type: 'boolean', tooltip: 'Forces quest items to be placed in the backpack' }
+            ]
+        }
+    },
+    {
+        value: 'givejournal',
+        display: 'Give Journal',
+        description: 'Gives the player his journal. Same as /j command.',
+        // e.g. givejournal
+        argumentsPattern: {
+            mandatory: []
+        }
+    },
+    {
+        value: 'globalpoint',
+        display: 'Global Point',
+        description: 'Manipulates points in a global category. Same as the normal point event. These global categories are player independent.',
+        // e.g. global_knownusers 1 action:add
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. bonus', tooltip: 'ID of the global point', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on Action types' },
+                {
+                    jsx: Select, name: 'Action', type: 'string', defaultValue: 'action:add', placeholder: 'e.g. action:add', config: {
+                        options: [
+                            {
+                                label: 'Add +', // TODO: i18n
+                                value: 'action:add'
+                            },
+                            {
+                                label: 'Subtract -', // TODO: i18n
+                                value: 'action:subtract'
+                            },
+                            {
+                                label: 'Set =', // TODO: i18n
+                                value: 'action:set'
+                            },
+                             {
+                                label: 'Multiply x', // TODO: i18n
+                                value: 'action:multiply'
+                            },
+                       ] as DefaultOptionType[]
+                    }
+                },
+            ]
+        }
+    },
+    {
+        value: 'globaltag',
+        display: 'Global Tag',
+        description: 'Sets tag globally for all players.',
+        // e.g. globaltag add global_areNPCsAgressive
+        argumentsPattern: {
+            mandatory: [
+                {
+                    jsx: Select, name: 'Action', type: 'string', defaultValue: 'add', placeholder: 'e.g. add', config: {
+                        options: [
+                            {
+                                label: 'Add +', // TODO: i18n
+                                value: 'action:add'
+                            },
+                            {
+                                label: 'Delete -', // TODO: i18n
+                                value: 'action:del'
+                            },
+                        ] as DefaultOptionType[]
+                    }
+                },
+                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S+$/] },  placeholder: 'e.g. reward_claimed', tooltip: 'ID of the global tag' },
             ]
         }
     },
@@ -457,6 +513,119 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        value: 'if',
+        display: 'If Else',
+        description: 'Checks a condition then runs the first or second event.',
+        // e.g. if sun rain else sun
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Input, name: 'Condition ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'Positive Event ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: () => <>Else</>, name: '', type: 'string', defaultValue: 'else' },
+                { jsx: Input, name: 'Negative Event ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S+$/] } },
+            ]
+        }
+    },
+    {
+        value: 'itemdurability',
+        display: 'Item Durability',
+        description: 'Adds or removes durability from an item in the slot.',
+        // e.g. itemdurability CHEST SUBTRACT %randomnumber.whole.15~30% ignoreUnbreakable ignoreEvents
+        argumentsPattern: {
+            mandatory: [
+                {
+                    jsx: Select, name: 'Slot', type: 'string', defaultValue: 'HAND', placeholder: 'e.g. HAND', config: {
+                        options: [
+                            {
+                                label: 'Hand', // TODO: i18n
+                                value: 'HAND'
+                            },
+                            {
+                                label: 'Off Handd', // TODO: i18n
+                                value: 'OFF_HAND'
+                            },
+                            {
+                                label: 'Head', // TODO: i18n
+                                value: 'HEAD'
+                            },
+                            {
+                                label: 'Chest', // TODO: i18n
+                                value: 'CHEST'
+                            },
+                            {
+                                label: 'Legs', // TODO: i18n
+                                value: 'LEGS'
+                            },
+                            {
+                                label: 'Feet', // TODO: i18n
+                                value: 'FEET'
+                            },
+                        ] as DefaultOptionType[]
+                    }
+                },
+                {
+                    jsx: Select, name: 'Operation', type: 'string', defaultValue: 'SET', placeholder: 'e.g. SET', config: {
+                        options: [
+                            {
+                                label: 'Add +', // TODO: i18n
+                                value: 'ADD'
+                            },
+                            {
+                                label: 'Subtract -', // TODO: i18n
+                                value: 'SUBTRACT'
+                            },
+                            {
+                                label: 'Set =', // TODO: i18n
+                                value: 'SET'
+                            },
+                            {
+                                label: 'Multiply x', // TODO: i18n
+                                value: 'MULTIPLY'
+                            },
+                        ] as DefaultOptionType[]
+                    }
+                },
+                // TODO: variable support
+                { jsx: Number, name: 'Durability', type: 'float', defaultValue: 0 },
+            ],
+            optional: [
+                { jsx: Checkbox, name: 'Ignore Unbreakable', key: 'ignoreUnbreakable', type: 'boolean', tooltip: 'Ignores the unbreakable flag and unbreaking enchantment' },
+                { jsx: Checkbox, name: 'Ignore Plugin Events', key: 'ignoreEvents', type: 'boolean', tooltip: 'Prevent interference caused by other plugins' },
+            ]
+        }
+    },
+    {
+        value: 'journal',
+        display: 'Journal',
+        description: 'Adds, deletes an entry to/from a player\'s journal, or refreshes it.',
+        // e.g. journal delete quest_available
+        argumentsPattern: {
+            mandatory: [
+                {
+                    jsx: Select, name: 'Action', type: 'string', defaultValue: 'add', placeholder: 'e.g. add', config: {
+                        options: [
+                            {
+                                label: 'Add +', // TODO: i18n
+                                value: 'add'
+                            },
+                            {
+                                label: 'Delete -', // TODO: i18n
+                                value: 'delete'
+                            },
+                            {
+                                label: 'Update / Refresh ⟳', // TODO: i18n
+                                value: 'update'
+                            }
+                        ] as DefaultOptionType[]
+                    }
+                },
+                // TODO: New optional data type: string
+                // TODO: ... Or a seprated standalone editor
+                { jsx: Input, name: 'Journal ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S+$/] } },
+            ]
+        }
+    },
+    {
         value: 'kill',
         display: 'Kill',
         description: 'Kills the player',
@@ -477,8 +646,62 @@ const kinds: Kind<Event>[] = [
                 { jsx: Number, name: 'Radius', type: 'float', defaultValue: 0.0, config: { min: 0 } },
             ],
             optional: [
-                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. Super_Zombie', tooltip: 'The name of the mob which should get killed' },
-                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Kill only mobs that with the same mark using the spawn mob event' }
+                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. Super_Zombie', tooltip: 'The name of the mob which should get killed', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Kill only mobs that with the same mark using the spawn mob event', config: { allowedPatterns: [/^\S+$/] } }
+            ]
+        }
+    },
+    {
+        value: 'language',
+        display: 'Switch Language',
+        description: 'Changes player\'s language to the specified one.',
+        // e.g. language en
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Input, name: 'Language ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^[a-zA-Z_-]+$/] } },
+            ]
+        }
+    },
+    {
+        value: 'lever',
+        display: 'Lever',
+        description: 'Switches a lever.',
+        // e.g. lever 100;200;300;world toggle
+        argumentsPattern: {
+            mandatory: [
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] } },
+                {
+                    jsx: Select, name: 'Action', type: 'string', defaultValue: 'toggle', placeholder: 'e.g. toggle', config: {
+                        options: [
+                            {
+                                label: 'Toggle', // TODO: i18n
+                                value: 'toggle'
+                            },
+                            {
+                                label: 'On', // TODO: i18n
+                                value: 'on'
+                            },
+                            {
+                                label: 'Off', // TODO: i18n
+                                value: 'off'
+                            }
+                        ] as DefaultOptionType[]
+                    }
+                },
+            ]
+        }
+    },
+    {
+        value: 'lightning',
+        display: 'Lightning',
+        description: 'Strikes a lightning at given location.',
+        // e.g. lightning 200;65;100;survival noDamage
+        argumentsPattern: {
+            mandatory: [
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] } },
+            ],
+            optional: [
+                { jsx: Checkbox, name: 'No Damage', key: 'ambient', type: 'boolean', tooltip: 'Strikes the lightning without any damages' },
             ]
         }
     },
@@ -496,6 +719,72 @@ const kinds: Kind<Event>[] = [
                 // TODO: Seprated standalone body. https://docs.betonquest.org/2.0-DEV/Documentation/Visual-Effects/Notifications/Notification-IO%27s-%26-Categories/
             ],
             keepWhitespaces: true
+        }
+    },
+    {
+        value: 'log',
+        display: 'Log Message to Console',
+        description: 'Prints a provided message to the server log. Note that when used in static context (by schedules) replacing player dependent variables will not work as the event is player independent.',
+        // e.g. log level:DEBUG daily quests have been reset
+        argumentsPattern: {
+            mandatory: [
+                { jsx: TextArea, name: 'Message', type: '*', defaultValue: '', escapeCharacters: [':'] },
+            ],
+            optional: [
+                {
+                    jsx: Select, name: 'Log Level', key: 'level', type: 'string', placeholder: 'info', config: {
+                        options: [
+                            {
+                                label: 'Debug', // TODO: i18n
+                                value: 'debug'
+                            },
+                            {
+                                label: 'Info', // TODO: i18n
+                                value: 'info'
+                            },
+                            {
+                                label: 'Warning', // TODO: i18n
+                                value: 'warning'
+                            },
+                            {
+                                label: 'Error', // TODO: i18n
+                                value: 'error'
+                            },
+                        ] as DefaultOptionType[]
+                    }
+                },
+            ],
+            keepWhitespaces: true,
+            optionalAtFirst: true
+        }
+    },
+    {
+        value: 'objective',
+        display: 'Objective',
+        description: 'Adds, removes or completes the specified objective(s).',
+        // e.g. 
+        argumentsPattern: {
+            mandatory: [
+                {
+                    jsx: Select, name: 'Action', type: 'string', defaultValue: 'add', placeholder: 'e.g. add', config: {
+                        options: [
+                            {
+                                label: 'Add / Start +', // TODO: i18n
+                                value: 'add'
+                            },
+                            {
+                                label: 'Remove / Delete -', // TODO: i18n
+                                value: 'remove'
+                            },
+                            {
+                                label: 'Complete / Finish !', // TODO: i18n
+                                value: 'complete'
+                            },
+                        ] as DefaultOptionType[]
+                    }
+                },
+                { jsx: InputList, name: 'Objective ID(s)', type: 'string[,]', defaultValue: [''] },
+            ]
         }
     },
     {
