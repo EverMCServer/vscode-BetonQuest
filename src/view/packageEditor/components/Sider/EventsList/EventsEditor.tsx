@@ -359,7 +359,7 @@ const kinds: Kind<Event>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: Number, name: 'Power Level', type: 'float', defaultValue: 0, tooltip: 'TNT is level 4' },
+                { jsx: Number, name: 'Power Level', type: 'float', defaultValue: 0, tooltip: 'TNT is level 4', config: { min: 0 } },
                 { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
             ]
         }
@@ -376,10 +376,10 @@ const kinds: Kind<Event>[] = [
                 { jsx: InputList, name: 'Event Names', type: 'string[,]', defaultValue: [''], placeholder: 'e.g. event1', tooltip: 'Names of other events' },
             ],
             optional: [
-                { jsx: Number, name: 'Delay', key: 'delay', type: 'float', placeholder: '(none)', tooltip: 'The delay before the folder starts executing it\'s events' },
-                { jsx: Number, name: 'Period', key: 'period', type: 'float', placeholder: '(none)', tooltip: 'The interval between each event of the folder' },
+                { jsx: Number, name: 'Delay', key: 'delay', type: 'float', placeholder: '(none)', tooltip: 'The delay before the folder starts executing it\'s events', config: { min: 0 } },
+                { jsx: Number, name: 'Period', key: 'period', type: 'float', placeholder: '(none)', tooltip: 'The interval between each event of the folder', config: { min: 0 } },
                 // {
-                //     jsx: Select, name: 'Duration Unit', key: 'minutes', type: 'select', placeholder: 'e.g. 0', config: {
+                //     jsx: Select, name: 'Duration Unit', key: 'minutes', type: 'select', placeholder: 'Seconds', config: {
                 //         options: [
                 //             {
                 //                 label: 'Minutes', // TODO: i18n
@@ -389,12 +389,13 @@ const kinds: Kind<Event>[] = [
                 //                 label: 'Ticks', // TODO: i18n
                 //                 value: 'ticks'
                 //             },
-                //         ] as DefaultOptionType[]
+                //         ] as DefaultOptionType[],
+                //         allowClear: true
                 //     }
                 // },
                 { jsx: Checkbox, name: 'Minutes?', key: 'minutes', type: 'boolean', tooltip: 'Unit of the time duration' },
                 { jsx: Checkbox, name: 'Ticks?', key: 'ticks', type: 'boolean', tooltip: 'Unit of the time duration' },
-                { jsx: Number, name: 'Random Pick', key: 'random', type: 'int', placeholder: '(none)', tooltip: 'Number of events to be randomly picked' },
+                { jsx: Number, name: 'Random Pick', key: 'random', type: 'int', placeholder: '(none)', tooltip: 'Number of events to be randomly picked', config: { min: 0 } },
                 { jsx: Checkbox, name: 'Cancel on Logout', key: 'cancelOnLogout', type: 'boolean', tooltip: 'Terminates the remaining events execution when the player disconnected' },
             ],
         },
@@ -585,7 +586,7 @@ const kinds: Kind<Event>[] = [
                     }
                 },
                 // TODO: variable support
-                { jsx: Number, name: 'Durability', type: 'float', defaultValue: 0 },
+                { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0 },
             ],
             optional: [
                 { jsx: Checkbox, name: 'Ignore Unbreakable', key: 'ignoreUnbreakable', type: 'boolean', tooltip: 'Ignores the unbreakable flag and unbreaking enchantment' },
@@ -749,7 +750,8 @@ const kinds: Kind<Event>[] = [
                                 label: 'Error', // TODO: i18n
                                 value: 'error'
                             },
-                        ] as DefaultOptionType[]
+                        ] as DefaultOptionType[],
+                        allowClear: true
                     }
                 },
             ],
@@ -794,7 +796,8 @@ const kinds: Kind<Event>[] = [
         argumentsPattern: {
             mandatory: [
                 { jsx: TextAreaList, name: 'Commands', type: 'string[|]', defaultValue: '' },
-            ]
+            ],
+            keepWhitespaces: true
         }
     },
     {
@@ -809,7 +812,7 @@ const kinds: Kind<Event>[] = [
                 { jsx: InputList, name: 'Event IDs', type: 'string[,]', placeholder: 'any', defaultValue: [''], tooltip: 'Events to be executed' },
             ],
             optional: [
-                { jsx: Number, name: 'Player Count', key: 'amount', type: 'int', placeholder: 'everyone', tooltip: 'The maximum number of players to be selected' },
+                { jsx: Number, name: 'Player Count', key: 'amount', type: 'int', placeholder: 'everyone', tooltip: 'The maximum number of players to be selected', config: { min: 0 } },
             ]
         }
     },
@@ -825,7 +828,7 @@ const kinds: Kind<Event>[] = [
                 { jsx: InputList, name: 'Conditions', type: 'string[,]', placeholder: 'e.g. 12.3%event1', defaultValue: [''], tooltip: 'Restrict selection conditions' },
             ],
             optional: [
-                { jsx: Number, name: 'Amount', key: 'amount', type: 'int', placeholder: '1', tooltip: 'The maximum number of events to be executed' },
+                { jsx: Number, name: 'Amount', key: 'amount', type: 'int', placeholder: '1', tooltip: 'The maximum number of events to be executed', config: { min: 0 } },
             ]
         }
     },
@@ -857,7 +860,7 @@ const kinds: Kind<Event>[] = [
                                 label: 'Multiply x', // TODO: i18n
                                 value: 'action:multiply'
                             },
-                        ]
+                        ] as DefaultOptionType[]
                     }
                 },
             ],
@@ -944,7 +947,7 @@ const kinds: Kind<Event>[] = [
                                 label: 'Multiply x', // TODO: i18n
                                 value: 'action:multiply'
                             },
-                        ]
+                        ] as DefaultOptionType[]
                     }
                 },
             ]
@@ -1028,7 +1031,8 @@ const kinds: Kind<Event>[] = [
         argumentsPattern: {
             mandatory: [
                 { jsx: TextAreaList, name: 'Commands', type: 'string[|]', defaultValue: '' },
-            ]
+            ],
+            keepWhitespaces: true
         }
     },
     {
@@ -1067,7 +1071,7 @@ const kinds: Kind<Event>[] = [
             ],
             optional: [
                 // TODO: Picker input
-                { jsx: InputList, name: 'Inventory Checking Order', key: 'category', type: 'string[,]', placeholder: 'e.g. Backpack', tooltip: 'Will check these locations with order. Posible values: Backpack, Inventory, Offhand, Armor' },
+                { jsx: InputList, name: 'Inventory Checking Order', key: 'invOrder', type: 'string[,]', placeholder: 'e.g. Backpack', tooltip: 'Will check these locations with order. Posible values: Backpack, Inventory, Offhand, Armor' },
                 { jsx: Checkbox, name: 'Notify', key: 'notify', type: 'boolean', tooltip: 'Display a message to the player about loosing items' },
             ]
         }
@@ -1077,7 +1081,14 @@ const kinds: Kind<Event>[] = [
     {
         value: 'time',
         display: 'Time',
-        description: 'Changes the time of the world.',
+        description: <>
+        <div style={{ marginBottom: 8 }}>Changes the time of the world.</div>
+        <ul>
+            <li>`2.75` - Set to 2:45 AM</li>
+            <li>`+2.75` - Add 2.75 hour from now</li>
+            <li>`-2.75` - Subtract 2.75 hour from now</li>
+        </ul>
+        </>,
         // e.g. time -12 world:rpgworld
         argumentsPattern: {
             mandatory: [
@@ -1100,10 +1111,10 @@ const kinds: Kind<Event>[] = [
                 //     }
                 // },
                 // { jsx: Number, name: 'Hours', type: 'float', defaultValue: 0.0, config: { min: 0 } },
-                { jsx: Input, name: 'Hours', type: 'string', defaultValue: '+0', placeholder: 'e.g. +1.25', tooltip: 'How many hours to be change. 1.25 hours = 1 hour + 15 min' },
+                { jsx: Input, name: 'Hours', type: 'string', defaultValue: '+0', placeholder: 'e.g. +1.25', tooltip: 'How many hours to be change. 1.25 hours = 1 hour + 15 min', config: { allowedPatterns: [/^[\+\-]?\d+\.?\d*$/] } },
             ],
             optional: [
-                { jsx: Input, name: 'World', key: 'world', type: 'string', placeholder: '(current)', tooltip: 'The world name to be changed e.g. world' },
+                { jsx: Input, name: 'World', key: 'world', type: 'string', placeholder: '(current)', tooltip: 'The world name to be changed e.g. world', config: { allowedPatterns: [/^\S+$/] } },
             ]
         }
     },
@@ -1147,35 +1158,37 @@ const kinds: Kind<Event>[] = [
             optional: [
                 { jsx: Input, name: 'Vector', key: 'vector', type: 'string', placeholder: 'e.g. (0;0.1;1.3)', tooltip: 'The values of the vector: (x;y;z) for absolute direction, (sideways;upwards;forwards) for relative direction', config: { allowedPatterns: [/^\S+$/] } },
                 {
-                    jsx: Select, name: 'Direction', key: 'direction', type: 'string', placeholder: 'e.g. direction:absolute', tooltip: 'Coordinate system to be used. Absolute = Coordinate fixed to the world, Relative = Fixed coordinate ralative to the player. Default to `absolute`', config: {
+                    jsx: Select, name: 'Direction', key: 'direction', type: 'string', placeholder: 'absolute - Absolute', tooltip: 'Coordinate system to be used. Absolute = Coordinate fixed to the world, Relative = Fixed coordinate ralative to the player. Default to `absolute`', config: {
                         options: [
                             {
-                                label: 'Absolute', // TODO: i18n
+                                label: '`absolute` - Absolute', // TODO: i18n
                                 value: 'absolute'
                             },
                             {
-                                label: 'Hrizontal Relative (Relative X & Z, Absolute Y)', // TODO: i18n
+                                label: '`relative_y` - Hrizontal Relative (Relative X & Z, Absolute Y)', // TODO: i18n
                                 value: 'relative_y'
                             },
                             {
-                                label: 'Relative to Player', // TODO: i18n
+                                label: '`relative` - Relative to Player', // TODO: i18n
                                 value: 'relative'
                             },
-                        ]
+                        ] as DefaultOptionType[],
+                        allowClear: true
                     }
                 },
                 {
-                    jsx: Select, name: 'Modification', key: 'modification', type: 'string', placeholder: 'e.g. action:add', tooltip: '', config: {
+                    jsx: Select, name: 'Modification', key: 'modification', type: 'string', placeholder: '`set` - Set / Replace', tooltip: '', config: {
                         options: [
                             {
-                                label: 'Add +', // TODO: i18n
-                                value: 'add'
-                            },
-                            {
-                                label: 'Set / Replace', // TODO: i18n
+                                label: '`set` - Set / Replace', // TODO: i18n
                                 value: 'set'
                             },
-                        ]
+                            {
+                                label: '`add` - Add +', // TODO: i18n
+                                value: 'add'
+                            },
+                        ] as DefaultOptionType[],
+                        allowClear: true
                     }
                 },
             ]
@@ -1204,7 +1217,7 @@ const kinds: Kind<Event>[] = [
                                 label: 'Storm', // TODO: i18n
                                 value: 'storm'
                             },
-                        ]
+                        ] as DefaultOptionType[]
                     }
                 },
             ],

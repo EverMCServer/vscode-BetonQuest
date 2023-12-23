@@ -174,31 +174,40 @@ export default class Arguments {
         }
 
         // Keep whitespaces only for the mandatory part. e.g. "notify", "log"
-        if (pattern.keepWhitespaces && pattern.optional && pattern.optional.length) {
+        if (pattern.keepWhitespaces) {
             let newArgStrs = [this.getArgumentString()];
-            if (pattern!.optionalAtFirst) {
-                argStrs.every((v, i) => {
-                    if (/(?<!\\):/g.test(v)) {
-                        newArgStrs = [
-                            ...argStrs.slice(0, i + pattern!.mandatory.length).map(value => value.replace(/\s$/, "")),
-                            argStrs.slice(i + pattern!.mandatory.length).join('')
-                        ];
-                        return true;
-                    }
-                    return false;
-                });
+            if (pattern.optional && pattern.optional.length) {
+                // With optional args
+                if (pattern!.optionalAtFirst) {
+                    argStrs.every((v, i) => {
+                        if (/(?<!\\):/g.test(v)) {
+                            newArgStrs = [
+                                ...argStrs.slice(0, i + pattern!.mandatory.length).map(value => value.replace(/\s$/, "")),
+                                argStrs.slice(i + pattern!.mandatory.length).join('')
+                            ];
+                            return true;
+                        }
+                        return false;
+                    });
+                } else {
+                    argStrs.some((v, i) => {
+                        if (/(?<!\\):/g.test(v)) {
+                            newArgStrs = [
+                                ...argStrs.slice(0, pattern!.mandatory.length - 1).map(value => value.replace(/\s$/, "")),
+                                argStrs.slice(pattern!.mandatory.length - 1, i).join(''),
+                                ...argStrs.slice(i).map(value => value.replace(/\s$/, ""))
+                            ];
+                            return true;
+                        }
+                        return false;
+                    });
+                }
             } else {
-                argStrs.some((v, i) => {
-                    if (/(?<!\\):/g.test(v)) {
-                        newArgStrs = [
-                            ...argStrs.slice(0, pattern!.mandatory.length - 1).map(value => value.replace(/\s$/, "")),
-                            argStrs.slice(pattern!.mandatory.length - 1, i).join(''),
-                            ...argStrs.slice(i).map(value => value.replace(/\s$/, ""))
-                        ];
-                        return true;
-                    }
-                    return false;
-                });
+                // No optional arg, only mandatory
+                newArgStrs = [
+                    ...argStrs.slice(0, pattern.mandatory.length-1).map(value => value.replace(/\s$/, "")),
+                    argStrs.slice(pattern.mandatory.length-1).join('')
+                ];
             }
             argStrs = newArgStrs;
         } else {
@@ -281,11 +290,12 @@ export default class Arguments {
                     let argStr = argStrs[i];
 
                     // Un-Escape special characters
-                    const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [':'];
+                    const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [];
 
                     // Set value by type
-                    const argStrValue = argStr.split(":")[1];
-                    if (argStr.startsWith(pat.key)) {
+                    const argStrSplit = argStr.split(/(?<!\\):/);
+                    const argStrValue = argStrSplit.slice(1).join(":");
+                    if (pat.key === argStrSplit[0]) {
                         if (pat.type === 'int') {
                             optionalArguments.set(pat.key, parseInt(argStrValue));
                         } else if (pat.type === 'float') {
@@ -439,7 +449,7 @@ export default class Arguments {
             const value = this.optional?.get(pat.key);
 
             // Escape special characters
-            const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [':'];
+            const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [];
 
             // Set value by type
             if (value !== undefined && value !== null) {

@@ -25,6 +25,7 @@ export default function (props: InputProps) {
             notFoundContent={null}
             popupMatchSelectWidth={false}
             placeholder={props.placeholder}
+            allowClear={props.config?.allowClear}
             size="small"
             style={{ width: '100%' }}
         />

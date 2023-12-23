@@ -60,7 +60,7 @@ export default function (props: InputProps) {
                             setValueArray(newItemList);
                         }}
                         placeholder={props.placeholder ? (props.placeholder as string[])[1] : undefined}
-                        min={props.config?.min}
+                        min={props.config?.min | 0}
                         max={props.config?.max}
                         step={props.config?.step}
                         size="small"
