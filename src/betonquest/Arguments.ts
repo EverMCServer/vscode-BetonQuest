@@ -149,56 +149,63 @@ export default class Arguments {
 
         // Split arguments
         let argStrs: string[] = [];
-        if (pattern.keepWhitespaces && (!pattern.optional || !pattern.optional.length)) {
-            // Keep the whole arguments without spliting
-            argStrs = [this.getArgumentString()];
-        } else {
-            // Split arguments by whitespaces, with respect to quotes ("")
-            const regex = /(?:\"[^\"]*?\"|\'[^\']*?\')\s*|\S+\s*/g; // keep quotes and whitespaces
-            // const regex = /((?:\"[^\"]*?\"|\'[^\']*?\'))|(\S+)/g; // keep quotes
-            // const regex = /(?:\"([^\"]*?)\"|\'([^\']*?)\')|(\S+)/g; // without quotes or whitespaces
-            let array1: RegExpExecArray | null;
-            while ((array1 = regex.exec(this.getArgumentString())) !== null) {
-                // with quotes
-                let matched = array1[0];
-                argStrs.push(matched);
+        // if (pattern.keepWhitespaces && (!pattern.optional || !pattern.optional.length)) {
+        //     // Keep the whole arguments without spliting
+        //     argStrs = [this.getArgumentString()];
+        // } else {
+        // Split arguments by whitespaces, with respect to quotes ("")
+        const regex = /(?:\"[^\"]*?\"|\'[^\']*?\')\s*|\S+\s*/g; // keep quotes and whitespaces
+        // const regex = /((?:\"[^\"]*?\"|\'[^\']*?\'))|(\S+)/g; // keep quotes
+        // const regex = /(?:\"([^\"]*?)\"|\'([^\']*?)\')|(\S+)/g; // without quotes or whitespaces
+        let array1: RegExpExecArray | null;
+        while ((array1 = regex.exec(this.getArgumentString())) !== null) {
+            // with quotes
+            let matched = array1[0];
+            argStrs.push(matched);
 
-                // // without quotes
-                // if (array1[1] !== undefined) {
-                //     argStrs.push(array1[1]);
-                // } else if (array1[2]!== undefined) {
-                //     argStrs.push(array1[2]);
-                // } else if (array1[3]!== undefined) {
-                //     argStrs.push(array1[3]);
-                // }
-            }
-
-            // Keep whitespaces only for the mandatory part. e.g. "notify", "log"
-            if (pattern.keepWhitespaces && pattern.optional && pattern.optional.length) {
-                let newArgStrs = [this.getArgumentString()];
-                if (pattern!.optionalAtFirst) {
-                    argStrs.every((v, i) => {
-                        if (/(?<!\\):/g.test(v)) {
-                            newArgStrs = [...argStrs.slice(0, i + 1).map(value => value.replace(/\s$/, "")), argStrs.slice(i + 1).join('')];
-                            return true;
-                        }
-                        return false;
-                    });
-                } else {
-                    argStrs.some((v, i) => {
-                        if (/(?<!\\):/g.test(v)) {
-                            newArgStrs = [argStrs.slice(0, i).join(''), ...argStrs.slice(i).map(value => value.replace(/\s$/, ""))];
-                            return true;
-                        }
-                        return false;
-                    });
-                }
-                argStrs = newArgStrs;
-            } else {
-                // remove the tailing seprator whitespace, if any
-                argStrs = argStrs.map(value => value.replace(/\s$/, ""));
-            }
+            // // without quotes
+            // if (array1[1] !== undefined) {
+            //     argStrs.push(array1[1]);
+            // } else if (array1[2]!== undefined) {
+            //     argStrs.push(array1[2]);
+            // } else if (array1[3]!== undefined) {
+            //     argStrs.push(array1[3]);
+            // }
         }
+
+        // Keep whitespaces only for the mandatory part. e.g. "notify", "log"
+        if (pattern.keepWhitespaces && pattern.optional && pattern.optional.length) {
+            let newArgStrs = [this.getArgumentString()];
+            if (pattern!.optionalAtFirst) {
+                argStrs.every((v, i) => {
+                    if (/(?<!\\):/g.test(v)) {
+                        newArgStrs = [
+                            ...argStrs.slice(0, i + pattern!.mandatory.length).map(value => value.replace(/\s$/, "")),
+                            argStrs.slice(i + pattern!.mandatory.length).join('')
+                        ];
+                        return true;
+                    }
+                    return false;
+                });
+            } else {
+                argStrs.some((v, i) => {
+                    if (/(?<!\\):/g.test(v)) {
+                        newArgStrs = [
+                            ...argStrs.slice(0, pattern!.mandatory.length - 1).map(value => value.replace(/\s$/, "")),
+                            argStrs.slice(pattern!.mandatory.length - 1, i).join(''),
+                            ...argStrs.slice(i).map(value => value.replace(/\s$/, ""))
+                        ];
+                        return true;
+                    }
+                    return false;
+                });
+            }
+            argStrs = newArgStrs;
+        } else {
+            // remove the tailing seprator whitespace, if any
+            argStrs = argStrs.map(value => value.replace(/\s$/, ""));
+        }
+        // }
 
         console.log("debug");
 
@@ -258,15 +265,15 @@ export default class Arguments {
         // Parse optional arguments
         if (pattern.optional
             && pattern.optional.length > 0
-            && !(!pattern.optionalAtFirst && pattern.mandatory.some(v => v.type === '*')) // Skip when mandatory pattern is "*"
-            ) {
+            // && !(!pattern.optionalAtFirst && pattern.mandatory.some(v => v.type === '*')) // Skip when mandatory pattern is "*"
+        ) {
             const optionalArguments: OptionalArguments = new Map();
             let iFrom = 0;
             let iTo = argStrs.length;
             if (pattern.optionalAtFirst) {
                 iTo = argStrs.length - pattern.mandatory.length;
             } else {
-                iFrom = pattern.mandatory.length - 1;
+                iFrom = pattern.mandatory.length;
             }
 
             pattern.optional.forEach(pat => {
@@ -350,22 +357,32 @@ export default class Arguments {
     // Convert mandatory and optional arguments to string
     private marshalArguments(): string {
         // Convert mandatory arguments to string
-        const mandatoryStr = this.marshalMandatoryArguments();
-
-        // Convert optional arguments to string
-        const optionalStr = this.marshalOptionalArguments();
-
-        // Concat mandatory and optional arguments
-        let str = mandatoryStr;
-        if (optionalStr.length > 0) {
-            if (this.pattern.optionalAtFirst) {
-                str = `${optionalStr} ${str}`;
-            } else {
-                str = `${str} ${optionalStr}`;
-            }
+        let mandatoryStr = '';
+        if (this.pattern.mandatory.length) {
+            mandatoryStr = this.marshalMandatoryArguments();
         }
 
-        return str;
+        // Convert optional arguments to string
+        let optionalStr = '';
+        if (this.pattern.optional?.length) {
+            optionalStr = this.marshalOptionalArguments();
+        }
+
+        if (this.pattern.mandatory.length) {
+            // Concat mandatory and optional arguments, then return it
+            let str = mandatoryStr;
+            if (optionalStr.length > 0) {
+                if (this.pattern.optionalAtFirst) {
+                    str = `${optionalStr} ${str}`;
+                } else {
+                    str = `${str} ${optionalStr}`;
+                }
+            }
+            return str;
+        }
+
+        // No mandatory pattern defined, just return the optional parts
+        return optionalStr;
     }
 
     // Convert mandatory arguments to string
@@ -425,7 +442,7 @@ export default class Arguments {
             const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [':'];
 
             // Set value by type
-            if (value !== undefined) {
+            if (value !== undefined && value !== null) {
                 if (pat.type === 'int') {
                     optionalStrs.push(`${pat.key}:${(value as number).toString()}`);
                 } else if (pat.type === 'float') {
