@@ -55,7 +55,10 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
 
     const onKindSearch = (input: string) => {
         const opt = optionsCache.current.slice();
-        if (input.match(/^[a-zA-Z]+$/g)) {
+        if (
+            input.match(/^[a-zA-Z]+$/g) &&
+            !options.some(e => e.value === input)
+        ) {
             opt.unshift({
                 value: input,
                 label: input,

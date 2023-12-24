@@ -1082,12 +1082,12 @@ const kinds: Kind<Event>[] = [
         value: 'time',
         display: 'Time',
         description: <>
-        <div style={{ marginBottom: 8 }}>Changes the time of the world.</div>
-        <ul>
-            <li>`2.75` - Set to 2:45 AM</li>
-            <li>`+2.75` - Add 2.75 hour from now</li>
-            <li>`-2.75` - Subtract 2.75 hour from now</li>
-        </ul>
+            <div style={{ marginBottom: 8 }}>Changes the time of the world.</div>
+            <ul>
+                <li>`2.75` - Set to 2:45 AM</li>
+                <li>`+2.75` - Add 2.75 hour from now</li>
+                <li>`-2.75` - Subtract 2.75 hour from now</li>
+            </ul>
         </>,
         // e.g. time -12 world:rpgworld
         argumentsPattern: {

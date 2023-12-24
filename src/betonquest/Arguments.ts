@@ -218,6 +218,11 @@ export default class Arguments {
 
         console.log("debug");
 
+        // Prepare default mandatory values
+        for (let i = 0; i < pattern.mandatory.length; i++) {
+            this.mandatory[i] = pattern.mandatory[i].defaultValue;
+        }
+
         // Parse mandatory arguments
         let iFrom = 0;
         let iTo = pattern.mandatory.length;
@@ -261,7 +266,7 @@ export default class Arguments {
                         return ["", undefined];
                     }
                     return [this.unescapeCharacters([...escapeCharacters, ',', ':'], arg[1]), arg[2].length ? parseInt(arg[2]) : undefined];
-                });
+                }) || pat.defaultValue;
                 this.mandatory[i] = parseError ? pat.defaultValue : parsedArg;
             } else if (pat.type === '*') {
                 this.mandatory[i] = argStrsMandatory.slice(i)
