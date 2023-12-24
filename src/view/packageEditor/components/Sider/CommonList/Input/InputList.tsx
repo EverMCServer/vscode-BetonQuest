@@ -25,6 +25,18 @@ export default function (props: InputProps) {
                     key={index}
                     value={value}
                     onChange={(e) => {
+                        // Filter out unwanted input
+                        if (
+                            props.config?.allowedPatterns &&
+                            !(props.config.allowedPatterns as (string | RegExp)[])
+                                .some(element =>
+                                    (new RegExp(element)).test(e.target.value)
+                                )
+                        ) {
+                            return;
+                        }
+
+                        // Update value
                         const valueUpdate = valueArray;
                         valueUpdate[index] = e.target.value;
                         setValueArray(valueUpdate);

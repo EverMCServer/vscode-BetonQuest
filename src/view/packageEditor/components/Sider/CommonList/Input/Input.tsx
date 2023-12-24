@@ -14,11 +14,15 @@ export default function (props: InputProps) {
             value={value}
             onChange={(e) => {
                 // Filter out unwanted input
-                if (props.config?.allowedPatterns && !(props.config.allowedPatterns as (string | RegExp)[]).some(element =>
-                    (new RegExp(element)).test(e.target.value)
-                )) {
+                if (props.config?.allowedPatterns &&
+                    !(props.config.allowedPatterns as (string | RegExp)[])
+                        .some(element =>
+                            (new RegExp(element)).test(e.target.value)
+                        )
+                ) {
                     return;
                 }
+
                 // Update value
                 setValue(e.target.value);
                 props.onChange(e.target.value);

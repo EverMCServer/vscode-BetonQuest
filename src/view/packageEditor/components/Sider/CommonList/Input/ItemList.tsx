@@ -27,6 +27,14 @@ export default function (props: InputProps) {
                     <Input
                         value={item}
                         onChange={(e) => {
+                            // Check patterns
+                            if (
+                                /\s/.test(e.target.value)
+                            ) {
+                                return;
+                            }
+
+                            // Update item
                             const newItemList = valueArray.map((item, i) => {
                                 if (i === index) {
                                     item[0] = e.target.value;

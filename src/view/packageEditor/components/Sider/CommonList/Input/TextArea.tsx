@@ -13,9 +13,6 @@ export default function (props: InputProps) {
         <TextArea
             value={value}
             onChange={(e) => {
-                // if (e.target.value.includes("\n")) {
-                //     return;
-                // }
                 setValue(e.target.value);
                 props.onChange(e.target.value);
             }}
