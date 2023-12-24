@@ -202,7 +202,7 @@ export default class Arguments {
                         return false;
                     });
                 }
-            } else {
+            } else if (pattern.mandatory.length > 1) {
                 // No optional arg, only mandatory
                 newArgStrs = [
                     ...argStrs.slice(0, pattern.mandatory.length-1).map(value => value.replace(/\s$/, "")),
