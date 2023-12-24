@@ -166,7 +166,8 @@ const kinds: Kind<Event>[] = [
         argumentsPattern: {
             mandatory: [
                 { jsx: TextAreaList, name: 'Commands', type: 'string[|]', defaultValue: '' },
-            ]
+            ],
+            keepWhitespaces: true
         }
     },
     {
