@@ -194,7 +194,7 @@ export default class Arguments {
                         if (/(?<!\\):/g.test(v)) {
                             newArgStrs = [
                                 ...argStrs.slice(0, pattern!.mandatory.length - 1).map(value => value.replace(/\s$/, "")),
-                                argStrs.slice(pattern!.mandatory.length - 1, i).join(''),
+                                argStrs.slice(pattern!.mandatory.length - 1, i).join('').replace(/\s$/, ""),
                                 ...argStrs.slice(i).map(value => value.replace(/\s$/, ""))
                             ];
                             return true;
@@ -312,7 +312,7 @@ export default class Arguments {
                             optionalArguments.set(pat.key, true);
                         } else if (pat.type === '[string:number?][,]') {
                             let parseError = false;
-                            const parsedArg: [string, number?][] = argStr?.split(/(?<!\\),/g).map(v => {
+                            const parsedArg: [string, number?][] = argStrValue?.split(/(?<!\\),/g).map(v => {
                                 const arg = /(.*?)(?<!\\):?(\d*)$/.exec(v);
                                 if (arg === null) {
                                     parseError = true;
@@ -320,7 +320,7 @@ export default class Arguments {
                                 }
                                 return [this.unescapeCharacters([...escapeCharacters, ',', ':'], arg[1]), arg[2].length ? parseInt(arg[2]) : undefined];
                             });
-                            this.mandatory[i] = parseError ? [] : parsedArg;
+                            optionalArguments.set(pat.key, parseError ? [] : parsedArg);
                         } else { // if (value.pattern === 'string')
                             optionalArguments.set(pat.key, this.unescapeCharacters([...escapeCharacters], argStrValue));
                         }

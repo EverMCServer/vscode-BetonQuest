@@ -244,20 +244,21 @@ const kinds: Kind<Event>[] = [
     },
     // TODO: match mandatory with key
     // TODO: variable support
-    // {
-    //     value: 'drop',
-    //     display: 'Drop Item',
-    //     description: 'Drops (place) the defined items at a defined location.',
-    //     // e.g. 
-    //     argumentsPattern: {
-    //         mandatory: [
-    //             { jsx: ItemList, name: 'Item List', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
-    //         ],
-    //         optional: [
-    //             { jsx: BaseLocation, name: 'Location', key: 'location', type: 'string', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] } },
-    //         ]
-    //     }
-    // },
+    {
+        value: 'drop',
+        display: 'Drop Item',
+        description: 'Drops (place) the defined items at a defined location.',
+        // e.g. drop items:myItem location:%objective.MyQuestVariables.DropLocation%
+        argumentsPattern: {
+            mandatory: [
+                // { jsx: ItemList, name: 'Item List', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
+            ],
+            optional: [
+                { jsx: ItemList, name: 'Item List', key: 'items', type: '[string:number?][,]', placeholder: ['e.g. emerald', '1'] },
+                { jsx: BaseLocation, name: 'Location', key: 'location', type: 'string', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] } },
+            ]
+        }
+    },
     // TODO: Spigot Effects list
     {
         value: 'deleffect',
@@ -711,11 +712,11 @@ const kinds: Kind<Event>[] = [
         description: 'Send notifications to the player.',
         argumentsPattern: {
             mandatory: [
-                { jsx: TextArea, name: 'Message', type: 'string', defaultValue: '', escapeCharacters: [':', '\n'] },
+                { jsx: TextArea, name: 'Message', type: '*', defaultValue: '', escapeCharacters: [':', '\n'] },
             ],
             optional: [
                 { jsx: InputList, name: 'Category', key: 'category', type: 'string[,]', placeholder: 'e.g. info', tooltip: 'Will load all settings from that Notification Category', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Input, name: 'IO', key: 'io', type: 'string', placeholder: 'e.g. bossbar', tooltip: 'Any NotifyIO Overrides the "category" settings' },
+                { jsx: Input, name: 'IO', key: 'io', type: 'string', placeholder: 'e.g. bossbar', tooltip: 'Any NotifyIO Overrides the "category" settings', config: { allowedPatterns: [/^\S*$/] } },
                 // TODO: Seprated standalone body. https://docs.betonquest.org/2.0-DEV/Documentation/Visual-Effects/Notifications/Notification-IO%27s-%26-Categories/
             ],
             keepWhitespaces: true
