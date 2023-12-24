@@ -38,12 +38,12 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
     };
 
     // Convert all ListElements into coresponding ListElement's Editor
-    const getListElementEditor = (e: T, kindSelectDefaultOpen?: boolean): ItemType => {
+    const getListElementEditor = (e: T): ItemType => {
         const name = e.getName();
         return {
             key: name,
             label: <CollapseLabel {...props} listElement={e}></CollapseLabel>,
-            children: <props.editor key={name} {...props} listElement={e} kindSelectDefaultOpen={kindSelectDefaultOpen}></props.editor>,
+            children: <props.editor key={name} {...props} listElement={e}></props.editor>,
             style: { padding: "4px 0 0 0" },
             extra: <CollapseExtra {...props} name={name} removeElement={onElementRemove} />
         };
@@ -100,7 +100,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
         // Append to cached listElements
         setListElements(newListElements);
         // Create new editor
-        const newListElementEditor = getListElementEditor(newListElement, true); // kindSelectDefaultOpen=true: expand kind select by default
+        const newListElementEditor = getListElementEditor(newListElement);
         // Append new editor to elementEditorList
         setListElementEditorList(listElementEditorList?.concat(newListElementEditor));
         // Expand editor
@@ -154,6 +154,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
                     // bordered={false}
                     activeKey={collapseActiveKeys}
                     onChange={setCollapseActiveKeys}
+                    destroyInactivePanel={true}
                 ></Collapse>
                 <Button
                     type="primary"

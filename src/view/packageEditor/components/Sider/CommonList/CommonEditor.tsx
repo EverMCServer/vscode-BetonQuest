@@ -9,7 +9,6 @@ import styles from "./CommonEditor.module.css";
 
 export interface ListElementEditorProps<T extends ListElement> extends BaseListProps {
     listElement: T,
-    kindSelectDefaultOpen?: boolean,
 }
 
 export interface ListElementEditorBodyProps<T extends ListElement> extends ListElementEditorProps<T> {
@@ -109,10 +108,10 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
                     <Select
                         className={styles.select}
                         showSearch
-                        defaultOpen={props.kindSelectDefaultOpen}
-                        autoFocus={props.kindSelectDefaultOpen}
-                        value={props.listElement.getKind()}
-                        placeholder="Please enter a kind"
+                        defaultOpen={!props.listElement.getKind()}
+                        autoFocus={!props.listElement.getKind()}
+                        value={props.listElement.getKind() || undefined}
+                        placeholder="(Please enter a kind)"
                         defaultActiveFirstOption={false}
                         // suffixIcon={null}
                         onChange={(e) => {
