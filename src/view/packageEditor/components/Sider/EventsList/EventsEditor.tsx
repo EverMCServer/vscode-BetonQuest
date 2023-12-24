@@ -40,7 +40,7 @@ const kinds: Kind<Event>[] = [
         description: 'Cancel a quest predefined in a Quest Canceler.',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Canceler', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'Canceler', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -124,8 +124,8 @@ const kinds: Kind<Event>[] = [
                 { jsx: Number, name: 'Radius', type: 'float', defaultValue: 0.0, config: { min: 0 } },
             ],
             optional: [
-                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. Super_Zombie', tooltip: 'The name of the mob which should be removed', config: { allowedPatterns: [/^\S+$/] } },
-                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Remove only mobs that with the same mark using the spawn mob event', config: { allowedPatterns: [/^\S+$/] } }
+                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mob which should be removed', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Remove only mobs that with the same mark using the spawn mob event', config: { allowedPatterns: [/^\S*$/] } }
             ]
         }
     },
@@ -154,7 +154,7 @@ const kinds: Kind<Event>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: Input, name: 'Compass', type: 'string', defaultValue: '', placeholder: 'e.g. some_compass', tooltip: 'A name defined in the "compass" section', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'Compass', type: 'string', defaultValue: '', placeholder: 'e.g. some_compass', tooltip: 'A name defined in the "compass" section', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -176,7 +176,7 @@ const kinds: Kind<Event>[] = [
         // e.g. conversation village_smith
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Conversation ID', type: 'string', defaultValue: '', placeholder: 'e.g. village_smith', tooltip: 'ID of the conversation', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'Conversation ID', type: 'string', defaultValue: '', placeholder: 'e.g. village_smith', tooltip: 'ID of the conversation', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -198,7 +198,7 @@ const kinds: Kind<Event>[] = [
         // e.g. deletepoint npc_attitude
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. npc_attitude', tooltip: 'ID of the point', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. npc_attitude', tooltip: 'ID of the point', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -209,7 +209,7 @@ const kinds: Kind<Event>[] = [
         // e.g. deleteglobalpoint bonus
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. bonus', tooltip: 'ID of the global point', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. bonus', tooltip: 'ID of the global point', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -432,7 +432,7 @@ const kinds: Kind<Event>[] = [
         // e.g. global_knownusers 1 action:add
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. bonus', tooltip: 'ID of the global point', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. bonus', tooltip: 'ID of the global point', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Action types' },
                 {
                     jsx: Select, name: 'Action', type: 'string', defaultValue: 'action:add', placeholder: 'e.g. action:add', config: {
@@ -480,7 +480,7 @@ const kinds: Kind<Event>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S+$/] }, placeholder: 'e.g. reward_claimed', tooltip: 'ID of the global tag' },
+                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S*$/] }, placeholder: 'e.g. reward_claimed', tooltip: 'ID of the global tag' },
             ]
         }
     },
@@ -519,10 +519,10 @@ const kinds: Kind<Event>[] = [
         // e.g. if sun rain else sun
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Condition ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S+$/] } },
-                { jsx: Input, name: 'Positive Event ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'Condition ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Positive Event ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: () => <>Else</>, name: '', type: 'string', defaultValue: 'else' },
-                { jsx: Input, name: 'Negative Event ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'Negative Event ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -621,7 +621,7 @@ const kinds: Kind<Event>[] = [
                 },
                 // TODO: New optional data type: string
                 // TODO: ... Or a seprated standalone editor
-                { jsx: Input, name: 'Journal ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'Journal ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -646,8 +646,8 @@ const kinds: Kind<Event>[] = [
                 { jsx: Number, name: 'Radius', type: 'float', defaultValue: 0.0, config: { min: 0 } },
             ],
             optional: [
-                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. Super_Zombie', tooltip: 'The name of the mob which should get killed', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S_]+$/] } },
-                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Kill only mobs that with the same mark using the spawn mob event', config: { allowedPatterns: [/^\S+$/] } }
+                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mob which should get killed', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
+                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Kill only mobs that with the same mark using the spawn mob event', config: { allowedPatterns: [/^\S*$/] } }
             ]
         }
     },
@@ -658,7 +658,7 @@ const kinds: Kind<Event>[] = [
         // e.g. language en
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Language ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^[a-zA-Z_-]+$/] } },
+                { jsx: Input, name: 'Language ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^[a-zA-Z_-]*$/] } },
             ]
         }
     },
@@ -839,7 +839,7 @@ const kinds: Kind<Event>[] = [
         // e.g. point points 1.25 action:multiply notify
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. bonus', tooltip: 'ID of the point', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. bonus', tooltip: 'ID of the point', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Action types' },
                 {
                     jsx: Select, name: 'Action', type: 'string', defaultValue: 'action:add', placeholder: 'e.g. action:add', config: {
@@ -926,7 +926,7 @@ const kinds: Kind<Event>[] = [
         // e.g. score kill 1.2 action:multiply
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Name', type: 'string', defaultValue: '', placeholder: 'e.g. Quest Points', tooltip: 'Name of the scoreboard objective', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'Name', type: 'string', defaultValue: '', placeholder: 'e.g. Quest Points', tooltip: 'Name of the scoreboard objective', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Action types' },
                 {
                     jsx: Select, name: 'Action', type: 'string', defaultValue: 'action:add', placeholder: 'e.g. action:add', config: {
@@ -995,7 +995,7 @@ const kinds: Kind<Event>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: Input, name: 'Stage Name', type: 'string', defaultValue: '', placeholder: 'e.g. Super_Zombie', tooltip: 'The name of the stage when `set`. Or amount to `increase` or `decrease`', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'Stage Name', type: 'string', defaultValue: '', placeholder: 'e.g. stage_1', tooltip: 'The name of the stage when `set`. Or amount to `increase` or `decrease`', config: { allowedPatterns: [/^\S*$/] } },
             ],
         }
     },
@@ -1011,14 +1011,14 @@ const kinds: Kind<Event>[] = [
                 { jsx: Number, name: 'Amount', type: 'int', defaultValue: 0, config: { min: 0 } },
             ],
             optional: [
-                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. Super_Zombie', tooltip: 'The name of the mobs to be spawned', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S_]+$/] } },
-                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Add an invincible mark onto the spawned mobs', config: { allowedPatterns: [/^\S+$/] } },
-                { jsx: Input, name: 'Helmet', key: 'h', type: 'string', placeholder: 'e.g. blue_hat', tooltip: 'Equip the mob with a helmet', config: { allowedPatterns: [/^\S+$/] } },
-                { jsx: Input, name: 'Chestplate', key: 'c', type: 'string', placeholder: 'e.g. red_vest', tooltip: 'Equip the mob with a chestplate', config: { allowedPatterns: [/^\S+$/] } },
-                { jsx: Input, name: 'Leggings', key: 'l', type: 'string', placeholder: 'e.g. yellow_leggings', tooltip: 'Equip the mob with leggings', config: { allowedPatterns: [/^\S+$/] } },
-                { jsx: Input, name: 'Boots', key: 'b', type: 'string', placeholder: 'e.g. purple_boots', tooltip: 'Equip the mob with a boots', config: { allowedPatterns: [/^\S+$/] } },
-                { jsx: Input, name: 'Main Hand', key: 'm', type: 'string', placeholder: 'e.g. wooden_sword', tooltip: 'Equip the mob with an item on the main hand', config: { allowedPatterns: [/^\S+$/] } },
-                { jsx: Input, name: 'Off Hand', key: 'o', type: 'string', placeholder: 'e.g. wooden_shield', tooltip: 'Equip the mob with an item on the off hand', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mobs to be spawned', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
+                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Add an invincible mark onto the spawned mobs', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Helmet', key: 'h', type: 'string', placeholder: 'e.g. blue_hat', tooltip: 'Equip the mob with a helmet', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Chestplate', key: 'c', type: 'string', placeholder: 'e.g. red_vest', tooltip: 'Equip the mob with a chestplate', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Leggings', key: 'l', type: 'string', placeholder: 'e.g. yellow_leggings', tooltip: 'Equip the mob with leggings', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Boots', key: 'b', type: 'string', placeholder: 'e.g. purple_boots', tooltip: 'Equip the mob with a boots', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Main Hand', key: 'm', type: 'string', placeholder: 'e.g. wooden_sword', tooltip: 'Equip the mob with an item on the main hand', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Off Hand', key: 'o', type: 'string', placeholder: 'e.g. wooden_shield', tooltip: 'Equip the mob with an item on the off hand', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: InputList, name: 'Drops', key: 'drops', type: 'string[,]', placeholder: 'e.g. diamond', tooltip: 'Items to be dropped when killed' },
             ]
         }
@@ -1111,10 +1111,10 @@ const kinds: Kind<Event>[] = [
                 //     }
                 // },
                 // { jsx: Number, name: 'Hours', type: 'float', defaultValue: 0.0, config: { min: 0 } },
-                { jsx: Input, name: 'Hours', type: 'string', defaultValue: '+0', placeholder: 'e.g. +1.25', tooltip: 'How many hours to be change. 1.25 hours = 1 hour + 15 min', config: { allowedPatterns: [/^[\+\-]?\d+\.?\d*$/] } },
+                { jsx: Input, name: 'Hours', type: 'string', defaultValue: '+0', placeholder: 'e.g. +1.25', tooltip: 'How many hours to be change. 1.25 hours = 1 hour + 15 min', config: { allowedPatterns: [/^[\+\-]?\d*\.?\d*$/] } },
             ],
             optional: [
-                { jsx: Input, name: 'World', key: 'world', type: 'string', placeholder: '(current)', tooltip: 'The world name to be changed e.g. world', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'World', key: 'world', type: 'string', placeholder: '(current)', tooltip: 'The world name to be changed e.g. world', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -1156,7 +1156,7 @@ const kinds: Kind<Event>[] = [
             mandatory: [
             ],
             optional: [
-                { jsx: Input, name: 'Vector', key: 'vector', type: 'string', placeholder: 'e.g. (0;0.1;1.3)', tooltip: 'The values of the vector: (x;y;z) for absolute direction, (sideways;upwards;forwards) for relative direction', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'Vector', key: 'vector', type: 'string', placeholder: 'e.g. (0;0.1;1.3)', tooltip: 'The values of the vector: (x;y;z) for absolute direction, (sideways;upwards;forwards) for relative direction', config: { allowedPatterns: [/^\S*$/] } },
                 {
                     jsx: Select, name: 'Direction', key: 'direction', type: 'string', placeholder: 'absolute - Absolute', tooltip: 'Coordinate system to be used. Absolute = Coordinate fixed to the world, Relative = Fixed coordinate ralative to the player. Default to `absolute`', config: {
                         options: [
@@ -1223,7 +1223,7 @@ const kinds: Kind<Event>[] = [
             ],
             optional: [
                 { jsx: Number, name: 'Duration', key: 'duration', type: 'float', placeholder: 'random', tooltip: 'How long it will last, in seconds', config: { min: 0 } },
-                { jsx: Input, name: 'World Name', key: 'world', type: 'string', placeholder: 'current', tooltip: 'A name of the world to change weather on', config: { allowedPatterns: [/^\S+$/] } },
+                { jsx: Input, name: 'World Name', key: 'world', type: 'string', placeholder: 'current', tooltip: 'A name of the world to change weather on', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     }
