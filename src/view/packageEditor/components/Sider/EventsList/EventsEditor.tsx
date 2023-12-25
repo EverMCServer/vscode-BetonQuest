@@ -269,7 +269,7 @@ const kinds: Kind<Event>[] = [
         // e.g. deleffect ABSORPTION,BLINDNESS
         argumentsPattern: {
             mandatory: [
-                { jsx: PotionEffectTypeList, name: 'Effects', type: 'string[,]', placeholder: 'any', defaultValue: [], tooltip: 'Leave it blank for "any" Effects' },
+                { jsx: PotionEffectTypeList, name: 'Effects', type: 'string[,]', placeholder: 'any', defaultValue: [], tooltip: 'Leave it blank for "any" Effects', config: { allowEmpty: true } },
             ]
         }
     },

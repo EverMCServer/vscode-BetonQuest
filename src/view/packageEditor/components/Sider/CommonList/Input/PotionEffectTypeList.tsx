@@ -21,6 +21,7 @@ export default function (props: InputProps) {
     const [valueArray, setValueArray] = useState(props.value as string[] || props.defaultValue);
     useEffect(() => {
         setValueArray(props.value as string[] || props.defaultValue);
+        updateDisabled(props.value as string[] || props.defaultValue);
     }, [props.value]);
 
     const [options, setOptions] = useState(bukkitOptions);
@@ -28,7 +29,7 @@ export default function (props: InputProps) {
     // Disable selected options from the available list
     const updateDisabled = (valueUpdate: string[]) => {
         setOptions(bukkitOptions.map(option => {
-            if (valueUpdate.some(v => v === option.value)) {
+            if (valueUpdate.some(v => v.toUpperCase() === option.value)) {
                 option.disabled = true;
             } else {
                 option.disabled = undefined;
@@ -71,7 +72,7 @@ export default function (props: InputProps) {
     const onRemove = (index: number) => {
         // Update value
         const valueUpdate = [...valueArray.slice(0, index), ...valueArray.slice(index + 1)];
-        // setValueArray(valueUpdate);
+        setValueArray(valueUpdate);
         props.onChange(valueUpdate);
 
         // Disable selected options from the available list
@@ -104,7 +105,7 @@ export default function (props: InputProps) {
                     style={{ width: '-webkit-fill-available' }}
                 >
                     <Select
-                        value={value}
+                        value={value.toUpperCase()}
                         defaultActiveFirstOption={false}
                         onChange={e => onChange(e, index)}
                         options={options}
@@ -119,14 +120,14 @@ export default function (props: InputProps) {
                         size="small"
                         style={{ width: '100%' }}
                     />
-                    <Button
+                    {(props.config?.allowEmpty || valueArray.length > 1) && <Button
                         style={{ height: 'inherit', background: 'none' }}
                         type="default"
                         size="small"
                         onClick={() => onRemove(index)}
                     >
                         <VscClose style={{ verticalAlign: 'middle' }} />
-                    </Button>
+                    </Button>}
                 </Space.Compact>
             )}
             <Button
