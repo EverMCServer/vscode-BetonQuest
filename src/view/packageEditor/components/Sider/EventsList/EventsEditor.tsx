@@ -20,6 +20,7 @@ import BaseLocation from "../CommonList/Input/BaseLocation";
 import Select from "../CommonList/Input/Select";
 import { DefaultOptionType } from "antd/es/select";
 import ItemList from "../CommonList/Input/ItemList";
+import PotionEffectTypeList from "../CommonList/Input/PotionEffectTypeList";
 
 // All kinds
 const kinds: Kind<Event>[] = [
@@ -268,7 +269,7 @@ const kinds: Kind<Event>[] = [
         // e.g. deleffect ABSORPTION,BLINDNESS
         argumentsPattern: {
             mandatory: [
-                { jsx: InputList, name: 'Effects', type: 'string[,]', placeholder: 'any', defaultValue: [''], tooltip: 'Leave it blank for "any" Effects', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: PotionEffectTypeList, name: 'Effects', type: 'string[,]', placeholder: 'any', defaultValue: [], tooltip: 'Leave it blank for "any" Effects' },
             ]
         }
     },
@@ -280,7 +281,7 @@ const kinds: Kind<Event>[] = [
         // e.g. effect BLINDNESS 30 1 ambient icon
         argumentsPattern: {
             mandatory: [
-                { jsx: InputList, name: 'Effects', type: 'string[,]', placeholder: 'any', defaultValue: [''], tooltip: 'Leave it blank for "any" Effects', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: PotionEffectTypeList, name: 'Effects', type: 'string[,]', defaultValue: [''], tooltip: 'List of Potion Effect Types' },
                 { jsx: Number, name: 'Duration', type: 'float', defaultValue: 0.0, tooltip: 'How long the effect will last in seconds', config: { min: 0 } },
                 { jsx: Number, name: 'Level', type: 'int', defaultValue: 0, tooltip: 'Level of the effect', config: { min: 0 } },
             ],

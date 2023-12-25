@@ -5,6 +5,7 @@ import * as fs from "fs";
 import EntityType from "./DataType/EntityType";
 import Material from "./DataType/Material";
 import Enchantment from "./DataType/Enchantment";
+import PotionEffectType from "./DataType/PotionEffectType";
 
 // Config
 const OUTPUT_DIR = __dirname + "/Data";
@@ -12,6 +13,7 @@ const OUTPUT_DIR = __dirname + "/Data";
 const BUKKIT_ENTITY_TYPE_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/entity/EntityType.java?at=refs%2Fheads%2Fmaster';
 const BUKKIT_MATERIAL_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/Material.java?at=refs%2Fheads%2Fmaster';
 const BUKKIT_ENCHANTMENT_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/enchantments/Enchantment.java?at=refs%2Fheads%2Fmaster';
+const BUKKIT_POTION_EFFECT_TYPE_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/potion/PotionEffectType.java?at=refs%2Fheads%2Fmaster';
 
 (async () => {
     console.log("Generating EntityTypeList.json ...");
@@ -25,6 +27,10 @@ const BUKKIT_ENCHANTMENT_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGO
     console.log("Generating EnchantmentList.json ...");
     const pathEnchantmentList = OUTPUT_DIR + "/EnchantmentList.json";
     await generateEnchantmentList(pathEnchantmentList);
+
+    console.log("Generating PotionEffectTypeList.json ...");
+    const pathPotionEffectTypeList = OUTPUT_DIR + "/PotionEffectTypeList.json";
+    await generatePotionEffectTypeList(pathPotionEffectTypeList);
 
     console.log("All data succesfully generated.");
 })();
@@ -64,7 +70,6 @@ async function generateEntityTypeList(savePath: string) {
 
         // Create the EntityType list
         const entityTypeList: EntityType[] = cache.map(v => new EntityType(v.bukkitId, v.minecraftId, v.legacyIds));
-
 
         if (entityTypeList.length < 1) {
             throw new Error(`Unexpeted error while parsing Bukkit's EntityType with url: ${BUKKIT_ENTITY_TYPE_SOURCE} body: ${text}.`);
@@ -180,13 +185,46 @@ async function generateEnchantmentList(savePath: string) {
         // Create the Enchantment list
         const enchantmentList: Enchantment[] = cache.map(v => new Enchantment(v.bukkitId, v.minecraftId, v.legacyIds));
 
-
         if (enchantmentList.length < 1) {
-            throw new Error(`Unexpeted error while parsing Bukkit's Enchantment with url: ${BUKKIT_ENTITY_TYPE_SOURCE} body: ${text}.`);
+            throw new Error(`Unexpeted error while parsing Bukkit's Enchantment with url: ${BUKKIT_ENCHANTMENT_SOURCE} body: ${text}.`);
         }
 
         fs.writeFileSync(savePath, JSON.stringify(enchantmentList));
     } catch (reason) {
         throw new Error(`Unexpeted error while fetching Bukkit's Enchantment: ${reason}`);
+    };
+}
+
+// Bukkit's PotionEffectTypes
+// https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/potion/PotionEffectType.java
+async function generatePotionEffectTypeList(savePath: string) {
+    try {
+        const response = await fetch(BUKKIT_POTION_EFFECT_TYPE_SOURCE);
+        const text = await response.text();
+        // Cache matched results
+        const cache: {
+            bukkitId: string,
+            minecraftId: string,
+        }[] = [];
+
+        // RegExp to extract all Bukkit's PotionEffectType IDs
+        const patternExtract = /public\s*static\s*final\s*PotionEffectType\s*([A-Z_]+).+?(?:'|")([^'"]+)/gmi;
+        let array1: RegExpExecArray | null;
+        while ((array1 = patternExtract.exec(text)) !== null) {
+            if (array1[1] && array1[2]) {
+                cache.push({ bukkitId: array1[1], minecraftId: array1[2] });
+            }
+        }
+
+        // Create the PotionEffectType list
+        const potionEffectTypeList: PotionEffectType[] = cache.map(v => new PotionEffectType(v.bukkitId, v.minecraftId));
+
+        if (potionEffectTypeList.length < 1) {
+            throw new Error(`Unexpeted error while parsing Bukkit's PotionEffectType with url: ${BUKKIT_POTION_EFFECT_TYPE_SOURCE} body: ${text}.`);
+        }
+
+        fs.writeFileSync(savePath, JSON.stringify(potionEffectTypeList));
+    } catch (reason) {
+        throw new Error(`Unexpeted error while fetching Bukkit's PotionEffectType: ${reason}`);
     };
 }
