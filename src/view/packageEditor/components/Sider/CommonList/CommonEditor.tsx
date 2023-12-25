@@ -100,7 +100,7 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
 
     return (
         <div style={{ padding: "0 8px" }}>
-            <Row justify="space-between" style={{ margin: "8px 0" }}>
+            <Row justify="space-between" style={{ padding: "8px 0" }}>
                 <Col span={4}>
                     <span style={{ paddingLeft: "8px" }}>Kind:</span>
                 </Col>

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, Divider, Input, Select, Space } from "antd";
+import { Button, Divider, Input, Select, Space, Tooltip } from "antd";
 import { VscClose } from "react-icons/vsc";
 import { compile as compileJavaRegex } from "java-regex-js";
 
@@ -216,28 +216,29 @@ export default function (props: InputProps) {
                         }}
                         size="small"
                     />
-                    <Button
-                        onClick={() => {
-                            // Remove state
-                            const newState = [...state.slice(0, index), ...state.slice(index + 1)];
-                            setState(newState);
-                            setValue(namespace, tag, blockId, newState);
-                        }}
-                        style={{
-                            marginLeft: 1,
-                            padding: 0
-                        }}
-                        type="default"
-                        size="small"
-                        title="Remove"
-                    >
-                        <VscClose
-                            style={{
-                                verticalAlign: "middle",
-                                textAlign: "center"
+                    <Tooltip title="Remove">
+                        <Button
+                            onClick={() => {
+                                // Remove state
+                                const newState = [...state.slice(0, index), ...state.slice(index + 1)];
+                                setState(newState);
+                                setValue(namespace, tag, blockId, newState);
                             }}
-                        />
-                    </Button>
+                            style={{
+                                marginLeft: 1,
+                                padding: 0
+                            }}
+                            type="default"
+                            size="small"
+                        >
+                            <VscClose
+                                style={{
+                                    verticalAlign: "middle",
+                                    textAlign: "center"
+                                }}
+                            />
+                        </Button>
+                    </Tooltip>
                 </Space.Compact>
             )}
             {/* </Space> */}

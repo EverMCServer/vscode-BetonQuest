@@ -9,6 +9,7 @@ import '../style/vscodeButton.css';
 import "../style/vscodeDivider.css";
 import "../style/vscodeInputNumber.css";
 import "../style/vscodePopover.css";
+import "../style/vscodeTooltip.css";
 
 const domNode = document.getElementById('root')!;
 const root = createRoot(domNode);

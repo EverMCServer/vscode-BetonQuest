@@ -1,0 +1,12 @@
+/* Override Ant Design's Popover styles */
+
+.ant-tooltip {
+    --antd-arrow-background-color: var(--vscode-notifications-background);
+}
+
+.ant-tooltip .ant-tooltip-content .ant-tooltip-inner {
+    color: var(--vscode-notifications-foreground);
+    border-radius: 4px;
+    background: var(--vscode-notifications-background);
+    box-shadow: var(--vscode-widget-shadow) 0px 0px 8px 2px;
+}

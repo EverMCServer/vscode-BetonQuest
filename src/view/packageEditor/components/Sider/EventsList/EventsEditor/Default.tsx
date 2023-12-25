@@ -41,7 +41,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                 {arg.name}&nbsp;
                                 {arg.tooltip && <>
                                     <sup>
-                                        <Tooltip placement="topRight" title={<span color="var(--vscode-notifications-foreground)">{arg.tooltip}</span>} color="var(--vscode-notifications-background)">
+                                        <Tooltip title={<span>{arg.tooltip}</span>}>
                                             <VscQuestion />
                                         </Tooltip>
                                     </sup>&nbsp;
@@ -76,7 +76,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                     <span>{arg.name}&nbsp;
                                         {arg.tooltip && <>
                                             <sup>
-                                                <Tooltip placement="topRight" title={<span color="var(--vscode-notifications-foreground)">{arg.tooltip}</span>} color="var(--vscode-notifications-background)">
+                                                <Tooltip title={<span>{arg.tooltip}</span>}>
                                                     <VscQuestion />
                                                 </Tooltip>
                                             </sup>&nbsp;

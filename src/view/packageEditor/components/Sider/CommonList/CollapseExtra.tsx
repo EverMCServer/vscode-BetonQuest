@@ -1,5 +1,5 @@
 import React from "react";
-import { Popconfirm } from "antd";
+import { Popconfirm, Tooltip } from "antd";
 import { VscTrash, VscWarning } from "react-icons/vsc";
 
 import { CommonListProps } from "../CommonList";
@@ -36,14 +36,15 @@ export default function <T extends ListElement>(props: CollapseExtraProps<T>) {
                 cancelText="Cancel"
                 onPopupClick={e => e.stopPropagation()} // Prevent parent Collapse being toggled when clicked
             >
-                <VscTrash
-                    style={{
-                        margin: '0 6px 0 0',
-                        color: 'var(--vscode-activityBar-inactiveForeground)',
-                    }}
-                    onClick={e => e.stopPropagation()} // Prevent parent Collapse being toggled when clicked
-                    title="Delete"
-                />
+                <Tooltip placement="left" title="Delete">
+                    <VscTrash
+                        style={{
+                            margin: '0 6px 0 0',
+                            color: 'var(--vscode-tab-inactiveForeground)',
+                        }}
+                        onClick={e => e.stopPropagation()} // Prevent parent Collapse being toggled when clicked
+                    />
+                </Tooltip>
             </Popconfirm>
         </>
     );

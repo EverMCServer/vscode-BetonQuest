@@ -17,12 +17,15 @@ export default function (props: InputProps) {
     const [focusIndex, setFocusIndex] = useState<number>();
 
     return (
-        <>
+        <Space
+            direction="vertical"
+            size={4}
+            style={{ width: '-webkit-fill-available' }}
+        >
             {valueArray.map((value, index) =>
                 <Space.Compact
-                    block
                     key={index}
-                    style={index > 0 ? { marginTop: 4 } : undefined}
+                    style={{ width: '-webkit-fill-available' }}
                 >
                     <TextArea
                         value={value}
@@ -36,9 +39,10 @@ export default function (props: InputProps) {
                         autoFocus={index === focusIndex}
                         autoSize={{ minRows: props.config?.minRows || 2, maxRows: props.config?.maxRows || 6 }}
                         size="small"
+                        style={{ marginRight: 2 }}
                     />
                     {valueArray.length > 1 && <Button
-                        style={{ height: 'inherit' }}
+                        style={{ height: 'inherit', background: 'none' }}
                         type="default"
                         size="small"
                         onClick={() => {
@@ -51,21 +55,19 @@ export default function (props: InputProps) {
                     </Button>}
                 </Space.Compact>
             )}
-            <div style={{ marginTop: 4 }}>
-                <Button
-                    type="primary"
-                    size="small"
-                    onClick={() => {
-                        const valueUpdate = valueArray;
-                        valueUpdate.push("");
-                        setFocusIndex(valueArray.length - 1);
-                        props.onChange(valueUpdate);
-                        refreshUI();
-                    }}
-                >
-                    Add
-                </Button>
-            </div>
-        </>
+            <Button
+                type="primary"
+                size="small"
+                onClick={() => {
+                    const valueUpdate = valueArray;
+                    valueUpdate.push("");
+                    setFocusIndex(valueArray.length - 1);
+                    props.onChange(valueUpdate);
+                    refreshUI();
+                }}
+            >
+                Add
+            </Button>
+        </Space>
     );
 }

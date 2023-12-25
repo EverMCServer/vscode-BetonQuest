@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Input } from "antd";
+import { Input, Tooltip } from "antd";
 import { VscClose } from "react-icons/vsc";
 
 import { InputProps } from "./Common";
@@ -55,16 +55,16 @@ export default function (props: InputProps) {
                     size="small"
                     style={index > 0 ? { marginTop: 4 } : undefined}
                     suffix={
-                        valueArray.length > 1 ? <VscClose
-                            title="Remove"
-                            onClick={() => {
-                                const valueUpdate = [...valueArray.slice(0, index), ...valueArray.slice(index + 1)];
-                                setValueArray(valueUpdate);
-                                setFocusIndex(index);
-                                props.onChange(valueUpdate);
-                                refreshUI();
-                            }}
-                        /> : <span />
+                        valueArray.length > 1 ? <Tooltip title="Remove">
+                            <VscClose
+                                onClick={() => {
+                                    const valueUpdate = [...valueArray.slice(0, index), ...valueArray.slice(index + 1)];
+                                    setValueArray(valueUpdate);
+                                    setFocusIndex(index);
+                                    props.onChange(valueUpdate);
+                                    refreshUI();
+                                }}
+                            /></Tooltip> : undefined
                     }
                 />
             )}

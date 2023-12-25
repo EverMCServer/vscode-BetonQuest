@@ -4,7 +4,7 @@ import { VscEdit } from "react-icons/vsc";
 
 import { CommonListProps } from "../CommonList";
 import ListElement from "../../../../../betonquest/ListElement";
-import { Input, Popover } from "antd";
+import { Input, Popover, Tooltip } from "antd";
 import { SpecialCharactersRegex } from "../../../../../utils/yaml";
 
 let editPopoverTimeout: string | number | NodeJS.Timeout | undefined;
@@ -110,17 +110,18 @@ export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
                         {title}
                     </span>
                     &nbsp;
-                    <VscEdit
-                        style={{
-                            color: 'var(--vscode-activityBar-inactiveForeground)',
-                        }}
-                        onClick={e => {
-                            e.stopPropagation();
-                            setIsTitleEditing(true);
-                            setTitleEditValue(title); // Reset editor initial value
-                        }}
-                        title="Rename"
-                    />
+                    <Tooltip placement="right" title="Rename">
+                        <VscEdit
+                            style={{
+                                color: 'var(--vscode-tab-inactiveForeground)',
+                            }}
+                            onClick={e => {
+                                e.stopPropagation();
+                                setIsTitleEditing(true);
+                                setTitleEditValue(title); // Reset editor initial value
+                            }}
+                        />
+                    </Tooltip>
                 </>
             }
         </div>

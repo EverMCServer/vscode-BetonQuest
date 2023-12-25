@@ -1,6 +1,6 @@
 import React from "react";
 import Package from "../../../betonquest/Package";
-import { ConfigProvider, Tabs } from "antd";
+import { ConfigProvider, Tabs, Tooltip } from "antd";
 import { PiPlayFill } from "react-icons/pi";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 import { LuSearchCheck, LuSword } from "react-icons/lu";
@@ -126,7 +126,7 @@ export default function sider(props: ListEditorProps) {
                 items={[
                     {
                         key: "Events",
-                        label: <div title="Events"><PiPlayFill /></div>,
+                        label: <Tooltip placement="bottomRight" title="Events"><PiPlayFill /></Tooltip>,
                         children: <EventsList package={props.package} syncYaml={props.syncYaml}></EventsList>,
                         style: {
                             height: "calc(100% - 20px)"
@@ -136,7 +136,7 @@ export default function sider(props: ListEditorProps) {
                     },
                     {
                         key: "Conditions",
-                        label: <div title="Conditions"><AiOutlineQuestionCircle /></div>,
+                        label: <Tooltip placement="bottom" title="Conditions"><AiOutlineQuestionCircle /></Tooltip>,
                         children: <ConditionsList package={props.package} syncYaml={props.syncYaml}></ConditionsList>,
                         style: {
                             height: "calc(100% - 20px)"
@@ -144,7 +144,7 @@ export default function sider(props: ListEditorProps) {
                     },
                     {
                         key: "Objectives",
-                        label: <div title="Objectives"><LuSearchCheck /></div>,
+                        label: <Tooltip placement="bottom" title="Objectives"><LuSearchCheck /></Tooltip>,
                         children: <ObjectivesList package={props.package} syncYaml={props.syncYaml}></ObjectivesList>,
                         style: {
                             height: "calc(100% - 20px)"
@@ -152,7 +152,7 @@ export default function sider(props: ListEditorProps) {
                     },
                     {
                         key: "Items",
-                        label: <div title="Items"><LuSword /></div>,
+                        label: <Tooltip placement="bottom" title="Items"><LuSword /></Tooltip>,
                         children: <ItemsList package={props.package} syncYaml={props.syncYaml}></ItemsList>,
                         style: {
                             height: "calc(100% - 20px)"
