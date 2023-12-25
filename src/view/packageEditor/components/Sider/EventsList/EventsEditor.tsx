@@ -261,7 +261,6 @@ const kinds: Kind<Event>[] = [
             ]
         }
     },
-    // TODO: Spigot Effects list
     {
         value: 'deleffect',
         display: 'Remove Potion Effect',
@@ -273,7 +272,6 @@ const kinds: Kind<Event>[] = [
             ]
         }
     },
-    // TODO: Spigot Effects list
     {
         value: 'effect',
         display: 'Apply Potion Effect',

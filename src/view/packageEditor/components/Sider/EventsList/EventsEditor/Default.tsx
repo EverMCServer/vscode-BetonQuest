@@ -28,7 +28,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
 
     return (
         <>
-            {props.argumentsPattern.optional &&
+            {(props.argumentsPattern.mandatory.length > 0 && props.argumentsPattern.optional) &&
                 <Divider orientation="center" plain>
                     <u>Mandatory Arguments</u>
                 </Divider>
