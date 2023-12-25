@@ -18,26 +18,34 @@ const bukkitOptions = POTION_EFFECT_TYPE_LIST.map(e => {
 
 
 export default function (props: InputProps) {
-    const [options, setOptions] = useState(bukkitOptions);
-
-    const [valueArray, setValueArray] = useState(props.value as string[]);
+    const [valueArray, setValueArray] = useState(props.value as string[] || props.defaultValue);
     useEffect(() => {
-        setValueArray(props.value);
+        setValueArray(props.value as string[] || props.defaultValue);
     }, [props.value]);
 
-    const onChange = (value: string, index: number) => {
-        // Update value
-        const valueUpdate = valueArray;
-        valueUpdate[index] = value;
-        setValueArray(valueUpdate);
-        props.onChange(valueUpdate);
-        // Disable selected options from the available list
+    const [options, setOptions] = useState(bukkitOptions);
+
+    // Disable selected options from the available list
+    const updateDisabled = (valueUpdate: string[]) => {
         setOptions(bukkitOptions.map(option => {
             if (valueUpdate.some(v => v === option.value)) {
                 option.disabled = true;
+            } else {
+                option.disabled = undefined;
             }
             return option;
         }));
+    };
+
+    const onChange = (value: string, index: number) => {
+        // Update value
+        const valueUpdate = valueArray.slice();
+        valueUpdate[index] = value;
+        // setValueArray(valueUpdate);
+        props.onChange(valueUpdate);
+
+        // Disable selected options from the available list
+        updateDisabled(valueUpdate);
     };
 
     const onSearch = (searchString: string) => {
@@ -63,15 +71,23 @@ export default function (props: InputProps) {
     const onRemove = (index: number) => {
         // Update value
         const valueUpdate = [...valueArray.slice(0, index), ...valueArray.slice(index + 1)];
+        // setValueArray(valueUpdate);
+        props.onChange(valueUpdate);
+
+        // Disable selected options from the available list
+        updateDisabled(valueUpdate);
+    };
+
+    const onAdd = () => {
+        // Update value
+        const valueUpdate = valueArray.slice();
+        valueUpdate.push("");
+        setFocusIndex(valueArray.length - 1);
         setValueArray(valueUpdate);
         props.onChange(valueUpdate);
+
         // Disable selected options from the available list
-        setOptions(bukkitOptions.map(option => {
-            if (valueUpdate.some(v => v === option.value)) {
-                option.disabled = true;
-            }
-            return option;
-        }));
+        updateDisabled(valueUpdate);
     };
 
     const [focusIndex, setFocusIndex] = useState<number>();
@@ -116,12 +132,7 @@ export default function (props: InputProps) {
             <Button
                 type="primary"
                 size="small"
-                onClick={() => {
-                    const valueUpdate = valueArray;
-                    valueUpdate.push("");
-                    setFocusIndex(valueArray.length - 1);
-                    props.onChange(valueUpdate);
-                }}
+                onClick={onAdd}
             >
                 Add
             </Button>
