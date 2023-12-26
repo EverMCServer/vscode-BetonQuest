@@ -26,6 +26,8 @@ export default function (props: InputProps) {
 
     const [options, setOptions] = useState(bukkitOptions);
 
+    const [focusIndex, setFocusIndex] = useState<number>(-1);
+
     // Disable selected options from the available list
     const updateDisabled = (valueUpdate: string[]) => {
         setOptions(bukkitOptions.map(option => {
@@ -80,18 +82,23 @@ export default function (props: InputProps) {
     };
 
     const onAdd = () => {
-        // Update value
         const valueUpdate = valueArray.slice();
+
+        // Do not allow adding new empty value if there is already one
+        if (valueUpdate.length > 0 && valueUpdate.some(v => v.length === 0)) {
+            setFocusIndex(valueUpdate.findIndex(v => v.length === 0));
+            return;
+        }
+
+        // Update value
         valueUpdate.push("");
-        setFocusIndex(valueArray.length - 1);
+        setFocusIndex(valueUpdate.length - 1);
         setValueArray(valueUpdate);
         props.onChange(valueUpdate);
 
         // Disable selected options from the available list
         updateDisabled(valueUpdate);
     };
-
-    const [focusIndex, setFocusIndex] = useState<number>();
 
     return (
         <Space
@@ -116,7 +123,10 @@ export default function (props: InputProps) {
                         popupMatchSelectWidth={false}
                         placeholder={props.placeholder}
                         autoFocus={index === focusIndex}
-                        defaultOpen={index === focusIndex}
+                        open={index === focusIndex}
+                        onFocus={() => setFocusIndex(index)}
+                        onBlur={() => setFocusIndex(-1)}
+                        onSelect={() => setFocusIndex(-1)}
                         size="small"
                         style={{ width: '100%' }}
                     />
