@@ -3,9 +3,17 @@
 .ant-btn {
     height: fit-content;
     border: 1px solid var(--vscode-button-border, transparent) !important;
-    border-radius: 2px !important;
+    border-radius: 2px;
     box-shadow: none;
     transition: none !important;
+}
+
+.ant-btn.ant-btn-sm {
+    border-radius: 2px;
+}
+
+.ant-btn.ant-btn-lg {
+    border-radius: 2px;
 }
 
 .ant-btn:not(.ant-btn-disabled):focus-visible {

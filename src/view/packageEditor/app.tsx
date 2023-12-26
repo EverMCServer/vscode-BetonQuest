@@ -180,6 +180,7 @@ export default function app() {
                         }}
                         style={{
                             background: "var(--vscode-sideBar-background)",
+                            transitionDuration: "0s"
                         }}
                         collapsible
                         collapsed={collapsed}

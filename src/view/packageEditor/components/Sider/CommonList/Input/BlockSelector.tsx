@@ -225,7 +225,7 @@ export default function (props: InputProps) {
                                 setValue(namespace, tag, blockId, newState);
                             }}
                             style={{
-                                marginLeft: 1,
+                                background: 'none',
                                 padding: 0
                             }}
                             type="default"

@@ -24,6 +24,7 @@ export default function (props: InputProps) {
         >
             {valueArray.map((value, index) =>
                 <Space.Compact
+                    block
                     key={index}
                     style={{ width: '-webkit-fill-available' }}
                 >
@@ -39,7 +40,6 @@ export default function (props: InputProps) {
                         autoFocus={index === focusIndex}
                         autoSize={{ minRows: props.config?.minRows || 2, maxRows: props.config?.maxRows || 6 }}
                         size="small"
-                        style={{ marginRight: 2 }}
                     />
                     {valueArray.length > 1 && <Button
                         style={{ height: 'inherit', background: 'none' }}
