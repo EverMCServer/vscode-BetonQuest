@@ -26,7 +26,7 @@ export default function (props: InputProps) {
             defaultValue={props.defaultValue as number}
             value={value}
             onChange={(value) => {
-                setValue(value);
+                // setValue(value);
                 props.onChange(value);
             }}
             placeholder={props.placeholder}

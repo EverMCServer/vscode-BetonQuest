@@ -927,7 +927,7 @@ const kinds: Kind<Event>[] = [
         // e.g. score kill 1.2 action:multiply
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Name', type: 'string', defaultValue: '', placeholder: 'e.g. Quest Points', tooltip: 'Name of the scoreboard objective', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Name', type: 'string', defaultValue: '*', placeholder: 'e.g. Quest_Points', tooltip: 'Name of the scoreboard objective', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Action types' },
                 {
                     jsx: Select, name: 'Action', type: 'string', defaultValue: 'action:add', placeholder: 'e.g. action:add', config: {
