@@ -34,6 +34,16 @@ const kinds: Kind<Condition>[] = [
             keepWhitespaces: true
         }
     },
+    {
+        value: 'advancement',
+        display: 'Advancement',
+        description: 'Checks if the player has specified advancement',
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Input, name: 'Name', type: 'string', defaultValue: '', placeholder: 'e.g. minecraft:adventure/kill_a_mob', tooltip: 'name of advancement', config: { allowedPatterns: [/^\S*$/] } },
+            ]
+        }
+    }
     // ...
 ];
 
