@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Col, Row } from "antd";
-import TextArea from "antd/es/input/TextArea";
+import React, { useState } from "react";
+import { Col, Divider, Row, Tooltip } from "antd";
+import { VscQuestion } from "react-icons/vsc";
 
 import Condition from "../../../../../../betonquest/Condition";
 import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
+import { MandatoryArgumentDataType, OptionalArgumentDataType } from "../../../../../../betonquest/Arguments";
+
+const colSpanLeft = 4;
+const colSpanRight = 18;
 
 export default function (props: ListElementEditorBodyProps<Condition>) {
 
@@ -24,27 +28,78 @@ export default function (props: ListElementEditorBodyProps<Condition>) {
 
     return (
         <>
-            <Row justify="space-between" style={{ padding: "8px 0" }}>
-                <Col span={4}>
-                    <span>Value:&nbsp;</span>
-                </Col>
-                <Col span={18}>
-                    <TextArea
-                        value={args?.toString()}
-                        onChange={(e) => {
-                            if (e.target.value.includes("\n")) {
-                                return;
-                            }
-                            args?.setMandatoryArgument(0, e.target.value);
-                            props.syncYaml();
-                            refreshUI();
-                        }}
-                        size="small"
-                        placeholder={"(none)"}
-                        autoSize={{ minRows: 2, maxRows: 6 }}
-                    ></TextArea>
-                </Col>
-            </Row>
+            {(props.argumentsPattern.mandatory.length > 0 && props.argumentsPattern.optional) &&
+                <Divider orientation="center" plain>
+                    <u>Mandatory Arguments</u>
+                </Divider>
+            }
+            {props.argumentsPattern.mandatory.map((arg, index) => {
+                return (
+                    <Row justify="space-between" style={{ padding: "0 8px 16px 16px" }} key={index}>
+                        <Col span={colSpanLeft}>
+                            <span>
+                                {arg.name}&nbsp;
+                                {arg.tooltip && <>
+                                    <sup>
+                                        <Tooltip title={<span>{arg.tooltip}</span>}>
+                                            <VscQuestion />
+                                        </Tooltip>
+                                    </sup>&nbsp;
+                                </>}
+                            </span>
+                        </Col>
+                        <Col span={colSpanRight}>
+                            {arg.jsx && <arg.jsx
+                                value={args?.getMandatoryArgument(index)}
+                                defaultValue={arg.defaultValue}
+                                placeholder={arg.placeholder}
+                                onChange={(value: MandatoryArgumentDataType) => {
+                                    args?.setMandatoryArgument(index, value);
+                                    props.syncYaml();
+                                    refreshUI(); // Refresh states, if component uses useEffect() inside
+                                }}
+                                config={arg.config}
+                            />}
+                        </Col>
+                    </Row>
+                );
+            })}
+            {props.argumentsPattern.optional &&
+                <>
+                    <Divider orientation="center" plain>
+                        <u>Optional Arguments</u>
+                    </Divider>
+                    {props.argumentsPattern.optional?.map((arg, index) => {
+                        return (
+                            <Row justify="space-between" style={{ padding: "0 8px 16px 16px" }} key={index}>
+                                <Col span={colSpanLeft}>
+                                    <span>{arg.name}&nbsp;
+                                        {arg.tooltip && <>
+                                            <sup>
+                                                <Tooltip title={<span>{arg.tooltip}</span>}>
+                                                    <VscQuestion />
+                                                </Tooltip>
+                                            </sup>&nbsp;
+                                        </>}
+                                    </span>
+                                </Col>
+                                <Col span={colSpanRight}>
+                                    {arg.jsx && <arg.jsx
+                                        value={args?.getOptionalArgument(arg.key)}
+                                        placeholder={arg.placeholder}
+                                        onChange={(value: OptionalArgumentDataType) => {
+                                            args?.setOptionalArgument(arg.key, value);
+                                            props.syncYaml();
+                                            refreshUI(); // Refresh states, if component uses useEffect() inside
+                                        }}
+                                        config={arg.config}
+                                    />}
+                                </Col>
+                            </Row>
+                        );
+                    })}
+                </>
+            }
         </>
     );
 }

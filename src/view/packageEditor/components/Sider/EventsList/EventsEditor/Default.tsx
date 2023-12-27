@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Col, Divider, Row, Tooltip } from "antd";
+import { VscQuestion } from "react-icons/vsc";
 
 import Event from "../../../../../../betonquest/Event";
 import { MandatoryArgumentDataType, OptionalArgumentDataType } from "../../../../../../betonquest/Arguments";
 import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
-import { VscQuestion } from "react-icons/vsc";
 
 const colSpanLeft = 4;
 const colSpanRight = 18;

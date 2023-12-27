@@ -1,4 +1,5 @@
 import React from "react";
+import { DefaultOptionType } from "antd/es/select";
 
 import Event from "../../../../../betonquest/Event";
 import { Kind, ListElementEditorProps } from "../CommonList/CommonEditor";
@@ -8,19 +9,18 @@ import Default from "./EventsEditor/Default";
 import Give from "./EventsEditor/Give";
 import KillMob from "./EventsEditor/KillMob";
 
+import BaseLocation from "../CommonList/Input/BaseLocation";
+import BlockSelector from "../CommonList/Input/BlockSelector";
+import Checkbox from "../CommonList/Input/Checkbox";
+import EntityType from "../CommonList/Input/EntityType";
 import Input from "../CommonList/Input/Input";
 import InputList from "../CommonList/Input/InputList";
+import ItemList from "../CommonList/Input/ItemList";
+import Number from "../CommonList/Input/Number";
+import PotionEffectTypeList from "../CommonList/Input/PotionEffectTypeList";
+import Select from "../CommonList/Input/Select";
 import TextArea from "../CommonList/Input/TextArea";
 import TextAreaList from "../CommonList/Input/TextAreaList";
-import Checkbox from "../CommonList/Input/Checkbox";
-import Number from "../CommonList/Input/Number";
-import EntityType from "../CommonList/Input/EntityType";
-import BlockSelector from "../CommonList/Input/BlockSelector";
-import BaseLocation from "../CommonList/Input/BaseLocation";
-import Select from "../CommonList/Input/Select";
-import { DefaultOptionType } from "antd/es/select";
-import ItemList from "../CommonList/Input/ItemList";
-import PotionEffectTypeList from "../CommonList/Input/PotionEffectTypeList";
 
 // All kinds
 const kinds: Kind<Event>[] = [

@@ -20,9 +20,8 @@ export default function (props: InputProps) {
 
     return (
         <>
-            {valueArray.map((value, index) =>
+            {valueArray.map((value, index) => <Tooltip title='Hit "Enter" to add more!' key={index}>
                 <Input
-                    key={index}
                     value={value}
                     onChange={(e) => {
                         // Filter out unwanted input
@@ -67,7 +66,7 @@ export default function (props: InputProps) {
                             /></Tooltip> : undefined
                     }
                 />
-            )}
+            </Tooltip>)}
         </>
     );
 }

@@ -61,7 +61,7 @@ export type OptionalArgumentDataType =
     ;
 class OptionalArguments extends Map<string, OptionalArgumentDataType> { };
 
-type ArgumentsPatternMandatory = {
+export type ArgumentsPatternMandatory = {
     name: string,
     type: MandatoryArgumentType,
     defaultValue: MandatoryArgumentDataType,
@@ -72,7 +72,7 @@ type ArgumentsPatternMandatory = {
     config?: any
 };
 
-type ArgumentsPatternOptional = {
+export type ArgumentsPatternOptional = {
     name: string,
     key: string,
     type: OptionalArgumentType,
