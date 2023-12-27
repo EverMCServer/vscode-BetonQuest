@@ -1,0 +1,44 @@
+/* Override Ant Design's Checkbox styles */
+
+.ant-checkbox-wrapper .ant-checkbox .ant-checkbox-inner {
+    /* Normal background color */
+    background-color: var(--vscode-checkbox-background);
+    /* background-color: var(--vscode-settings-checkboxBackground); */
+    /* Normal border color */
+    border-color: var(--vscode-checkbox-border);
+    /* border-color: var(--vscode-settings-checkboxBorder); */
+}
+
+.ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover .ant-checkbox:not(.ant-checkbox-disabled) .ant-checkbox-inner {
+    /* Hover background color */
+    background-color: var(--vscode-checkbox-background);
+    /* background-color: var(--vscode-settings-checkboxBackground); */
+    /* Hover border color */
+    border-color: var(--vscode-checkbox-foreground);
+    /* border-color: var(--vscode-settings-checkboxForeground); */
+}
+
+.ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):active .ant-checkbox:not(.ant-checkbox-disabled) .ant-checkbox-inner {
+    /* background color when checking */
+    background-color: var(--vscode-checkbox-selectBackground);
+    /* border color when checking */
+    border-color: var(--vscode-checkbox-selectBorder);
+}
+
+.ant-checkbox-wrapper .ant-checkbox .ant-checkbox-inner:after {
+    /* "Tick" color */
+    border-color: var(--vscode-checkbox-foreground);
+    /* border-color: var(--vscode-settings-checkboxForeground); */
+}
+
+.ant-checkbox-wrapper .ant-wave {
+    /* Glowing effect when checking */
+    color: var(--vscode-checkbox-border);
+    /* color: var(--vscode-settings-checkboxBorder); */
+}
+
+/* Outline styles when tab-focused */
+.ant-checkbox-wrapper .ant-checkbox .ant-checkbox-input:focus-visible+.ant-checkbox-inner {
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: 2px;
+}
