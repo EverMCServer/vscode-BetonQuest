@@ -457,7 +457,10 @@ export default class Arguments {
             const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [];
 
             // Set value by type
-            if (value !== undefined && value !== null) {
+            if (value === undefined) {
+            } else if (value === null) {
+                optionalStrs.push(`${pat.key}`);
+            } else {
                 if (pat.type === 'int') {
                     optionalStrs.push(`${pat.key}:${(value as number).toString()}`);
                 } else if (pat.type === 'float') {
@@ -470,9 +473,7 @@ export default class Arguments {
                             .join(",")}`);
                     }
                 } else if (pat.type === 'boolean') {
-                    if (value) {
-                        optionalStrs.push(`${pat.key}`);
-                    }
+                    optionalStrs.push(`${pat.key}`);
                 } else if (pat.type === '[string:number?][,]') {
                     optionalStrs.push(`${pat.key}:${(value as [string, number?][])
                         .map(([s, n]) => {

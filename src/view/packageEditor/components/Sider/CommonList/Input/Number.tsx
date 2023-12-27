@@ -3,6 +3,18 @@ import { InputNumber } from "antd";
 
 import { InputProps } from "./Common";
 
+/**
+ * Input for number.
+ * 
+ * - `value` - Number value
+ * - `placeholder` - Number Input placeholder
+ * - `config`:
+ *   - `min` - Minimum allowed value.
+ *   - `max` - Maximum allowed value.
+ *   - `step` - Increment step value. Default to 1.
+ * @param props 
+ * @returns 
+ */
 export default function (props: InputProps) {
     const [value, setValue] = useState(props.value as number);
     useEffect(() => {
