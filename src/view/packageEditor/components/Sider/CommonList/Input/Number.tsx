@@ -26,6 +26,9 @@ export default function (props: InputProps) {
             defaultValue={props.defaultValue as number}
             value={value}
             onChange={(value) => {
+                if (value === null) {
+                    value = undefined;
+                }
                 // setValue(value);
                 props.onChange(value);
             }}
