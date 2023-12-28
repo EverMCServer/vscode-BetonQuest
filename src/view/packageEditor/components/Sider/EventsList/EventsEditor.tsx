@@ -407,7 +407,6 @@ const kinds: Kind<Event>[] = [
         // e.g. emerald:5,emerald_block:9,important_sign notify backpack
         argumentsPattern: {
             mandatory: [
-                // { jsx: ItemList, name: 'Item List', type: 'ItemList', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
                 { jsx: ItemList, name: 'Item List', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
             ],
             optional: [
