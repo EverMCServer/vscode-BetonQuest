@@ -45,20 +45,19 @@ const kinds: Kind<Event>[] = [
             ]
         }
     },
-    // TODO: match mandatory with key
     // TODO: variable support
-    // {
-    //     value: 'burn',
-    //     display: 'Burn',
-    //     description: 'Set fire on player.',
-    //     // e.g. burn duration:4
-    //     // e.g. burn duration:%point.punishment.amount%
-    //     argumentsPattern: {
-    //         mandatory: [
-    //             { jsx: TextAreaList, name: 'Duration', key: 'duration', type: 'string', defaultValue: 0, tooltip: 'The duration the player will burn (in seconds).' },
-    //         ]
-    //     }
-    // },
+    {
+        value: 'burn',
+        display: 'Burn',
+        description: 'Set fire on player.',
+        // e.g. burn duration:4
+        // e.g. burn duration:%point.punishment.amount%
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Number, name: 'Duration', key: 'duration', type: 'float', defaultValue: 0, tooltip: 'The duration the player will burn (in seconds).', config: { min: 0 } },
+            ]
+        }
+    },
     {
         value: 'cancelconversation',
         display: 'Cancel Conversation',
@@ -244,7 +243,6 @@ const kinds: Kind<Event>[] = [
             ]
         }
     },
-    // TODO: match mandatory with key
     // TODO: variable support
     {
         value: 'drop',
@@ -253,7 +251,9 @@ const kinds: Kind<Event>[] = [
         // e.g. drop items:myItem location:%objective.MyQuestVariables.DropLocation%
         argumentsPattern: {
             mandatory: [
-                // { jsx: ItemList, name: 'Item List', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
+                // For some reason this can be optional in BQ: https://github.com/BetonQuest/BetonQuest/blob/e80ccaba416b1fa458968bc3a35e5a585e06c2e0/src/main/java/org/betonquest/betonquest/Instruction.java#L152
+                // But it is better to make it mandatory.
+                // { jsx: ItemList, name: 'Item List', key: 'items', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
             ],
             optional: [
                 { jsx: ItemList, name: 'Item List', key: 'items', type: '[string:number?][,]', placeholder: ['e.g. emerald', '1'] },
@@ -882,7 +882,6 @@ const kinds: Kind<Event>[] = [
             keepWhitespaces: true
         }
     },
-    // TODO: match mandatory with key
     // TODO: ... Or a seprated standalone editor
     {
         value: 'runForAll',
@@ -890,15 +889,18 @@ const kinds: Kind<Event>[] = [
         description: <><div style={{ marginBottom: 8 }}>Runs the specified event(s) once for <b>each player</b> on the server.</div></>,
         // e.g. runForAll where:!isOp events:kickPlayer,restartQuest
         argumentsPattern: {
-            mandatory: [],
+            mandatory: [
+                // For some reason this can be optional in BQ: https://github.com/BetonQuest/BetonQuest/blob/e80ccaba416b1fa458968bc3a35e5a585e06c2e0/src/main/java/org/betonquest/betonquest/quest/event/run/RunForAllEventFactory.java#L34
+                // But it is better to make it mandatory.
+                // { jsx: InputList, name: 'Event IDs', key: 'events', type: 'string[,]', defaultValue: '', placeholder: 'e.g. kickPlayer', tooltip: 'List of Event IDs to be executed', config: { allowedPatterns: [/^\S*$/] } },
+            ],
             optional: [
                 { jsx: InputList, name: 'Event IDs', key: 'events', type: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: 'List of Event IDs to be executed', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: InputList, name: 'Conditions of Each Player', key: 'events', type: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: 'List of Condition IDs to be checked on each player (not the trigger player) while executing events', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: InputList, name: 'Conditions of Trigger', key: 'conditions', type: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: 'List of Condition IDs to be checked on the player whom triggers this event. If conditions are not met by this player, no Events will be executed on all other players.', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: 'Conditions of Each Player', key: 'where', type: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: 'List of Condition IDs to be checked on each player (not the trigger player) while executing events', config: { allowedPatterns: [/^\S*$/] } },
+                // { jsx: InputList, name: 'Conditions of Trigger', key: 'conditions', type: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: 'List of Condition IDs to be checked on the player whom triggers this event. If conditions are not met by this player, no Events will be executed on all other players.', config: { allowedPatterns: [/^\S*$/] } },
             ],
         }
     },
-    // TODO: match mandatory with key
     {
         value: 'runIndependent',
         display: 'Run Events Player Independently / Run Events as Schedular Does',
@@ -914,9 +916,11 @@ const kinds: Kind<Event>[] = [
         </>,
         // e.g. runIndependent events:removeObjective,clearTags,resetJournal
         argumentsPattern: {
-            mandatory: [],
+            mandatory: [
+                { jsx: InputList, name: 'Event IDs', key: 'events', type: 'string[,]', defaultValue: '', placeholder: 'e.g. kickPlayer', tooltip: 'List of Event IDs to be executed', config: { allowedPatterns: [/^\S*$/] } },
+            ],
             optional: [
-                { jsx: InputList, name: 'Event IDs', key: 'events', type: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: 'List of Event IDs to be executed', config: { allowedPatterns: [/^\S*$/] } },
+                // { jsx: InputList, name: 'Event IDs', key: 'events', type: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: 'List of Event IDs to be executed', config: { allowedPatterns: [/^\S*$/] } },
             ],
         }
     },
@@ -1144,7 +1148,6 @@ const kinds: Kind<Event>[] = [
             keepWhitespaces: true
         }
     },
-    // TODO: match mandatory with key
     // TODO: vector Input
     // TODO: ... Or a seprated standalone editor
     {
@@ -1155,6 +1158,9 @@ const kinds: Kind<Event>[] = [
         // e.g. velocity vector:%objective.customVariable.dashLength% direction:relative_y modification:add
         argumentsPattern: {
             mandatory: [
+                // For some reason this can be optional in BQ: https://github.com/BetonQuest/BetonQuest/blob/e80ccaba416b1fa458968bc3a35e5a585e06c2e0/src/main/java/org/betonquest/betonquest/quest/event/velocity/VelocityEventFactory.java#L56
+                // It is better to make it mandatory.
+                // { jsx: Input, name: 'Vector', key: 'vector', type: 'string', defaultValue: '(0.0;0.0;0.0)', placeholder: 'e.g. (0;0.1;1.3)', tooltip: 'The values of the vector: (x;y;z) for absolute direction, (sideways;upwards;forwards) for relative direction', config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
                 { jsx: Input, name: 'Vector', key: 'vector', type: 'string', placeholder: 'e.g. (0;0.1;1.3)', tooltip: 'The values of the vector: (x;y;z) for absolute direction, (sideways;upwards;forwards) for relative direction', config: { allowedPatterns: [/^\S*$/] } },

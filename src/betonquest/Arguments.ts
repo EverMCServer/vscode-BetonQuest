@@ -69,7 +69,8 @@ export type ArgumentsPatternMandatory = {
     jsx?: (props: any) => React.ReactNode,
     tooltip?: string,
     placeholder?: string | string[],
-    config?: any
+    config?: any,
+    key?: string
 };
 
 export type ArgumentsPatternOptional = {
@@ -234,6 +235,11 @@ export default class Arguments {
         for (let i = 0; i < argStrsMandatory.length; i++) {
             const pat = pattern.mandatory[i];
             let argStr = argStrsMandatory[i];
+
+            // With key
+            if (pat.key) {
+                argStr = argStr.split(/(?<!\\):/g).slice(1).join(":");
+            }
 
             // Un-Escape special characters
             const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [];
@@ -410,35 +416,40 @@ export default class Arguments {
             const pat = this.pattern.mandatory[i];
             let value = this.mandatory[i] || pat.defaultValue;
 
+            // With key
+            if (pat.key) {
+                element = pat.key + ":";
+            }
+
             // Escape special characters
             const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [];
 
             // Set value by type
             if (pat.type === 'int') {
-                element = (value as number).toString();
+                element += (value as number).toString();
             } else if (pat.type === 'float') {
-                element = (value as number).toString();
+                element += (value as number).toString();
             } else if (pat.type === 'string[,]') {
-                element = (value as string[])
+                element += (value as string[])
                     .map(str => this.escapeCharacters([...escapeCharacters, ','], str))
                     .join(",");
             } else if (pat.type === 'string[|]') {
-                element = (value as string[])
+                element += (value as string[])
                     .map(str => this.escapeCharacters([...escapeCharacters, '|'], str))
                     .join("|");
             } else if (pat.type === 'string[^]') {
-                element = "^" + (value as string[])
+                element += "^" + (value as string[])
                     .map(str => this.escapeCharacters([...escapeCharacters, '^'], str))
                     .join(" ^");
             } else if (pat.type === '[string:number?][,]') {
-                element = (value as [string, number?][])
+                element += (value as [string, number?][])
                     .map(([s, n]) => {
                         s = this.escapeCharacters([...escapeCharacters, ',', ':'], s);
                         return n !== undefined ? `${s}:${n}` : s;
                     })
                     .join(",");
             } else { // if (type === 'string' || '*')
-                element = this.escapeCharacters(escapeCharacters, value as string);
+                element += this.escapeCharacters(escapeCharacters, value as string);
             }
 
             mandatoryStrs.push(element);
