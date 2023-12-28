@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, Select, Space } from "antd";
+import { Button, InputNumber, Select, Space, Tooltip } from "antd";
 import { VscClose } from "react-icons/vsc";
 
 import { InputProps } from "./Common";
-import POTION_EFFECT_TYPE_LIST from "../../../../../../bukkit/Data/PotionEffectTypeList";
+import ENCHANTMENT_LIST from "../../../../../../bukkit/Data/EnchantmentList";
 import { DefaultOptionType } from "antd/es/select";
 
-const bukkitOptions = POTION_EFFECT_TYPE_LIST.map(e => {
+const bukkitOptions = ENCHANTMENT_LIST.map(e => {
     return {
         label: e.getBukkitId(), // TODO: i18n
         value: e.getBukkitId()
@@ -24,15 +24,18 @@ const bukkitOptions = POTION_EFFECT_TYPE_LIST.map(e => {
  * - `defaultValue` - default values
  * - `placeholder` - single enchantment + level, [[Enchantment, level]
  * - `config`:
+ *   - `min` - Minimum allowed value.
+ *   - `max` - Maximum allowed value.
+ *   - `step` - Increment step value. Default to 1.
  *   - `allowEmpty` - Boolean, allow remove all entries / no default value.
  * @param props 
  * @returns 
  */
 export default function (props: InputProps) {
-    const [valueArray, setValueArray] = useState(props.value as string[] || props.defaultValue);
+    const [valueArray, setValueArray] = useState<[string, number | undefined][]>([]);
     useEffect(() => {
-        setValueArray(props.value as string[] || props.defaultValue);
-        updateDisabled(props.value as string[]);
+        setValueArray(props.value as [string, number][] || props.defaultValue);
+        updateDisabled((props.value as [string, number][])?.map(e => e[0]));
     }, [props.value]);
 
     const [options, setOptions] = useState(bukkitOptions);
@@ -54,12 +57,12 @@ export default function (props: InputProps) {
     const onChange = (value: string, index: number) => {
         // Update value
         const valueUpdate = valueArray.slice();
-        valueUpdate[index] = value;
+        valueUpdate[index][0] = value;
         // setValueArray(valueUpdate);
         props.onChange(valueUpdate);
 
         // Disable selected options from the available list
-        updateDisabled(valueUpdate);
+        updateDisabled(valueUpdate.map(e => e[0]));
     };
 
     const onSearch = (searchString: string) => {
@@ -89,26 +92,26 @@ export default function (props: InputProps) {
         props.onChange(valueUpdate);
 
         // Disable selected options from the available list
-        updateDisabled(valueUpdate);
+        updateDisabled(valueUpdate.map(e => e[0]));
     };
 
     const onAdd = () => {
         const valueUpdate = valueArray.slice();
 
         // Do not allow adding new empty value if there is already one
-        if (valueUpdate.length > 0 && valueUpdate.some(v => v.length === 0)) {
-            setFocusIndex(valueUpdate.findIndex(v => v.length === 0));
+        if (valueUpdate.length > 0 && valueUpdate.some(v => v[0].length === 0)) {
+            setFocusIndex(valueUpdate.findIndex(v => v[0].length === 0));
             return;
         }
 
         // Update value
-        valueUpdate.push("");
+        valueUpdate.push(['', undefined]);
         setFocusIndex(valueUpdate.length - 1);
         setValueArray(valueUpdate);
         props.onChange(valueUpdate);
 
         // Disable selected options from the available list
-        updateDisabled(valueUpdate);
+        updateDisabled(valueUpdate.map(e => e[0]));
     };
 
     return (
@@ -117,13 +120,14 @@ export default function (props: InputProps) {
             size={4}
             style={{ width: '-webkit-fill-available' }}
         >
-            {valueArray.map((value, index) =>
+            {valueArray.map(([enchantment, level], index) =>
                 <Space.Compact
+                    block
                     key={index}
                     style={{ width: '-webkit-fill-available' }}
                 >
                     <Select
-                        value={value.toUpperCase()}
+                        value={enchantment.toUpperCase()}
                         defaultActiveFirstOption={false}
                         onChange={e => onChange(e, index)}
                         options={options}
@@ -132,7 +136,7 @@ export default function (props: InputProps) {
                         filterOption={onFilterOption}
                         notFoundContent={null}
                         popupMatchSelectWidth={false}
-                        placeholder={props.placeholder}
+                        placeholder={props.placeholder ? (props.placeholder as string[])[0] : ''}
                         autoFocus={index === focusIndex}
                         open={index === focusIndex}
                         onFocus={() => setFocusIndex(index)}
@@ -141,6 +145,31 @@ export default function (props: InputProps) {
                         size="small"
                         style={{ width: '100%' }}
                     />
+                    <Tooltip title="Level, defaul to 1">
+                        <InputNumber
+                            value={level}
+                            onChange={v => {
+                                const newEnchantmentList = valueArray.map((enchantment, i) => {
+                                    if (i === index) {
+                                        let amt = v;
+                                        if (v === null) {
+                                            amt = undefined;
+                                        }
+                                        enchantment[1] = amt;
+                                        return enchantment;
+                                    }
+                                    return enchantment;
+                                });
+                                props.onChange(newEnchantmentList);
+                                setValueArray(newEnchantmentList);
+                            }}
+                            placeholder={props.placeholder ? (props.placeholder as string[])[1] : undefined}
+                            min={props.config?.min | 0}
+                            max={props.config?.max}
+                            step={props.config?.step}
+                            size="small"
+                        />
+                    </Tooltip>
                     {(props.config?.allowEmpty || valueArray.length > 1) && <Button
                         style={{ height: 'inherit', background: 'none' }}
                         type="default"

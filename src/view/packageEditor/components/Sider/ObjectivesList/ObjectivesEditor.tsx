@@ -11,6 +11,7 @@ import Default from "./ObjectivesEditor/Default";
 import BaseLocation from "../CommonList/Input/BaseLocation";
 import BlockSelector from "../CommonList/Input/BlockSelector";
 import Checkbox from "../CommonList/Input/Checkbox";
+import EnchantmentList from "../CommonList/Input/EnchantmentList";
 import EntityType from "../CommonList/Input/EntityType";
 import Input from "../CommonList/Input/Input";
 import InputList from "../CommonList/Input/InputList";
@@ -152,7 +153,7 @@ const kinds: Kind<Objective>[] = ([
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Item', type: 'string', defaultValue: '', tooltip: 'Quest\'s item name' },
-                { jsx: ItemList, name: 'Item List', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. ARROW_DAMAGE', '1'] },
+                { jsx: EnchantmentList, name: 'Enchantment List', type: '[string:number?][,]', defaultValue: [["", 1]], placeholder: ['e.g. ARROW_DAMAGE', '1'] },
             ],
             optional: [
                 {
