@@ -290,9 +290,8 @@ const kinds: Kind<Event>[] = [
             ]
         }
     },
-    // TODO: Seprated standalone Editor
-    // https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Building-Blocks/Events-List/#give-experience-experience
     {
+        // https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Building-Blocks/Events-List/#give-experience-experience
         value: 'experience',
         display: 'Give Experience',
         description: 'Manipulates player\'s experience.',
@@ -301,23 +300,23 @@ const kinds: Kind<Event>[] = [
             mandatory: [
                 { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Modification types' },
                 {
-                    jsx: Select, name: 'Modification', type: 'string', defaultValue: 'action:addExperience', tooltip: 'action:addExperience only adds experience points, action:addLevel adds a level and keeps the current percentage. action:setExperienceBar sets the progress of the bar with decimal values between 0 and 1. action:setLevel sets only the level.', placeholder: 'e.g. action:addExperience', config: {
+                    jsx: Select, name: 'Modification', key: 'action', type: 'string', defaultValue: 'action:addExperience', tooltip: 'action:addExperience only adds experience points, action:addLevel adds a level and keeps the current percentage. action:setExperienceBar sets the progress of the bar with decimal values between 0 and 1. action:setLevel sets only the level.', placeholder: 'e.g. action:addExperience', config: {
                         options: [
                             {
                                 label: 'Add Experience', // TODO: i18n
-                                value: 'action:addExperience'
+                                value: 'addExperience'
                             },
                             {
                                 label: 'Set Experience Bar', // TODO: i18n
-                                value: 'action:setExperienceBar'
+                                value: 'setExperienceBar'
                             },
                             {
                                 label: 'Add Level', // TODO: i18n
-                                value: 'action:addLevel'
+                                value: 'addLevel'
                             },
                             {
                                 label: 'Set Level', // TODO: i18n
-                                value: 'action:setLevel'
+                                value: 'setLevel'
                             },
                         ] as DefaultOptionType[]
                     }
@@ -882,7 +881,6 @@ const kinds: Kind<Event>[] = [
             keepWhitespaces: true
         }
     },
-    // TODO: ... Or a seprated standalone editor
     {
         value: 'runForAll',
         display: 'Run Events for All Online Players',
@@ -934,23 +932,23 @@ const kinds: Kind<Event>[] = [
                 { jsx: Input, name: 'Name', type: 'string', defaultValue: '*', placeholder: 'e.g. Quest_Points', tooltip: 'Name of the scoreboard objective', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Action types' },
                 {
-                    jsx: Select, name: 'Action', type: 'string', defaultValue: 'action:add', placeholder: 'e.g. action:add', config: {
+                    jsx: Select, name: 'Action', key: 'action', type: 'string', defaultValue: 'action:add', placeholder: 'e.g. action:add', config: {
                         options: [
                             {
                                 label: 'Add +', // TODO: i18n
-                                value: 'action:add'
+                                value: 'add'
                             },
                             {
                                 label: 'Subtract -', // TODO: i18n
-                                value: 'action:subtract'
+                                value: 'subtract'
                             },
                             {
                                 label: 'Set =', // TODO: i18n
-                                value: 'action:set'
+                                value: 'set'
                             },
                             {
                                 label: 'Multiply x', // TODO: i18n
-                                value: 'action:multiply'
+                                value: 'multiply'
                             },
                         ] as DefaultOptionType[]
                     }
@@ -977,7 +975,7 @@ const kinds: Kind<Event>[] = [
     {
         value: 'stage',
         display: 'Modify Stage',
-        description: <><div style={{ marginBottom: 8 }}>Manipulates player\'s stage.</div><div>Note that the objective will not automatically complete when using this.</div></>,
+        description: <><div style={{ marginBottom: 8 }}>Manipulates player's stage.</div><div>Note that `set` will not automatically complete a `stage` objective. Use `increase` or `decrease` instead.</div></>,
         // e.g. stage bakeCookies decrease 2
         argumentsPattern: {
             mandatory: [
@@ -1153,7 +1151,7 @@ const kinds: Kind<Event>[] = [
     {
         value: 'velocity',
         display: 'Move the player',
-        description: 'desc.',
+        description: 'Applies or changes player\'s velocity.',
         // e.g. velocity vector:(0;0.1;1.3) direction:relative_y
         // e.g. velocity vector:%objective.customVariable.dashLength% direction:relative_y modification:add
         argumentsPattern: {
