@@ -82,13 +82,13 @@ const kinds: Kind<Objective>[] = ([
         description: 'The player must break or place the specified amount of blocks',
         argumentsPattern: {
             mandatory: [
-                { jsx: BlockSelector, name: 'Block', type:'string', defaultValue: 'any', placeholder: 'e.g. AIR', tooltip: 'Block Selector' },
+                { jsx: BlockSelector, name: 'Block', type: 'string', defaultValue: 'any', placeholder: 'e.g. AIR', tooltip: 'Block Selector' },
                 { jsx: Number, name: 'Amount', type: 'int', defaultValue: 0, tooltip: 'Number of blocks' },
             ],
             optional: [
                 { jsx: Checkbox, name: 'Disable Safety Check', key: 'noSafety', type: 'boolean', tooltip: 'Disable cheating check. Counts blocks the player placed themself.' },
-                // { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, naNValue: 1, setMinToNull: true } },
-                { jsx: OptionalNumber, name: 'Notify', key: 'notify', type: 'int', placeholder: '1', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, setMinToNull: true } },
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                // { jsx: OptionalNumber, name: 'Notify', key: 'notify', type: 'int', placeholder: '1', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, setMinToNull: true } },
             ]
         }
     }

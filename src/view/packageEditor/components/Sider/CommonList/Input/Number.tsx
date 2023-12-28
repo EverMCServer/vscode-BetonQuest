@@ -12,13 +12,19 @@ import { InputProps } from "./Common";
  *   - `min` - Minimum allowed value.
  *   - `max` - Maximum allowed value.
  *   - `step` - Increment step value. Default to 1.
+ *   - `undefinedValue` - Output undefined when value equals to this. Usefull when decreasing to 0.
+ *   - `nullValue` - Output null when value equals to this. Usefull when null/Nan means 1.
  * @param props 
  * @returns 
  */
 export default function (props: InputProps) {
     const [value, setValue] = useState(props.value as number);
     useEffect(() => {
-        setValue(props.value as number);
+        let value = props.value as number;
+        if (props.config?.nullValue && Number.isNaN(value)) {
+            value = props.config?.nullValue;
+        }
+        setValue(value);
     }, [props.value]);
 
     return (
@@ -26,10 +32,13 @@ export default function (props: InputProps) {
             defaultValue={props.defaultValue as number}
             value={value}
             onChange={(value) => {
-                if (value === null) {
+                if (value === null || value === props.config?.undefinedValue) {
                     value = undefined;
                 }
                 // setValue(value);
+                if (props.config?.nullValue && value === props.config?.nullValue) {
+                    value = null;
+                }
                 props.onChange(value);
             }}
             placeholder={props.placeholder}

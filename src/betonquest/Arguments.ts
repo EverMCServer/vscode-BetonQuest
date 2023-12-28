@@ -408,8 +408,7 @@ export default class Arguments {
         for (let i = 0; i < this.pattern.mandatory.length; i++) {
             let element = "";
             const pat = this.pattern.mandatory[i];
-            let value = this.mandatory[i];
-            value = value? value : pat.defaultValue;
+            let value = this.mandatory[i] || pat.defaultValue;
 
             // Escape special characters
             const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [];
