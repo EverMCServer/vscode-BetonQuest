@@ -1,10 +1,20 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Input, InputNumber, Space, Tooltip } from "antd";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Checkbox, Input, InputNumber, Space, Tooltip } from "antd";
 
 import { InputProps } from "./Common";
 
 // https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Data-Formats/#block-selectors
 
+/**
+ * Input for Location.
+ * 
+ * - `value` - String value
+ * - `config`:
+ *   - `defaultValue` - Array. Default location when `value` is undefined. e.g. [0.5, 64, 0.5, "world", 0, 0]
+ *   - `optional` - Boolean. If true, will have a checkbox to toggle optional. `value` is undefined when toggled false.
+ * @param props 
+ * @returns 
+ */
 export default function (props: InputProps) {
     const [defaultX, defaultY, defaultZ, defaultWorld, defaultYaw, defaultPitch] = props.config?.defaultValue || [0.5, 64, 0.5, "world", 0, 0];
 
@@ -52,9 +62,28 @@ export default function (props: InputProps) {
         props.onChange(value);
     }, [props.onChange]);
 
+    // Cache value before toggled to false. So it can be resumed to the original value when toggled back.
+    const cachedValueBeforeToggle = useRef(props.value);
+
     return (
         <Space direction="vertical" style={{ width: "100%" }}>
-            <Space.Compact block>
+            {props.config?.optional ? <Space.Compact block><Checkbox
+                checked={props.value ? true : false}
+                onChange={e => {
+                    if (e.target.checked) {
+                        // setValue(x, y, z, world, yaw, pitch);
+                        if (cachedValueBeforeToggle.current) {
+                            props.onChange(cachedValueBeforeToggle.current);
+                        } else {
+                            setValue(defaultX, defaultY, defaultZ, defaultWorld, null, null);
+                        }
+                    } else {
+                        cachedValueBeforeToggle.current = props.value;
+                        props.onChange(undefined);
+                    }
+                }}
+            /></Space.Compact> : undefined}
+            {props.value !== undefined ? <><Space.Compact block>
                 <Input
                     placeholder="* X"
                     style={{
@@ -77,139 +106,140 @@ export default function (props: InputProps) {
                     style={{ width: "inherit" }}
                 />
             </Space.Compact>
-            <Space.Compact block>
-                <Input
-                    placeholder="* Y"
-                    style={{
-                        width: "min-content",
-                        borderRight: 0,
-                        pointerEvents: 'none',
-                    }}
-                    disabled
-                    size="small"
-                />
-                <InputNumber
-                    value={y}
-                    placeholder={`${defaultY}`}
-                    onChange={e => {
-                        setY(e || defaultY);
-                        setValue(x, e || defaultY, z, world, yaw, pitch);
-                    }}
-                    size="small"
-                    title="Y"
-                    style={{ width: "inherit" }}
-                />
-            </Space.Compact>
-            <Space.Compact block>
-                <Input
-                    placeholder="* Z"
-                    style={{
-                        width: "min-content",
-                        borderRight: 0,
-                        pointerEvents: 'none',
-                    }}
-                    disabled
-                    size="small"
-                />
-                <InputNumber
-                    value={z}
-                    placeholder={`${defaultZ}`}
-                    onChange={e => {
-                        setZ(e || defaultZ);
-                        setValue(x, y, e || defaultZ, world, yaw, pitch);
-                    }}
-                    size="small"
-                    title="Z"
-                    style={{ width: "inherit" }}
-                />
-            </Space.Compact>
-            <Space.Compact block>
-                <Input
-                    placeholder="* World"
-                    style={{
-                        width: "min-content",
-                        borderRight: 0,
-                        pointerEvents: 'none',
-                    }}
-                    disabled
-                    size="small"
-                />
-                <Input
-                    value={world}
-                    placeholder="world"
-                    onChange={e => {
-                        setWorld(e.target.value);
-                        setValue(x, y, z, e.target.value || defaultWorld, yaw, pitch);
-                    }}
-                    size="small"
-                    title="Name of the world"
-                    style={{ width: "inherit" }}
-                />
-            </Space.Compact>
-            <Space.Compact block>
-                <Input
-                    placeholder="Yaw"
-                    style={{
-                        width: "min-content",
-                        borderRight: 0,
-                        pointerEvents: 'none',
-                    }}
-                    disabled
-                    size="small"
-                />
-                <Tooltip
-                    title={<div>
-                        <div>-180.0: north</div>
-                        <div>-90.0: east</div>
-                        <div>0.0: south</div>
-                        <div>90.0: west</div>
-                    </div>}
-                >
+                <Space.Compact block>
+                    <Input
+                        placeholder="* Y"
+                        style={{
+                            width: "min-content",
+                            borderRight: 0,
+                            pointerEvents: 'none',
+                        }}
+                        disabled
+                        size="small"
+                    />
                     <InputNumber
-                        value={yaw}
-                        placeholder="(none)"
+                        value={y}
+                        placeholder={`${defaultY}`}
                         onChange={e => {
-                            setYaw(e);
-                            setValue(x, y, z, world, e, pitch);
+                            setY(e || defaultY);
+                            setValue(x, e || defaultY, z, world, yaw, pitch);
                         }}
                         size="small"
+                        title="Y"
                         style={{ width: "inherit" }}
                     />
-                </Tooltip>
-            </Space.Compact>
-            <Space.Compact block>
-                <Input
-                    placeholder="Pitch"
-                    style={{
-                        width: "min-content",
-                        borderRight: 0,
-                        pointerEvents: 'none',
-                    }}
-                    disabled
-                    size="small"
-                />
-                <Tooltip
-                    title={<div>
-                        <div>0.0: look horizontally</div>
-                        <div>90.0: look straight down</div>
-                        <div>-90.0: look straight up</div>
-                    </div>}
-                >
+                </Space.Compact>
+                <Space.Compact block>
+                    <Input
+                        placeholder="* Z"
+                        style={{
+                            width: "min-content",
+                            borderRight: 0,
+                            pointerEvents: 'none',
+                        }}
+                        disabled
+                        size="small"
+                    />
                     <InputNumber
-                        value={pitch}
-                        placeholder="(none)"
-                        min={-90}
-                        max={90}
+                        value={z}
+                        placeholder={`${defaultZ}`}
                         onChange={e => {
-                            setPitch(e);
-                            setValue(x, y, z, world, yaw, e);
+                            setZ(e || defaultZ);
+                            setValue(x, y, e || defaultZ, world, yaw, pitch);
                         }}
                         size="small"
-                        title="Pitch"
+                        title="Z"
                         style={{ width: "inherit" }}
                     />
-                </Tooltip>
-            </Space.Compact>
+                </Space.Compact>
+                <Space.Compact block>
+                    <Input
+                        placeholder="* World"
+                        style={{
+                            width: "min-content",
+                            borderRight: 0,
+                            pointerEvents: 'none',
+                        }}
+                        disabled
+                        size="small"
+                    />
+                    <Input
+                        value={world}
+                        placeholder="world"
+                        onChange={e => {
+                            setWorld(e.target.value);
+                            setValue(x, y, z, e.target.value || defaultWorld, yaw, pitch);
+                        }}
+                        size="small"
+                        title="Name of the world"
+                        style={{ width: "inherit" }}
+                    />
+                </Space.Compact>
+                <Space.Compact block>
+                    <Input
+                        placeholder="Yaw"
+                        style={{
+                            width: "min-content",
+                            borderRight: 0,
+                            pointerEvents: 'none',
+                        }}
+                        disabled
+                        size="small"
+                    />
+                    <Tooltip
+                        title={<div>
+                            <div>-180.0: north</div>
+                            <div>-90.0: east</div>
+                            <div>0.0: south</div>
+                            <div>90.0: west</div>
+                        </div>}
+                    >
+                        <InputNumber
+                            value={yaw}
+                            placeholder="(none)"
+                            onChange={e => {
+                                setYaw(e);
+                                setValue(x, y, z, world, e, pitch);
+                            }}
+                            size="small"
+                            style={{ width: "inherit" }}
+                        />
+                    </Tooltip>
+                </Space.Compact>
+                <Space.Compact block>
+                    <Input
+                        placeholder="Pitch"
+                        style={{
+                            width: "min-content",
+                            borderRight: 0,
+                            pointerEvents: 'none',
+                        }}
+                        disabled
+                        size="small"
+                    />
+                    <Tooltip
+                        title={<div>
+                            <div>0.0: look horizontally</div>
+                            <div>90.0: look straight down</div>
+                            <div>-90.0: look straight up</div>
+                        </div>}
+                    >
+                        <InputNumber
+                            value={pitch}
+                            placeholder="(none)"
+                            min={-90}
+                            max={90}
+                            onChange={e => {
+                                setPitch(e);
+                                setValue(x, y, z, world, yaw, e);
+                            }}
+                            size="small"
+                            title="Pitch"
+                            style={{ width: "inherit" }}
+                        />
+                    </Tooltip>
+                </Space.Compact>
+            </> : undefined}
         </Space>
     );
 }

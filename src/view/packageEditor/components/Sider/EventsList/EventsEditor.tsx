@@ -257,7 +257,7 @@ const kinds: Kind<Event>[] = [
             ],
             optional: [
                 { jsx: ItemList, name: 'Item List', key: 'items', type: '[string:number?][,]', placeholder: ['e.g. emerald', '1'] },
-                { jsx: BaseLocation, name: 'Location', key: 'location', type: 'string', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] } },
+                { jsx: BaseLocation, name: 'Location', key: 'location', type: 'string', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0], optional: true } },
             ]
         }
     },

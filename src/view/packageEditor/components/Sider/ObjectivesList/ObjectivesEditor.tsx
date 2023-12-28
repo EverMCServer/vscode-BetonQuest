@@ -60,7 +60,7 @@ const kinds: Kind<Objective>[] = ([
                 { jsx: BlockSelector, name: 'Block', type: 'string', defaultValue: 'any', placeholder: 'e.g. AIR', tooltip: 'Block Selector' },
             ],
             optional: [
-                { jsx: BaseLocation, name: 'Location', key: 'loc', type: 'string' },
+                { jsx: BaseLocation, name: 'Location', key: 'loc', type: 'string', config: { optional: true } },
                 { jsx: Number, name: 'Range (Radius)', key: 'range', type: 'float', config: { min: 0 } },
             ]
         }
