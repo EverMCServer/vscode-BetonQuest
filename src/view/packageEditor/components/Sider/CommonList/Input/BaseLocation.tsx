@@ -38,9 +38,9 @@ export default function (props: InputProps) {
     }, [props.value]);
 
     const setValue = useCallback((x: number, y: number, z: number, world: string, yaw: number | null, pitch: number | null) => {
-        let value = `${x};${y};${z};${world}`;
+        let value = `${x ?? defaultX};${y ?? defaultY};${z ?? defaultZ};${world || defaultWorld}`;
         if (yaw || pitch) {
-            value += `;${yaw || defaultYaw};${pitch || defaultPitch}`;
+            value += `;${yaw ?? defaultYaw};${pitch ?? defaultPitch}`;
             if (yaw === null) {
                 setYaw(defaultYaw);
             }
