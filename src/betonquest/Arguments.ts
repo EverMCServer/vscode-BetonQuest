@@ -484,7 +484,9 @@ export default class Arguments {
                             .join(",")}`);
                     }
                 } else if (pat.type === 'boolean') {
-                    optionalStrs.push(`${pat.key}`);
+                    if (value) {
+                        optionalStrs.push(`${pat.key}`);
+                    }
                 } else if (pat.type === '[string:number?][,]') {
                     optionalStrs.push(`${pat.key}:${(value as [string, number?][])
                         .map(([s, n]) => {
