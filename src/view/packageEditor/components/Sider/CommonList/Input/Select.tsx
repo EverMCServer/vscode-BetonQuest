@@ -4,6 +4,16 @@ import { Select } from "antd";
 import { InputProps } from "./Common";
 import { DefaultOptionType } from "antd/es/select";
 
+/**
+ * Input for custom selection.
+ * 
+ * - `value` - string. Selected value.
+ * - `placeholder` - string. Placeholder text when nothing is selected.
+ * - `config`:
+ *   - `options` - ({ label: string, value: string } & DefaultOptionType)[]. Options to chose from.
+ * @param props 
+ * @returns 
+ */
 export default function (props: InputProps) {
     const [value, setValue] = useState(props.value as string);
     useEffect(() => {

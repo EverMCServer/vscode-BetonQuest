@@ -2,18 +2,21 @@
 
 import * as fs from "fs";
 
-import EntityType from "./DataType/EntityType";
-import Material from "./DataType/Material";
-import Enchantment from "./DataType/Enchantment";
-import PotionEffectType from "./DataType/PotionEffectType";
+import EntityType from "../bukkit/DataType/EntityType";
+import Material from "../bukkit/DataType/Material";
+import Enchantment from "../bukkit/DataType/Enchantment";
+import PotionEffectType from "../bukkit/DataType/PotionEffectType";
+import DyeColor from "../bukkit/DataType/DyeColor";
+import path from "path";
 
 // Config
-const OUTPUT_DIR = __dirname + "/Data";
+const OUTPUT_DIR = path.dirname(__dirname) + "/bukkit/Data";
 
 const BUKKIT_ENTITY_TYPE_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/entity/EntityType.java?at=refs%2Fheads%2Fmaster';
 const BUKKIT_MATERIAL_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/Material.java?at=refs%2Fheads%2Fmaster';
 const BUKKIT_ENCHANTMENT_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/enchantments/Enchantment.java?at=refs%2Fheads%2Fmaster';
 const BUKKIT_POTION_EFFECT_TYPE_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/potion/PotionEffectType.java?at=refs%2Fheads%2Fmaster';
+const BUKKIT_DYE_COLOR_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/DyeColor.java?at=refs%2Fheads%2Fmaster';
 
 (async () => {
     console.log("Generating EntityTypeList.json ...");
@@ -31,6 +34,10 @@ const BUKKIT_POTION_EFFECT_TYPE_SOURCE = 'https://hub.spigotmc.org/stash/project
     console.log("Generating PotionEffectTypeList.json ...");
     const pathPotionEffectTypeList = OUTPUT_DIR + "/PotionEffectTypeList.json";
     await generatePotionEffectTypeList(pathPotionEffectTypeList);
+
+    console.log("Generating DyeColorList.json ...");
+    const pathDyeColorList = OUTPUT_DIR + "/DyeColorList.json";
+    await generateDyeColorList(pathDyeColorList);
 
     console.log("All data succesfully generated.");
 })();
@@ -196,7 +203,7 @@ async function generateEnchantmentList(savePath: string) {
 }
 
 // Bukkit's PotionEffectTypes
-// https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/potion/PotionEffectType.java
+// https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/browse/src/main/java/org/bukkit/potion/PotionEffectType.java
 async function generatePotionEffectTypeList(savePath: string) {
     try {
         const response = await fetch(BUKKIT_POTION_EFFECT_TYPE_SOURCE);
@@ -226,5 +233,40 @@ async function generatePotionEffectTypeList(savePath: string) {
         fs.writeFileSync(savePath, JSON.stringify(potionEffectTypeList));
     } catch (reason) {
         throw new Error(`Unexpeted error while fetching Bukkit's PotionEffectType: ${reason}`);
+    };
+}
+
+// Bukkit's DyeColors
+// https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/browse/src/main/java/org/bukkit/DyeColor.java
+async function generateDyeColorList(savePath: string) {
+    try {
+        const response = await fetch(BUKKIT_DYE_COLOR_SOURCE);
+        const text = await response.text();
+        // Cache matched results
+        const cache: {
+            bukkitId: string,
+            color: string,
+            fireworkColor: string,
+        }[] = [];
+
+        // RegExp to extract all Bukkit's DyeColors names and RGB
+        const patternExtract = /^\s*([A-Z_]+).*?Color\.fromRGB\(0x([0-9A-F]+?)\).+?Color\.fromRGB\(0x([0-9A-F]+?)\)/gmi;
+        let array1: RegExpExecArray | null;
+        while ((array1 = patternExtract.exec(text)) !== null) {
+            if (array1[1] && array1[2] && array1[3]) {
+                cache.push({ bukkitId: array1[1], color: array1[2], fireworkColor: array1[3] });
+            }
+        }
+
+        // Create the DyeColors list
+        const dyeColorList: DyeColor[] = cache.map(v => new DyeColor(v.bukkitId, v.color, v.fireworkColor));
+
+        if (dyeColorList.length < 1) {
+            throw new Error(`Unexpeted error while parsing Bukkit's DyeColor with url: ${BUKKIT_DYE_COLOR_SOURCE} body: ${text}.`);
+        }
+
+        fs.writeFileSync(savePath, JSON.stringify(dyeColorList));
+    } catch (reason) {
+        throw new Error(`Unexpeted error while fetching Bukkit's DyeColor: ${reason}`);
     };
 }

@@ -12,6 +12,7 @@ import Default from "./ObjectivesEditor/Default";
 import BaseLocation from "../CommonList/Input/BaseLocation";
 import BlockSelector from "../CommonList/Input/BlockSelector";
 import Checkbox from "../CommonList/Input/Checkbox";
+import DyeColor from "../CommonList/Input/DyeColor";
 import EnchantmentList from "../CommonList/Input/EnchantmentList";
 import EntityType from "../CommonList/Input/EntityType";
 import Input from "../CommonList/Input/Input";
@@ -376,7 +377,7 @@ const kinds: Kind<Objective>[] = ([
             ],
             optional: [
                 { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Farmer\'s Sheep"', tooltip: 'The name of the sheep', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
-                { jsx: Input, name: 'Color', key: 'name', type: 'string', placeholder: 'e.g. "black"', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: DyeColor, name: 'Color', key: 'color', type: 'string', placeholder: 'e.g. "black"', config: { allowClear: true } },
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
