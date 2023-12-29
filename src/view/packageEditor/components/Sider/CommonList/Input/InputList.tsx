@@ -4,6 +4,17 @@ import { VscClose } from "react-icons/vsc";
 
 import { InputProps } from "./Common";
 
+/**
+ * Input for list of text.
+ * 
+ * - `value` - string[]. Array of string.
+ * - `defaultValue` - string[]. default values
+ * - `placeholder` - single enchantment + level, [[Enchantment, level]
+ * - `config`:
+ *   - `allowedPatterns` - RegExp. Check input against the pattern.
+ * @param props 
+ * @returns 
+ */
 export default function (props: InputProps) {
     // UI update trigger
     const [getTrigger, setTrigger] = useState(false);
@@ -11,9 +22,9 @@ export default function (props: InputProps) {
         setTrigger(!getTrigger);
     };
 
-    const [valueArray, setValueArray] = useState(props.value as string[] || [""]);
+    const [valueArray, setValueArray] = useState(props.value as string[] || props.config?.defaultValue || [""]);
     useEffect(() => {
-        setValueArray(props.value as string[] || [""]);
+        setValueArray(props.value as string[] || props.config?.defaultValue || [""]);
     }, [props.value]);
 
     const [focusIndex, setFocusIndex] = useState<number>();

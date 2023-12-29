@@ -5,6 +5,18 @@ import { VscClose } from "react-icons/vsc";
 
 import { InputProps } from "./Common";
 
+/**
+ * Input for list of text area.
+ * 
+ * - `value` - string[]. Array of string.
+ * - `defaultValue` - string[]. default values
+ * - `placeholder` - single enchantment + level, [[Enchantment, level]
+ * - `config`:
+ *   - `minRows` - Minimum displayed rows.
+ *   - `maxRows` - Maximum displayed rows.
+ * @param props 
+ * @returns 
+ */
 export default function (props: InputProps) {
     // UI update trigger
     const [getTrigger, setTrigger] = useState(false);
@@ -12,7 +24,7 @@ export default function (props: InputProps) {
         setTrigger(!getTrigger);
     };
 
-    const valueArray = props.value as string[] || [""];
+    const valueArray = props.value as string[] || props.config?.defaultValue || [""];
 
     const [focusIndex, setFocusIndex] = useState<number>();
 

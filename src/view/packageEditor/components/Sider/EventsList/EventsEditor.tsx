@@ -41,7 +41,7 @@ const kinds: Kind<Event>[] = [
         description: 'Cancel a quest predefined in a Quest Canceler.',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Canceler', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Canceler', type: 'string', defaultValue: 'a_canceler_name_1', tooltip: 'A canceler name predefined in the package\'s "cancel:" section', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -154,7 +154,7 @@ const kinds: Kind<Event>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: Input, name: 'Compass', type: 'string', defaultValue: '', placeholder: 'e.g. some_compass', tooltip: 'A name defined in the "compass" section', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Compass', type: 'string', defaultValue: 'a_compass_1', placeholder: 'e.g. some_compass', tooltip: 'A name defined in the "compass" section', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -165,7 +165,7 @@ const kinds: Kind<Event>[] = [
         // e.g. command kill %player%|ban %player%
         argumentsPattern: {
             mandatory: [
-                { jsx: TextAreaList, name: 'Commands', type: 'string[|]', defaultValue: '' },
+                { jsx: TextAreaList, name: 'Commands', type: 'string[|]', defaultValue: [''], placeholder: 'e.g. kill %player%', tooltip: 'No leading "/"' },
             ],
             keepWhitespaces: true
         }
@@ -177,7 +177,7 @@ const kinds: Kind<Event>[] = [
         // e.g. conversation village_smith
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Conversation ID', type: 'string', defaultValue: '', placeholder: 'e.g. village_smith', tooltip: 'ID of the conversation', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Conversation ID', type: 'string', defaultValue: 'a_conversation_id_1', placeholder: 'e.g. village_smith', tooltip: 'ID of the conversation', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -199,7 +199,7 @@ const kinds: Kind<Event>[] = [
         // e.g. deletepoint npc_attitude
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. npc_attitude', tooltip: 'ID of the point', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. npc_attitude', tooltip: 'ID of the point', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -210,7 +210,7 @@ const kinds: Kind<Event>[] = [
         // e.g. deleteglobalpoint bonus
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. bonus', tooltip: 'ID of the global point', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: 'a_global_point_id_1', placeholder: 'e.g. bonus', tooltip: 'ID of the global point', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -279,7 +279,7 @@ const kinds: Kind<Event>[] = [
         // e.g. effect BLINDNESS 30 1 ambient icon
         argumentsPattern: {
             mandatory: [
-                { jsx: PotionEffectTypeList, name: 'Effects', type: 'string[,]', defaultValue: [''], tooltip: 'List of Potion Effect Types' },
+                { jsx: PotionEffectTypeList, name: 'Effects', type: 'string[,]', defaultValue: ['SPEED'], tooltip: 'List of Potion Effect Types' },
                 { jsx: Number, name: 'Duration', type: 'float', defaultValue: 0.0, tooltip: 'How long the effect will last in seconds', config: { min: 0 } },
                 { jsx: Number, name: 'Level', type: 'int', defaultValue: 0, tooltip: 'Level of the effect', config: { min: 0 } },
             ],
@@ -373,7 +373,7 @@ const kinds: Kind<Event>[] = [
         // e.g. folder event1,event2,event3 delay:5 period:1
         argumentsPattern: {
             mandatory: [
-                { jsx: InputList, name: 'Event Names', type: 'string[,]', defaultValue: [''], placeholder: 'e.g. event1', tooltip: 'Names of other events', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: 'Event Names', type: 'string[,]', defaultValue: ['an_event_1'], placeholder: 'e.g. event1', tooltip: 'Names of other events', config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
                 { jsx: Number, name: 'Delay', key: 'delay', type: 'float', placeholder: '(none)', tooltip: 'The delay before the folder starts executing it\'s events', config: { min: 0 } },
@@ -431,7 +431,7 @@ const kinds: Kind<Event>[] = [
         // e.g. global_knownusers 1 action:add
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. bonus', tooltip: 'ID of the global point', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. bonus', tooltip: 'ID of the global point', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Action types' },
                 {
                     jsx: Select, name: 'Action', type: 'string', defaultValue: 'action:add', placeholder: 'e.g. action:add', config: {
@@ -479,7 +479,7 @@ const kinds: Kind<Event>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. reward_claimed', tooltip: 'ID of the global tag', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Tag ID', type: 'string', defaultValue: 'a_global_tag_id_1', placeholder: 'e.g. reward_claimed', tooltip: 'ID of the global tag', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -518,10 +518,10 @@ const kinds: Kind<Event>[] = [
         // e.g. if sun rain else sun
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Condition ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Input, name: 'Positive Event ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Condition Name', type: 'string', defaultValue: 'a_positve_condition_1', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Positive Event Name', type: 'string', defaultValue: 'a_positive_event_1', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: () => <>Else</>, name: '', type: 'string', defaultValue: 'else' },
-                { jsx: Input, name: 'Negative Event ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Negative Event Name', type: 'string', defaultValue: 'a_negative_event_1', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -620,7 +620,7 @@ const kinds: Kind<Event>[] = [
                 },
                 // TODO: New optional data type: string
                 // TODO: ... Or a seprated standalone editor
-                { jsx: Input, name: 'Journal ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Journal ID', type: 'string', defaultValue: '', placeholder: 'e.g. a_journal_id_1', tooltip: 'Leave it blank if you selected "Update"', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -657,7 +657,7 @@ const kinds: Kind<Event>[] = [
         // e.g. language en
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Language ID', type: 'string', defaultValue: '', config: { allowedPatterns: [/^[a-zA-Z_-]*$/] } },
+                { jsx: Input, name: 'Language ID', type: 'string', defaultValue: 'en', placeholder: 'e.g. en', config: { allowedPatterns: [/^[a-zA-Z_-]*$/] } },
             ]
         }
     },
@@ -783,7 +783,7 @@ const kinds: Kind<Event>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: InputList, name: 'Objective ID(s)', type: 'string[,]', defaultValue: [''], config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: 'Objective Name(s)', type: 'string[,]', defaultValue: ['an_objective_1'], config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -794,7 +794,7 @@ const kinds: Kind<Event>[] = [
         // e.g. opsudo spawn
         argumentsPattern: {
             mandatory: [
-                { jsx: TextAreaList, name: 'Commands', type: 'string[|]', defaultValue: '' },
+                { jsx: TextAreaList, name: 'Commands', type: 'string[|]', defaultValue: [''] },
             ],
             keepWhitespaces: true
         }
@@ -807,8 +807,8 @@ const kinds: Kind<Event>[] = [
         argumentsPattern: {
             mandatory: [
                 { jsx: Number, name: 'Distance', type: 'float', defaultValue: 0.0, tooltip: 'The coverage distance from the player whom triggers this event', config: { min: 0 } },
-                { jsx: InputList, name: 'Condition IDs', type: 'string[,]', placeholder: '(none)', defaultValue: [''], tooltip: 'Restrict selection conditions', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: InputList, name: 'Event IDs', type: 'string[,]', placeholder: 'any', defaultValue: [''], tooltip: 'Events to be executed', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: 'Condition Names', type: 'string[,]', placeholder: '(none)', defaultValue: ['a_condition_1'], tooltip: 'Restrict selection conditions', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: 'Event Names', type: 'string[,]', placeholder: 'any', defaultValue: ['an_event_1'], tooltip: 'Events to be executed', config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
                 { jsx: Number, name: 'Player Count', key: 'amount', type: 'int', placeholder: 'everyone', tooltip: 'The maximum number of players to be selected', config: { min: 0 } },
@@ -824,7 +824,7 @@ const kinds: Kind<Event>[] = [
         // e.g. pickrandom %point.factionXP.amount%%event1,0.5%event2,79%event3,1%event4 amount:3
         argumentsPattern: {
             mandatory: [
-                { jsx: InputList, name: 'Conditions', type: 'string[,]', placeholder: 'e.g. 12.3%event1', defaultValue: [''], tooltip: 'Restrict selection conditions', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: 'Conditions', type: 'string[,]', placeholder: 'e.g. 12.3%event1', defaultValue: ['a_condition_1'], tooltip: 'Restrict selection conditions', config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
                 { jsx: Number, name: 'Amount', key: 'amount', type: 'int', placeholder: '1', tooltip: 'The maximum number of events to be executed', config: { min: 0 } },
@@ -838,7 +838,7 @@ const kinds: Kind<Event>[] = [
         // e.g. point points 1.25 action:multiply notify
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: '', placeholder: 'e.g. bonus', tooltip: 'ID of the point', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. bonus', tooltip: 'ID of the point', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Action types' },
                 {
                     jsx: Select, name: 'Action', type: 'string', defaultValue: 'action:add', placeholder: 'e.g. action:add', config: {
@@ -875,7 +875,7 @@ const kinds: Kind<Event>[] = [
         // e.g. run ^tag add beton ^give emerald:5 ^entry add beton ^kill
         argumentsPattern: {
             mandatory: [
-                { jsx: TextAreaList, name: 'Event Instruction', type: 'string[^]', defaultValue: '', placeholder: 'e.g. give item:1', tooltip: 'Actual instruction need to be specified, not an event name.' },
+                { jsx: TextAreaList, name: 'Event Instruction', type: 'string[^]', defaultValue: [''], placeholder: 'e.g. give item:1', tooltip: 'Actual instruction need to be specified, not an event name.' },
             ],
             keepWhitespaces: true
         }
@@ -889,12 +889,12 @@ const kinds: Kind<Event>[] = [
             mandatory: [
                 // For some reason this can be optional in BQ: https://github.com/BetonQuest/BetonQuest/blob/e80ccaba416b1fa458968bc3a35e5a585e06c2e0/src/main/java/org/betonquest/betonquest/quest/event/run/RunForAllEventFactory.java#L34
                 // But it is better to make it mandatory.
-                // { jsx: InputList, name: 'Event IDs', key: 'events', type: 'string[,]', defaultValue: '', placeholder: 'e.g. kickPlayer', tooltip: 'List of Event IDs to be executed', config: { allowedPatterns: [/^\S*$/] } },
+                // { jsx: InputList, name: 'Event Names', key: 'events', type: 'string[,]', defaultValue: '', placeholder: 'e.g. kickPlayer', tooltip: 'List of Event Names to be executed', config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
-                { jsx: InputList, name: 'Event IDs', key: 'events', type: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: 'List of Event IDs to be executed', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: InputList, name: 'Conditions of Each Player', key: 'where', type: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: 'List of Condition IDs to be checked on each player (not the trigger player) while executing events', config: { allowedPatterns: [/^\S*$/] } },
-                // { jsx: InputList, name: 'Conditions of Trigger', key: 'conditions', type: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: 'List of Condition IDs to be checked on the player whom triggers this event. If conditions are not met by this player, no Events will be executed on all other players.', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: 'Event Names', key: 'events', type: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: 'List of Event Names to be executed', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: 'Conditions of Each Player', key: 'where', type: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: 'List of Condition Names to be checked on each player (not the trigger player) while executing events', config: { allowedPatterns: [/^\S*$/] } },
+                // { jsx: InputList, name: 'Conditions of Trigger', key: 'conditions', type: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: 'List of Condition Names to be checked on the player whom triggers this event. If conditions are not met by this player, no Events will be executed on all other players.', config: { allowedPatterns: [/^\S*$/] } },
             ],
         }
     },
@@ -914,10 +914,10 @@ const kinds: Kind<Event>[] = [
         // e.g. runIndependent events:removeObjective,clearTags,resetJournal
         argumentsPattern: {
             mandatory: [
-                { jsx: InputList, name: 'Event IDs', key: 'events', type: 'string[,]', defaultValue: '', placeholder: 'e.g. kickPlayer', tooltip: 'List of Event IDs to be executed', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: 'Event Names', key: 'events', type: 'string[,]', defaultValue: ['an_event_1'], placeholder: 'e.g. kickPlayer', tooltip: 'List of Event Names to be executed', config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
-                // { jsx: InputList, name: 'Event IDs', key: 'events', type: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: 'List of Event IDs to be executed', config: { allowedPatterns: [/^\S*$/] } },
+                // { jsx: InputList, name: 'Event Names', key: 'events', type: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: 'List of Event Names to be executed', config: { allowedPatterns: [/^\S*$/] } },
             ],
         }
     },
@@ -978,7 +978,7 @@ const kinds: Kind<Event>[] = [
         // e.g. stage bakeCookies decrease 2
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Stage Objective', type: 'string', defaultValue: '', placeholder: 'e.g. bakeCookies', tooltip: 'The name of the stage objective', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Stage Objective', type: 'string', defaultValue: 'a_stage_objective_1', placeholder: 'e.g. bakeCookies', tooltip: 'The name of the stage objective', config: { allowedPatterns: [/^\S*$/] } },
                 {
                     jsx: Select, name: 'Action', type: 'string', defaultValue: 'increase', placeholder: 'e.g. increase', config: {
                         options: [
@@ -997,7 +997,7 @@ const kinds: Kind<Event>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: Input, name: 'Stage Name', type: 'string', defaultValue: '', placeholder: 'e.g. stage_1', tooltip: 'The name of the stage when `set`. Or amount to `increase` or `decrease`', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Stage Name', type: 'string', defaultValue: 'a_stage_name_1', placeholder: 'e.g. stage_1', tooltip: 'The name of the stage when `set`. Or amount to `increase` or `decrease`', config: { allowedPatterns: [/^\S*$/] } },
             ],
         }
     },
@@ -1032,7 +1032,7 @@ const kinds: Kind<Event>[] = [
         // e.g. sudo spawn
         argumentsPattern: {
             mandatory: [
-                { jsx: TextAreaList, name: 'Commands', type: 'string[|]', defaultValue: '' },
+                { jsx: TextAreaList, name: 'Commands', type: 'string[|]', defaultValue: [''] },
             ],
             keepWhitespaces: true
         }
@@ -1058,7 +1058,7 @@ const kinds: Kind<Event>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: InputList, name: 'Tag Name(s)', type: 'string[,]', defaultValue: [''], config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: 'Tag Name(s)', type: 'string[,]', defaultValue: ['a_tag_1'], config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -1138,8 +1138,8 @@ const kinds: Kind<Event>[] = [
         // e.g. variable CustomVariable MyFirstVariable Goodbye!
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Variable Objective ID', type: 'string', defaultValue: '', placeholder: '', tooltip: '', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Input, name: 'Variable Name', type: 'string', defaultValue: '', placeholder: '', tooltip: '', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Variable Objective Name', type: 'string', defaultValue: 'a_variable_objective_1', placeholder: '', tooltip: '', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Variable Name', type: 'string', defaultValue: 'a_variable_name_1', placeholder: '', tooltip: '', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Input, name: 'Value', type: '*', defaultValue: '""', placeholder: '', tooltip: '' },
             ],
             keepWhitespaces: true
