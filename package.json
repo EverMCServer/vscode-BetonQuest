@@ -3,7 +3,7 @@
   "publisher": "EverMC",
   "displayName": "BetonQuest",
   "description": "A GUI for BetonQuest scripting",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "engines": {
     "vscode": "^1.80.0"
   },

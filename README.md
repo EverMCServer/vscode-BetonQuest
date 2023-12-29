@@ -22,7 +22,8 @@ A GUI based editor for [BetonQuest 2.0](https://github.com/BetonQuest/BetonQuest
 - [x] The legacy **1.x file structure** \[[1](https://docs.betonquest.org/1.12/User-Documentation/Reference/#packages)\] \[[2](https://docs.betonquest.org/1.12/User-Documentation/Conversations/)\] support.
 - [x] The new **2.0 file structure** \[[1](https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Packages-%26-Templates/)\] \[[2](https://docs.betonquest.org/2.0-DEV/Tutorials/Syntax/Quest-Packages/)\] support.
 - [x] Formated `Events` Editors with fully [documentation](https://docs.betonquest.org/2.0-DEV/Documentation/Overview/) support.
-- [ ] Formated `Conditions`, `Objectives` Editors
+- [ ] Formated `Conditions` Editors
+- [x] Formated `Objectives` Editors
 - [ ] `Events`, `Conditions`, `Objectives` Editors for the **1.x file structure**
 - [ ] [Journal](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Journal/) editing.
 - [ ] [Items](https://docs.betonquest.org/2.0-DEV/Documentation/Features/Items/) editing.
@@ -51,14 +52,16 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 
 ## Release Notes
 
+
+
+### 0.2.1
+
+- Objectives editing for 2.0! (1.0 is on the way)
+- Fix various bugs on Events editing
+
 ### 0.2.0
 - Events editing for 2.0! (1.0 is on the way)
 
 ### 0.1.6
 - Suggest YAML extension pack for grammar chacking
 - The extension is not activated under web envrionment
-
-### 0.1.5
-- Web extension supported! Just go to https://vscode.dev and try it
-
-(For more detailes, please check [CHANGELOG.md](CHANGELOG.md))
