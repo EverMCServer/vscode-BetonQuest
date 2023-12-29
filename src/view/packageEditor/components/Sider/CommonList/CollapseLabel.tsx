@@ -11,6 +11,7 @@ let editPopoverTimeout: string | number | NodeJS.Timeout | undefined;
 
 interface CollapseLabelProps<T extends ListElement> extends CommonListProps<T> {
     listElement: T,
+    onListElementRemane: (oldName: string, newName: string) => void
 }
 
 export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
@@ -46,6 +47,8 @@ export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
         setIsTitleEditing(false);
         // Set display
         setTitle(titleEditValue);
+        // Update Parent List element key
+        props.onListElementRemane(props.listElement.getName(), titleEditValue);
         // Set YAML
         props.listElement.setName(titleEditValue);
         props.syncYaml();

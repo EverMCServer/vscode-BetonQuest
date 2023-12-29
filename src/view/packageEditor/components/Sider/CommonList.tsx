@@ -42,10 +42,10 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
         const name = e.getName();
         return {
             key: name,
-            label: <CollapseLabel {...props} listElement={e}></CollapseLabel>,
+            label: <CollapseLabel {...props} listElement={e} onListElementRemane={onElementRemane}></CollapseLabel>,
             children: <props.editor key={name} {...props} listElement={e}></props.editor>,
             style: { padding: "4px 0 0 0" },
-            extra: <CollapseExtra {...props} name={name} removeElement={onElementRemove} />
+            extra: <CollapseExtra {...props} listElement={e} removeElement={onElementRemove} />
         };
     };
     const getListElementEditorList = (allElements: T[]): CollapseProps['items'] => {
@@ -123,6 +123,17 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
         // Remove from package
         props.package.removeListElement(type, name);
         props.syncYaml();
+    };
+
+    const onElementRemane = (oldName: string, newName: string) => {
+        // Update key on elementEditorList
+        const newListElementEditorList = listElementEditorListCache.current?.map(e => {
+            if (e.key === oldName) {
+                e.key = newName;
+            }
+            return e;
+        });
+        setListElementEditorList(newListElementEditorList);
     };
 
     // Handle Collapse

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Popconfirm, Tooltip } from "antd";
 import { VscTrash, VscWarning } from "react-icons/vsc";
 
@@ -6,16 +6,18 @@ import { CommonListProps } from "../CommonList";
 import ListElement, { ListElementType } from "../../../../../betonquest/ListElement";
 
 interface CollapseExtraProps<T extends ListElement> extends CommonListProps<T> {
-    name: string,
+    listElement: T,
     removeElement: (type: ListElementType, name: string) => void,
 }
 
 export default function <T extends ListElement>(props: CollapseExtraProps<T>) {
 
+    const [name, setName] = useState(props.listElement.getName());
+
     // Handle remove
     const onElementRemove = () => {
         // Remove from parent collapse
-        props.removeElement(props.type, props.name);
+        props.removeElement(props.type, props.listElement.getName());
     };
 
     return (
@@ -29,9 +31,10 @@ export default function <T extends ListElement>(props: CollapseExtraProps<T>) {
                         }}
                     />
                 }
+                onOpenChange={() => setName(props.listElement.getName())}
                 onConfirm={onElementRemove}
                 placement="topRight"
-                title={`Are you sure you want to delete "${props.name}"?`}
+                title={`Are you sure you want to delete "${name}"?`}
                 okText="Delete"
                 cancelText="Cancel"
                 onPopupClick={e => e.stopPropagation()} // Prevent parent Collapse being toggled when clicked
