@@ -124,7 +124,7 @@ const kinds: Kind<Event>[] = [
                 { jsx: Number, name: 'Radius', type: 'float', defaultValue: 0.0, config: { min: 0 } },
             ],
             optional: [
-                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mob which should be removed', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mob which should be removed', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
                 { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Remove only mobs that with the same mark using the spawn mob event', config: { allowedPatterns: [/^\S*$/] } }
             ]
         }

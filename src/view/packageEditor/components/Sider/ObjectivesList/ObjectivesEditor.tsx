@@ -1,4 +1,5 @@
 import React from "react";
+import { Tooltip } from "antd";
 import { DefaultOptionType } from "antd/es/select";
 
 import Objective from "../../../../../betonquest/Objective";
@@ -50,7 +51,7 @@ const kinds: Kind<Objective>[] = ([
         argumentsPattern: {
             mandatory: [
                 {
-                    jsx: Select, name: 'Type', type: 'string', defaultValue: 'any', placeholder: 'e.g. any', config: {
+                    jsx: Select, name: 'Action', type: 'string', defaultValue: 'any', placeholder: 'e.g. any', tooltip: 'Type of action', config: {
                         options: [
                             { label: 'Any', value: 'any' },
                             { label: 'Right', value: 'right' },
@@ -73,7 +74,7 @@ const kinds: Kind<Objective>[] = ([
         argumentsPattern: {
             mandatory: [
                 { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
-                { jsx: Number, name: 'Precision (Radius)', type: 'float', defaultValue: 0.0, tooltip: 'A radius around location where the arrow must land, should be small', config: { min: 0 } },
+                { jsx: Number, name: 'Precision (Radius)', type: 'float', defaultValue: 1.0, tooltip: 'A radius around location where the arrow must land, should be small', config: { min: 0 } },
             ]
         }
     },
@@ -99,8 +100,8 @@ const kinds: Kind<Objective>[] = ([
         description: 'The player must breed a type of animals for certain amounts.',
         argumentsPattern: {
             mandatory: [
-                { jsx: EntityType, name: 'Type', type: 'string', defaultValue: '' },
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 0, tooltip: 'Number of animals', config: { min: 0 } },
+                { jsx: EntityType, name: 'Type', type: 'string', defaultValue: 'PIG' },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of animals', config: { min: 0 } },
             ],
             optional: [
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
@@ -128,7 +129,7 @@ const kinds: Kind<Objective>[] = ([
         description: 'The player must eat the specified foods, or drink the specified potion.',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Item', type: 'string', defaultValue: '', tooltip: 'Quest\'s item name' },
+                { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_item', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
                 { jsx: Number, name: 'Amount', key: 'amount', type: 'int', tooltip: 'Number of items', placeholder: '1', config: { min: 0, undefinedValue: 0 } },
@@ -141,8 +142,8 @@ const kinds: Kind<Objective>[] = ([
         description: 'The player must craft specified items.',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Item', type: 'string', defaultValue: '', tooltip: 'Quest\'s item name' },
-                { jsx: Number, name: 'Amount', key: 'amount', type: 'int', defaultValue: 1, tooltip: 'Number of items', config: { min: 1 } },
+                { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_item', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of items', config: { min: 1 } },
             ]
         }
     },
@@ -152,7 +153,7 @@ const kinds: Kind<Objective>[] = ([
         description: 'The player must enchant the specified quest item with a specified enchantment.',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Item', type: 'string', defaultValue: '', tooltip: 'Quest\'s item name' },
+                { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_item', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: EnchantmentList, name: 'Enchantment List', type: '[string:number?][,]', defaultValue: [["", 1]], placeholder: ['e.g. ARROW_DAMAGE', '1'] },
             ],
             optional: [
@@ -172,6 +173,211 @@ const kinds: Kind<Objective>[] = ([
                     }
                 },
                 { jsx: Number, name: 'Amount', key: 'amount', type: 'int', placeholder: '1', tooltip: 'Number of items to be enchanted', config: { min: 0, undefinedValue: 0 } },
+            ]
+        }
+    },
+    {
+        value: 'experience',
+        display: 'Experience',
+        description: 'The player must reach the specified amount of experience levels.',
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Number, name: 'Level', type: 'float', defaultValue: 1.0, tooltip: 'Number could be a decimal', config: { min: 0 } },
+            ],
+            optional: [
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+            ]
+        }
+    },
+    {
+        value: 'delay',
+        display: 'Wait',
+        description: 'The player must wait for certain amount of time, including offline. Unit defaults to "minutes".',
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Number, name: 'Time', type: 'int', defaultValue: 1.0, tooltip: 'Time duration', config: { min: 0 } },
+            ],
+            optional: [
+                // Bad design. Should use "Select" instead.
+                // https://github.com/BetonQuest/BetonQuest/blob/e80ccaba416b1fa458968bc3a35e5a585e06c2e0/src/main/java/org/betonquest/betonquest/objectives/DelayObjective.java#L73
+                { jsx: Checkbox, name: 'Minutes?', key: 'minutes', type: 'boolean', tooltip: 'Unit' },
+                { jsx: Checkbox, name: 'Seconds?', key: 'seconds', type: 'boolean', tooltip: 'Unit' },
+                { jsx: Checkbox, name: 'Ticks?', key: 'ticks', type: 'boolean', tooltip: 'Unit' },
+                { jsx: Number, name: 'Check Precision', key: 'interval', type: 'int', placeholder: '200', tooltip: 'The interval in which the objective checks if the time is up. Measured in ticks. Low values cost more performance but make the objective preciser.', config: { min: 0, undefinedValue: 0 } },
+            ]
+        }
+    },
+    {
+        value: 'die',
+        display: 'Death',
+        description: 'The player must die with conditions.',
+        argumentsPattern: {
+            mandatory: [],
+            optional: [
+                { jsx: Checkbox, name: 'Cancel Death?', key: 'cancel', type: 'boolean', tooltip: 'Cancel player\' death?' },
+                { jsx: BaseLocation, name: 'Respawn Location', key: 'respawn', type: 'string', config: { optional: true } },
+            ]
+        }
+    },
+    {
+        value: 'fish',
+        display: 'Fishing',
+        description: 'The player must catch something with the fishing rod. The "fish" could be any item.',
+        argumentsPattern: {
+            mandatory: [
+                { jsx: BlockSelector, name: 'Item', type: 'string', defaultValue: 'AIR', placeholder: 'e.g. AIR', tooltip: 'The item that must be caught' },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, config: { min: 0 } },
+            ],
+            optional: [
+                { jsx: BaseLocation, name: 'Hook Location', key: 'hookLocation', type: 'string', tooltip: 'Where the hook needs to be', config: { optional: true } },
+                { jsx: Number, name: 'Radius', key: 'range', type: 'float', tooltip: 'A radius around the hook\'s landing', config: { min: 0 } },
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+            ]
+        }
+    },
+    {
+        value: 'interact',
+        display: 'Interact with entity',
+        description: 'The player must click on an entity.',
+        argumentsPattern: {
+            mandatory: [
+                {
+                    jsx: Select, name: 'Action', type: 'string', defaultValue: 'anhy', placeholder: 'e.g. any', tooltip: 'Type of action', config: {
+                        options: [
+                            { label: 'Any', value: 'any' },
+                            { label: 'Right', value: 'right' },
+                            { label: 'Left', value: 'left' },
+                        ] as DefaultOptionType[]
+                    }
+                },
+                { jsx: EntityType, name: 'Entity Type', type: 'string', defaultValue: 'ZOMBIE' },
+                { jsx: Number, name: 'Mobs', type: 'int', defaultValue: 1, tooltip: 'How many UNIQUE mobs that need to be cliked (not the same mob)', config: { min: 1 } },
+            ],
+            optional: [
+                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mob to be clicked', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
+                { jsx: Input, name: 'Real Name', key: 'realname', type: 'string', placeholder: 'e.g. "Notch"', tooltip: 'If the mob is a player, the real name of the player to be clicked', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Should the mobs have the same mark from the spawn mob event?', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Checkbox, name: 'Cancel Click?', key: 'cancel', type: 'boolean', tooltip: 'Should the clikc, e.g. left click hit mobs, be cancelled?' },
+                { jsx: BaseLocation, name: 'Location', key: 'loc', type: 'string', tooltip: 'Where the click should be happened', config: { optional: true } },
+                { jsx: Number, name: 'Radius', key: 'range', type: 'float', tooltip: 'A radius around the location', config: { min: 0 } },
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+            ]
+        }
+    },
+    {
+        value: 'kill',
+        display: 'Kill player',
+        description: 'The player needs to kill another players.',
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'How many players that need to be killed', config: { min: 1 } },
+                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Notch"', tooltip: 'The name of the player to be killed', config: { allowedPatterns: [/^\S*$/] } },
+            ],
+            optional: [
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: InputList, name: 'Conditions', key: 'required', type: 'string[,]', placeholder: '(none)', tooltip: 'Conditions that need to be satisfied by the players whom are going to be killed, e.g. tag_team_b', config: { allowedPatterns: [/^\S*$/] } },
+            ]
+        }
+    },
+    {
+        value: 'location',
+        display: 'Location',
+        description: 'The player must move into a specified range of a location.',
+        argumentsPattern: {
+            mandatory: [
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
+                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 1.0, tooltip: 'A radius around location where the player must be', config: { min: 0 } },
+            ]
+        }
+    },
+    {
+        value: 'login',
+        display: 'Login',
+        description: 'The player simply needs to login to the server.',
+        argumentsPattern: {
+            mandatory: []
+        }
+    },
+    {
+        value: 'logout',
+        display: 'Logout',
+        description: 'The player simply needs to leave the server.',
+        argumentsPattern: {
+            mandatory: []
+        }
+    },
+    {
+        // TODO: a seprated standalone editor for password preview
+        value: 'password',
+        display: 'Password',
+        description: <><div>The player has to write a certain password in chat.</div><div>This is what the player has to type in chat:</div><div><Tooltip title="Prefix (If specified)"><u>Solution:</u></Tooltip> <Tooltip title="Password"><u>The Cake is a lie!</u></Tooltip></div></>,
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Input, name: 'Password', type: 'string', defaultValue: 'Some Passwords', tooltip: 'Could be a Regular Expression', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
+            ],
+            optional: [
+                { jsx: Checkbox, name: 'Ignore Case', key: 'ignoreCase', type: 'boolean', tooltip: 'Case insensitive?' },
+                { jsx: Input, name: 'Prefix', key: 'prefix', type: 'string', placeholder: 'e.g. "Secret Password"', tooltip: 'A prefix before the password', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
+                { jsx: InputList, name: 'Events on Failed', key: 'fail', type: 'string[,]', placeholder: '(none)', tooltip: 'List of events to be executed when password incorrect', config: { allowedPatterns: [/^\S*$/] } },
+            ]
+        }
+    },
+    {
+        value: 'pickup',
+        display: 'Pickup Item',
+        description: 'The player needs to pickup the specified amount of items.',
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_item', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
+            ],
+            optional: [
+                { jsx: Number, name: 'Total Amount', key: 'amount', type: 'int', placeholder: '1', tooltip: 'Number of items to be picked up, in total.', config: { min: 0, undefinedValue: 0 } },
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+            ]
+        }
+    },
+    {
+        value: 'mobkill',
+        display: 'Entity Kill',
+        description: 'The player must kill the specified amount of entities.',
+        argumentsPattern: {
+            mandatory: [
+                { jsx: EntityType, name: 'Type', type: 'string', defaultValue: 'ZOMBIE' },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of mobs to be killed', config: { min: 0 } },
+            ],
+            optional: [
+                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mob to be killed', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
+                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Should the mobs have the same mark from the spawn mob event?', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+            ]
+        }
+    },
+    {
+        value: 'brew',
+        display: 'Potion Brewing',
+        description: 'The player needs to brew specified amount of specified potions.',
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_potion', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of potions', config: { min: 0 } },
+            ],
+            optional: [
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+            ]
+        }
+    },
+    {
+        value: 'shear',
+        display: 'Sheep shearing',
+        description: 'The player has to shear specified amount of sheep.',
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of sheeps', config: { min: 0 } },
+            ],
+            optional: [
+                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Farmer\'s Sheep"', tooltip: 'The name of the sheep', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
+                { jsx: Input, name: 'Color', key: 'name', type: 'string', placeholder: 'e.g. "black"', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
