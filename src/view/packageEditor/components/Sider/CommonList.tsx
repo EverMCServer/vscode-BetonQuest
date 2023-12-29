@@ -68,6 +68,9 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
         setListElementEditorList(getListElementEditorList(newListElements));
     }, [props.package]);
 
+    // Handle Collapse
+    const [collapseActiveKeys, setCollapseActiveKeys] = useState<string | string[]>([]);
+
     // Handle search
     const onElementSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.value.length > 0) {
@@ -88,56 +91,91 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
 
     // Handle add
     const onElementAdd = () => {
-        // Get incremental ID
-        let id = 1;
-        while (listElements.some(e => e.getName() === props.type + '_' + id)) {
-            id++;
-        }
-
-        // Create
-        const newListElement = props.package.createListElement<T>(props.type, props.type + '_' + id);
-        const newListElements = [...listElements, newListElement];
-        // Append to cached listElements
-        setListElements(newListElements);
-        // Create new editor
-        const newListElementEditor = getListElementEditor(newListElement);
-        // Append new editor to elementEditorList
-        setListElementEditorList(listElementEditorList?.concat(newListElementEditor));
-        // Expand editor
-        if (typeof collapseActiveKeys === 'string') {
-            setCollapseActiveKeys([collapseActiveKeys, newListElement.getName()]);
-        } else {
-            setCollapseActiveKeys([...collapseActiveKeys, newListElement.getName()]);
-        }
-        props.syncYaml();
+        _onElementAdd.current!();
     };
-
-    const onElementRemove = (type: ListElementType, name: string) => {
-        // Remove from cached listElements
-        const newListElements = listElementsCache.current.filter(e => e.getName() !== name);
-        setListElements(newListElements);
-        // Remove from elementEditorList
-        const newListElementEditorList = listElementEditorListCache.current?.filter(e => e.key !== name);
-        setListElementEditorList(newListElementEditorList);
-
-        // Remove from package
-        props.package.removeListElement(type, name);
-        props.syncYaml();
-    };
-
-    const onElementRemane = (oldName: string, newName: string) => {
-        // Update key on elementEditorList
-        const newListElementEditorList = listElementEditorListCache.current?.map(e => {
-            if (e.key === oldName) {
-                e.key = newName;
+    const _onElementAdd = useRef<() => void>();
+    useEffect(() => {
+        _onElementAdd.current = () => {
+            // Get incremental ID
+            let id = 1;
+            while (listElements.some(e => e.getName() === props.type + '_' + id)) {
+                id++;
             }
-            return e;
-        });
-        setListElementEditorList(newListElementEditorList);
-    };
 
-    // Handle Collapse
-    const [collapseActiveKeys, setCollapseActiveKeys] = useState<string | string[]>([]);
+            // Create
+            const newListElement = props.package.createListElement<T>(props.type, props.type + '_' + id);
+            const newListElements = [...listElements, newListElement];
+            // Append to cached listElements
+            setListElements(newListElements);
+            // Create new editor
+            const newListElementEditor = getListElementEditor(newListElement);
+            // Append new editor to elementEditorList
+            setListElementEditorList(listElementEditorList?.concat(newListElementEditor));
+            // Expand editor
+            if (typeof collapseActiveKeys === 'string') {
+                setCollapseActiveKeys([collapseActiveKeys, newListElement.getName()]);
+            } else {
+                setCollapseActiveKeys([...collapseActiveKeys, newListElement.getName()]);
+            }
+            props.syncYaml();
+        };
+    }, [listElements, listElementEditorList, collapseActiveKeys]);
+
+    // Handle remove
+    const onElementRemove = (type: ListElementType, name: string) => {
+        _onElementRemove.current!(type, name);
+    };
+    const _onElementRemove = useRef<(type: ListElementType, name: string) => void>();
+    useEffect(() => {
+        _onElementRemove.current = (type: ListElementType, name: string) => {
+            // Remove from cached listElements
+            const newListElements = listElementsCache.current.filter(e => e.getName() !== name);
+            setListElements(newListElements);
+            // Remove from elementEditorList
+            const newListElementEditorList = listElementEditorListCache.current?.filter(e => e.key !== name);
+            setListElementEditorList(newListElementEditorList);
+            // Remove from expanded collapse keys
+            if (typeof collapseActiveKeys === 'string' && collapseActiveKeys === name) {
+                setCollapseActiveKeys([]);
+            } else {
+                setCollapseActiveKeys((collapseActiveKeys as string[]).filter(e => e !== name));
+            }
+
+            // Remove from package
+            props.package.removeListElement(type, name);
+            props.syncYaml();
+        };
+    }, [collapseActiveKeys]);
+
+    // Handle rename / change key
+    const onElementRemane = (oldName: string, newName: string) => {
+        _onElementRemane.current!(oldName, newName);
+    };
+    const _onElementRemane = useRef<(oldName: string, newName: string) => void>();
+    useEffect(() => {
+        _onElementRemane.current = (oldName: string, newName: string) => {
+            // Update key on elementEditorList
+            const newListElementEditorList = listElementEditorListCache.current?.map(e => {
+                if (e.key === oldName) {
+                    e.key = newName;
+                }
+                return e;
+            });
+            setListElementEditorList(newListElementEditorList);
+
+            // Update expanded collapse keys
+            if (typeof collapseActiveKeys === 'string' && collapseActiveKeys === oldName) {
+                setCollapseActiveKeys([newName]);
+            } else {
+                setCollapseActiveKeys((collapseActiveKeys as string[]).map(e => {
+                    if (e === oldName) {
+                        return newName;
+                    }
+                    return e;
+                }));
+            }
+        };
+    }, [collapseActiveKeys]);
 
     return (
         <>
