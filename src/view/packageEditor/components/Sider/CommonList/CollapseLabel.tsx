@@ -17,7 +17,7 @@ interface CollapseLabelProps<T extends ListElement> extends CommonListProps<T> {
 export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
 
     // Cache title name
-    const [title, setTitle] = useState(props.listElement.getName());
+    const [title, setTitle] = useState("");
     useEffect(() => {
         setTitle(props.listElement.getName());
     }, [props.listElement]);
@@ -26,7 +26,7 @@ export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
     const [isTitleEditing, setIsTitleEditing] = useState(false);
 
     // Cache editing value
-    const [titleEditValue, setTitleEditValue] = useState(title);
+    const [titleEditValue, setTitleEditValue] = useState("");
     const onTitleEditTyping = (e: ChangeEvent<HTMLInputElement>) => {
         setTitleEditValue(e.target.value);
     };

@@ -30,7 +30,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
     // };
 
     // Cache all ListElements
-    const [listElements, _setListElements] = useState<T[]>(props.package.getAllListElements(props.type));
+    const [listElements, _setListElements] = useState<T[]>([]);
     const listElementsCache = useRef(listElements);
     const setListElements = (newListElements: T[]) => {
         listElementsCache.current = newListElements;
@@ -55,7 +55,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
     };
 
     // Cache all ListElements' Editor
-    const [listElementEditorList, _setListElementEditorList] = useState(getListElementEditorList(listElements));
+    const [listElementEditorList, _setListElementEditorList] = useState<CollapseProps['items']>([]);
     const listElementEditorListCache = useRef(listElementEditorList);
     const setListElementEditorList = (newListElementEditorList: CollapseProps['items']) => {
         listElementEditorListCache.current = newListElementEditorList;

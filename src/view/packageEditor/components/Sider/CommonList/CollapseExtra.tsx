@@ -12,7 +12,7 @@ interface CollapseExtraProps<T extends ListElement> extends CommonListProps<T> {
 
 export default function <T extends ListElement>(props: CollapseExtraProps<T>) {
 
-    const [name, setName] = useState(props.listElement.getName());
+    const [name, setName] = useState("");
 
     // Handle remove
     const onElementRemove = () => {
