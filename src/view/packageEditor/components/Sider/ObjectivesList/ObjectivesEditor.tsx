@@ -15,6 +15,7 @@ import Checkbox from "../CommonList/Input/Checkbox";
 import DyeColor from "../CommonList/Input/DyeColor";
 import EnchantmentList from "../CommonList/Input/EnchantmentList";
 import EntityType from "../CommonList/Input/EntityType";
+import EntityTypeList from "../CommonList/Input/EntityTypeList";
 import Input from "../CommonList/Input/Input";
 import InputList from "../CommonList/Input/InputList";
 import ItemList from "../CommonList/Input/ItemList";
@@ -102,7 +103,7 @@ const kinds: Kind<Objective>[] = ([
         argumentsPattern: {
             mandatory: [
                 { jsx: EntityType, name: 'Type', type: 'string', defaultValue: 'PIG' },
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of animals', config: { min: 0 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of animals', config: { min: 1 } },
             ],
             optional: [
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
@@ -227,7 +228,7 @@ const kinds: Kind<Objective>[] = ([
         argumentsPattern: {
             mandatory: [
                 { jsx: BlockSelector, name: 'Item', type: 'string', defaultValue: 'AIR', placeholder: 'e.g. AIR', tooltip: 'The item that must be caught' },
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, config: { min: 0 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, config: { min: 1 } },
             ],
             optional: [
                 { jsx: BaseLocation, name: 'Hook Location', key: 'hookLocation', type: 'string', tooltip: 'Where the hook needs to be', config: { optional: true } },
@@ -343,8 +344,8 @@ const kinds: Kind<Objective>[] = ([
         description: 'The player must kill the specified amount of entities.',
         argumentsPattern: {
             mandatory: [
-                { jsx: EntityType, name: 'Type', type: 'string', defaultValue: 'ZOMBIE' },
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of mobs to be killed', config: { min: 0 } },
+                { jsx: EntityTypeList, name: 'Type', type: 'string[,]', defaultValue: ['ZOMBIE'] },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of mobs to be killed', config: { min: 1 } },
             ],
             optional: [
                 { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mob to be killed', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
@@ -360,7 +361,7 @@ const kinds: Kind<Objective>[] = ([
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_potion', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of potions', config: { min: 0 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of potions', config: { min: 1 } },
             ],
             optional: [
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
@@ -373,13 +374,131 @@ const kinds: Kind<Objective>[] = ([
         description: 'The player has to shear specified amount of sheep.',
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of sheeps', config: { min: 0 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of sheeps', config: { min: 1 } },
             ],
             optional: [
                 { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Farmer\'s Sheep"', tooltip: 'The name of the sheep', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
                 { jsx: DyeColor, name: 'Color', key: 'color', type: 'string', placeholder: 'e.g. "black"', config: { allowClear: true } },
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
+        }
+    },
+    {
+        value: 'smelt',
+        display: 'Smelting',
+        description: 'The player must smelt the specified item.',
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_item', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of items to be smelt', config: { min: 1 } },
+            ],
+            optional: [
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+            ]
+        }
+    },
+    {
+        value: 'stage',
+        display: 'Stages',
+        description: <><div>The player must complete the specified stages.</div><div>You can modify the stages with the `stage` event and check it with the `stage` condition.</div></>,
+        argumentsPattern: {
+            mandatory: [
+                { jsx: InputList, name: 'Stage List', type: 'string[,]', defaultValue: ['some_stage_1'], placeholder: 'e.g. stage_1', tooltip: 'The stages that must be completed', config: { allowedPatterns: [/^\S*$/] } },
+            ],
+            optional: [
+                { jsx: Checkbox, name: 'Ignore Stage Increasing', key: 'preventCompletion', type: 'boolean', tooltip: 'Make this objective must be completed by `objective` event. Prevents it from being completed by increasing the stage.' },
+            ]
+        }
+    },
+    {
+        value: 'step',
+        display: 'Step on pressure plate',
+        description: 'The player has to step on a pressure plate at a given location. The type of plate does not matter.',
+        argumentsPattern: {
+            mandatory: [
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
+            ]
+        }
+    },
+    {
+        value: 'tame',
+        display: 'Taming',
+        description: 'The player must tame some amount of mobs.',
+        argumentsPattern: {
+            mandatory: [
+                { jsx: EntityType, name: 'Type', type: 'string', defaultValue: 'WOLF' },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of mobs', config: { min: 1 } },
+            ],
+            optional: [
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+            ]
+        }
+    },
+    {
+        value: 'jump',
+        display: 'Player must Jump',
+        description: <><div>The player must jump.</div><div>This feature requires <a href="https://papermc.io/" target="_blank">Paper</a>.</div></>,
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of jumps', config: { min: 1 } },
+            ],
+            optional: [
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+            ]
+        }
+    },
+    {
+        value: 'ride',
+        display: 'Ride an entity',
+        description: 'The player must ride a specific entitiy',
+        argumentsPattern: {
+            mandatory: [
+                { jsx: EntityType, name: 'Type', type: 'string', defaultValue: 'any', tooltip: '"any" means any entities are ok' },
+            ]
+        }
+    },
+    {
+        value: 'command',
+        display: 'Run a Command',
+        description: 'The player must execute a specified command.',
+        argumentsPattern: {
+            mandatory: [
+                { jsx: Input, name: 'Command', type: 'string', defaultValue: '/spawn', tooltip: 'Could be a non-exists command', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
+            ],
+            optional: [
+                { jsx: Checkbox, name: 'Ignore Case', key: 'ignoreCase', type: 'boolean', tooltip: 'Case insensitive?' },
+                { jsx: Checkbox, name: 'Exact', key: 'exact', type: 'boolean', tooltip: 'Match everything till the end, not just the begining' },
+                { jsx: Checkbox, name: 'Cancel Execution', key: 'cancel', type: 'boolean', tooltip: 'Prevent the command from being executed. Useful when the command is not exist.' },
+                { jsx: InputList, name: 'Events on Failed', key: 'failEvents', type: 'string[,]', placeholder: '(none)', tooltip: 'List of events to be executed when command does not match', config: { allowedPatterns: [/^\S*$/] } },
+            ]
+        }
+    },
+    {
+        value: 'equip',
+        display: 'Equip Armor Item',
+        description: <><div>The player must equip the specified quest item in the specified slot.</div><div>This feature requires <a href="https://papermc.io/" target="_blank">Paper</a>.</div></>,
+        argumentsPattern: {
+            mandatory: [
+                {
+                    jsx: Select, name: 'Slot', type: 'string', defaultValue: 'any', placeholder: 'e.g. any', config: {
+                        options: [
+                            { label: 'Head', value: 'HEAD' },
+                            { label: 'Chest', value: 'CHEST' },
+                            { label: 'Legs', value: 'LEGS' },
+                            { label: 'Feet', value: 'FEET' },
+                        ] as DefaultOptionType[]
+                    }
+                },
+                { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_item', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
+            ]
+        }
+    },
+    {
+        value: 'variable',
+        display: 'Variable',
+        description: <><div>Allow thethe player set a variable typed in chat with format "key: value".</div><div>For more details, please refer to the <a href="https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Building-Blocks/Objectives-List/#variable-variable" target="_blank">documentation</a>.</div></>,
+        argumentsPattern: {
+            mandatory: []
         }
     },
     // ...

@@ -4,9 +4,9 @@ import { DefaultOptionType } from "antd/es/select";
 import { VscClose } from "react-icons/vsc";
 
 import { InputProps } from "./Common";
-import ENCHANTMENT_LIST from "../../../../../../bukkit/Data/EnchantmentList";
+import ENTITY_TYPE_LIST from "../../../../../../bukkit/Data/EntityTypeList";
 
-const bukkitOptions = ENCHANTMENT_LIST.map(e => {
+const bukkitOptions = ENTITY_TYPE_LIST.map(e => {
     return {
         label: e.getBukkitId(), // TODO: i18n
         value: e.getBukkitId()
@@ -18,24 +18,21 @@ const bukkitOptions = ENCHANTMENT_LIST.map(e => {
 
 
 /**
- * Input for Enchantment and Level.
+ * Input for EntityType List.
  * 
- * - `value` - [Enchantment, level][]: [string, number][]
- * - `defaultValue` - default values
- * - `placeholder` - single enchantment + level, [[Enchantment, level]
+ * - `value` - string[]. Bukkit's EntityTypes
+ * - `defaultValue` - string[]. Bukkit's EntityTypes
+ * - `placeholder` - string. Placeholder when nothing is selected
  * - `config`:
- *   - `min` - Minimum allowed value. Default to 1.
- *   - `max` - Maximum allowed value.
- *   - `step` - Increment step value. Default to 1.
  *   - `allowEmpty` - Boolean, allow remove all entries / no default value.
  * @param props 
  * @returns 
  */
 export default function (props: InputProps) {
-    const [valueArray, setValueArray] = useState<[string, number | undefined][]>([]);
+    const [valueArray, setValueArray] = useState<string[]>([]);
     useEffect(() => {
-        setValueArray(props.value as [string, number][] || props.defaultValue);
-        updateDisabled((props.value as [string, number][])?.map(e => e[0]));
+        setValueArray(props.value as string[] || props.defaultValue);
+        updateDisabled(props.value as string[]);
     }, [props.value]);
 
     const [options, setOptions] = useState(bukkitOptions);
@@ -57,12 +54,12 @@ export default function (props: InputProps) {
     const onChange = (value: string, index: number) => {
         // Update value
         const valueUpdate = valueArray.slice();
-        valueUpdate[index][0] = value;
+        valueUpdate[index] = value;
         // setValueArray(valueUpdate);
         props.onChange(valueUpdate);
 
         // Disable selected options from the available list
-        updateDisabled(valueUpdate.map(e => e[0]));
+        updateDisabled(valueUpdate);
     };
 
     const onSearch = (searchString: string) => {
@@ -92,26 +89,26 @@ export default function (props: InputProps) {
         props.onChange(valueUpdate);
 
         // Disable selected options from the available list
-        updateDisabled(valueUpdate.map(e => e[0]));
+        updateDisabled(valueUpdate);
     };
 
     const onAdd = () => {
         const valueUpdate = valueArray.slice();
 
         // Do not allow adding new empty value if there is already one
-        if (valueUpdate.length > 0 && valueUpdate.some(v => v[0].length === 0)) {
-            setFocusIndex(valueUpdate.findIndex(v => v[0].length === 0));
+        if (valueUpdate.length > 0 && valueUpdate.some(v => v.length === 0)) {
+            setFocusIndex(valueUpdate.findIndex(v => v.length === 0));
             return;
         }
 
         // Update value
-        valueUpdate.push(['', undefined]);
+        valueUpdate.push('');
         setFocusIndex(valueUpdate.length - 1);
         setValueArray(valueUpdate);
         props.onChange(valueUpdate);
 
         // Disable selected options from the available list
-        updateDisabled(valueUpdate.map(e => e[0]));
+        updateDisabled(valueUpdate);
     };
 
     return (
@@ -120,7 +117,7 @@ export default function (props: InputProps) {
             size={4}
             style={{ width: '-webkit-fill-available' }}
         >
-            {valueArray.map(([enchantment, level], index) =>
+            {valueArray.map((enchantment, index) =>
                 <Space.Compact
                     block
                     key={index}
@@ -136,7 +133,7 @@ export default function (props: InputProps) {
                         filterOption={onFilterOption}
                         notFoundContent={null}
                         popupMatchSelectWidth={false}
-                        placeholder={props.placeholder ? (props.placeholder as string[])[0] : ''}
+                        placeholder={props.placeholder ? (props.placeholder as string[]) : ''}
                         autoFocus={index === focusIndex}
                         open={index === focusIndex}
                         onFocus={() => setFocusIndex(index)}
@@ -145,31 +142,6 @@ export default function (props: InputProps) {
                         size="small"
                         style={{ width: '100%' }}
                     />
-                    <Tooltip title="Level, defaul to 1">
-                        <InputNumber
-                            value={level}
-                            onChange={v => {
-                                const newEnchantmentList = valueArray.map((enchantment, i) => {
-                                    if (i === index) {
-                                        let amt = v;
-                                        if (v === null) {
-                                            amt = undefined;
-                                        }
-                                        enchantment[1] = amt;
-                                        return enchantment;
-                                    }
-                                    return enchantment;
-                                });
-                                props.onChange(newEnchantmentList);
-                                setValueArray(newEnchantmentList);
-                            }}
-                            placeholder={props.placeholder ? (props.placeholder as string[])[1] : undefined}
-                            min={props.config?.min | 1}
-                            max={props.config?.max}
-                            step={props.config?.step}
-                            size="small"
-                        />
-                    </Tooltip>
                     {(props.config?.allowEmpty || valueArray.length > 1) && <Button
                         style={{ height: 'inherit', background: 'none' }}
                         type="default"
