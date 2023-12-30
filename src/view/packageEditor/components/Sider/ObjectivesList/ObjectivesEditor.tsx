@@ -244,7 +244,7 @@ const kinds: Kind<Objective>[] = ([
         argumentsPattern: {
             mandatory: [
                 {
-                    jsx: Select, name: 'Action', type: 'string', defaultValue: 'anhy', placeholder: 'e.g. any', tooltip: 'Type of action', config: {
+                    jsx: Select, name: 'Action', type: 'string', defaultValue: 'any', placeholder: 'e.g. any', tooltip: 'Type of action', config: {
                         options: [
                             { label: 'Any', value: 'any' },
                             { label: 'Right', value: 'right' },
