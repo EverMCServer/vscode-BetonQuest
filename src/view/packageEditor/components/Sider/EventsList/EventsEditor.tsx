@@ -807,7 +807,7 @@ const kinds: Kind<Event>[] = [
         argumentsPattern: {
             mandatory: [
                 { jsx: Number, name: 'Distance', type: 'float', defaultValue: 0.0, tooltip: 'The coverage distance from the player whom triggers this event', config: { min: 0 } },
-                { jsx: InputList, name: 'Condition Names', type: 'string[,]', placeholder: '(none)', defaultValue: ['a_condition_1'], tooltip: 'Restrict selection conditions', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: 'Condition Names', type: 'string[,]', placeholder: '(none)', defaultValue: ['a_condition_1'], tooltip: 'Party members will be selected with these conditions', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: InputList, name: 'Event Names', type: 'string[,]', placeholder: 'any', defaultValue: ['an_event_1'], tooltip: 'Events to be executed', config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [

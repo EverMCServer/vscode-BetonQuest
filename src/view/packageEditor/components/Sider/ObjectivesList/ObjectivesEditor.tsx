@@ -480,7 +480,7 @@ const kinds: Kind<Objective>[] = ([
         argumentsPattern: {
             mandatory: [
                 {
-                    jsx: Select, name: 'Slot', type: 'string', defaultValue: 'any', placeholder: 'e.g. any', config: {
+                    jsx: Select, name: 'Slot', type: 'string', defaultValue: 'HEAD', placeholder: 'e.g. HEAD', config: {
                         options: [
                             { label: 'Head', value: 'HEAD' },
                             { label: 'Chest', value: 'CHEST' },
