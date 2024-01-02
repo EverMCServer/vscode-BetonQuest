@@ -13,7 +13,7 @@ import BlockSelector from "../CommonList/Input/BlockSelector";
 import Checkbox from "../CommonList/Input/Checkbox";
 import EntityType from "../CommonList/Input/EntityType";
 import EntityTypeList from "../CommonList/Input/EntityTypeList";
-// import EntityTypeListWithAmount from "../CommonList/Input/EntityTypeListWithAmount";
+import EntityTypeListWithAmount from "../CommonList/Input/EntityTypeListWithAmount";
 import Input from "../CommonList/Input/Input";
 import InputList from "../CommonList/Input/InputList";
 import ItemList from "../CommonList/Input/ItemList";
@@ -82,7 +82,7 @@ const kinds: Kind<Condition>[] = [
     {
         value: 'burning',
         display: 'Burning',
-        description: 'Does the player on fire?',
+        description: 'Is the player on fire?',
         argumentsPattern: {
             mandatory: []
         }
@@ -167,8 +167,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Are there any specified amount of mobs in an area?',
         argumentsPattern: {
             mandatory: [
-                // TODO: Entity Type list with amount
-                { jsx: EntityTypeList, name: 'Type', type: 'string[,]', defaultValue: ['ZOMBIE'] },
+                { jsx: EntityTypeListWithAmount, name: 'Type', type: '[string:number?][,]', defaultValue: [['ZOMBIE', 1]], placeholder: ['', '1'] },
                 { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
                 { jsx: Number, name: 'Radius', type: 'float', defaultValue: 1.0, tooltip: 'A radius around location where the mobs must be', config: { min: 0 } },
             ],
@@ -207,6 +206,14 @@ const kinds: Kind<Condition>[] = [
                     }
                 },
             ]
+        }
+    },
+    {
+        value: 'fly',
+        display: 'Fly',
+        description: 'Is the player flying?',
+        argumentsPattern: {
+            mandatory: []
         }
     },
     {
