@@ -19,7 +19,8 @@ type MandatoryArgumentType = (
     'string[|]' |
     'string[^]' |
     '[string:number?][,]' |
-    '*'
+    '*' |
+    'variable'
 );
 
 export type MandatoryArgumentDataType =
@@ -46,8 +47,9 @@ type OptionalArgumentType = (
     'float' |
     'string[,]' |
     'boolean' |
-    // '[string:number][,]'
-    '[string:number?][,]'
+    // '[string:number][,]' |
+    '[string:number?][,]' |
+    'variable'
 );
 
 export type OptionalArgumentDataType =
@@ -90,6 +92,39 @@ export type ArgumentsPattern = {
     optionalAtFirst?: boolean,
     keepWhitespaces?: boolean, // Do not split by whitespaces. Used by "chat", "command", "sudo", "opsudo", "notify" etc.
 };
+
+class Argument<T = MandatoryArgumentType | OptionalArgumentType, V = MandatoryArgumentDataType | OptionalArgumentDataType> {
+    private value: V;
+    private type: T;
+
+    constructor(type: T, value: V) {
+        this.type = type;
+        this.value = value;
+    }
+
+    get() {
+        return [this.value, this.type];
+    }
+
+    set(type: T, value: V) {
+        this.type = type;
+        this.value = value;
+    }
+
+    getValue() {
+        return this.value;
+    }
+
+    getType() {
+        return this.type;
+    }
+}
+
+class MandatoryArgument extends Argument<MandatoryArgumentType, MandatoryArgumentDataType> { }
+// e.g.
+new MandatoryArgument('variable', 'a');
+
+class OptionalArgument extends Argument<OptionalArgumentType, OptionalArgumentDataType> { }
 
 export default class Arguments {
     private yaml: Pair<Scalar<string>, Scalar<string>>;
@@ -206,8 +241,8 @@ export default class Arguments {
             } else if (pattern.mandatory.length > 1) {
                 // No optional arg, only mandatory
                 newArgStrs = [
-                    ...argStrs.slice(0, pattern.mandatory.length-1).map(value => value.replace(/\s$/, "")),
-                    argStrs.slice(pattern.mandatory.length-1).join('')
+                    ...argStrs.slice(0, pattern.mandatory.length - 1).map(value => value.replace(/\s$/, "")),
+                    argStrs.slice(pattern.mandatory.length - 1).join('')
                 ];
             }
             argStrs = newArgStrs;
