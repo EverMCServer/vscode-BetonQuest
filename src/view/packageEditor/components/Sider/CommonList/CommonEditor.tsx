@@ -98,13 +98,39 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
         </>);
     };
 
+    // Auto re-arange cells
+    const parentRef = useRef<HTMLDivElement>(null);
+    const [spanL, setSpanL] = useState(6);
+    const [spanR, setSpanR] = useState(18);
+    useEffect(() => {
+        new ResizeObserver(() => {
+            const width = parentRef.current?.getBoundingClientRect().width;
+            console.log("width", width);
+            if (width) {
+                if (width < 320) {
+                    setSpanL(24);
+                    setSpanR(24);
+                } else if (width < 480) {
+                    setSpanL(6);
+                    setSpanR(18);
+                } else if (width < 640) {
+                    setSpanL(4);
+                    setSpanR(20);
+                } else {
+                    setSpanL(2);
+                    setSpanR(22);
+                }
+            }
+        }).observe(parentRef.current as Element);
+    }, []);
+
     return (
         <div style={{ padding: "0 8px" }}>
-            <Row justify="space-between" style={{ padding: "8px 0" }}>
-                <Col span={4}>
-                    <span style={{ paddingLeft: "8px" }}>Kind:</span>
+            <Row ref={parentRef} justify="space-between" gutter={[0, 4]} style={{ padding: "8px 8px" }}>
+                <Col span={spanL}>
+                    <span>Kind:</span>
                 </Col>
-                <Col span={18}>
+                <Col span={spanR}>
                     <Select
                         className={styles.select}
                         showSearch
