@@ -17,8 +17,8 @@ interface ResizableSiderProps extends SiderProps {
 let isResizing: boolean = false;
 
 const resizableSider: React.FC<ResizableSiderProps> = ({ children, ...props }) => {
-  const [siderWidth, _setSiderWidth] = useState(props.width);
-  const cachedSiderWidth = useRef(siderWidth);
+  const [siderWidth, _setSiderWidth] = useState<number | string>(props.width);
+  const cachedSiderWidth = useRef<number>(siderWidth as number);
   function setSiderWidth(width: number) {
     cachedSiderWidth.current = width;
     _setSiderWidth(width);
@@ -59,7 +59,7 @@ const resizableSider: React.FC<ResizableSiderProps> = ({ children, ...props }) =
     }
 
     // Stick to the side if near boundry
-    if (offsetRight > maxWidth - 20 && document.body.offsetWidth === maxWidth) {
+    if (offsetRight > maxWidth - 32 && document.body.offsetWidth === maxWidth) {
       setSiderWidth(maxWidth);
       return;
     }
@@ -71,14 +71,19 @@ const resizableSider: React.FC<ResizableSiderProps> = ({ children, ...props }) =
 
   // Adjust width when screen resized
   useEffect(() => {
+    let cache = siderWidth;
     const cbHandleWindowResize = () => {
       setTimeout(() => {
-        let maxWidth = props.maxWidth || document.body.offsetWidth;
-        if (maxWidth > document.body.offsetWidth) {
-          maxWidth = document.body.offsetWidth;
-        }
-        if (cachedSiderWidth.current > maxWidth) {
-          _setSiderWidth(maxWidth);
+        if (cachedSiderWidth.current >= document.body.offsetWidth) {
+          if (cache !== "100%") {
+            _setSiderWidth("100%");
+            cache = "100%";
+          }
+        } else {
+          if (cache !== cachedSiderWidth.current) {
+            _setSiderWidth(cachedSiderWidth.current);
+            cache = cachedSiderWidth.current;
+          }
         }
       }, 0);
     };
