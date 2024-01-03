@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Col, Divider, Row, Tooltip } from "antd";
+import { Button, Col, Divider, Flex, Input, Row, Tooltip } from "antd";
 import { VscQuestion } from "react-icons/vsc";
+import { TbVariableOff, TbVariablePlus } from "react-icons/tb";
 
 import Event from "../../../../../../betonquest/Event";
 import { MandatoryArgumentDataType, OptionalArgumentDataType } from "../../../../../../betonquest/Arguments";
@@ -56,6 +57,9 @@ export default function (props: ListElementEditorBodyProps<Event>) {
         }).observe(parentRef.current as Element);
     }, []);
 
+    // Variable switching
+    const [variableOn, setVariableOn] = useState<boolean[]>([]);
+
     return (
         <div ref={parentRef}>
             {(props.argumentsPattern.mandatory.length > 0 && props.argumentsPattern.optional) &&
@@ -67,7 +71,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                 return (
                     <Row justify="space-between" gutter={[0, 4]} style={{ padding: "0 8px 16px 8px" }} key={index}>
                         <Col span={spanL}>
-                            <span>
+                            <div>
                                 {arg.name}&nbsp;
                                 {arg.tooltip && <>
                                     <sup>
@@ -76,10 +80,22 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                         </Tooltip>
                                     </sup>&nbsp;
                                 </>}
-                            </span>
+                            </div>
+                            <Tooltip title="Toggle Variable input" placement="bottom">
+                                <span
+                                    onClick={() => {
+                                        const newVariableOn = variableOn.slice();
+                                        newVariableOn[index] = !newVariableOn[index];
+                                        setVariableOn(newVariableOn);
+                                    }}
+                                    style={{ padding: 0, border: "1px solid var(--vscode-checkbox-border)" }}
+                                >
+                                    {variableOn[index] ? <TbVariableOff /> : <TbVariablePlus />}
+                                </span>
+                            </Tooltip>
                         </Col>
                         <Col span={spanR}>
-                            {arg.jsx && <arg.jsx
+                            {arg.jsx && (variableOn[index] && <Flex justify="space-between" >%<Input placeholder="variable" size="small" />%</Flex> || <arg.jsx
                                 value={args?.getMandatoryArgument(index)}
                                 defaultValue={arg.defaultValue}
                                 placeholder={arg.placeholder}
@@ -89,7 +105,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                     refreshUI(); // Refresh states, if component uses useEffect() inside
                                 }}
                                 config={arg.config}
-                            />}
+                            />)}
                         </Col>
                     </Row>
                 );
@@ -114,16 +130,30 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                     </span>
                                 </Col>
                                 <Col span={spanR}>
-                                    {arg.jsx && <arg.jsx
-                                        value={args?.getOptionalArgument(arg.key)}
-                                        placeholder={arg.placeholder}
-                                        onChange={(value: OptionalArgumentDataType) => {
-                                            args?.setOptionalArgument(arg.key, value);
-                                            props.syncYaml();
-                                            refreshUI(); // Refresh states, if component uses useEffect() inside
-                                        }}
-                                        config={arg.config}
-                                    />}
+                                    <Flex justify="space-between" >
+                                        {arg.jsx && (variableOn[100+index] && <Flex justify="space-between" >%<Input placeholder="variable" size="small" />%</Flex> || <arg.jsx
+                                            value={args?.getOptionalArgument(arg.key)}
+                                            placeholder={arg.placeholder}
+                                            onChange={(value: OptionalArgumentDataType) => {
+                                                args?.setOptionalArgument(arg.key, value);
+                                                props.syncYaml();
+                                                refreshUI(); // Refresh states, if component uses useEffect() inside
+                                            }}
+                                            config={arg.config}
+                                        />)}
+                                        <Tooltip title="Toggle Variable input" placement="bottom">
+                                            <span
+                                                onClick={() => {
+                                                    const newVariableOn = variableOn.slice();
+                                                    newVariableOn[100+index] = !newVariableOn[100+index];
+                                                    setVariableOn(newVariableOn);
+                                                }}
+                                                style={{ padding: 0, border: "1px solid var(--vscode-checkbox-border)" }}
+                                            >
+                                                {variableOn[100+index] ? <TbVariableOff /> : <TbVariablePlus />}
+                                            </span>
+                                        </Tooltip>
+                                    </Flex>
                                 </Col>
                             </Row>
                         );

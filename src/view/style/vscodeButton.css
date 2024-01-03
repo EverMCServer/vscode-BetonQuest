@@ -48,3 +48,15 @@
     color: var(--vscode-button-secondaryForeground) !important;
     background-color: var(--vscode-button-secondaryHoverBackground) !important;
 }
+
+.ant-btn-text {
+    color: var(--vscode-button-secondaryForeground);
+}
+
+.ant-btn-text:not(.ant-btn-disabled):hover {
+    color: var(--vscode-button-secondaryForeground) !important;
+}
+
+.ant-btn-default:not(.ant-btn-disabled):active {
+    color: var(--vscode-button-secondaryForeground) !important;
+}
