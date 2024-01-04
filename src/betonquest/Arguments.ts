@@ -283,7 +283,7 @@ export default class Arguments {
             }
 
             // Check if variable and parse it
-            const variableArray = /^%(.*)%$/m.exec(argStr);
+            const variableArray = /^(%.*%)$/m.exec(argStr);
             if (variableArray && variableArray[0]) {
                 this.mandatory[i].setType('variable');
                 this.mandatory[i].setValue(variableArray[1]);
@@ -362,7 +362,7 @@ export default class Arguments {
                         const optionalArgument = optionalArguments.get(pat.key)!;
 
                         // Check if variable and parse it
-                        const variableArray = /^%(.*)%$/m.exec(argStrValue);
+                        const variableArray = /^(%.*%)$/m.exec(argStrValue);
                         if (variableArray && variableArray[0]) {
                             optionalArgument.setType('variable');
                             optionalArgument.setValue(variableArray[1]);
@@ -488,9 +488,7 @@ export default class Arguments {
             const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [];
 
             // Set value by type
-            if (pat.type === 'variable') {
-                element += '%' + value + '%';
-            } else if (pat.type === 'int') {
+            if (pat.type === 'int') {
                 element += (value as number).toString();
             } else if (pat.type === 'float') {
                 element += (value as number).toString();
@@ -513,6 +511,8 @@ export default class Arguments {
                         return n !== undefined ? `${s}:${n}` : s;
                     })
                     .join(",");
+            } else if (pat.type === 'variable') {
+                element += value as string;
             } else { // if (type === 'string' || '*')
                 element += this.escapeCharacters(escapeCharacters, value as string);
             }
@@ -537,9 +537,7 @@ export default class Arguments {
             } else if (value === null) {
                 optionalStrs.push(`${pat.key}`);
             } else {
-                if (pat.type === 'variable') {
-                    optionalStrs.push(`${pat.key}:%${value}%`);
-                } else if (pat.type === 'int') {
+                if (pat.type === 'int') {
                     optionalStrs.push(`${pat.key}:${(value as number).toString()}`);
                 } else if (pat.type === 'float') {
                     optionalStrs.push(`${pat.key}:${(value as number).toString()}`);
@@ -562,7 +560,9 @@ export default class Arguments {
                         })
                         .join(",")
                         }`);
-                } else { // if (type === 'string')
+                } else if (pat.type === 'variable') {
+                    optionalStrs.push(`${pat.key}:${value}`);
+                } else { // if (type === 'string' || 'variable')
                     const valueStr = value as string;
                     if (valueStr.length > 0) {
                         optionalStrs.push(`${pat.key}:${this.escapeCharacters(escapeCharacters, valueStr)}`);

@@ -37,7 +37,6 @@ export default function (props: ListElementEditorBodyProps<Objective>) {
     useEffect(() => {
         new ResizeObserver(() => {
             const width = parentRef.current?.getBoundingClientRect().width;
-            console.log("width", width);
             if (width) {
                 if (width < 320) {
                     setSpanL(24);
