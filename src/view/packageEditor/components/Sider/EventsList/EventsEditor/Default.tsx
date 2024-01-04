@@ -96,11 +96,11 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                         </Col>
                         <Col span={spanR}>
                             {arg.jsx && (variableOn[index] && <Flex justify="space-between" >%<Input placeholder="variable" size="small" />%</Flex> || <arg.jsx
-                                value={args?.getMandatoryArgument(index)}
+                                value={args.getMandatoryArgument(index).getValue()}
                                 defaultValue={arg.defaultValue}
                                 placeholder={arg.placeholder}
                                 onChange={(value: MandatoryArgumentDataType) => {
-                                    args?.setMandatoryArgument(index, value);
+                                    args.setMandatoryArgument(index, value);
                                     props.syncYaml();
                                     refreshUI(); // Refresh states, if component uses useEffect() inside
                                 }}
@@ -132,10 +132,10 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                 <Col span={spanR}>
                                     <Flex justify="space-between" >
                                         {arg.jsx && (variableOn[100+index] && <Flex justify="space-between" >%<Input placeholder="variable" size="small" />%</Flex> || <arg.jsx
-                                            value={args?.getOptionalArgument(arg.key)}
+                                            value={args.getOptionalArgument(arg.key)?.getValue()}
                                             placeholder={arg.placeholder}
                                             onChange={(value: OptionalArgumentDataType) => {
-                                                args?.setOptionalArgument(arg.key, value);
+                                                args.setOptionalArgument(arg.key, value);
                                                 props.syncYaml();
                                                 refreshUI(); // Refresh states, if component uses useEffect() inside
                                             }}

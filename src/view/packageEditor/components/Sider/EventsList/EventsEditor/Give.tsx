@@ -48,7 +48,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                 </Col>
                 <Col span={colSpanRight}>
                     <Input
-                        value={(args?.getMandatoryArgument(0) as [string, number][])?.map(e => `${e[0]}:${e[1]}`).join(",")}
+                        value={(args?.getMandatoryArgument(0).getValue() as [string, number][])?.map(e => `${e[0]}:${e[1]}`).join(",")}
                         onChange={(e) => {
                             args?.setMandatoryArgument(0, e.target.value.split(",").map(e => e.split(":") as [string, number]));
                             props.syncYaml();
@@ -67,7 +67,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                 </Col>
                 <Col span={colSpanRight}>
                     <Checkbox
-                        checked={args?.getOptionalArgument('notify') as boolean}
+                        checked={args?.getOptionalArgument('notify')?.getValue() as boolean}
                         onChange={(e) => {
                             args?.setOptionalArgument('notify', e.target.checked);
                             props.syncYaml();
@@ -82,7 +82,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                 </Col>
                 <Col span={colSpanRight}>
                     <Checkbox
-                        checked={args?.getOptionalArgument('backpack') as boolean}
+                        checked={args?.getOptionalArgument('backpack')?.getValue() as boolean}
                         onChange={(e) => {
                             args?.setOptionalArgument('backpack', e.target.checked);
                             props.syncYaml();

@@ -80,11 +80,11 @@ export default function (props: ListElementEditorBodyProps<Objective>) {
                         </Col>
                         <Col span={spanR}>
                             {arg.jsx && <arg.jsx
-                                value={args?.getMandatoryArgument(index)}
+                                value={args.getMandatoryArgument(index).getValue()}
                                 defaultValue={arg.defaultValue}
                                 placeholder={arg.placeholder}
                                 onChange={(value: MandatoryArgumentDataType) => {
-                                    args?.setMandatoryArgument(index, value);
+                                    args.setMandatoryArgument(index, value);
                                     props.syncYaml();
                                     refreshUI(); // Refresh states, if component uses useEffect() inside
                                 }}
@@ -115,10 +115,10 @@ export default function (props: ListElementEditorBodyProps<Objective>) {
                                 </Col>
                                 <Col span={spanR}>
                                     {arg.jsx && <arg.jsx
-                                        value={args?.getOptionalArgument(arg.key)}
+                                        value={args.getOptionalArgument(arg.key)?.getValue()}
                                         placeholder={arg.placeholder}
                                         onChange={(value: OptionalArgumentDataType) => {
-                                            args?.setOptionalArgument(arg.key, value);
+                                            args.setOptionalArgument(arg.key, value);
                                             props.syncYaml();
                                             refreshUI(); // Refresh states, if component uses useEffect() inside
                                         }}

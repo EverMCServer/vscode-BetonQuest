@@ -49,7 +49,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                 </Col>
                 <Col span={colSpanRight}>
                     <Input
-                        value={args?.getMandatoryArgument(0) as string}
+                        value={args?.getMandatoryArgument(0).getValue() as string}
                         onChange={(e) => {
                             args?.setMandatoryArgument(0, e.target.value);
                             props.syncYaml();
@@ -65,7 +65,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                 </Col>
                 <Col span={colSpanRight}>
                     <Input
-                        value={args?.getMandatoryArgument(1) as string}
+                        value={args?.getMandatoryArgument(1).getValue() as string}
                         onChange={(e) => {
                             args?.setMandatoryArgument(1, e.target.value);
                             props.syncYaml();
@@ -83,7 +83,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                 <Col span={colSpanRight}>
                     <InputNumber
                         defaultValue={1}
-                        value={args?.getMandatoryArgument(2) as number}
+                        value={args?.getMandatoryArgument(2).getValue() as number}
                         onChange={(value) => {
                             args?.setMandatoryArgument(2, value || 1);
                             props.syncYaml();
@@ -105,7 +105,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                 </Col>
                 <Col span={colSpanRight}>
                     <Input
-                        value={args?.getOptionalArgument('name') as string}
+                        value={args?.getOptionalArgument('name')?.getValue() as string}
                         onChange={(e) => {
                             args?.setOptionalArgument('name', e.target.value);
                             props.syncYaml();
@@ -121,7 +121,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                 </Col>
                 <Col span={colSpanRight}>
                     <Input
-                        value={args?.getOptionalArgument('marked') as string}
+                        value={args?.getOptionalArgument('marked')?.getValue() as string}
                         onChange={(e) => {
                             args?.setOptionalArgument('marked', e.target.value);
                             props.syncYaml();
