@@ -14,31 +14,31 @@ import { InputProps } from "./Common";
  * @returns 
  */
 export default function (props: InputProps) {
-    const [value, setValue] = useState(props.value as string);
+    const [value, setValue] = useState("");
     useEffect(() => {
         setValue(props.value as string);
     }, [props.value]);
 
     return (
         <Input
-            value={value}
+            value={value || ""}
             onChange={(e) => {
-                let value = e.target.value;
-                // value = (props.defaultValue.length && !value.length) ? props.defaultValue : value;
+                let v = e.target.value;
+                // v = (props.defaultValue.length && !v.length) ? props.defaultValue : v;
 
                 // Filter out unwanted input
                 if (props.config?.allowedPatterns &&
                     !(props.config.allowedPatterns as (string | RegExp)[])
                         .some(element =>
-                            (new RegExp(element)).test(value)
+                            (new RegExp(element)).test(v)
                         )
                 ) {
                     return;
                 }
 
                 // Update value
-                setValue(value);
-                props.onChange(value);
+                setValue(v);
+                props.onChange(v);
             }}
             placeholder={props.placeholder}
             size="small"
