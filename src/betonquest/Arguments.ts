@@ -283,10 +283,10 @@ export default class Arguments {
             }
 
             // Check if variable and parse it
-            const variableArray = /^(%.*%)$/m.exec(argStr);
+            const variableArray = /^%.*%$/m.exec(argStr);
             if (variableArray && variableArray[0]) {
                 this.mandatory[i].setType('variable');
-                this.mandatory[i].setValue(variableArray[1]);
+                this.mandatory[i].setValue(variableArray[0]);
                 continue;
             }
 
@@ -362,10 +362,10 @@ export default class Arguments {
                         const optionalArgument = optionalArguments.get(pat.key)!;
 
                         // Check if variable and parse it
-                        const variableArray = /^(%.*%)$/m.exec(argStrValue);
+                        const variableArray = /^%.*%$/m.exec(argStrValue);
                         if (variableArray && variableArray[0]) {
                             optionalArgument.setType('variable');
-                            optionalArgument.setValue(variableArray[1]);
+                            optionalArgument.setValue(variableArray[0]);
                             break;
                         }
 
