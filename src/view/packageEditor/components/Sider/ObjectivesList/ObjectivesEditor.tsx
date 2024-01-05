@@ -66,6 +66,8 @@ const kinds: Kind<Objective>[] = ([
             optional: [
                 { jsx: BaseLocation, name: 'Location', key: 'loc', type: 'string', config: { optional: true } },
                 { jsx: Number, name: 'Range (Radius)', key: 'range', type: 'float', placeholder: '1', config: { min: 0, undefinedValue: 0 } },
+                { jsx: Checkbox, name: 'Exact State?', key: 'exactMatch', type: 'boolean', tooltip: 'The target block is not allowed to have more BlockStates than specified' },
+                { jsx: Checkbox, name: 'Cancel Click?', key: 'cancel', type: 'boolean', tooltip: 'Should the clikc, e.g. left click hit mobs, be cancelled?' },
             ]
         }
     },
