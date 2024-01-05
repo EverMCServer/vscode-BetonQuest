@@ -36,6 +36,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/cancel/CancelEventFactory.java
         value: 'cancel',
         display: 'Cancel (cancel)',
         description: 'Cancel a quest predefined in a Quest Canceler.',
@@ -46,6 +47,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/burn/BurnEventFactory.java
         value: 'burn',
         display: 'Burn',
         description: 'Set fire on the player.',
@@ -53,7 +55,7 @@ const kinds: Kind<Event>[] = [
         // e.g. burn duration:%point.punishment.amount%
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Duration', key: 'duration', type: 'float', defaultValue: 0, tooltip: 'The duration the player will burn (in seconds).', config: { min: 0 } },
+                { jsx: Number, name: 'Duration', key: 'duration', type: 'float', defaultValue: 0, tooltip: 'The duration the player will burn (in seconds).', config: { min: 0 }, allowVariable: true },
             ]
         }
     },

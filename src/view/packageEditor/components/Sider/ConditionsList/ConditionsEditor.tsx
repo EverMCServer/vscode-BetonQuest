@@ -39,6 +39,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/AdvancementCondition.java
         value: 'advancement',
         display: 'Advancement',
         description: 'Does the player have a specified advancement?',
@@ -49,6 +50,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/ConjunctionCondition.java
         value: 'and',
         display: 'And',
         description: 'Checks if every conditions are met.',
@@ -59,6 +61,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/ArmorCondition.java
         value: 'armor',
         display: 'Armor',
         description: 'Does the player wearing an specified armor?',
@@ -69,6 +72,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/BiomeCondition.java
         value: 'biome',
         display: 'Biome',
         description: 'Does the player inside a specific biome?',
@@ -80,6 +84,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/BurningCondition.java
         value: 'burning',
         display: 'Burning',
         description: 'Is the player on fire?',
@@ -88,6 +93,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/CheckCondition.java
         value: 'check',
         display: 'Check Conditions',
         description: 'Define list of specific conditions, and check if the are all met.',
@@ -99,17 +105,20 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/ChestItemCondition.java
         value: 'chestitem',
         display: 'Chest Item',
         description: 'Does a chest have specific items?',
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', tooltip: 'Chest\'s location' },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', tooltip: 'Chest\'s location', allowVariable: true },
+                // TODO: Item ID itself not support variable, but amount does. Variable editing should be done inside ItemList.tsx
                 { jsx: ItemList, name: 'Item List', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/ConversationCondition.java
         value: 'conversation',
         display: 'Conversation',
         description: 'Does the player could begin a specified conversation? It checks the conversation\'s starting options to see if any of them return true.',
@@ -142,6 +151,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/EffectCondition.java
         value: 'effect',
         display: 'Potion Effect',
         description: 'Does the player has an active potion effect?',
@@ -152,12 +162,13 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/EmptySlotsCondition.java
         value: 'empty',
         display: 'Empty Inventory Slots',
         description: 'Does the player\'s inventory have enough empty slots?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 0, config: { min: 0 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Checkbox, name: 'Equal?', key: 'equal', type: 'boolean', tooltip: 'The player should have exact number of slots and no more' },

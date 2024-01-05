@@ -47,6 +47,7 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/ActionObjective.java
         value: 'action',
         display: 'Action',
         description: 'Completes when the player clicks on the given block type.',
@@ -64,8 +65,8 @@ const kinds: Kind<Objective>[] = ([
                 { jsx: BlockSelector, name: 'Block', type: 'string', defaultValue: 'any', placeholder: 'e.g. AIR', tooltip: 'Block Selector' },
             ],
             optional: [
-                { jsx: BaseLocation, name: 'Location', key: 'loc', type: 'string', config: { optional: true } },
-                { jsx: Number, name: 'Range (Radius)', key: 'range', type: 'float', placeholder: '1', config: { min: 0, undefinedValue: 0 } },
+                { jsx: BaseLocation, name: 'Location', key: 'loc', type: 'string', config: { optional: true }, allowVariable: true },
+                { jsx: Number, name: 'Range (Radius)', key: 'range', type: 'float', placeholder: '1', config: { min: 0, undefinedValue: 0 }, allowVariable: true },
                 { jsx: Checkbox, name: 'Exact State?', key: 'exactMatch', type: 'boolean', tooltip: 'The target block is not allowed to have more BlockStates than specified' },
                 { jsx: Checkbox, name: 'Cancel Click?', key: 'cancel', type: 'boolean', tooltip: 'Should the clikc, e.g. left click hit mobs, be cancelled?' },
             ]
