@@ -41,15 +41,14 @@ const kinds: Kind<Event>[] = [
         description: 'Cancel a quest predefined in a Quest Canceler.',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Canceler', type: 'string', defaultValue: 'a_canceler_name_1', tooltip: 'A canceler name predefined in the package\'s "cancel:" section', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Canceler', type: 'string', defaultValue: 'a_canceler_name_1', tooltip: 'A canceler name predefined in the package\'s `cancel:` section', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
-    // TODO: variable support
     {
         value: 'burn',
         display: 'Burn',
-        description: 'Set fire on player.',
+        description: 'Set fire on the player.',
         // e.g. burn duration:4
         // e.g. burn duration:%point.punishment.amount%
         argumentsPattern: {

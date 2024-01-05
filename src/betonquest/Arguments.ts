@@ -65,6 +65,7 @@ type OptionalArguments = Map<string, OptionalArgument>;
 
 export type ArgumentsPatternMandatory = {
     name: string,
+    key?: string,
     type: MandatoryArgumentType,
     defaultValue: MandatoryArgumentDataType,
     escapeCharacters?: string[],
@@ -72,7 +73,7 @@ export type ArgumentsPatternMandatory = {
     tooltip?: string,
     placeholder?: string | string[],
     config?: any,
-    key?: string
+    allowVariable?: boolean
 };
 
 export type ArgumentsPatternOptional = {
@@ -83,7 +84,8 @@ export type ArgumentsPatternOptional = {
     jsx?: (props: any) => React.ReactNode,
     tooltip?: string,
     placeholder?: string | string[],
-    config?: any
+    config?: any,
+    allowVariable?: boolean
 };
 
 export type ArgumentsPattern = {

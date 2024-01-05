@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Col, Divider, Row, Tooltip } from "antd";
 import { VscQuestion } from "react-icons/vsc";
+import { TbVariableOff, TbVariablePlus } from "react-icons/tb";
 
 import Objective from "../../../../../../betonquest/Objective";
 import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
 import { MandatoryArgumentDataType, OptionalArgumentDataType } from "../../../../../../betonquest/Arguments";
+import Variable from "../../CommonList/Input/Variable";
 
 const colSpanLeft1 = 10;
 const colSpanRight1 = 14;
@@ -55,6 +57,22 @@ export default function (props: ListElementEditorBodyProps<Objective>) {
         }).observe(parentRef.current as Element);
     }, []);
 
+    // Variable switching
+    const variableEnabled = useRef<Map<number | string, boolean>>(new Map());
+    useEffect(() => {
+        const map = new Map<number | string, boolean>();
+        for (let i = 0; i < props.argumentsPattern.mandatory.length; i++) {
+            map.set(i, args.getMandatoryArgument(i).getType() === 'variable');
+        }
+        if (props.argumentsPattern.optional) {
+            for (let i = 0; i < props.argumentsPattern.optional.length; i++) {
+                const key = props.argumentsPattern.optional[i].key;
+                map.set(key, args.getOptionalArgument(key)?.getType() === 'variable');
+            }
+        }
+        variableEnabled.current = map;
+    }, []);
+
     return (
         <div ref={parentRef}>
             {(props.argumentsPattern.mandatory.length > 0 && props.argumentsPattern.optional) &&
@@ -62,33 +80,61 @@ export default function (props: ListElementEditorBodyProps<Objective>) {
                     <u>Mandatory Arguments</u>
                 </Divider>
             }
-            {props.argumentsPattern.mandatory.map((arg, index) => {
+            {props.argumentsPattern.mandatory.map((pat, index) => {
+                const argValue = args.getMandatoryArgument(index).getValue();
                 return (
                     <Row justify="space-between" gutter={[0, 4]} style={{ padding: "0 8px 16px 8px" }} key={index}>
                         <Col span={spanL}>
-                            <span>
-                                {arg.name}&nbsp;
-                                {arg.tooltip && <>
+                            <div>
+                                {pat.name}&nbsp;
+                                {pat.tooltip && <>
                                     <sup>
-                                        <Tooltip title={<span>{arg.tooltip}</span>}>
+                                        <Tooltip title={<span>{pat.tooltip}</span>}>
                                             <VscQuestion />
                                         </Tooltip>
                                     </sup>&nbsp;
                                 </>}
-                            </span>
+                            </div>
+                            {pat.allowVariable && <Tooltip title="Toggle Variable input" placement="bottom">
+                                <span
+                                    onClick={() => {
+                                        if (variableEnabled.current.get(index)) {
+                                            variableEnabled.current.set(index, false);
+                                        } else {
+                                            variableEnabled.current.set(index, true);
+                                        }
+                                        refreshUI();
+                                    }}
+                                    style={{ padding: 0, border: "1px solid var(--vscode-checkbox-border)" }}
+                                >
+                                    {variableEnabled.current.get(index) ? <TbVariableOff /> : <TbVariablePlus />}
+                                </span>
+                            </Tooltip>}
                         </Col>
                         <Col span={spanR}>
-                            {arg.jsx && <arg.jsx
-                                value={args.getMandatoryArgument(index).getValue()}
-                                defaultValue={arg.defaultValue}
-                                placeholder={arg.placeholder}
-                                onChange={(value: MandatoryArgumentDataType) => {
-                                    args.setMandatoryArgument(index, value);
-                                    props.syncYaml();
-                                    refreshUI(); // Refresh states, if component uses useEffect() inside
-                                }}
-                                config={arg.config}
-                            />}
+                            {pat.jsx && (pat.allowVariable && variableEnabled.current.get(index) &&
+                                <Variable
+                                    placeholder="(Variable)"
+                                    value={argValue as string}
+                                    onChange={(str) => {
+                                        args.setMandatoryArgument(index, str);
+                                        props.syncYaml();
+                                        refreshUI(); // Refresh states, if component uses useEffect() inside
+                                    }}
+                                />
+                                ||
+                                <pat.jsx
+                                    value={argValue}
+                                    defaultValue={pat.defaultValue}
+                                    placeholder={pat.placeholder}
+                                    onChange={(value: MandatoryArgumentDataType) => {
+                                        args.setMandatoryArgument(index, value);
+                                        props.syncYaml();
+                                        refreshUI(); // Refresh states, if component uses useEffect() inside
+                                    }}
+                                    config={pat.config}
+                                />
+                            )}
                         </Col>
                     </Row>
                 );
@@ -98,31 +144,59 @@ export default function (props: ListElementEditorBodyProps<Objective>) {
                     <Divider orientation="center" plain>
                         <u>Optional Arguments</u>
                     </Divider>
-                    {props.argumentsPattern.optional?.map((arg, index) => {
+                    {props.argumentsPattern.optional?.map((pat, index) => {
+                        const argValue = args.getOptionalArgument(pat.key)?.getValue();
                         return (
                             <Row justify="space-between" gutter={[0, 4]} style={{ padding: "0 8px 16px 8px" }} key={index}>
                                 <Col span={spanL}>
-                                    <span>{arg.name}&nbsp;
-                                        {arg.tooltip && <>
+                                    <div>{pat.name}&nbsp;
+                                        {pat.tooltip && <>
                                             <sup>
-                                                <Tooltip title={<span>{arg.tooltip}</span>}>
+                                                <Tooltip title={<span>{pat.tooltip}</span>}>
                                                     <VscQuestion />
                                                 </Tooltip>
                                             </sup>&nbsp;
                                         </>}
-                                    </span>
+                                    </div>
+                                    {pat.allowVariable && <Tooltip title="Toggle Variable input" placement="bottom">
+                                        <span
+                                            onClick={() => {
+                                                if (variableEnabled.current.get(pat.key)) {
+                                                    variableEnabled.current.set(pat.key, false);
+                                                } else {
+                                                    variableEnabled.current.set(pat.key, true);
+                                                }
+                                                refreshUI();
+                                            }}
+                                            style={{ padding: 0, border: "1px solid var(--vscode-checkbox-border)" }}
+                                        >
+                                            {variableEnabled.current.get(pat.key) ? <TbVariableOff /> : <TbVariablePlus />}
+                                        </span>
+                                    </Tooltip>}
                                 </Col>
                                 <Col span={spanR}>
-                                    {arg.jsx && <arg.jsx
-                                        value={args.getOptionalArgument(arg.key)?.getValue()}
-                                        placeholder={arg.placeholder}
-                                        onChange={(value: OptionalArgumentDataType) => {
-                                            args.setOptionalArgument(arg.key, value);
-                                            props.syncYaml();
-                                            refreshUI(); // Refresh states, if component uses useEffect() inside
-                                        }}
-                                        config={arg.config}
-                                    />}
+                                    {pat.jsx && (pat.allowVariable && variableEnabled.current.get(pat.key) &&
+                                        <Variable
+                                            placeholder="(Variable)"
+                                            value={argValue as string}
+                                            onChange={(str) => {
+                                                args.setOptionalArgument(pat.key, str);
+                                                props.syncYaml();
+                                                refreshUI(); // Refresh states, if component uses useEffect() inside
+                                            }}
+                                        />
+                                        ||
+                                        <pat.jsx
+                                            value={argValue}
+                                            placeholder={pat.placeholder}
+                                            onChange={(value: OptionalArgumentDataType) => {
+                                                args.setOptionalArgument(pat.key, value);
+                                                props.syncYaml();
+                                                refreshUI(); // Refresh states, if component uses useEffect() inside
+                                            }}
+                                            config={pat.config}
+                                        />
+                                    )}
                                 </Col>
                             </Row>
                         );

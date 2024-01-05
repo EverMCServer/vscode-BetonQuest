@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Input } from "antd";
+import { Flex, Input } from "antd";
 
 import { InputProps } from "./Common";
 
@@ -8,6 +8,7 @@ import { InputProps } from "./Common";
  * 
  * - `value` - string. Variable, including leading and tailing `%`.
  * - `onChange` - (value: string) => void. Called when the value changes.
+ * - `placeholder` - string. Placeholder when variable is empty. Default is `(Variable)`.
  * - `type` - MandatoryArgumentType | OptionalArgumentType. What is the type of the value if it is not a variable, to determine the input format.
  * @param props 
  * @returns 
@@ -15,28 +16,35 @@ import { InputProps } from "./Common";
 export default function (props: InputProps) {
     const [value, setValue] = useState("");
     useEffect(() => {
-        setValue(props.value as string);
+        // Parse variable string
+        if (typeof props.value === 'string' && props.value.startsWith("%") && props.value.endsWith("%")) {
+            setValue(props.value.substring(1, props.value.length - 1));
+        } else {
+            setValue("");
+        }
     }, [props.value]);
 
     // Parsing variable string
 
-    return (<div>
-        %
-        <Input
-            value={value || ""}
-            onChange={(e) => {
-                let v = e.target.value;
+    return (
+        <Flex justify="space-between" gap={4} >
+            %
+            <Input
+                value={value || ""}
+                onChange={(e) => {
+                    let v = e.target.value;
 
-                // escape space ` `
-                v = v.replace(' ', '_');
+                    // escape space ` `
+                    v = v.replace(' ', '_');
 
-                // Update value
-                setValue(v);
-                props.onChange(v);
-            }}
-            placeholder={props.placeholder}
-            size="small"
-        />
-        %
-    </div>);
+                    // Update value
+                    setValue(v);
+                    props.onChange('%' + v + '%');
+                }}
+                placeholder={props.placeholder || "(Variable)"}
+                size="small"
+            />
+            %
+        </Flex>
+    );
 }

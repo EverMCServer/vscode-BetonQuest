@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Col, Divider, Flex, Input, Row, Tooltip } from "antd";
+import { Col, Divider, Row, Tooltip } from "antd";
 import { VscQuestion } from "react-icons/vsc";
 import { TbVariableOff, TbVariablePlus } from "react-icons/tb";
 
 import Event from "../../../../../../betonquest/Event";
 import { MandatoryArgumentDataType, OptionalArgumentDataType } from "../../../../../../betonquest/Arguments";
 import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
+import Variable from "../../CommonList/Input/Variable";
 
 const colSpanLeft1 = 10;
 const colSpanRight1 = 14;
@@ -80,7 +81,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                 </Divider>
             }
             {props.argumentsPattern.mandatory.map((pat, index) => {
-                const arg = args.getMandatoryArgument(index);
+                const argValue = args.getMandatoryArgument(index).getValue();
                 return (
                     <Row justify="space-between" gutter={[0, 4]} style={{ padding: "0 8px 16px 8px" }} key={index}>
                         <Col span={spanL}>
@@ -94,7 +95,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                     </sup>&nbsp;
                                 </>}
                             </div>
-                            <Tooltip title="Toggle Variable input" placement="bottom">
+                            {pat.allowVariable && <Tooltip title="Toggle Variable input" placement="bottom">
                                 <span
                                     onClick={() => {
                                         if (variableEnabled.current.get(index)) {
@@ -108,25 +109,22 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                 >
                                     {variableEnabled.current.get(index) ? <TbVariableOff /> : <TbVariablePlus />}
                                 </span>
-                            </Tooltip>
+                            </Tooltip>}
                         </Col>
                         <Col span={spanR}>
-                            {pat.jsx && (variableEnabled.current.get(index) &&
-                                <Flex justify="space-between" >
-                                    <Input
-                                        placeholder="(Variable)"
-                                        size="small"
-                                        value={arg.getValue() as string}
-                                        onChange={(e) => {
-                                            args.setMandatoryArgument(index, e.target.value);
-                                            props.syncYaml();
-                                            refreshUI(); // Refresh states, if component uses useEffect() inside
-                                        }}
-                                    />
-                                </Flex>
+                            {pat.jsx && (pat.allowVariable && variableEnabled.current.get(index) &&
+                                <Variable
+                                    placeholder="(Variable)"
+                                    value={argValue as string}
+                                    onChange={(str) => {
+                                        args.setMandatoryArgument(index, str);
+                                        props.syncYaml();
+                                        refreshUI(); // Refresh states, if component uses useEffect() inside
+                                    }}
+                                />
                                 ||
                                 <pat.jsx
-                                    value={arg.getValue()}
+                                    value={argValue}
                                     defaultValue={pat.defaultValue}
                                     placeholder={pat.placeholder}
                                     onChange={(value: MandatoryArgumentDataType) => {
@@ -147,7 +145,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                         <u>Optional Arguments</u>
                     </Divider>
                     {props.argumentsPattern.optional?.map((pat, index) => {
-                        const arg = args.getOptionalArgument(pat.key);
+                        const argValue = args.getOptionalArgument(pat.key)?.getValue();
                         return (
                             <Row justify="space-between" gutter={[0, 4]} style={{ padding: "0 8px 16px 8px" }} key={index}>
                                 <Col span={spanL}>
@@ -160,7 +158,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                             </sup>&nbsp;
                                         </>}
                                     </div>
-                                    <Tooltip title="Toggle Variable input" placement="bottom">
+                                    {pat.allowVariable && <Tooltip title="Toggle Variable input" placement="bottom">
                                         <span
                                             onClick={() => {
                                                 if (variableEnabled.current.get(pat.key)) {
@@ -174,25 +172,22 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                         >
                                             {variableEnabled.current.get(pat.key) ? <TbVariableOff /> : <TbVariablePlus />}
                                         </span>
-                                    </Tooltip>
+                                    </Tooltip>}
                                 </Col>
                                 <Col span={spanR}>
-                                    {pat.jsx && (variableEnabled.current.get(pat.key) &&
-                                        <Flex justify="space-between" >
-                                            <Input
-                                                placeholder="(Variable)"
-                                                size="small"
-                                                value={arg?.getValue() as string}
-                                                onChange={(e) => {
-                                                    args.setOptionalArgument(pat.key, e.target.value);
-                                                    props.syncYaml();
-                                                    refreshUI(); // Refresh states, if component uses useEffect() inside
-                                                }}
-                                            />
-                                        </Flex>
+                                    {pat.jsx && (pat.allowVariable && variableEnabled.current.get(pat.key) &&
+                                        <Variable
+                                            placeholder="(Variable)"
+                                            value={argValue as string}
+                                            onChange={(str) => {
+                                                args.setOptionalArgument(pat.key, str);
+                                                props.syncYaml();
+                                                refreshUI(); // Refresh states, if component uses useEffect() inside
+                                            }}
+                                        />
                                         ||
                                         <pat.jsx
-                                            value={arg?.getValue()}
+                                            value={argValue}
                                             placeholder={pat.placeholder}
                                             onChange={(value: OptionalArgumentDataType) => {
                                                 args.setOptionalArgument(pat.key, value);

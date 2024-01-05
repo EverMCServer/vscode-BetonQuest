@@ -158,6 +158,9 @@ const kinds: Kind<Condition>[] = [
         argumentsPattern: {
             mandatory: [
                 { jsx: Number, name: 'Amount', type: 'int', defaultValue: 0, config: { min: 0 } },
+            ],
+            optional: [
+                { jsx: Checkbox, name: 'Equal?', key: 'equal', type: 'boolean', tooltip: 'The player should have exact number of slots and no more' },
             ]
         }
     },
