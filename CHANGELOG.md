@@ -4,6 +4,14 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.2.2] - 2024-01-05
+
+### Added
+- Conditions editing for 2.0! (1.0 is on the way)
+
+### Fixed
+- Fix various bugs on Events and Objectives editing
+
 ## [0.2.1] - 2023-12-29
 
 ### Added
