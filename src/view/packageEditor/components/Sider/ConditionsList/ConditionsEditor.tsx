@@ -9,6 +9,7 @@ import { ArgumentsPatternOptional } from "../../../../../betonquest/Arguments";
 import Default from "./ConditionsEditor/Default";
 
 import BaseLocation from "../CommonList/Input/BaseLocation";
+import Biome from "../CommonList/Input/Biome";
 import BlockSelector from "../CommonList/Input/BlockSelector";
 import Checkbox from "../CommonList/Input/Checkbox";
 import EntityType from "../CommonList/Input/EntityType";
@@ -78,8 +79,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Does the player inside a specific biome?',
         argumentsPattern: {
             mandatory: [
-                // TODO: Biome Selector https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html
-                { jsx: Input, name: 'Biome Type', type: 'string', defaultValue: 'CUSTOM', placeholder: 'e.g. SAVANNA_ROCK', tooltip: '', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Biome, name: 'Biome Type', type: 'string', defaultValue: 'CUSTOM', placeholder: 'e.g. SAVANNA_ROCK', tooltip: '', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },

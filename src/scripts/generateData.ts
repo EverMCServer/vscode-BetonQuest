@@ -8,6 +8,7 @@ import Enchantment from "../bukkit/DataType/Enchantment";
 import PotionEffectType from "../bukkit/DataType/PotionEffectType";
 import DyeColor from "../bukkit/DataType/DyeColor";
 import path from "path";
+import Biome from "../bukkit/DataType/Biome";
 
 // Config
 const OUTPUT_DIR = path.dirname(__dirname) + "/bukkit/Data";
@@ -17,6 +18,7 @@ const BUKKIT_MATERIAL_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/r
 const BUKKIT_ENCHANTMENT_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/enchantments/Enchantment.java?at=refs%2Fheads%2Fmaster';
 const BUKKIT_POTION_EFFECT_TYPE_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/potion/PotionEffectType.java?at=refs%2Fheads%2Fmaster';
 const BUKKIT_DYE_COLOR_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/DyeColor.java?at=refs%2Fheads%2Fmaster';
+const BUKKIT_BIOME_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/raw/src/main/java/org/bukkit/block/Biome.java?at=refs%2Fheads%2Fmaster';
 
 (async () => {
     console.log("Generating EntityTypeList.json ...");
@@ -38,6 +40,10 @@ const BUKKIT_DYE_COLOR_SOURCE = 'https://hub.spigotmc.org/stash/projects/SPIGOT/
     console.log("Generating DyeColorList.json ...");
     const pathDyeColorList = OUTPUT_DIR + "/DyeColorList.json";
     await generateDyeColorList(pathDyeColorList);
+
+    console.log("Generating BiomeList.json ...");
+    const biomeList = OUTPUT_DIR + "/BiomeList.json";
+    await generateBiomeList(biomeList);
 
     console.log("All data succesfully generated.");
 })();
@@ -268,5 +274,38 @@ async function generateDyeColorList(savePath: string) {
         fs.writeFileSync(savePath, JSON.stringify(dyeColorList));
     } catch (reason) {
         throw new Error(`Unexpeted error while fetching Bukkit's DyeColor: ${reason}`);
+    };
+}
+
+// Bukkit's Biomes
+// https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/browse/src/main/java/org/bukkit/block/Biome.java
+async function generateBiomeList(savePath: string) {
+    try {
+        const response = await fetch(BUKKIT_BIOME_SOURCE);
+        const text = await response.text();
+        // Cache matched results
+        const cache: {
+            bukkitId: string,
+        }[] = [];
+
+        // RegExp to extract all Bukkit's Biome names
+        const patternExtract = /^\s*([A-Z_]+)\s*(?:,|;)/gm;
+        let array1: RegExpExecArray | null;
+        while ((array1 = patternExtract.exec(text)) !== null) {
+            if (array1[1]) {
+                cache.push({ bukkitId: array1[1] });
+            }
+        }
+
+        // Create the Biome list
+        const biomeList: Biome[] = cache.map(v => new Biome(v.bukkitId));
+
+        if (biomeList.length < 1) {
+            throw new Error(`Unexpeted error while parsing Bukkit's Biome with url: ${BUKKIT_BIOME_SOURCE} body: ${text}.`);
+        }
+
+        fs.writeFileSync(savePath, JSON.stringify(biomeList));
+    } catch (reason) {
+        throw new Error(`Unexpeted error while fetching Bukkit's Biome: ${reason}`);
     };
 }

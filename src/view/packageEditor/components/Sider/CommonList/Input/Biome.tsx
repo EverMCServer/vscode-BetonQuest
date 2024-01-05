@@ -3,9 +3,9 @@ import { Select } from "antd";
 import { DefaultOptionType } from "antd/es/select";
 
 import { InputProps } from "./Common";
-import ENTITY_TYPE_LIST from "../../../../../../bukkit/Data/EntityTypeList";
+import BIOME_LIST from "../../../../../../bukkit/Data/BiomeList";
 
-const bukkitOptions = ENTITY_TYPE_LIST.map(e => {
+const bukkitOptions = BIOME_LIST.map(e => {
     return {
         label: e.getBukkitId(), // TODO: i18n
         value: e.getBukkitId()
@@ -16,10 +16,10 @@ const bukkitOptions = ENTITY_TYPE_LIST.map(e => {
 });
 
 /**
- * Input for EntityType Selector.
+ * Input for Biome Selector.
  * 
- * - `value` - string. Bukkit's EntityType
- * - `defaultValue` - string. Bukkit's EntityType
+ * - `value` - string. Bukkit's Biome
+ * - `defaultValue` - string. Bukkit's Biome
  * - `placeholder` - string. Placeholder when nothing is selected
  * @param props 
  * @returns 
