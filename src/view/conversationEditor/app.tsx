@@ -104,8 +104,9 @@ export default function app() {
         <ConfigProvider
             theme={{
                 components: {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
                     Layout: {
-                        colorBgBody: "",
+                        bodyBg: "",
                     }
                 },
             }}

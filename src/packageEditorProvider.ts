@@ -217,22 +217,22 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Config View</title>
-    
+
             <meta http-equiv="Content-Security-Policy"
                 content="default-src 'none';
                         img-src ${webview.cspSource} https:;
                         script-src ${webview.cspSource} 'unsafe-eval' 'unsafe-inline';
                         style-src ${webview.cspSource} https: 'unsafe-inline';"
             />
-    
+
             <script>
                 window.vscode = acquireVsCodeApi();
                 window.initialConfig = ${JSON.stringify(initialConfig)};
             </script>
         </head>
-        <body style="padding: 0px;overflow:hidden;">
-            <div id="root"></div>
-    
+        <body style="padding: 0px; overflow: hidden;">
+            <div id="root">Loading...</div>
+
             <script src="${webview.asWebviewUri(reactAppPathOnDisk)}"></script>
         </body>
         </html>`;
