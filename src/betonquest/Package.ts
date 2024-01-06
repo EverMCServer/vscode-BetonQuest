@@ -1,4 +1,4 @@
-import YAML, { Document, YAMLMap, Pair, Scalar } from 'yaml';
+import YAML, { Document, Pair, Scalar, YAMLMap } from 'yaml';
 import Conversation from './Conversation';
 import Event from './Event';
 import Condition from './Condition';
@@ -45,7 +45,7 @@ export default class Package {
         });
     }
 
-    private getListElementsYaml(type: string) {
+    private getListElementsYaml(type: ListElementType) {
         const yaml = this.yaml.get(type);
         if (yaml instanceof YAMLMap) {
             return yaml;

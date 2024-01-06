@@ -59,12 +59,12 @@ const nodeTypes = {
     startNode: StartNode,
 };
 
-// Global variables from vscode
-declare global {
-    var initialConfig: {
-        translationSelection?: string; // Conversation YAML's translation selection.
-    };
-}
+// // Global variables from vscode
+// declare global {
+//     var initialConfig: {
+//         translationSelection?: string; // Conversation YAML's translation selection.
+//     };
+// }
 
 interface ConversationEditorProps {
     conversation: Conversation,

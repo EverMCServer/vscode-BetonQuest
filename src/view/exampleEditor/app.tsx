@@ -1,24 +1,51 @@
 import * as React from "react";
-
-import TestButton from './testbutton';
-import TestView from './testview';
+import { useEffect, useState } from "react";
+import { ConfigProvider, Layout } from "antd";
+import { YAMLError } from "yaml";
 import { vscode } from "./vscode";
 
 // test locale
 import {setLocale} from '../../i18n/i18n';
 import L from '../../i18n/i18n';
 
-export default function app() {
+import List from "../../betonquest/List";
+import ListElement, { ListElementType } from "../../betonquest/ListElement";
+
+// // Global variables from vscode
+// declare global {
+//     var initialConfig: {
+//         translationSelection?: string; // Conversation YAML's translation selection.
+//         type?: ListElementType; // List's type e.g. "event".
+//     };
+// }
+
+// Cache of the YAML
+let cachedYaml = "";
+
+// Handler for delayed YAML update
+let syncYamlTimeoutHandler: number;
+
+export default function app<T extends ListElement>() {
 
     // Get initial content data from vscode
-    const [yml, setYml] = React.useState("");
-    const [translationSelection, setTranslationSelection] = React.useState("");
+    const [list, _setList] = useState(new List<T>(cachedYaml));
+    const [yamlErrors, setYamlErrors] = useState<YAMLError[]>();
 
-    console.log("initialize yml Data.");
+    // Width of the sider
+    const [siderWidth, setSiderWidth] = useState(document.body.scrollWidth / 3);
+
+    // Prevent unnecessary rendering
+    const setList = (newList: List<T>) => {
+        const newYaml = newList.getYamlText();
+        if (newYaml !== cachedYaml) {
+            _setList(newList);
+            cachedYaml = newYaml;
+        }
+    };
 
     // Get document's content update from vscode
-    React.useEffect(()=>{
-        // notify vscode when webview startup completed.
+    useEffect(() => {
+        // Notify vscode when webview startup completed.
         vscode.postMessage({
             type: "webview-lifecycle",
             content: "started",
@@ -29,33 +56,54 @@ export default function app() {
 
             switch (message.type) {
                 case 'update':
-                    if (message.content !== yml) { // Avoid duplicated update
-                        console.log("update yml ...");
-                        setYml(message.content);
+                    // Update Package
+                    const p = new List<T>(message.content);
+                    // Check if parse error
+                    const e = p.getYamlErrors();
+                    if (e.length) {
+                        setYamlErrors(e);
                         break;
                     }
-                    console.log("update yml ... nothing changed.");
+                    setYamlErrors(undefined);
+                    // Update Package
+                    setList(p);
+                    // Handle for initial document update
+                    if (message.isInit) {
+                        //
+                    }
                     break;
                 case 'betonquest-translationSelection':
-                    console.log("update betonquest's translation selection ...");
-                    setTranslationSelection(message.content);
+                // setTranslationSelection(message.content);
             }
         });
     }, []);
 
-    console.log("from app.tsx");
+    // Sync package's YAML back to VSCode, delay in ms
+    const syncYaml = (delay: number = 1000) => {
+        // Prevent YAML update if it is still updating.
+        window.clearTimeout(syncYamlTimeoutHandler);
 
-    // Test i18n
-    console.log(L("1"));
-    console.log(setLocale("zh-CN"));
-    console.log(L("1"));
+        // Delayed YAML update.
+        syncYamlTimeoutHandler = window.setTimeout(() => {
+            // Update
+            cachedYaml = list.getYamlText(); // Prevent duplicated update
+            vscode.postMessage({
+                type: "edit",
+                content: cachedYaml,
+            });
+        }, delay);
+    };
+
+    // // Test i18n
+    // console.log(L("1"));
+    // console.log(setLocale("zh-CN"));
+    // console.log(L("1"));
     
     return (
         <>
         <h1>Hello, World!</h1>
         <div>{"hi form tsx"}</div>
-        <TestButton yml={yml} translationSelection={translationSelection} />
-        <TestView yml={yml} />
+        {list.getAllListElements().map(e => <div>e.getName()</div>)}
         </>
     );
 }
