@@ -4,6 +4,11 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.2.3] - TBD
+
+### Fixed
+- Fix sider drag not working when cursor leaves window
+
 ## [0.2.2] - 2024-01-05
 
 ### Added

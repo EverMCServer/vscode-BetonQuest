@@ -8,7 +8,15 @@
     left: 0;
     bottom: 0;
     z-index: 100;
-    background-color: var(--vscode-menu-separatorBackground);
+    background-color: var(--vscode-scrollbarSlider-background);
+}
+
+.sidebar-dragger:hover {
+    background-color: var(--vscode-scrollbarSlider-hoverBackground);
+}
+
+.sidebar-dragger:active {
+    background-color: var(--vscode-scrollbarSlider-activeBackground);
 }
 
 .sidebar-content {

@@ -36,16 +36,15 @@ const resizableSider: React.FC<ResizableSiderProps> = ({ children, ...props }) =
       return;
     }
     isResizing = false;
-    document.removeEventListener("mousemove", cbHandleMouseMove);
-    document.removeEventListener("mouseup", cbHandleMouseUp);
+    window.removeEventListener("mousemove", cbHandleMouseMove);
+    window.removeEventListener("mouseup", cbHandleMouseUp);
   }
 
   function handleMousedown(e: React.MouseEvent) {
     e.stopPropagation();
-    e.preventDefault();
     // we will only add listeners when needed, and remove them afterward
-    document.addEventListener("mousemove", cbHandleMouseMove);
-    document.addEventListener("mouseup", cbHandleMouseUp);
+    window.addEventListener("mousemove", cbHandleMouseMove);
+    window.addEventListener("mouseup", cbHandleMouseUp);
     isResizing = true;
   }
 
