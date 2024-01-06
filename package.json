@@ -37,6 +37,30 @@
         }
       },
       {
+        "command": "betonquest.openEventsEditor",
+        "title": "BetonQuest: Open Events Editor",
+        "icon": {
+          "light": "assets/icon-events-edit-light.svg",
+          "dark": "assets/icon-events-edit-dark.svg"
+        }
+      },
+      {
+        "command": "betonquest.openConditionsEditor",
+        "title": "BetonQuest: Open Conditions Editor",
+        "icon": {
+          "light": "assets/icon-conditions-edit-light.svg",
+          "dark": "assets/icon-conditions-edit-dark.svg"
+        }
+      },
+      {
+        "command": "betonquest.openObjectivesEditor",
+        "title": "BetonQuest: Open Objectives Editor",
+        "icon": {
+          "light": "assets/icon-objectives-edit-light.svg",
+          "dark": "assets/icon-objectives-edit-dark.svg"
+        }
+      },
+      {
         "command": "betonquest.openPackageEditor",
         "title": "BetonQuest: Open Package Editor",
         "icon": {
@@ -50,6 +74,21 @@
         {
           "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /conversations[\\/\\\\].+\\.ya?ml$/i && canActivateConversationEditor",
           "command": "betonquest.openConversationEditor",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /events\\.ya?ml$/i && canActivateEventsEditor",
+          "command": "betonquest.openEventsEditor",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /conditions\\.ya?ml$/i && canActivateConditionsEditor",
+          "command": "betonquest.openConditionsEditor",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /objectives\\.ya?ml$/i && canActivateObjectivesEditor",
+          "command": "betonquest.openObjectivesEditor",
           "group": "navigation"
         },
         {
@@ -67,6 +106,36 @@
         "selector": [
           {
             "filenamePattern": "**/conversations/*.ya?ml"
+          }
+        ]
+      },
+      {
+        "viewType": "betonquest.eventsEditor",
+        "displayName": "Events Editor",
+        "priority": "option",
+        "selector": [
+          {
+            "filenamePattern": "**/events.ya?ml"
+          }
+        ]
+      },
+      {
+        "viewType": "betonquest.conditionsEditor",
+        "displayName": "Conditions Editor",
+        "priority": "option",
+        "selector": [
+          {
+            "filenamePattern": "**/conditions.ya?ml"
+          }
+        ]
+      },
+      {
+        "viewType": "betonquest.objectivesEditor",
+        "displayName": "Objectives Editor",
+        "priority": "option",
+        "selector": [
+          {
+            "filenamePattern": "**/objectivesya?ml"
           }
         ]
       },

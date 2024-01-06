@@ -3,6 +3,8 @@
 import * as vscode from "vscode";
 import { ConversationEditorProvider } from "./conversationEditorProvider";
 import { EventsEditorProvider } from "./eventsEditorProvider";
+import { ConditionsEditorProvider } from "./conditionsEditorProvider";
+import { ObjectivesEditorProvider } from "./objectivesEditorProvider";
 import { PackageEditorProvider } from "./packageEditorProvider";
 // import { ExampleEditorProvider } from './exampleEditorProvider';
 import { setLocale } from "./i18n/i18n";
@@ -23,6 +25,8 @@ export function activate(context: vscode.ExtensionContext) {
     // Set default value
     vscode.commands.executeCommand('setContext', 'canActivateConversationEditor', false);
     vscode.commands.executeCommand('setContext', 'canActivateEventsEditor', false);
+    vscode.commands.executeCommand('setContext', 'canActivateConditionsEditor', false);
+    vscode.commands.executeCommand('setContext', 'canActivateObjectivesEditor', false);
     vscode.commands.executeCommand('setContext', 'canActivatePackageEditor', false);
 
     // Show Conversation Editor activation button only when it is appropriate
@@ -54,6 +58,8 @@ export function activate(context: vscode.ExtensionContext) {
         if (mainExists) {
           // Set the context variable based on the result
           vscode.commands.executeCommand('setContext', 'canActivateEventsEditor', mainExists);
+          vscode.commands.executeCommand('setContext', 'canActivateConditionsEditor', mainExists);
+          vscode.commands.executeCommand('setContext', 'canActivateObjectivesEditor', mainExists);
         }
       });
     }
@@ -106,6 +112,38 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
+  // Command to open the Conditions Editor
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      'betonquest.openConditionsEditor',
+      async () => {
+
+        const activeTextEditor = vscode.window.activeTextEditor;
+        if (!activeTextEditor) {
+          return; // No active editor
+        }
+
+        await vscode.commands.executeCommand('vscode.openWith', activeTextEditor.document.uri, 'betonquest.conditionsEditor', vscode.ViewColumn.Beside);
+      }
+    )
+  );
+
+  // Command to open the Objectives Editor
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      'betonquest.openObjectivesEditor',
+      async () => {
+
+        const activeTextEditor = vscode.window.activeTextEditor;
+        if (!activeTextEditor) {
+          return; // No active editor
+        }
+
+        await vscode.commands.executeCommand('vscode.openWith', activeTextEditor.document.uri, 'betonquest.objectivesEditor', vscode.ViewColumn.Beside);
+      }
+    )
+  );
+
   // // Command to open the Example Editor (for development reference only)
   // context.subscriptions.push(
   //   vscode.commands.registerCommand(
@@ -144,6 +182,8 @@ export function activate(context: vscode.ExtensionContext) {
   // Register custom editor
   context.subscriptions.push(ConversationEditorProvider.register(context));
   context.subscriptions.push(EventsEditorProvider.register(context));
+  context.subscriptions.push(ConditionsEditorProvider.register(context));
+  context.subscriptions.push(ObjectivesEditorProvider.register(context));
   // context.subscriptions.push(ExampleEditorProvider.register(context));
   context.subscriptions.push(PackageEditorProvider.register(context));
 }

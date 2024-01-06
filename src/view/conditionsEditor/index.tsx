@@ -2,11 +2,11 @@ import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 
 import App from '../legacyListEditor/app';
-import Event from '../../betonquest/Event';
-import EventsEditor from './EventsList/EventsEditor';
+import Condition from '../../betonquest/Condition';
+import ConditionsEditor from './ConditionsList/ConditionsEditor';
 
 import './index.css';
 
 const domNode = document.getElementById('root')!;
 const root = createRoot(domNode);
-root.render(<App<Event> type='events' editor={EventsEditor} />);
+root.render(<App<Condition> type='conditions' editor={ConditionsEditor} />);

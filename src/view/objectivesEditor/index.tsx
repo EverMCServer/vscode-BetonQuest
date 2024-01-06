@@ -2,11 +2,11 @@ import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 
 import App from '../legacyListEditor/app';
-import Event from '../../betonquest/Event';
-import EventsEditor from './EventsList/EventsEditor';
+import Objective from '../../betonquest/Objective';
+import ObjectivesEditor from './ObjectivesList/ObjectivesEditor';
 
 import './index.css';
 
 const domNode = document.getElementById('root')!;
 const root = createRoot(domNode);
-root.render(<App<Event> type='events' editor={EventsEditor} />);
+root.render(<App<Objective> type='objectives' editor={ObjectivesEditor} />);

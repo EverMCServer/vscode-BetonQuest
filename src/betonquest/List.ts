@@ -50,6 +50,12 @@ export default class List<T extends ListElement> {
         return undefined;
     }
 
+    // // Search list elements by names
+    // getListElements(name: string): T[] {
+    //     // TODO
+    //     return [];
+    // }
+
     getAllListElements(): T[] {
         return this.yaml.contents.items.map(pair => {
             try {
@@ -74,6 +80,10 @@ export default class List<T extends ListElement> {
         }
 
         return this.getListElement(name)!;
+    }
+
+    removeListElement(name: string) {
+        // TODO
     }
 
 }

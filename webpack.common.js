@@ -52,7 +52,9 @@ const reactConfig = {
   entry: {
     // exampleEditor: "./src/view/exampleEditor/index.tsx",
     conversationEditor: "./src/view/conversationEditor/index.tsx",
-    // eventsEditor: "./src/view/eventsEditor/index.tsx",
+    eventsEditor: "./src/view/eventsEditor/index.tsx",
+    conditionsEditor: "./src/view/conditionsEditor/index.tsx",
+    objectivesEditor: "./src/view/objectivesEditor/index.tsx",
     packageEditor: "./src/view/packageEditor/index.tsx",
   }, // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
   output: {
