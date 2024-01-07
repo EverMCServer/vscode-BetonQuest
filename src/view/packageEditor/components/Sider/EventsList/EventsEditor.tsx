@@ -13,6 +13,7 @@ import BaseLocation from "../CommonList/Input/BaseLocation";
 import BlockSelector from "../CommonList/Input/BlockSelector";
 import Checkbox from "../CommonList/Input/Checkbox";
 import EntityType from "../CommonList/Input/EntityType";
+import EntityTypeList from "../CommonList/Input/EntityTypeList";
 import Input from "../CommonList/Input/Input";
 import InputList from "../CommonList/Input/InputList";
 import ItemList from "../CommonList/Input/ItemList";
@@ -110,23 +111,6 @@ const kinds: Kind<Event>[] = [
             mandatory: [
                 { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
                 { jsx: ItemList, name: 'Item List', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
-            ]
-        }
-    },
-    {
-        value: 'clear',
-        display: 'Clear Entities',
-        description: 'Removes (instead of kills) all specified mobs from the specified area.',
-        // e.g. clear ZOMBIE,CREEPER 100;200;300;world 10 name:Monster
-        argumentsPattern: {
-            mandatory: [
-                { jsx: EntityType, name: 'Entity Type', type: 'string', defaultValue: 'ZOMBIE', placeholder: 'e.g. ZOMBIE' },
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] } },
-                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 0.0, config: { min: 0 } },
-            ],
-            optional: [
-                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mob which should be removed', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
-                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Remove only mobs that with the same mark using the spawn mob event', config: { allowedPatterns: [/^\S*$/] } }
             ]
         }
     },
@@ -426,6 +410,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/point/GlobalPointEventFactory.java
         value: 'globalpoint',
         display: 'Global Point',
         description: 'Manipulates points in a global category. Same as the normal point event. These global categories are player independent.',
@@ -433,7 +418,7 @@ const kinds: Kind<Event>[] = [
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Point ID', type: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. bonus', tooltip: 'ID of the global point', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Action types' },
+                { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Action types', allowVariable: true },
                 {
                     jsx: Select, name: 'Action', type: 'string', defaultValue: 'action:add', placeholder: 'e.g. action:add', config: {
                         options: [
@@ -631,24 +616,6 @@ const kinds: Kind<Event>[] = [
         description: 'Kills the player',
         argumentsPattern: {
             mandatory: []
-        }
-    },
-    {
-        value: 'killmob',
-        display: 'Kill Mob',
-        description: 'Kills all mobs of given type at the location.',
-        // editorBody: KillMob,
-        // e.g. killmob ZOMBIE 100;200;300;world 40 name:Bolec marked:quest_mob
-        argumentsPattern: {
-            mandatory: [
-                { jsx: EntityType, name: 'Entity Type', type: 'string', defaultValue: 'ZOMBIE', placeholder: 'e.g. ZOMBIE' },
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] } },
-                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 0.0, config: { min: 0 } },
-            ],
-            optional: [
-                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mob which should get killed', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
-                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Kill only mobs that with the same mark using the spawn mob event', config: { allowedPatterns: [/^\S*$/] } }
-            ]
         }
     },
     {
@@ -866,6 +833,27 @@ const kinds: Kind<Event>[] = [
             ],
             optional: [
                 { jsx: Checkbox, name: 'Notify', key: 'notify', type: 'boolean', tooltip: 'Display a message to the player about the change' },
+            ]
+        }
+    },
+    {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/entity/RemoveEntityEventFactory.java
+        value: 'removeentity',
+        display: 'Remove Entity',
+        description: 'Removes or kills all mobs of given type at the location.',
+        // editorBody: KillMob,
+        // e.g. removeentity ZOMBIE 100;200;300;world 10 name:Monster kill
+        // e.g. removeentity ARROW,SNOWBALL,WOLF,ARMOR_STAND 100;200;300;world 50 marked:minigame
+        argumentsPattern: {
+            mandatory: [
+                { jsx: EntityTypeList, name: 'Entity Type', type: 'string[,]', defaultValue: ['ZOMBIE'], placeholder: 'e.g. ZOMBIE' },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
+                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 0.0, config: { min: 0 } },
+            ],
+            optional: [
+                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mob which should get killed', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
+                { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Removes mobs that only with the same mark using the spawn mob event', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Checkbox, name: 'Kill?', key: 'kill', type: 'boolean', tooltip: 'Kill mobs instead of remove' },
             ]
         }
     },
