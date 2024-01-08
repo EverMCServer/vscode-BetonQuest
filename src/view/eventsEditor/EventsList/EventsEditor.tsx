@@ -887,7 +887,7 @@ const kinds: Kind<Event>[] = [
                 { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Modification types', allowVariable: true },
             ],
             optional: [
-                { jsx: Checkbox, name: 'Level', key: 'level', type: 'boolean', tooltip: 'Add levels instead of experience points' },
+                { jsx: Checkbox, name: 'Level', key: 'level', type: 'boolean', tooltip: 'Add / remove levels instead of experience points' },
             ]
         }
     },

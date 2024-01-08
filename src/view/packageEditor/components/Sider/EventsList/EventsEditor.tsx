@@ -22,9 +22,16 @@ import PotionEffectTypeList from "../CommonList/Input/PotionEffectTypeList";
 import Select from "../CommonList/Input/Select";
 import TextArea from "../CommonList/Input/TextArea";
 import TextAreaList from "../CommonList/Input/TextAreaList";
+import PotionEffectType from "../CommonList/Input/PotionEffectType";
+import { ArgumentsPatternOptional } from "../../../../../betonquest/Arguments";
+
+// Default optional arguments for every kind
+const defaultOptionalArguments: ArgumentsPatternOptional[] = [
+    { jsx: InputList, name: 'Conditions', key: 'conditions', type: 'string[,]', placeholder: '(none)', tooltip: 'Conditions to be satisfied or it will not be executed', config: { allowedPatterns: [/^\S*$/] } },
+];
 
 // All kinds
-const kinds: Kind<Event>[] = [
+const kinds: Kind<Event>[] = ([
     {
         value: '*',
         display: '*',
@@ -61,6 +68,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/conversation/CancelConversationEventFactory.java
         value: 'cancelconversation',
         display: 'Cancel Conversation',
         description: 'Cancels the active conversation of the player.',
@@ -69,6 +77,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/chat/ChatEventFactory.java
         value: 'chat',
         display: 'Chat',
         description: 'Send the given message as the player.',
@@ -80,41 +89,45 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/chest/ChestClearEventFactory.java
         value: 'chestclear',
         display: 'Chest Clear',
         description: 'Removes all items from a chest at specified location.',
         // e.g. chestclear 100;200;300;world
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/chest/ChestGiveEventFactory.java
         value: 'chestgive',
         display: 'Chest Give',
         description: 'Puts items in a chest at specified location.',
         // e.g. chestgive 100;200;300;world emerald:5,sword
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
                 { jsx: ItemList, name: 'Item List', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/chest/ChestTakeEventFactory.java
         value: 'chesttake',
         display: 'Chest Take',
         description: 'Removes items from a chest at specified location.',
         // e.g. chesttake 100;200;300;world emerald:5,sword
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
                 { jsx: ItemList, name: 'Item List', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/events/CompassEvent.java
         value: 'compass',
         display: 'Compass',
         description: 'Adds or removes a compass destination for the player.',
@@ -125,12 +138,12 @@ const kinds: Kind<Event>[] = [
                     jsx: Select, name: 'Action', type: 'string', defaultValue: 'add', placeholder: 'e.g. add', config: {
                         options: [
                             {
-                                label: 'Give +', // TODO: i18n
-                                value: 'give'
+                                label: 'Add +', // TODO: i18n
+                                value: 'add'
                             },
                             {
-                                label: 'Take -', // TODO: i18n
-                                value: 'take'
+                                label: 'Delete -', // TODO: i18n
+                                value: 'del'
                             },
                             {
                                 label: 'Set =', // TODO: i18n
@@ -144,6 +157,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/command/CommandEventFactory.java
         value: 'command',
         display: 'Command',
         description: 'Runs specified command from the console.',
@@ -156,28 +170,34 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/conversation/ConversationEventFactory.java
         value: 'conversation',
         display: 'Conversation',
         description: 'Starts a conversation at location of the player.',
-        // e.g. conversation village_smith
+        // e.g. conversation tutorial option:explain_world
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Conversation ID', type: 'string', defaultValue: 'a_conversation_id_1', placeholder: 'e.g. village_smith', tooltip: 'ID of the conversation', config: { allowedPatterns: [/^\S*$/] } },
+            ],
+            optional: [
+                { jsx: Input, name: 'Option ID', key: 'option', type: 'string', placeholder: '(none)', tooltip: 'Jump into a NPC option, without its starting header', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/damage/DamageEventFactory.java
         value: 'damage',
         display: 'Damage Player',
         description: 'Damages the player by specified amount of damage.',
         // e.g. damage 20
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'Damage points' },
+                { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'Damage points', allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/point/DeletePointEventFactory.java
         value: 'deletepoint',
         display: 'Delete Point',
         description: 'Clear all player points in a specified category.',
@@ -189,6 +209,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/point/DeleteGlobalPointEventFactory.java
         value: 'deleteglobalpoint',
         display: 'Delete Global Point',
         description: 'Removes the specified category from the global points list.',
@@ -200,13 +221,14 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/door/DoorEventFactory.java
         value: 'door',
         display: 'Door',
         description: 'Opens and closes doors, trapdoors and fence gates.',
         // e.g. door 100;200;300;world off
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] } },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
                 {
                     jsx: Select, name: 'Action', type: 'string', defaultValue: 'toggle', placeholder: 'e.g. toggle', config: {
                         options: [
@@ -228,25 +250,23 @@ const kinds: Kind<Event>[] = [
             ]
         }
     },
-    // TODO: variable support
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/drop/DropEventFactory.java
         value: 'drop',
         display: 'Drop Item',
         description: 'Drops (place) the defined items at a defined location.',
         // e.g. drop items:myItem location:%objective.MyQuestVariables.DropLocation%
         argumentsPattern: {
             mandatory: [
-                // For some reason this can be optional in BQ: https://github.com/BetonQuest/BetonQuest/blob/e80ccaba416b1fa458968bc3a35e5a585e06c2e0/src/main/java/org/betonquest/betonquest/Instruction.java#L152
-                // But it is better to make it mandatory.
-                // { jsx: ItemList, name: 'Item List', key: 'items', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
+                { jsx: ItemList, name: 'Item List', key: 'items', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
             ],
             optional: [
-                { jsx: ItemList, name: 'Item List', key: 'items', type: '[string:number?][,]', placeholder: ['e.g. emerald', '1'] },
-                { jsx: BaseLocation, name: 'Location', key: 'location', type: 'string', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0], optional: true } },
+                { jsx: BaseLocation, name: 'Location', key: 'location', type: 'string', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0], optional: true }, allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/effect/DeleteEffectEventFactory.java
         value: 'deleffect',
         display: 'Remove Potion Effect',
         description: 'Removes the specified potion effects from the player.',
@@ -258,15 +278,16 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/effect/EffectEventFactory.java
         value: 'effect',
         display: 'Apply Potion Effect',
         description: 'Adds a specified potion effect to player.',
         // e.g. effect BLINDNESS 30 1 ambient icon
         argumentsPattern: {
             mandatory: [
-                { jsx: PotionEffectTypeList, name: 'Effects', type: 'string[,]', defaultValue: ['SPEED'], tooltip: 'List of Potion Effect Types' },
-                { jsx: Number, name: 'Duration', type: 'float', defaultValue: 0.0, tooltip: 'How long the effect will last in seconds', config: { min: 0 } },
-                { jsx: Number, name: 'Level', type: 'int', defaultValue: 0, tooltip: 'Level of the effect', config: { min: 0 } },
+                { jsx: PotionEffectType, name: 'Effect', type: 'string', defaultValue: 'SPEED', tooltip: 'A Potion Effect Type' },
+                { jsx: Number, name: 'Duration', type: 'float', defaultValue: 0.0, tooltip: 'How long the effect will last in seconds', config: { min: 0 }, allowVariable: true },
+                { jsx: Number, name: 'Level', type: 'int', defaultValue: 0, tooltip: 'Level of the effect', config: { min: 0 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Checkbox, name: 'Ambient', key: 'ambient', type: 'boolean', tooltip: 'Make potion particles appear more invisible (just like beacon effects)' },
@@ -276,16 +297,16 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
-        // https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Building-Blocks/Events-List/#give-experience-experience
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/experience/ExperienceEventFactory.java
         value: 'experience',
         display: 'Give Experience',
         description: 'Manipulates player\'s experience.',
         // e.g. experience -2 action:addLevel
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Modification types' },
+                { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Modification types', allowVariable: true },
                 {
-                    jsx: Select, name: 'Modification', key: 'action', type: 'string', defaultValue: 'action:addExperience', tooltip: 'action:addExperience only adds experience points, action:addLevel adds a level and keeps the current percentage. action:setExperienceBar sets the progress of the bar with decimal values between 0 and 1. action:setLevel sets only the level.', placeholder: 'e.g. action:addExperience', config: {
+                    jsx: Select, name: 'Action', key: 'action', type: 'string', defaultValue: 'action:addExperience', tooltip: 'action:addExperience only adds experience points, action:addLevel adds a level and keeps the current percentage. action:setExperienceBar sets the progress of the bar with decimal values between 0 and 1. action:setLevel sets only the level.', placeholder: 'e.g. action:addExperience', config: {
                         options: [
                             {
                                 label: 'Add Experience', // TODO: i18n
@@ -306,10 +327,14 @@ const kinds: Kind<Event>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
+            ],
+            optional: [
+                { jsx: Checkbox, name: <div><s>Level</s></div>, key: 'level', type: 'boolean', tooltip: '(DEPRECATED) Add / remove levels instead of experience points' },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/explosion/ExplosionEventFactory.java
         value: 'explosion',
         display: 'Explosion',
         description: 'Creates an explosion.',
@@ -344,14 +369,15 @@ const kinds: Kind<Event>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: Number, name: 'Power Level', type: 'float', defaultValue: 0, tooltip: 'TNT is level 4', config: { min: 0 } },
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
+                { jsx: Number, name: 'Power Level', type: 'float', defaultValue: 0, tooltip: 'TNT is level 4', config: { min: 0 }, allowVariable: true },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
             ]
         }
     },
     // TODO: New optional data type: select
     // TODO: ... Or a seprated standalone editor
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/events/FolderEvent.java
         value: 'folder',
         display: 'Run multiple events',
         description: 'Runs multiple events in sequence.',
@@ -361,8 +387,8 @@ const kinds: Kind<Event>[] = [
                 { jsx: InputList, name: 'Event Names', type: 'string[,]', defaultValue: ['an_event_1'], placeholder: 'e.g. event1', tooltip: 'Names of other events', config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
-                { jsx: Number, name: 'Delay', key: 'delay', type: 'float', placeholder: '(none)', tooltip: 'The delay before the folder starts executing it\'s events', config: { min: 0 } },
-                { jsx: Number, name: 'Period', key: 'period', type: 'float', placeholder: '(none)', tooltip: 'The interval between each event of the folder', config: { min: 0 } },
+                { jsx: Number, name: 'Delay', key: 'delay', type: 'float', placeholder: '(none)', tooltip: 'The delay before the folder starts executing it\'s events', config: { min: 0 }, allowVariable: true },
+                { jsx: Number, name: 'Period', key: 'period', type: 'float', placeholder: '(none)', tooltip: 'The interval between each event of the folder', config: { min: 0 }, allowVariable: true },
                 // {
                 //     jsx: Select, name: 'Duration Unit', key: 'minutes', type: 'select', placeholder: 'Seconds', config: {
                 //         options: [
@@ -380,12 +406,33 @@ const kinds: Kind<Event>[] = [
                 // },
                 { jsx: Checkbox, name: 'Minutes?', key: 'minutes', type: 'boolean', tooltip: 'Unit of the time duration' },
                 { jsx: Checkbox, name: 'Ticks?', key: 'ticks', type: 'boolean', tooltip: 'Unit of the time duration' },
-                { jsx: Number, name: 'Random Pick', key: 'random', type: 'int', placeholder: '(none)', tooltip: 'Number of events to be randomly picked', config: { min: 0 } },
+                { jsx: Number, name: 'Random Pick', key: 'random', type: 'int', placeholder: '(none)', tooltip: 'Number of events to be randomly picked', config: { min: 0 }, allowVariable: true },
                 { jsx: Checkbox, name: 'Cancel on Logout', key: 'cancelOnLogout', type: 'boolean', tooltip: 'Terminates the remaining events execution when the player disconnected' },
             ],
         },
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/logic/FirstEventFactory.java
+        value: 'first',
+        display: 'If-ElseIF Through a List of Events',
+        description: <>
+            <div>Attempts to execute each event if and only if its condition is met, starting from the first onward. It just likes `if - else if - else if ...` in any programming languages. Once an event is successfully executed, the rest of the events are skipped.</div>
+            <div>e.g.:</div>
+            <ul>
+                <li>firstExample: "first event1,event2,event3"</li>
+                <li>event1: "point carry boxes 10 action:add condition:firstCondition"</li>
+                <li>event2: "point carry boxes 20 action:add condition:secondCondition"</li>
+                <li>event3: "point carry boxes 40 action:add condition:thirdCondition"</li>
+            </ul>
+        </>,
+        argumentsPattern: {
+            mandatory: [
+                { jsx: InputList, name: 'Event Name(s)', type: 'string[,]', defaultValue: ['an_event_1'], config: { allowedPatterns: [/^\S*$/] } },
+            ]
+        }
+    },
+    {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/give/GiveEventFactory.java
         value: 'give',
         display: 'Give',
         description: 'Gives the player predefined items.',
@@ -401,6 +448,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/journal/GiveJournalEventFactory.java
         value: 'givejournal',
         display: 'Give Journal',
         description: 'Gives the player his journal. Same as /j command.',
@@ -418,6 +466,7 @@ const kinds: Kind<Event>[] = [
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Point ID', type: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. bonus', tooltip: 'ID of the global point', config: { allowedPatterns: [/^\S*$/] } },
+                // TODO: multiplication prefix - '*'
                 { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Action types', allowVariable: true },
                 {
                     jsx: Select, name: 'Action', type: 'string', defaultValue: 'action:add', placeholder: 'e.g. action:add', config: {
@@ -445,6 +494,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/tag/TagGlobalEventFactory.java
         value: 'globaltag',
         display: 'Global Tag',
         description: 'Sets tag globally for all players.',
@@ -456,11 +506,11 @@ const kinds: Kind<Event>[] = [
                         options: [
                             {
                                 label: 'Add +', // TODO: i18n
-                                value: 'action:add'
+                                value: 'add'
                             },
                             {
                                 label: 'Delete -', // TODO: i18n
-                                value: 'action:del'
+                                value: 'del'
                             },
                         ] as DefaultOptionType[]
                     }
@@ -470,9 +520,11 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/hunger/HungerEventFactory.java
         value: 'hunger',
         display: 'Hunger',
         description: 'Changes the food level of the player.',
+        // e.g. hunger set 20
         argumentsPattern: {
             mandatory: [
                 {
@@ -493,13 +545,15 @@ const kinds: Kind<Event>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'For "set", the amount can be any value.\nFor "give" or "take", the final value will be limited between 0 and 20.' },
+                // Doesn't it support Variable instead?
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 0, tooltip: 'For "set", the amount can be any value.\nFor "give" or "take", the final value will be limited between 0 and 20.' },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/logic/IfElseEventFactory.java
         value: 'if',
-        display: 'If Else',
+        display: 'If-Else',
         description: 'Checks a condition then runs the first or second event.',
         // e.g. if sun rain else sun
         argumentsPattern: {
@@ -512,6 +566,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/item/ItemDurabilityEventFactory.java
         value: 'itemdurability',
         display: 'Item Durability',
         description: 'Adds or removes durability from an item in the slot.',
@@ -570,8 +625,7 @@ const kinds: Kind<Event>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                // TODO: variable support
-                { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0 },
+                { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, allowVariable: true },
             ],
             optional: [
                 { jsx: Checkbox, name: 'Ignore Unbreakable', key: 'ignoreUnbreakable', type: 'boolean', tooltip: 'Ignores the unbreakable flag and unbreaking enchantment' },
@@ -580,6 +634,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/journal/JournalEventFactory.java
         value: 'journal',
         display: 'Journal',
         description: 'Adds, deletes an entry to/from a player\'s journal, or refreshes it.',
@@ -611,6 +666,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/kill/KillEventFactory.java
         value: 'kill',
         display: 'Kill',
         description: 'Kills the player',
@@ -619,6 +675,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/language/LanguageEventFactory.java
         value: 'language',
         display: 'Switch Language',
         description: 'Changes player\'s language to the specified one.',
@@ -630,13 +687,14 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/lever/LeverEventFactory.java
         value: 'lever',
         display: 'Lever',
         description: 'Switches a lever.',
         // e.g. lever 100;200;300;world toggle
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] } },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
                 {
                     jsx: Select, name: 'Action', type: 'string', defaultValue: 'toggle', placeholder: 'e.g. toggle', config: {
                         options: [
@@ -659,20 +717,22 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/lightning/LightningEventFactory.java
         value: 'lightning',
         display: 'Lightning',
         description: 'Strikes a lightning at given location.',
         // e.g. lightning 200;65;100;survival noDamage
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] } },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
             ],
             optional: [
-                { jsx: Checkbox, name: 'No Damage', key: 'ambient', type: 'boolean', tooltip: 'Strikes the lightning without any damages' },
+                { jsx: Checkbox, name: 'No Damage', key: 'noDamage', type: 'boolean', tooltip: 'Strikes the lightning without any damages' },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/notify/NotifyEventFactory.java
         value: 'notify',
         display: 'Notify',
         description: 'Send notifications to the player.',
@@ -689,6 +749,24 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/notify/NotifyAllEventFactory.java
+        value: 'notifyall',
+        display: 'Broadcasts',
+        description: 'Send notifications to all online players.',
+        argumentsPattern: {
+            mandatory: [
+                { jsx: TextArea, name: 'Message', type: '*', defaultValue: '', escapeCharacters: [':', '\n'] },
+            ],
+            optional: [
+                { jsx: InputList, name: 'Category', key: 'category', type: 'string[,]', placeholder: 'e.g. info', tooltip: 'Will load all settings from that Notification Category', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'IO', key: 'io', type: 'string', placeholder: 'e.g. bossbar', tooltip: 'Any NotifyIO Overrides the "category" settings', config: { allowedPatterns: [/^\S*$/] } },
+                // TODO: Seprated standalone body. https://docs.betonquest.org/2.0-DEV/Documentation/Visual-Effects/Notifications/Notification-IO%27s-%26-Categories/
+            ],
+            keepWhitespaces: true
+        }
+    },
+    {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/log/LogEventFactory.java
         value: 'log',
         display: 'Log Message to Console',
         description: <><div style={{ marginBottom: 8 }}>Prints a provided message to the server log.</div><div>Note that when used in static context (by schedules) replacing player dependent variables will not work as the event is player independent.</div></>,
@@ -727,6 +805,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/events/ObjectiveEvent.java
         value: 'objective',
         display: 'Objective',
         description: 'Adds, removes or completes the specified objective(s).',
@@ -756,6 +835,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/command/OpSudoEventFactory.java
         value: 'opsudo',
         display: 'OPsudo',
         description: 'Fires a command as the player, with temporary OP permissions.',
@@ -768,24 +848,25 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/party/PartyEventFactory.java
         value: 'party',
         display: 'Party Event',
         description: 'Runs events on every player in the party.',
         // e.g. party 10 has_tag1,!has_tag2 give_special_reward amount:3
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Distance', type: 'float', defaultValue: 0.0, tooltip: 'The coverage distance from the player whom triggers this event', config: { min: 0 } },
+                { jsx: Number, name: 'Distance', type: 'float', defaultValue: 0.0, tooltip: 'The coverage distance from the player whom triggers this event', config: { min: 0 }, allowVariable: true },
                 { jsx: InputList, name: 'Condition Names', type: 'string[,]', placeholder: '(none)', defaultValue: ['a_condition_1'], tooltip: 'Party members will be selected with these conditions', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: InputList, name: 'Event Names', type: 'string[,]', placeholder: 'any', defaultValue: ['an_event_1'], tooltip: 'Events to be executed', config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
-                { jsx: Number, name: 'Player Count', key: 'amount', type: 'int', placeholder: 'everyone', tooltip: 'The maximum number of players to be selected', config: { min: 0 } },
+                { jsx: Number, name: 'Player Count', key: 'amount', type: 'int', placeholder: 'everyone', tooltip: 'The maximum number of players to be selected', config: { min: 0 }, allowVariable: true },
             ]
         }
     },
-    // TODO: variable support
     // TODO: Seprated standalone Editor
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/random/PickRandomEventFactory.java
         value: 'pickrandom',
         display: 'Run / Pick Random Events',
         description: 'Pcks one (or multiple) events then runs it.',
@@ -795,11 +876,12 @@ const kinds: Kind<Event>[] = [
                 { jsx: InputList, name: 'Conditions', type: 'string[,]', placeholder: 'e.g. 12.3%event1', defaultValue: ['a_condition_1'], tooltip: 'Restrict selection conditions', config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
-                { jsx: Number, name: 'Amount', key: 'amount', type: 'int', placeholder: '1', tooltip: 'The maximum number of events to be executed', config: { min: 0 } },
+                { jsx: Number, name: 'Amount', key: 'amount', type: 'int', placeholder: '1', tooltip: 'The maximum number of events to be executed', config: { min: 0 }, allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/point/PointEventFactory.java
         value: 'point',
         display: 'Point',
         description: 'Manipulates player\'s points.',
@@ -807,31 +889,32 @@ const kinds: Kind<Event>[] = [
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Point ID', type: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. bonus', tooltip: 'ID of the point', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Action types' },
+                // TODO: multiplication prefix - '*'
+                { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Action types', allowVariable: true },
+            ],
+            optional: [
                 {
-                    jsx: Select, name: 'Action', type: 'string', defaultValue: 'action:add', placeholder: 'e.g. action:add', config: {
+                    jsx: Select, name: 'Action', key: 'action', type: 'string', placeholder: 'e.g. action:add', config: {
                         options: [
                             {
                                 label: 'Add +', // TODO: i18n
-                                value: 'action:add'
+                                value: 'add'
                             },
                             {
                                 label: 'Subtract -', // TODO: i18n
-                                value: 'action:subtract'
+                                value: 'subtract'
                             },
                             {
                                 label: 'Set =', // TODO: i18n
-                                value: 'action:set'
+                                value: 'set'
                             },
                             {
                                 label: 'Multiply x', // TODO: i18n
-                                value: 'action:multiply'
+                                value: 'multiply'
                             },
                         ] as DefaultOptionType[]
                     }
                 },
-            ],
-            optional: [
                 { jsx: Checkbox, name: 'Notify', key: 'notify', type: 'boolean', tooltip: 'Display a message to the player about the change' },
             ]
         }
@@ -848,7 +931,7 @@ const kinds: Kind<Event>[] = [
             mandatory: [
                 { jsx: EntityTypeList, name: 'Entity Type', type: 'string[,]', defaultValue: ['ZOMBIE'], placeholder: 'e.g. ZOMBIE' },
                 { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
-                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 0.0, config: { min: 0 } },
+                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 0.0, config: { min: 0 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mob which should get killed', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
@@ -858,6 +941,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/events/RunEvent.java
         value: 'run',
         display: 'Run Events',
         description: <><div style={{ marginBottom: 8 }}>Specify multiple instructions in one, long instruction.</div><div>Actual instruction need to be specified, not an event name. Don't use conditions here, it behaves strangely.</div></>,
@@ -870,6 +954,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/run/RunForAllEventFactory.java
         value: 'runForAll',
         display: 'Run Events for All Online Players',
         description: <><div style={{ marginBottom: 8 }}>Runs the specified event(s) once for <b>each player</b> on the server.</div></>,
@@ -888,6 +973,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/run/RunIndependentEventFactory.java
         value: 'runIndependent',
         display: 'Run Events Player Independently / Run Events as Schedular Does',
         description: <>
@@ -911,6 +997,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/scoreboard/ScoreboardEventFactory.java
         value: 'score',
         display: 'Scoreboard',
         description: 'Manipulates player\'s Scoreboard.',
@@ -918,7 +1005,8 @@ const kinds: Kind<Event>[] = [
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Name', type: 'string', defaultValue: '*', placeholder: 'e.g. Quest_Points', tooltip: 'Name of the scoreboard objective', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Action types' },
+                // TODO: multiplication prefix - '*'
+                { jsx: Number, name: 'Amount', type: 'float', defaultValue: 0, tooltip: 'amount to change depends on the Action types', allowVariable: true },
                 {
                     jsx: Select, name: 'Action', key: 'action', type: 'string', defaultValue: 'action:add', placeholder: 'e.g. action:add', config: {
                         options: [
@@ -945,6 +1033,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/setblock/SetBlockEventFactory.java
         value: 'setblock',
         display: 'Set Block',
         description: 'Changes the block at the given position.',
@@ -952,7 +1041,7 @@ const kinds: Kind<Event>[] = [
         argumentsPattern: {
             mandatory: [
                 { jsx: BlockSelector, name: 'Block Selector', type: 'string', defaultValue: 'AIR', placeholder: 'e.g. AIR', tooltip: 'Block Selector' },
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
             ],
             optional: [
                 { jsx: Checkbox, name: 'Ignore Physics', key: 'ignorePhysics', type: 'boolean', tooltip: 'Deactivate the physics of the block' },
@@ -961,6 +1050,7 @@ const kinds: Kind<Event>[] = [
     },
     // TODO: Seprated standalone editor
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/stage/StageEventFactory.java
         value: 'stage',
         display: 'Modify Stage',
         description: <><div style={{ marginBottom: 8 }}>Manipulates player's stage.</div><div>Note that `set` will not automatically complete a `stage` objective. Use `increase` or `decrease` instead.</div></>,
@@ -986,20 +1076,22 @@ const kinds: Kind<Event>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
+                // TODO: name or number depending on action above
                 { jsx: Input, name: 'Stage Name', type: 'string', defaultValue: 'a_stage_name_1', placeholder: 'e.g. stage_1', tooltip: 'The name of the stage when `set`. Or amount to `increase` or `decrease`', config: { allowedPatterns: [/^\S*$/] } },
             ],
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/events/SpawnMobEvent.java
         value: 'spawn',
         display: 'Spawn Mob',
         description: 'Spawns specified amount of mobs of given type at the location.',
         // e.g. spawn 100;200;300;world ZOMBIE name:Bolec 1 h:blue_hat c:red_vest drops:emerald:10,bread:2
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] } },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
                 { jsx: EntityType, name: 'Entity Type', type: 'string', defaultValue: 'ZOMBIE', placeholder: 'e.g. ZOMBIE' },
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 0, config: { min: 0 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mobs to be spawned', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
@@ -1015,6 +1107,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/command/SudoEventFactory.java
         value: 'sudo',
         display: 'Sudo',
         description: 'Fires a command as the player.',
@@ -1027,6 +1120,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/tag/TagPlayerEventFactory.java
         value: 'tag',
         display: 'Tag',
         description: 'Adds or delete player\'s tags.',
@@ -1052,6 +1146,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/events/TakeEvent.java
         value: 'take',
         display: 'Take Items',
         description: 'Removes items from the player\'s inventory, armor slots or backpack.',
@@ -1070,6 +1165,7 @@ const kinds: Kind<Event>[] = [
     // TODO: New optional data type: +-float
     // TODO: ... Or a seprated standalone editor
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/time/TimeEventFactory.java
         value: 'time',
         display: 'Time',
         description: <>
@@ -1110,26 +1206,28 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/teleport/TeleportEventFactory.java
         value: 'teleport',
         display: 'Teleport',
         description: 'Teleports the player to the specified location.',
         // e.g. teleport 123;32;-789;world_the_nether;180;45
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] } },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/events/VariableEvent.java
         value: 'variable',
         display: 'Variable',
         description: 'Changes values that are stored in `variable` objective variables.',
         // e.g. variable CustomVariable MyFirstVariable Goodbye!
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Variable Objective Name', type: 'string', defaultValue: 'a_variable_objective_1', placeholder: '', tooltip: '', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Input, name: 'Variable Name', type: 'string', defaultValue: 'a_variable_name_1', placeholder: '', tooltip: '', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Input, name: 'Value', type: '*', defaultValue: '""', placeholder: '', tooltip: '' },
+                { jsx: Input, name: 'Variable Objective ID', type: 'string', defaultValue: 'a_variable_objective_1', placeholder: '', tooltip: '', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Variable Name', type: 'string', defaultValue: 'a_variable_name_1', placeholder: '', tooltip: '', config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
+                { jsx: Input, name: 'Value', type: '*', defaultValue: '""', placeholder: '', tooltip: '', allowVariable: true },
             ],
             keepWhitespaces: true
         }
@@ -1137,6 +1235,7 @@ const kinds: Kind<Event>[] = [
     // TODO: vector Input
     // TODO: ... Or a seprated standalone editor
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/velocity/VelocityEventFactory.java
         value: 'velocity',
         display: 'Move the player',
         description: 'Applies or changes player\'s velocity.',
@@ -1146,10 +1245,10 @@ const kinds: Kind<Event>[] = [
             mandatory: [
                 // For some reason this can be optional in BQ: https://github.com/BetonQuest/BetonQuest/blob/e80ccaba416b1fa458968bc3a35e5a585e06c2e0/src/main/java/org/betonquest/betonquest/quest/event/velocity/VelocityEventFactory.java#L56
                 // It is better to make it mandatory.
-                // { jsx: Input, name: 'Vector', key: 'vector', type: 'string', defaultValue: '(0.0;0.0;0.0)', placeholder: 'e.g. (0;0.1;1.3)', tooltip: 'The values of the vector: (x;y;z) for absolute direction, (sideways;upwards;forwards) for relative direction', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Vector', key: 'vector', type: 'string', defaultValue: '(0.0;0.0;0.0)', placeholder: 'e.g. (0;0.1;1.3)', tooltip: 'The values of the vector: (x;y;z) for absolute direction, (sideways;upwards;forwards) for relative direction', config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
             ],
             optional: [
-                { jsx: Input, name: 'Vector', key: 'vector', type: 'string', placeholder: 'e.g. (0;0.1;1.3)', tooltip: 'The values of the vector: (x;y;z) for absolute direction, (sideways;upwards;forwards) for relative direction', config: { allowedPatterns: [/^\S*$/] } },
+                // { jsx: Input, name: 'Vector', key: 'vector', type: 'string', placeholder: 'e.g. (0;0.1;1.3)', tooltip: 'The values of the vector: (x;y;z) for absolute direction, (sideways;upwards;forwards) for relative direction', config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
                 {
                     jsx: Select, name: 'Direction', key: 'direction', type: 'string', placeholder: 'absolute - Absolute', tooltip: 'Coordinate system to be used. Absolute = Coordinate fixed to the world, Relative = Fixed coordinate ralative to the player. Default to `absolute`', config: {
                         options: [
@@ -1188,6 +1287,7 @@ const kinds: Kind<Event>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/weather/WeatherEventFactory.java
         value: 'weather',
         display: 'Weather',
         description: 'Sets the weather in the world the player is currently in.',
@@ -1199,7 +1299,7 @@ const kinds: Kind<Event>[] = [
                     jsx: Select, name: 'Type', type: 'string', defaultValue: 'sun', placeholder: 'e.g. sun', config: {
                         options: [
                             {
-                                label: 'Sun', // TODO: i18n
+                                label: 'Sun / Clear', // TODO: i18n
                                 value: 'sun'
                             },
                             {
@@ -1215,12 +1315,20 @@ const kinds: Kind<Event>[] = [
                 },
             ],
             optional: [
-                { jsx: Number, name: 'Duration', key: 'duration', type: 'float', placeholder: 'random', tooltip: 'How long it will last, in seconds', config: { min: 0 } },
+                // TODO: This option does not present in BetonQuest source but in the documentation.
+                { jsx: Number, name: 'Duration', key: 'duration', type: 'float', placeholder: 'random', tooltip: 'How long it will last, in seconds', config: { min: 0 }, allowVariable: true },
                 { jsx: Input, name: 'World Name', key: 'world', type: 'string', placeholder: 'current', tooltip: 'A name of the world to change weather on', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     }
-];
+] as Kind<Event>[]).map(kind => {
+    if (kind.argumentsPattern.optional) {
+        kind.argumentsPattern.optional.unshift(...defaultOptionalArguments);
+    } else {
+        kind.argumentsPattern.optional = defaultOptionalArguments;
+    }
+    return kind;
+});
 
 export default function (props: ListElementEditorProps<Event>) {
 

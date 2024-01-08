@@ -64,7 +64,7 @@ export type OptionalArgumentDataType =
 type OptionalArguments = Map<string, OptionalArgument>;
 
 export type ArgumentsPatternMandatory = {
-    name: string,
+    name: React.ReactNode,
     key?: string,
     type: MandatoryArgumentType,
     defaultValue: MandatoryArgumentDataType,
@@ -77,7 +77,7 @@ export type ArgumentsPatternMandatory = {
 };
 
 export type ArgumentsPatternOptional = {
-    name: string,
+    name: React.ReactNode,
     key: string,
     type: OptionalArgumentType,
     escapeCharacters?: string[],

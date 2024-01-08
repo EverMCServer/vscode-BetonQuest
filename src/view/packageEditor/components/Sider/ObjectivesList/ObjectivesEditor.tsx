@@ -28,7 +28,7 @@ import OptionalNumber from "../CommonList/Input/OptionalNumber";
 
 // Default optional arguments for every kind
 const defaultOptionalArguments: ArgumentsPatternOptional[] = [
-    { jsx: InputList, name: 'Conditions', key: 'conditions', type: 'string[,]', placeholder: '(none)', tooltip: 'Conditions to be satisfied', config: { allowedPatterns: [/^\S*$/] } },
+    { jsx: InputList, name: 'Conditions', key: 'conditions', type: 'string[,]', placeholder: '(none)', tooltip: 'Any additional conditions that need to be satisfied or it will not be completed', config: { allowedPatterns: [/^\S*$/] } },
     { jsx: InputList, name: 'Events', key: 'events', type: 'string[,]', placeholder: '(none)', tooltip: 'Events to be run if this objective is fulfilled', config: { allowedPatterns: [/^\S*$/] } },
 ];
 
