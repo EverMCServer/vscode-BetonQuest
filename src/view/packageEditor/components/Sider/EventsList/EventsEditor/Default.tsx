@@ -58,7 +58,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
     }, []);
 
     // Variable switching
-    const variableEnabled = useRef<Map<number | string, boolean>>(new Map());
+    const [variableEnabled, setVariableEnabled] = useState<Map<number | string, boolean>>(new Map());
     useEffect(() => {
         const map = new Map<number | string, boolean>();
         for (let i = 0; i < props.argumentsPattern.mandatory.length; i++) {
@@ -70,8 +70,8 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                 map.set(key, args.getOptionalArgument(key)?.getType() === 'variable');
             }
         }
-        variableEnabled.current = map;
-    }, []);
+        setVariableEnabled(map);
+    }, [props.listElement.toString()]);
 
     return (
         <div ref={parentRef}>
@@ -81,7 +81,8 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                 </Divider>
             }
             {props.argumentsPattern.mandatory.map((pat, index) => {
-                const argValue = args.getMandatoryArgument(index).getValue();
+                const arg = args.getMandatoryArgument(index);
+                const argValue = arg.getValue();
                 return (
                     <Row justify="space-between" gutter={[0, 4]} style={{ padding: "0 8px 16px 8px" }} key={index}>
                         <Col span={spanL}>
@@ -98,24 +99,27 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                             {pat.allowVariable && <Tooltip title="Toggle Variable input" placement="bottom">
                                 <span
                                     onClick={() => {
-                                        if (variableEnabled.current.get(index)) {
-                                            variableEnabled.current.set(index, false);
+                                        if (variableEnabled.get(index)) {
+                                            variableEnabled.set(index, false);
+                                            args.setMandatoryArgument(index, props.argumentsPattern.mandatory[index].defaultValue);
                                         } else {
-                                            variableEnabled.current.set(index, true);
+                                            variableEnabled.set(index, true);
+                                            args.setMandatoryArgument(index, "%%");
                                         }
+                                        props.syncYaml();
                                         refreshUI();
                                     }}
                                     style={{ padding: 0, border: "1px solid var(--vscode-checkbox-border)" }}
                                 >
-                                    {variableEnabled.current.get(index) ? <TbVariableOff /> : <TbVariablePlus />}
+                                    {variableEnabled.get(index) ? <TbVariableOff /> : <TbVariablePlus />}
                                 </span>
                             </Tooltip>}
                         </Col>
                         <Col span={spanR}>
-                            {pat.jsx && (pat.allowVariable && variableEnabled.current.get(index) &&
+                            {pat.jsx && (pat.allowVariable && variableEnabled.get(index) &&
                                 <Variable
                                     placeholder="(Variable)"
-                                    value={argValue as string}
+                                    value={arg.getType() === 'variable' ? argValue as string : "%%"}
                                     onChange={(str) => {
                                         args.setMandatoryArgument(index, str);
                                         props.syncYaml();
@@ -145,7 +149,8 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                         <u>Optional Arguments</u>
                     </Divider>
                     {props.argumentsPattern.optional?.map((pat, index) => {
-                        const argValue = args.getOptionalArgument(pat.key)?.getValue();
+                        const arg = args.getOptionalArgument(pat.key);
+                        const argValue = arg?.getValue();
                         return (
                             <Row justify="space-between" gutter={[0, 4]} style={{ padding: "0 8px 16px 8px" }} key={index}>
                                 <Col span={spanL}>
@@ -161,24 +166,27 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                     {pat.allowVariable && <Tooltip title="Toggle Variable input" placement="bottom">
                                         <span
                                             onClick={() => {
-                                                if (variableEnabled.current.get(pat.key)) {
-                                                    variableEnabled.current.set(pat.key, false);
+                                                if (variableEnabled.get(pat.key)) {
+                                                    variableEnabled.set(pat.key, false);
+                                                    args.setOptionalArgument(pat.key, undefined);
                                                 } else {
-                                                    variableEnabled.current.set(pat.key, true);
+                                                    variableEnabled.set(pat.key, true);
+                                                    args.setOptionalArgument(pat.key, "%%");
                                                 }
+                                                props.syncYaml();
                                                 refreshUI();
                                             }}
                                             style={{ padding: 0, border: "1px solid var(--vscode-checkbox-border)" }}
                                         >
-                                            {variableEnabled.current.get(pat.key) ? <TbVariableOff /> : <TbVariablePlus />}
+                                            {variableEnabled.get(pat.key) ? <TbVariableOff /> : <TbVariablePlus />}
                                         </span>
                                     </Tooltip>}
                                 </Col>
                                 <Col span={spanR}>
-                                    {pat.jsx && (pat.allowVariable && variableEnabled.current.get(pat.key) &&
+                                    {pat.jsx && (pat.allowVariable && variableEnabled.get(pat.key) &&
                                         <Variable
                                             placeholder="(Variable)"
-                                            value={argValue as string}
+                                            value={arg?.getType() === 'variable' ? argValue as string : "%%"}
                                             onChange={(str) => {
                                                 args.setOptionalArgument(pat.key, str);
                                                 props.syncYaml();
