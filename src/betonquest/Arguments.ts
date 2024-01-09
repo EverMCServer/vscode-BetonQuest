@@ -269,19 +269,30 @@ export default class Arguments {
 
         // Parse mandatory arguments
         let iFrom = 0;
-        let iTo = pattern.mandatory.length;
+        const mandatoryUnKeyedLength = pattern.mandatory.filter(e => !e.key).length;
+        let iTo = mandatoryUnKeyedLength;
         if (pattern.optionalAtFirst) {
-            iFrom = argStrs.length - pattern.mandatory.length;
+            iFrom = pattern.optional?.length || 0;
             iTo = argStrs.length;
         }
         const argStrsMandatory = argStrs.slice(iFrom, iTo);
-        for (let i = 0; i < argStrsMandatory.length; i++) {
+        for (let i = 0; i < pattern.mandatory.length; i++) {
             const pat = pattern.mandatory[i];
-            let argStr = argStrsMandatory[i];
 
-            // With key
+            let argStr = "";
             if (pat.key) {
-                argStr = argStr.split(/(?<!\\):/g).slice(1).join(":");
+                // With key
+                argStrs.slice(mandatoryUnKeyedLength).some(str => {
+                    const slice = str.split(/(?<!\\):/g);
+                    if (slice[0] === pat.key) {
+                        argStr = slice.slice(1).join(":");
+                        return true;
+                    }
+                    return false;
+                });
+            } else {
+                // Without key
+                argStr = argStrsMandatory[i];
             }
 
             // Check if variable and parse it
@@ -342,9 +353,9 @@ export default class Arguments {
             let iFrom = 0;
             let iTo = argStrs.length;
             if (pattern.optionalAtFirst) {
-                iTo = argStrs.length - pattern.mandatory.length;
+                iTo = pattern.optional.length;
             } else {
-                iFrom = pattern.mandatory.length;
+                iFrom = mandatoryUnKeyedLength;
             }
 
             pattern.optional.forEach(pat => {
@@ -397,7 +408,7 @@ export default class Arguments {
                         }
                         break;
                     } else {
-                        // Remove value
+                        // Unknown key, remove it
                         optionalArguments.delete(pat.key);
                     }
                 }
