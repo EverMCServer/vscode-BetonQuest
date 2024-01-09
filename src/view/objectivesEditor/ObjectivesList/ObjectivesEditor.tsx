@@ -47,10 +47,12 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
-        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/ActionObjective.java
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/ActionObjective.java
         value: 'action',
         display: 'Action',
         description: 'Completes when the player clicks on the given block type.',
+        // e.g. action right DOOR conditions:holding_key loc:100;200;300;world range:5
+        // e.g. action any any conditions:holding_magicWand events:fireSpell #Custom click listener for a wand
         argumentsPattern: {
             mandatory: [
                 {
@@ -73,36 +75,42 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/ArrowShootObjective.java
         value: 'arrow',
         display: 'Arrow',
         description: 'The player needs to shoot an arrow into the target.',
+        // e.g. arrow 100.5;200.5;300.5;world 1.1 events:reward conditions:correct_player_position
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
-                { jsx: Number, name: 'Precision (Radius)', type: 'float', defaultValue: 1.0, tooltip: 'A radius around location where the arrow must land, should be small', config: { min: 0 } },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
+                { jsx: Number, name: 'Precision (Radius)', type: 'float', defaultValue: 1.0, tooltip: 'A radius around location where the arrow must land, should be small', config: { min: 0 }, allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/BlockObjective.java
         value: 'block',
         display: 'Break or Place Blocks',
         description: 'The player must break or place the specified amount of blocks.',
+        // e.g. block LOG -16 events:reward notify:5
         argumentsPattern: {
             mandatory: [
                 { jsx: BlockSelector, name: 'Block', type: 'string', defaultValue: 'any', placeholder: 'e.g. AIR', tooltip: 'Block Selector' },
                 { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of blocks', config: { min: 1 } },
             ],
             optional: [
-                { jsx: Checkbox, name: 'Disable Safety Check', key: 'noSafety', type: 'boolean', tooltip: 'Disable cheating check. Do not counts the blocks the player placed themself.' },
+                { jsx: Checkbox, name: 'Exact State?', key: 'exactMatch', type: 'boolean', tooltip: 'The target block is not allowed to have more BlockStates than specified' },
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
                 // { jsx: OptionalNumber, name: 'Notify', key: 'notify', type: 'int', placeholder: '1', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, setMinToNull: true } },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/BreedObjective.java
         value: 'breed',
         display: 'Breed animals',
         description: 'The player must breed a type of animals for certain amounts.',
+        // e.g. breed cow 10 notify:2 events:reward
         argumentsPattern: {
             mandatory: [
                 { jsx: EntityType, name: 'Type', type: 'string', defaultValue: 'PIG' },
@@ -114,37 +122,39 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/ChestPutObjective.java
         value: 'chestput',
         display: 'Put items in a chest',
         description: 'The player must put the specified items in a specified chest.',
+        // e.g. chestput 100;200;300;world emerald:5,sword events:tag,message
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', tooltip: 'Chest\'s location' },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', tooltip: 'Chest\'s location', allowVariable: true },
                 { jsx: ItemList, name: 'Item List', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
             ],
             optional: [
                 { jsx: Checkbox, name: 'Keep Item', key: 'items-stay', type: 'boolean', tooltip: 'Do not remove the items from chest when objective completed' },
-                { jsx: Checkbox, name: 'Simultaneous Chest Access', key: 'multipleaccess', type: 'boolean', tooltip: 'Allow multiple players open the chest at the same time' },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/ConsumeObjective.java
         value: 'consume',
         display: 'Eat / Drink',
         description: 'The player must eat the specified foods, or drink the specified potion.',
+        // e.g. consume tawny_owl events:faster_endurance_regen
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_item', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
-            ],
-            optional: [
-                { jsx: Number, name: 'Amount', key: 'amount', type: 'int', tooltip: 'Number of items', placeholder: '1', config: { min: 0, undefinedValue: 0 } },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/CraftingObjective.java
         value: 'craft',
         display: 'Crafting',
         description: 'The player must craft specified items.',
+        // e.g. craft saddle 5 events:reward
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_item', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
@@ -153,97 +163,89 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/EnchantObjective.java
         value: 'enchant',
         display: 'Enchant item',
         description: 'The player must enchant the specified quest item with a specified enchantment.',
+        // e.g. enchant sword damage_all:1,knockback:1 events:reward
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_item', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: EnchantmentList, name: 'Enchantment List', type: '[string:number?][,]', defaultValue: [["", 1]], placeholder: ['e.g. ARROW_DAMAGE', '1'] },
-            ],
-            optional: [
-                {
-                    jsx: Select, name: 'Requirement Mode', key: 'requirementMode', type: 'string', placeholder: 'all', tooltip: 'Should all or only one enchantment need to be completed', config: {
-                        options: [
-                            {
-                                label: 'All', // TODO: i18n
-                                value: 'all'
-                            },
-                            {
-                                label: 'Only One', // TODO: i18n
-                                value: 'one'
-                            },
-                        ] as DefaultOptionType[],
-                        allowClear: true
-                    }
-                },
-                { jsx: Number, name: 'Amount', key: 'amount', type: 'int', placeholder: '1', tooltip: 'Number of items to be enchanted', config: { min: 0, undefinedValue: 0 } },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/ExperienceObjective.java
         value: 'experience',
         display: 'Experience',
         description: 'The player must reach the specified amount of experience levels.',
+        // e.g. experience 25 level events:reward
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Level', type: 'float', defaultValue: 1.0, tooltip: 'Number could be a decimal', config: { min: 0 } },
+                { jsx: Number, name: 'Experience', type: 'int', defaultValue: 1, tooltip: 'Number could be a decimal', config: { min: 1 } },
             ],
             optional: [
-                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Checkbox, name: 'Level?', key: 'level', type: 'boolean', tooltip: 'Unit in level instead of experience point?' },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/DelayObjective.java
         value: 'delay',
         display: 'Wait',
         description: 'The player must wait for certain amount of time, including offline. Unit defaults to "minutes".',
+        // e.g. delay 1000 ticks interval:5 events:event1,event2
         argumentsPattern: {
             mandatory: [
                 { jsx: Number, name: 'Time', type: 'int', defaultValue: 1.0, tooltip: 'Time duration', config: { min: 0 } },
             ],
             optional: [
-                // Bad design. Should use "Select" instead.
+                // TODO: Bad design. Should use "Select" instead.
                 // https://github.com/BetonQuest/BetonQuest/blob/e80ccaba416b1fa458968bc3a35e5a585e06c2e0/src/main/java/org/betonquest/betonquest/objectives/DelayObjective.java#L73
-                { jsx: Checkbox, name: 'Minutes?', key: 'minutes', type: 'boolean', tooltip: 'Unit' },
-                { jsx: Checkbox, name: 'Seconds?', key: 'seconds', type: 'boolean', tooltip: 'Unit' },
                 { jsx: Checkbox, name: 'Ticks?', key: 'ticks', type: 'boolean', tooltip: 'Unit' },
-                { jsx: Number, name: 'Check Precision', key: 'interval', type: 'int', placeholder: '200', tooltip: 'The interval in which the objective checks if the time is up. Measured in ticks. Low values cost more performance but make the objective preciser.', config: { min: 0, undefinedValue: 0 } },
+                { jsx: Checkbox, name: 'Seconds?', key: 'seconds', type: 'boolean', tooltip: 'Unit' },
+                { jsx: Checkbox, name: 'Minutes?', key: 'minutes', type: 'boolean', tooltip: 'Unit' },
+                { jsx: Number, name: 'Interval', key: 'interval', type: 'int', placeholder: '200', tooltip: 'The interval in which the objective checks if the time is up. Measured in ticks. Low values cost more performance but make the objective preciser.', config: { min: 0, undefinedValue: 0 } },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/DieObjective.java
         value: 'die',
         display: 'Death',
         description: 'The player must die with conditions.',
+        // e.g. die cancel respawn:100;200;300;world;90;0 events:teleport
         argumentsPattern: {
             mandatory: [],
             optional: [
                 { jsx: Checkbox, name: 'Cancel Death?', key: 'cancel', type: 'boolean', tooltip: 'Cancel player\' death?' },
-                { jsx: BaseLocation, name: 'Respawn Location', key: 'respawn', type: 'string', config: { optional: true } },
+                { jsx: BaseLocation, name: 'Respawn Location', key: 'respawn', type: 'string', config: { optional: true }, allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/FishObjective.java
         value: 'fish',
         display: 'Fishing',
         description: 'The player must catch something with the fishing rod. The "fish" could be any item.',
+        // e.g. fish SALMON 5 notify events:tag_fish_caught
         argumentsPattern: {
             mandatory: [
                 { jsx: BlockSelector, name: 'Item', type: 'string', defaultValue: 'AIR', placeholder: 'e.g. AIR', tooltip: 'The item that must be caught' },
                 { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, config: { min: 1 } },
             ],
             optional: [
-                { jsx: BaseLocation, name: 'Hook Location', key: 'hookLocation', type: 'string', tooltip: 'Where the hook needs to be', config: { optional: true } },
-                { jsx: Number, name: 'Radius', key: 'range', type: 'float', tooltip: 'A radius around the hook\'s landing', config: { min: 0 } },
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/EntityInteractObjective.java
         value: 'interact',
         display: 'Interact with entity',
         description: 'The player must click on an entity.',
+        // e.g. interact right creeper 1 marked:sick condition:syringeInHand cancel
         argumentsPattern: {
             mandatory: [
                 {
@@ -256,15 +258,15 @@ const kinds: Kind<Objective>[] = ([
                     }
                 },
                 { jsx: EntityType, name: 'Entity Type', type: 'string', defaultValue: 'ZOMBIE' },
-                { jsx: Number, name: 'Mobs', type: 'int', defaultValue: 1, tooltip: 'How many UNIQUE mobs that need to be cliked (not the same mob)', config: { min: 1 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'How many UNIQUE mobs that need to be cliked (not the same mob)', config: { min: 1 } },
             ],
             optional: [
                 { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mob to be clicked', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
                 { jsx: Input, name: 'Real Name', key: 'realname', type: 'string', placeholder: 'e.g. "Notch"', tooltip: 'If the mob is a player, the real name of the player to be clicked', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Should the mobs have the same mark from the spawn mob event?', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Checkbox, name: 'Cancel Click?', key: 'cancel', type: 'boolean', tooltip: 'Should the clikc, e.g. left click hit mobs, be cancelled?' },
-                { jsx: BaseLocation, name: 'Location', key: 'loc', type: 'string', tooltip: 'Where the click should be happened', config: { optional: true } },
-                { jsx: Number, name: 'Radius', key: 'range', type: 'float', tooltip: 'A radius around the location', config: { min: 0 } },
+                { jsx: BaseLocation, name: 'Location', key: 'loc', type: 'string', tooltip: 'Where the click should be happened', config: { optional: true }, allowVariable: true },
+                { jsx: Number, name: 'Radius', key: 'range', type: 'float', tooltip: 'A radius around the location', config: { min: 0 }, allowVariable: true },
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
@@ -401,19 +403,6 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
-        value: 'stage',
-        display: 'Stages',
-        description: <><div>The player must complete the specified stages.</div><div>You can modify the stages with the `stage` event and check it with the `stage` condition.</div></>,
-        argumentsPattern: {
-            mandatory: [
-                { jsx: InputList, name: 'Stage List', type: 'string[,]', defaultValue: ['some_stage_1'], placeholder: 'e.g. stage_1', tooltip: 'The stages that must be completed', config: { allowedPatterns: [/^\S*$/] } },
-            ],
-            optional: [
-                { jsx: Checkbox, name: 'Ignore Stage Increasing', key: 'preventCompletion', type: 'boolean', tooltip: 'Make this objective must be completed by `objective` event. Prevents it from being completed by increasing the stage.' },
-            ]
-        }
-    },
-    {
         value: 'step',
         display: 'Step on pressure plate',
         description: 'The player has to step on a pressure plate at a given location. The type of plate does not matter.',
@@ -457,42 +446,6 @@ const kinds: Kind<Objective>[] = ([
         argumentsPattern: {
             mandatory: [
                 { jsx: EntityType, name: 'Type', type: 'string', defaultValue: 'any', tooltip: '"any" means any entities are ok' },
-            ]
-        }
-    },
-    {
-        value: 'command',
-        display: 'Run a Command',
-        description: 'The player must execute a specified command.',
-        argumentsPattern: {
-            mandatory: [
-                { jsx: Input, name: 'Command', type: 'string', defaultValue: '/spawn', tooltip: 'Could be a non-exists command', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
-            ],
-            optional: [
-                { jsx: Checkbox, name: 'Ignore Case', key: 'ignoreCase', type: 'boolean', tooltip: 'Case insensitive?' },
-                { jsx: Checkbox, name: 'Exact', key: 'exact', type: 'boolean', tooltip: 'Match everything till the end, not just the begining' },
-                { jsx: Checkbox, name: 'Cancel Execution', key: 'cancel', type: 'boolean', tooltip: 'Prevent the command from being executed. Useful when the command is not exist.' },
-                { jsx: InputList, name: 'Events on Failed', key: 'failEvents', type: 'string[,]', placeholder: '(none)', tooltip: 'List of events to be executed when command does not match', config: { allowedPatterns: [/^\S*$/] } },
-            ]
-        }
-    },
-    {
-        value: 'equip',
-        display: 'Equip Armor Item',
-        description: <><div>The player must equip the specified quest item in the specified slot.</div><div>This feature requires <a href="https://papermc.io/" target="_blank">Paper</a>.</div></>,
-        argumentsPattern: {
-            mandatory: [
-                {
-                    jsx: Select, name: 'Slot', type: 'string', defaultValue: 'HEAD', placeholder: 'e.g. HEAD', config: {
-                        options: [
-                            { label: 'Head', value: 'HEAD' },
-                            { label: 'Chest', value: 'CHEST' },
-                            { label: 'Legs', value: 'LEGS' },
-                            { label: 'Feet', value: 'FEET' },
-                        ] as DefaultOptionType[]
-                    }
-                },
-                { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_item', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },

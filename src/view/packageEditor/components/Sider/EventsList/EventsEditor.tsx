@@ -261,7 +261,7 @@ const kinds: Kind<Event>[] = ([
                 { jsx: ItemList, name: 'Item List', key: 'items', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
             ],
             optional: [
-                { jsx: BaseLocation, name: 'Location', key: 'location', type: 'string', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0], optional: true }, allowVariable: true },
+                { jsx: BaseLocation, name: 'Location', key: 'location', type: 'string', tooltip: 'If empty items will be droped at the player\'s location', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0], optional: true }, allowVariable: true },
             ]
         }
     },

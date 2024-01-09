@@ -93,7 +93,7 @@ const kinds: Kind<Objective>[] = ([
                 { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of blocks', config: { min: 1 } },
             ],
             optional: [
-                { jsx: Checkbox, name: 'Disable Safety Check', key: 'noSafety', type: 'boolean', tooltip: 'Disable cheating check. Do not counts the blocks the player placed themself.' },
+                { jsx: Checkbox, name: 'Disable Safety Check', key: 'noSafety', type: 'boolean', tooltip: 'Disable cheat checking. It will counts the blocks the player placed themself.' },
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
                 // { jsx: OptionalNumber, name: 'Notify', key: 'notify', type: 'int', placeholder: '1', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, setMinToNull: true } },
             ]
@@ -182,9 +182,11 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/ExperienceObjective.java
         value: 'experience',
         display: 'Experience',
         description: 'The player must reach the specified amount of experience levels.',
+        // e.g. experience 25 events:reward
         argumentsPattern: {
             mandatory: [
                 { jsx: Number, name: 'Level', type: 'float', defaultValue: 1.0, tooltip: 'Number could be a decimal', config: { min: 0 } },
