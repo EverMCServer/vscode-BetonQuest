@@ -272,17 +272,19 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/KillPlayerObjective.java
         value: 'kill',
         display: 'Kill player',
         description: 'The player needs to kill another players.',
+        // e.g. kill 5 required:team_B
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'How many players that need to be killed', config: { min: 1 } },
-                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Notch"', tooltip: 'The name of the player to be killed', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'How many players that need to be killed', config: { min: 1 }, allowVariable: true },
             ],
             optional: [
-                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Notch"', tooltip: 'The name of the player to be killed', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: InputList, name: 'Conditions', key: 'required', type: 'string[,]', placeholder: '(none)', tooltip: 'Conditions that need to be satisfied by the players whom are going to be killed, e.g. tag_team_b', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -499,14 +501,18 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/events/VariableEvent.java
         value: 'variable',
         display: 'Variable',
-        description: <><div>Allow thethe player set a variable typed in chat with format "key: value".</div><div>For more details, please refer to the <a href="https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Building-Blocks/Objectives-List/#variable-variable" target="_blank">documentation</a>.</div></>,
+        description: <><div>Stores custom variables. It also allows the player to set custom variables typed in chat with format "key: value".</div><div>For more details, please refer to the <a href="https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Building-Blocks/Objectives-List/#variable-variable" target="_blank">documentation</a>.</div></>,
+        // e.g. variable
         argumentsPattern: {
-            mandatory: []
+            mandatory: [],
+            optional: [
+                { jsx: Checkbox, name: 'Through Events Only', key: 'no-chat', type: 'boolean', tooltip: 'Prevent players from changing variables through chat. All variales must be changed with a `variable` Event.' },
+            ]
         }
     },
-    // ...
 ] as Kind<Objective>[]).map(kind => {
     if (kind.argumentsPattern.optional) {
         kind.argumentsPattern.optional.unshift(...defaultOptionalArguments);

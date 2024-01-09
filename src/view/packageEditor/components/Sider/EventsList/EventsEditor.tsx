@@ -1221,13 +1221,13 @@ const kinds: Kind<Event>[] = ([
         // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/events/VariableEvent.java
         value: 'variable',
         display: 'Variable',
-        description: 'Changes values that are stored in `variable` objective variables.',
+        description: 'Changes a custom variable\'s value stored in a `variable` objective. Note that the player must have a `variable` objective started first for this event to have any effects.',
         // e.g. variable CustomVariable MyFirstVariable Goodbye!
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Variable Objective ID', type: 'string', defaultValue: 'a_variable_objective_1', placeholder: '', tooltip: '', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Input, name: 'Variable Name', type: 'string', defaultValue: 'a_variable_name_1', placeholder: '', tooltip: '', config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
-                { jsx: Input, name: 'Value', type: '*', defaultValue: '""', placeholder: '', tooltip: '', allowVariable: true },
+                { jsx: Input, name: 'Variable Objective ID', type: 'string', defaultValue: 'a_variable_objective_1', tooltip: 'The `variable` Objective\' ID which you want to store the variable onto. You must define this Objective in you Objective list first.', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Variable Name', type: 'string', defaultValue: 'a_variable_name_1', tooltip: '', config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
+                { jsx: Input, name: 'Value', type: '*', defaultValue: '""', tooltip: 'Input "" to delete the value', allowVariable: true },
             ],
             keepWhitespaces: true
         }
