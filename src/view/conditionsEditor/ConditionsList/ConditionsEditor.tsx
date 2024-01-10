@@ -24,6 +24,7 @@ import PotionEffectTypeList from "../../legacyListEditor/components/CommonList/I
 import Select from "../../legacyListEditor/components/CommonList/Input/Select";
 import TextArea from "../../legacyListEditor/components/CommonList/Input/TextArea";
 import TextAreaList from "../../legacyListEditor/components/CommonList/Input/TextAreaList";
+import Variable from "../../legacyListEditor/components/CommonList/Input/Variable";
 
 // All kinds
 const kinds: Kind<Condition>[] = [
@@ -532,7 +533,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
-        // 
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/TagCondition.java
         value: 'tag',
         display: 'Tag',
         description: 'Does the player have a specified tag?',
@@ -576,8 +577,8 @@ const kinds: Kind<Condition>[] = [
         description: 'Is a variable match a regular expression?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Variable', type: 'string', defaultValue: '', placeholder: 'e.g.', tooltip: '', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Input, name: 'RegEx', type: 'string', defaultValue: '', placeholder: 'e.g.', tooltip: '', escapeCharacters: [' '], config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Variable, name: 'Variable', type: 'string', defaultValue: '%unknown.variable%', placeholder: 'e.g. itemdurability.HAND', tooltip: 'Name of a Variable' },
+                { jsx: Input, name: 'RegEx', type: 'string', defaultValue: 'some value', placeholder: 'e.g. 16', tooltip: '', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] }, allowVariable: true },
             ]
         }
     },

@@ -24,6 +24,7 @@ import PotionEffectTypeList from "../CommonList/Input/PotionEffectTypeList";
 import Select from "../CommonList/Input/Select";
 import TextArea from "../CommonList/Input/TextArea";
 import TextAreaList from "../CommonList/Input/TextAreaList";
+import Variable from "../CommonList/Input/Variable";
 
 // All kinds
 const kinds: Kind<Condition>[] = [
@@ -645,11 +646,11 @@ const kinds: Kind<Condition>[] = [
         description: 'Is a variable match a regular expression?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Variable', type: 'string', defaultValue: '', placeholder: 'e.g.', tooltip: '', config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
-                { jsx: Input, name: 'RegEx', type: 'string', defaultValue: '', placeholder: 'e.g.', tooltip: '', escapeCharacters: [' '], config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
+                { jsx: Variable, name: 'Variable', type: 'string', defaultValue: '%%', placeholder: 'e.g. itemdurability.HAND', tooltip: 'Name of a Variable' },
+                { jsx: Input, name: 'RegEx', type: 'string', defaultValue: 'some value', placeholder: 'e.g. 16', tooltip: '', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] }, allowVariable: true },
             ],
             optional: [
-                { jsx: Checkbox, name: 'Run on the Main Thread?', key: 'forceSync', type: 'boolean', tooltip: 'Force the checking to be run on the main thread? This is only required by some third-party pluings.' },
+                { jsx: Checkbox, name: 'Run on the Main Thread?', key: 'forceSync', type: 'boolean', tooltip: 'Force the checking to be run on the main thread? It causes preformance penalty if turned on. This is only required by some third-party pluings.' },
             ]
         }
     },

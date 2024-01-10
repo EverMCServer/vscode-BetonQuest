@@ -37,6 +37,13 @@ export default function (props: InputProps) {
                     // escape space ` `
                     v = v.replace(' ', '_');
 
+                    // Filter out unwanted input
+                    if (props.config?.allowedPatterns &&
+                        !/^\S*$/.test(v)
+                    ) {
+                        return;
+                    }
+
                     // Update value
                     setValue(v);
                     props.onChange('%' + v + '%');
