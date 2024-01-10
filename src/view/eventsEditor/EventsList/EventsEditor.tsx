@@ -811,7 +811,7 @@ const kinds: Kind<Event>[] = [
                 //         ] as DefaultOptionType[]
                 //     }
                 // },
-                // { jsx: Number, name: 'Hours', type: 'float', defaultValue: 0.0, config: { min: 0 } },
+                // { jsx: NumberWithModifier, name: 'Hours', type: 'float', defaultValue: 0.0, config: { min: 0, modifiers: ['', '+'] }, allowVariable: true },
                 { jsx: Input, name: 'Hours', type: 'string', defaultValue: '+0', placeholder: 'e.g. +1.25', tooltip: 'How many hours to be change. 1.25 hours = 1 hour + 15 min', config: { allowedPatterns: [/^[\+\-]?\d*\.?\d*$/] } },
             ],
             optional: [

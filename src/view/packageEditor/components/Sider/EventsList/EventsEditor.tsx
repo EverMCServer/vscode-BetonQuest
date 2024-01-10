@@ -545,8 +545,7 @@ const kinds: Kind<Event>[] = ([
                         ] as DefaultOptionType[]
                     }
                 },
-                // Doesn't it support Variable instead?
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 0, tooltip: 'For "set", the amount can be any value.\nFor "give" or "take", the final value will be limited between 0 and 20.' },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 0, tooltip: 'For "set", the amount can be any value.\nFor "give" or "take", the final value will be limited between 0 and 20.', allowVariable: true },
             ]
         }
     },
@@ -1177,6 +1176,7 @@ const kinds: Kind<Event>[] = ([
             </ul>
         </>,
         // e.g. time -12 world:rpgworld
+        // e.g. time +%randomnumber.whole.100~2000% world:pvpworld ticks
         argumentsPattern: {
             mandatory: [
                 // {
@@ -1197,11 +1197,12 @@ const kinds: Kind<Event>[] = ([
                 //         ] as DefaultOptionType[]
                 //     }
                 // },
-                // { jsx: Number, name: 'Hours', type: 'float', defaultValue: 0.0, config: { min: 0 } },
-                { jsx: Input, name: 'Hours', type: 'string', defaultValue: '+0', placeholder: 'e.g. +1.25', tooltip: 'How many hours to be change. 1.25 hours = 1 hour + 15 min', config: { allowedPatterns: [/^[\+\-]?\d*\.?\d*$/] } },
+                // { jsx: NumberWithModifier, name: 'Time', type: 'float', defaultValue: 0.0, config: { min: 0, modifiers: ['', '+', '-'] }, allowVariable: true },
+                { jsx: Input, name: 'Time', type: 'string', defaultValue: '+0', placeholder: 'e.g. +1.25', tooltip: 'How many hours / ticks to be change. 1.5 hours = 1 hour + 30 min', config: { allowedPatterns: [/^[\+\-]?\d*\.?\d*$/] } },
             ],
             optional: [
                 { jsx: Input, name: 'World', key: 'world', type: 'string', placeholder: '(current)', tooltip: 'The world name to be changed e.g. world', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Checkbox, name: 'Ticks?', key: 'ticks', type: 'boolean', tooltip: 'Unit in ticks instead of hours?' },
             ]
         }
     },
@@ -1305,6 +1306,10 @@ const kinds: Kind<Event>[] = ([
                             {
                                 label: 'Rain', // TODO: i18n
                                 value: 'rain'
+                            },
+                            {
+                                label: 'Thunder', // TODO: i18n
+                                value: 'thunder'
                             },
                             {
                                 label: 'Storm', // TODO: i18n
