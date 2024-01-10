@@ -144,6 +144,7 @@ const kinds: Kind<Objective>[] = ([
             ],
             optional: [
                 { jsx: Number, name: 'Amount', key: 'amount', type: 'int', tooltip: 'Number of items', placeholder: '1', config: { min: 0, undefinedValue: 0 }, allowVariable: true },
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -156,6 +157,9 @@ const kinds: Kind<Objective>[] = ([
             mandatory: [
                 { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_item', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of items', config: { min: 1 }, allowVariable: true },
+            ],
+            optional: [
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -186,6 +190,7 @@ const kinds: Kind<Objective>[] = ([
                     }
                 },
                 { jsx: Number, name: 'Amount', key: 'amount', type: 'int', placeholder: '1', tooltip: 'Number of items to be enchanted', config: { min: 0, undefinedValue: 0 }, allowVariable: true },
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
