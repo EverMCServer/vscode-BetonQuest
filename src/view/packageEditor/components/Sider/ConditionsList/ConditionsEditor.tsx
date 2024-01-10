@@ -242,6 +242,7 @@ const kinds: Kind<Condition>[] = [
                             { label: 'Survival', value: 'survival' },
                             { label: 'Creative', value: 'creative' },
                             { label: 'Adventure', value: 'adventure' },
+                            { label: 'Spectator', value: 'spectator' },
                         ] as DefaultOptionType[]
                     }
                 },
@@ -399,6 +400,7 @@ const kinds: Kind<Condition>[] = [
             optional: [
                 { jsx: BaseLocation, name: 'Location', key: 'loc', type: 'string', placeholder: 'e.g. 12.0;14.0;-15.0;world', config: { optional: true } },
                 { jsx: BlockSelector, name: 'Type of Block', key: 'type', type: 'string', placeholder: 'e.g. AIR', tooltip: 'Type of Block' },
+                { jsx: Checkbox, name: 'Exact State?', key: 'exactMatch', type: 'boolean', tooltip: 'The target block is not allowed to have more BlockStates than specified' },
             ]
         }
     },
@@ -409,18 +411,18 @@ const kinds: Kind<Condition>[] = [
         argumentsPattern: {
             mandatory: [
                 {
-                    jsx: Select, name: 'Phase', type: 'string', defaultValue: '1', placeholder: 'e.g. Full Moon', config: {
+                    jsx: Select, name: 'Phase', type: 'int', defaultValue: '1', placeholder: 'e.g. Full Moon', config: {
                         options: [
-                            { label: '🌕 Full Moon', value: '1' },
-                            { label: '🌖 Waning Gibbous', value: '2' },
-                            { label: '🌗 Last Quarter', value: '3' },
-                            { label: '🌘 Waning Crescent', value: '4' },
-                            { label: '🌑 New Moon', value: '5' },
-                            { label: '🌒 Waxing Crescent', value: '6' },
-                            { label: '🌓 First Quarter', value: '7' },
-                            { label: '🌔 Waxing Gibbous', value: '8' },
+                            { label: '🌕 Full Moon', value: 1 },
+                            { label: '🌖 Waning Gibbous', value: 2 },
+                            { label: '🌗 Last Quarter', value: 3 },
+                            { label: '🌘 Waning Crescent', value: 4 },
+                            { label: '🌑 New Moon', value: 5 },
+                            { label: '🌒 Waxing Crescent', value: 6 },
+                            { label: '🌓 First Quarter', value: 7 },
+                            { label: '🌔 Waxing Gibbous', value: 8 },
                         ] as DefaultOptionType[]
-                    }
+                    }, allowVariable: true
                 },
             ]
         }
@@ -454,13 +456,13 @@ const kinds: Kind<Condition>[] = [
         description: 'Does the player have an active objective?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Name of Objective', type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: 'ID of an Objective', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Objective ID', type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: 'Name of an Objective', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
     {
         value: 'or',
-        display: 'Alternative',
+        display: 'Alternative Conditions',
         description: 'Checks if any one condition is met.',
         argumentsPattern: {
             mandatory: [
@@ -491,9 +493,9 @@ const kinds: Kind<Condition>[] = [
                 { jsx: InputList, name: 'Condition Names', type: 'string[,]', placeholder: '(none)', defaultValue: ['a_condition_1'], tooltip: 'Party member will be selected with these conditions', config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
-                { jsx: InputList, name: 'Every', key: 'every', type: 'string[,]', placeholder: 'e.g. some_condition_1', tooltip: 'The conditions that must be met by all party members', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: InputList, name: 'Any', key: 'any', type: 'string[,]', placeholder: 'e.g. some_condition_1', tooltip: 'The conditions that only need to be met by one party member', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: 'Members', key: 'count', type: 'int', placeholder: '0', tooltip: 'Minimun amount of members in the party', config: { min: 0 } },
+                { jsx: InputList, name: 'Everyone', key: 'every', type: 'string[,]', placeholder: 'e.g. some_condition_1', tooltip: 'The conditions that must be met by all party members', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: 'Anyone', key: 'any', type: 'string[,]', placeholder: 'e.g. some_condition_1', tooltip: 'The conditions that only need to be met by one party member', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: 'Count', key: 'count', type: 'int', placeholder: '0', tooltip: 'Minimun amount of members in the party', config: { min: 0 }, allowVariable: true },
             ]
         }
     },
@@ -566,7 +568,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Does the playe gained enough score in a specified objective on a scoreboard?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Name of Objective', type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: 'ID of an Objective', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Objective ID', type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: 'Name of an Objective', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Number, name: 'Score', type: 'int', defaultValue: 0, config: { min: 0 } },
             ]
         }
@@ -620,6 +622,9 @@ const kinds: Kind<Condition>[] = [
             mandatory: [
                 { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', tooltip: 'Block\'s location' },
                 { jsx: BlockSelector, name: 'Type of Block', type: 'string', defaultValue: 'AIR', placeholder: 'e.g. AIR', tooltip: 'Type of Block' },
+            ],
+            optional: [
+                { jsx: Checkbox, name: 'Exact State?', key: 'exactMatch', type: 'boolean', tooltip: 'The target block is not allowed to have more BlockStates than specified' },
             ]
         }
     },
@@ -640,8 +645,8 @@ const kinds: Kind<Condition>[] = [
         description: 'Is a variable match a regular expression?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Variable', type: 'string', defaultValue: '', placeholder: 'e.g.', tooltip: '', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Input, name: 'RegEx', type: 'string', defaultValue: '', placeholder: 'e.g.', tooltip: '', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Variable', type: 'string', defaultValue: '', placeholder: 'e.g.', tooltip: '', config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
+                { jsx: Input, name: 'RegEx', type: 'string', defaultValue: '', placeholder: 'e.g.', tooltip: '', escapeCharacters: [' '], config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
             ],
             optional: [
                 { jsx: Checkbox, name: 'Run on the Main Thread?', key: 'forceSync', type: 'boolean', tooltip: 'Force the checking to be run on the main thread? This is only required by some third-party pluings.' },
