@@ -40,7 +40,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
-        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/AdvancementCondition.java
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/AdvancementCondition.java
         value: 'advancement',
         display: 'Advancement',
         description: 'Does the player have a specified advancement?',
@@ -51,7 +51,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
-        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/ConjunctionCondition.java
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/ConjunctionCondition.java
         value: 'and',
         display: 'And',
         description: 'Checks if every conditions are met.',
@@ -62,7 +62,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
-        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/ArmorCondition.java
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/ArmorCondition.java
         value: 'armor',
         display: 'Armor',
         description: 'Does the player wearing an specified armor?',
@@ -73,7 +73,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
-        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/BiomeCondition.java
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/BiomeCondition.java
         value: 'biome',
         display: 'Biome',
         description: 'Does the player inside a specific biome?',
@@ -84,16 +84,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
-        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/BurningCondition.java
-        value: 'burning',
-        display: 'Burning',
-        description: 'Is the player on fire?',
-        argumentsPattern: {
-            mandatory: []
-        }
-    },
-    {
-        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/CheckCondition.java
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/CheckCondition.java
         value: 'check',
         display: 'Check Conditions',
         description: 'Define list of specific conditions, and check if the are all met.',
@@ -105,7 +96,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
-        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/ChestItemCondition.java
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/ChestItemCondition.java
         value: 'chestitem',
         display: 'Chest Item',
         description: 'Does a chest have specific items?',
@@ -118,10 +109,10 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
-        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/ConversationCondition.java
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/ConversationCondition.java
         value: 'conversation',
         display: 'Conversation',
-        description: 'Does the player could begin a specified conversation? It checks the conversation\'s starting options to see if any of them return true.',
+        description: 'Does the player could begin a specified conversation? It checks the conversation\'s start options to see if any of them return true.',
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Conversation ID', type: 'string', defaultValue: 'a_conversation_1', placeholder: 'e.g. innkeeper', tooltip: 'ID of a conversation e.g. "innkeeper"', config: { allowedPatterns: [/^\S*$/] } },
@@ -129,6 +120,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/DayOfWeekCondition.java
         value: 'dayofweek',
         display: 'Day of week',
         description: 'What day it is today?',
@@ -151,7 +143,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
-        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/EffectCondition.java
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/EffectCondition.java
         value: 'effect',
         display: 'Potion Effect',
         description: 'Does the player has an active potion effect?',
@@ -162,7 +154,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
-        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/EmptySlotsCondition.java
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/EmptySlotsCondition.java
         value: 'empty',
         display: 'Empty Inventory Slots',
         description: 'Does the player\'s inventory have enough empty slots?',
@@ -176,14 +168,15 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/EntityCondition.java
         value: 'entities',
         display: 'Entities in Area',
         description: 'Are there any specified amount of mobs in an area?',
         argumentsPattern: {
             mandatory: [
                 { jsx: EntityTypeListWithAmount, name: 'Type', type: '[string:number?][,]', defaultValue: [['ZOMBIE', 1]], placeholder: ['', '1'] },
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
-                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 1.0, tooltip: 'A radius around location where the mobs must be', config: { min: 0 } },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
+                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 1.0, tooltip: 'A radius around location where the mobs must be', config: { min: 0 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mob', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
@@ -192,16 +185,21 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/ExperienceCondition.java
         value: 'experience',
         display: 'Experience',
         description: 'Does the player have the specified amount of experience levels?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Level', type: 'float', defaultValue: 1.0, tooltip: 'Number could be a decimal', config: { min: 0 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1.0, tooltip: 'Number could be a decimal', config: { min: 0 }, allowVariable: true },
+            ],
+            optional: [
+                { jsx: Checkbox, name: 'Level?', key: 'level', type: 'boolean', tooltip: 'Unit in level instead of experience point?' },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/FacingCondition.java
         value: 'facing',
         display: 'Facing Direction',
         description: 'Where does the player is looking at?',
@@ -212,8 +210,8 @@ const kinds: Kind<Condition>[] = [
                         options: [
                             { label: 'North', value: 'NORTH' },
                             { label: 'East', value: 'EAST' },
-                            { label: 'West', value: 'WEST' },
                             { label: 'South', value: 'SOUTH' },
+                            { label: 'West', value: 'WEST' },
                             { label: 'Up (>60°)', value: 'UP' },
                             { label: 'Down (>60°)', value: 'DOWN' },
                         ] as DefaultOptionType[]
@@ -223,6 +221,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/FlyingCondition.java
         value: 'fly',
         display: 'Fly',
         description: 'Is the player flying?',
@@ -231,6 +230,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/GameModeCondition.java
         value: 'gamemode',
         display: 'Game Mode',
         description: 'Is the the player in a specified game mode?',
@@ -242,6 +242,7 @@ const kinds: Kind<Condition>[] = [
                             { label: 'Survival', value: 'survival' },
                             { label: 'Creative', value: 'creative' },
                             { label: 'Adventure', value: 'adventure' },
+                            { label: 'Spectator', value: 'spectator' },
                         ] as DefaultOptionType[]
                     }
                 },
@@ -249,17 +250,22 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/GlobalPointCondition.java
         value: 'globalpoint',
         display: 'Global Point',
         description: 'Is the global point equal or greater than a specified value?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Name', type: 'string', defaultValue: 'a_global_point_1', placeholder: 'e.g. a_global_point_1', tooltip: 'The name of a Global Point', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: 'Point', type: 'int', defaultValue: 0, config: { min: 0 } },
+                { jsx: Input, name: 'Name', type: 'string', defaultValue: 'a_global_point_1', placeholder: 'e.g. a_global_point_1', tooltip: 'The name of Global Point', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: 'Point', type: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
+            ],
+            optional: [
+                { jsx: Checkbox, name: 'Equal Only?', key: 'equal', type: 'boolean', tooltip: 'Match the Global Point exactely. Greater means not met.' },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/GlobalTagCondition.java
         value: 'globaltag',
         display: 'Global Tag',
         description: 'Is the global tag exists?',
@@ -270,6 +276,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/HandCondition.java
         value: 'hand',
         display: 'Item in Hand',
         description: 'Is the player holding a specific item on hand?',
@@ -283,47 +290,29 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/HealthCondition.java
         value: 'health',
         display: 'Health',
         description: 'Does the player have equal or more health than specified amount?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Health', type: 'float', defaultValue: 0.0, tooltip: 'Health level could be a decimal', config: { min: 0 } },
+                { jsx: Number, name: 'Health', type: 'float', defaultValue: 0.0, tooltip: 'Health level could be a decimal', config: { min: 0 }, allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/HeightCondition.java
         value: 'height',
         display: 'Height',
         description: 'Does the player stand BELOW specific height?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Height', type: 'float', defaultValue: 255.0, tooltip: 'Height Y could be a decimal' },
+                { jsx: Number, name: 'Height', type: 'float', defaultValue: 255.0, tooltip: 'Height Y could be a decimal', allowVariable: true },
             ]
         }
     },
     {
-        value: 'hunger',
-        display: 'Hunger',
-        description: 'Does the player have equal or more specified Hunger Level? Note that the player can not sprint if the hunger level is below 7.',
-        argumentsPattern: {
-            mandatory: [
-                { jsx: Number, name: 'Hunger Level', type: 'float', defaultValue: 0.0, tooltip: 'Hunger Level could be a decimal', config: { min: 0 } },
-            ]
-        }
-    },
-    {
-        value: 'inconversation',
-        display: 'In Conversation',
-        description: 'Is the player in a conversation?',
-        argumentsPattern: {
-            mandatory: [],
-            optional: [
-                { jsx: Input, name: 'Conversation ID', key: 'conversation', type: 'string', placeholder: 'e.g. "innkeeper"', tooltip: 'ID of a conversation e.g. "innkeeper"', config: { allowedPatterns: [/^\S*$/] } },
-            ]
-        }
-    },
-    {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/ItemCondition.java
         value: 'item',
         display: 'Item in Inventory',
         description: 'Does the player have all the specified items in inventory?',
@@ -334,31 +323,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
-        value: 'itemdurability',
-        display: 'Durability of Item',
-        description: 'Does the player have a certain amount of durability on an item? Will return false if the item does not have durability e.g. stone, stick.',
-        argumentsPattern: {
-            mandatory: [
-                {
-                    jsx: Select, name: 'Slot', type: 'string', defaultValue: 'HAND', placeholder: 'e.g. HAND', config: {
-                        options: [
-                            { label: 'Hand', value: 'HAND' },
-                            { label: 'Off-Hand', value: 'OFF_HAND' },
-                            { label: 'Head', value: 'HEAD' },
-                            { label: 'Chest', value: 'CHEST' },
-                            { label: 'Legs', value: 'LEGS' },
-                            { label: 'Feet', value: 'FEET' },
-                        ] as DefaultOptionType[]
-                    }
-                },
-                { jsx: Number, name: 'Durability', type: 'float', defaultValue: 0.0, tooltip: 'Durability could be a decimal', config: { min: 0 } },
-            ],
-            optional: [
-                { jsx: Checkbox, name: '0-1 Scale?', key: 'relative', type: 'boolean', tooltip: 'Define the durability above on a 0.0 to 1.0 scale? Instead of a real value, you can define 0.0 as completely broken, 1.0 as maximun durability.' },
-            ]
-        }
-    },
-    {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/JournalCondition.java
         value: 'journal',
         display: 'Journal Entry',
         description: 'Does the player have a specified entry in his/her journal?',
@@ -369,27 +334,19 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
-        value: 'language',
-        display: 'Language',
-        description: 'Does the player has one of the specified languages selected as their quest language?',
-        argumentsPattern: {
-            mandatory: [
-                { jsx: InputList, name: 'Language ID', type: 'string[,]', defaultValue: ['en'], placeholder: 'e.g. en', tooltip: 'IDs of language', config: { allowedPatterns: [/^[a-zA-Z_-]*$/] } },
-            ]
-        }
-    },
-    {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/LocationCondition.java
         value: 'location',
         display: 'Location',
         description: 'Does the player stand within a specified location?',
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
-                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 1.0, tooltip: 'A radius around the location', config: { min: 0 } },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
+                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 1.0, tooltip: 'A radius around the location', config: { min: 0 }, allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/LookingAtCondition.java
         // TODO: Custom editor for binary optional arguments
         value: 'looking',
         display: 'Looking at a Block',
@@ -397,70 +354,51 @@ const kinds: Kind<Condition>[] = [
         argumentsPattern: {
             mandatory: [],
             optional: [
-                { jsx: BaseLocation, name: 'Location', key: 'loc', type: 'string', placeholder: 'e.g. 12.0;14.0;-15.0;world', config: { optional: true } },
+                { jsx: BaseLocation, name: 'Location', key: 'loc', type: 'string', placeholder: 'e.g. 12.0;14.0;-15.0;world', config: { optional: true }, allowVariable: true },
                 { jsx: BlockSelector, name: 'Type of Block', key: 'type', type: 'string', placeholder: 'e.g. AIR', tooltip: 'Type of Block' },
+                { jsx: Checkbox, name: 'Exact State?', key: 'exactMatch', type: 'boolean', tooltip: 'The target block is not allowed to have more BlockStates than specified' },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/MooncycleCondition.java
         value: 'mooncycle',
         display: 'Moon Cycle',
         description: 'Is the phase of the moon the same as specified?',
         argumentsPattern: {
             mandatory: [
                 {
-                    jsx: Select, name: 'Phase', type: 'string', defaultValue: '1', placeholder: 'e.g. Full Moon', config: {
+                    jsx: Select, name: 'Phase', type: 'int', defaultValue: '1', placeholder: 'e.g. Full Moon', config: {
                         options: [
-                            { label: '🌕 Full Moon', value: '1' },
-                            { label: '🌖 Waning Gibbous', value: '2' },
-                            { label: '🌗 Last Quarter', value: '3' },
-                            { label: '🌘 Waning Crescent', value: '4' },
-                            { label: '🌑 New Moon', value: '5' },
-                            { label: '🌒 Waxing Crescent', value: '6' },
-                            { label: '🌓 First Quarter', value: '7' },
-                            { label: '🌔 Waxing Gibbous', value: '8' },
+                            { label: '🌕 Full Moon', value: 1 },
+                            { label: '🌖 Waning Gibbous', value: 2 },
+                            { label: '🌗 Last Quarter', value: 3 },
+                            { label: '🌘 Waning Crescent', value: 4 },
+                            { label: '🌑 New Moon', value: 5 },
+                            { label: '🌒 Waxing Crescent', value: 6 },
+                            { label: '🌓 First Quarter', value: 7 },
+                            { label: '🌔 Waxing Gibbous', value: 8 },
                         ] as DefaultOptionType[]
-                    }
+                    }, allowVariable: true
                 },
             ]
         }
     },
     {
-        value: 'numbercompare',
-        display: 'Compare Number',
-        description: 'Is one number greater / less / equals to another?',
-        argumentsPattern: {
-            mandatory: [
-                { jsx: Input, name: 'Number A', type: 'string', defaultValue: '0', placeholder: 'e.g. %ph.other_plugin:points%', tooltip: 'Could be a variable', config: { allowedPatterns: [/^\S*$/] } },
-                {
-                    jsx: Select, name: 'Compare', type: 'string', defaultValue: '=', placeholder: 'e.g. =', config: {
-                        options: [
-                            { label: '<  less than', value: '<' },
-                            { label: '<= less or equals to', value: '<=' },
-                            { label: '=  equals to', value: '=' },
-                            { label: '!= not equals to', value: '!=' },
-                            { label: '>  greater than', value: '>' },
-                            { label: '>= greater or equals to', value: '>=' },
-                        ] as DefaultOptionType[]
-                    }
-                },
-                { jsx: Input, name: 'Number A', type: 'string', defaultValue: '0', placeholder: 'e.g. %ph.other_plugin:points%', tooltip: 'Could be a variable', config: { allowedPatterns: [/^\S*$/] } },
-            ]
-        }
-    },
-    {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/ObjectiveCondition.java
         value: 'objective',
         display: 'Objective',
         description: 'Does the player have an active objective?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Name of Objective', type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: 'ID of an Objective', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Objective ID', type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: 'Name of an Objective', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/AlternativeCondition.java
         value: 'or',
-        display: 'Alternative',
+        display: 'Alternative Conditions',
         description: 'Checks if any one condition is met.',
         argumentsPattern: {
             mandatory: [
@@ -469,6 +407,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/PartialDateCondition.java
         value: 'partialdate',
         display: 'Partial Date',
         description: 'Does the current date match a given pattern?',
@@ -482,22 +421,24 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/PartyCondition.java
         value: 'party',
         display: 'Party',
         description: 'Check conditions within party members.',
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Distance', type: 'float', defaultValue: 0.0, tooltip: 'The coverage distance from the player whom triggers this condition', config: { min: 0 } },
+                { jsx: Number, name: 'Distance', type: 'float', defaultValue: 0.0, tooltip: 'The coverage distance from the player whom triggers this condition', config: { min: 0 }, allowVariable: true },
                 { jsx: InputList, name: 'Condition Names', type: 'string[,]', placeholder: '(none)', defaultValue: ['a_condition_1'], tooltip: 'Party member will be selected with these conditions', config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
-                { jsx: InputList, name: 'Every', key: 'every', type: 'string[,]', placeholder: 'e.g. some_condition_1', tooltip: 'The conditions that must be met by all party members', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: InputList, name: 'Any', key: 'any', type: 'string[,]', placeholder: 'e.g. some_condition_1', tooltip: 'The conditions that only need to be met by one party member', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: 'Members', key: 'count', type: 'int', placeholder: '0', tooltip: 'Minimun amount of members in the party', config: { min: 0 } },
+                { jsx: InputList, name: 'Everyone', key: 'every', type: 'string[,]', placeholder: 'e.g. some_condition_1', tooltip: 'The conditions that must be met by all party members', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: 'Anyone', key: 'any', type: 'string[,]', placeholder: 'e.g. some_condition_1', tooltip: 'The conditions that only need to be met by one party member', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: 'Count', key: 'count', type: 'int', placeholder: '0', tooltip: 'Minimun amount of members in the party', config: { min: 0 }, allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/PermissionCondition.java
         value: 'permission',
         display: 'Permission',
         description: 'Does the player have a specific permission node?',
@@ -508,18 +449,23 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/PointCondition.java
         value: 'point',
         display: 'Point',
         description: 'Does the player have enough points?',
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Name', type: 'string', defaultValue: 'a_point_1', placeholder: 'e.g. a_point_1', tooltip: 'The name of a Point', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: 'Point', type: 'int', defaultValue: 0, config: { min: 0 } },
+                { jsx: Number, name: 'Point', type: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
+            ],
+            optional: [
+                { jsx: Checkbox, name: 'Equal Only?', key: 'equal', type: 'boolean', tooltip: 'Match the Point exactely. Greater means not met.' },
             ]
         }
     },
     {
-        value: 'ride',
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/VehicleCondition.java
+        value: 'riding',
         display: 'Ride an Entity',
         description: 'Is the player riding an entity?',
         argumentsPattern: {
@@ -529,27 +475,31 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/RandomCondition.java
         // TODO: Custom chance input, or seprated standalone editor
         value: 'random',
         display: 'Random',
         description: 'Randomly return true by probability',
         argumentsPattern: {
             mandatory: [
+                // TODO: variable support
                 { jsx: Input, name: 'Probability', type: 'string', defaultValue: '0-100', placeholder: 'e.g. 12-100', tooltip: 'e.g. 12-100 means 12 out of 100 times return true', config: { allowedPatterns: [/^[0-9-]*$/] } },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/ArmorRatingCondition.java
         value: 'rating',
         display: 'Armor Rating',
         description: 'Is the armor have enough protection (armor icons) the plaryer wearing?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 0, tooltip: 'Increament by 1, equals to 0.5 armor icon in-game', config: { min: 0 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 0, tooltip: 'Increament by 1, equals to 0.5 armor icon in-game', config: { min: 0 }, allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/RealTimeCondition.java
         // TODO: Custom time range input, or seprated standalone editor
         value: 'realtime',
         display: 'Real Time',
@@ -561,17 +511,19 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/ScoreboardCondition.java
         value: 'score',
         display: 'Objective Scoreboard',
         description: 'Does the playe gained enough score in a specified objective on a scoreboard?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Name of Objective', type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: 'ID of an Objective', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: 'Score', type: 'int', defaultValue: 0, config: { min: 0 } },
+                { jsx: Input, name: 'Objective ID', type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: 'Name of an Objective', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: 'Score', type: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/SneakCondition.java
         value: 'sneak',
         display: 'Sneaking',
         description: 'Is the player sneaking? (Pressing Ctrl-key)',
@@ -580,29 +532,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
-        value: 'stage',
-        display: 'Check Stage',
-        description: 'Compares the players current stage with the given stage by its index numbers.',
-        argumentsPattern: {
-            mandatory: [
-                { jsx: Input, name: 'Objective Name', type: 'string', defaultValue: ['an_objective_1'], placeholder: 'e.g. an_objective_1', tooltip: 'The ID of a stage Objective', config: { allowedPatterns: [/^\S*$/] } },
-                {
-                    jsx: Select, name: 'Compare', type: 'string', defaultValue: '=', placeholder: 'e.g. =', config: {
-                        options: [
-                            { label: '<  less than', value: '<' },
-                            { label: '<= less or equals to', value: '<=' },
-                            { label: '=  equals to', value: '=' },
-                            { label: '!= not equals to', value: '!=' },
-                            { label: '>  greater than', value: '>' },
-                            { label: '>= greater or equals to', value: '>=' },
-                        ] as DefaultOptionType[]
-                    }
-                },
-                { jsx: Input, name: 'Stage Name', type: 'string', defaultValue: ['some_stage_1'], placeholder: 'e.g. stage_1', tooltip: 'Name of a stage', config: { allowedPatterns: [/^\S*$/] } },
-            ]
-        }
-    },
-    {
+        // 
         value: 'tag',
         display: 'Tag',
         description: 'Does the player have a specified tag?',
@@ -613,17 +543,22 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/TestForBlockCondition.java
         value: 'testforblock',
         display: 'Test for block',
         description: 'Is there a specific block on a location?',
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', tooltip: 'Block\'s location' },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', tooltip: 'Block\'s location', allowVariable: true },
                 { jsx: BlockSelector, name: 'Type of Block', type: 'string', defaultValue: 'AIR', placeholder: 'e.g. AIR', tooltip: 'Type of Block' },
+            ],
+            optional: [
+                { jsx: Checkbox, name: 'Exact State?', key: 'exactMatch', type: 'boolean', tooltip: 'The target block is not allowed to have more BlockStates than specified' },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/TimeCondition.java
         value: 'time',
         display: 'Time',
         description: 'Is the in-game time within a specific range?',
@@ -634,6 +569,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/VariableCondition.java
         // TODO: Custom standalone editor for RegEx format checking
         value: 'variable',
         display: 'Variable',
@@ -641,14 +577,12 @@ const kinds: Kind<Condition>[] = [
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Variable', type: 'string', defaultValue: '', placeholder: 'e.g.', tooltip: '', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Input, name: 'RegEx', type: 'string', defaultValue: '', placeholder: 'e.g.', tooltip: '', config: { allowedPatterns: [/^\S*$/] } },
-            ],
-            optional: [
-                { jsx: Checkbox, name: 'Run on the Main Thread?', key: 'forceSync', type: 'boolean', tooltip: 'Force the checking to be run on the main thread? This is only required by some third-party pluings.' },
+                { jsx: Input, name: 'RegEx', type: 'string', defaultValue: '', placeholder: 'e.g.', tooltip: '', escapeCharacters: [' '], config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/WeatherCondition.java
         value: 'weather',
         display: 'Weather',
         description: 'Is the weather matched? Note that you need to use `/weather` to change the weather for this to take effects, NOT `/toggledownfall`.',
@@ -676,6 +610,7 @@ const kinds: Kind<Condition>[] = [
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/conditions/WorldCondition.java
         value: 'world',
         display: 'World',
         description: 'Is the player staying in a specified world?',
