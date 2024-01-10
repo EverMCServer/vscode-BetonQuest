@@ -348,7 +348,7 @@ const kinds: Kind<Objective>[] = ([
         // e.g. pickup emerald,diamond amount:6 events:reward notify
         argumentsPattern: {
             mandatory: [
-                { jsx: ItemList, name: 'Item List', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
+                { jsx: InputList, name: 'Item List', type: 'string[,]', defaultValue: ["a_quest_item_1"], placeholder: 'e.g. emerald' },
             ],
             optional: [
                 { jsx: Number, name: 'Total Amount', key: 'amount', type: 'int', placeholder: '1', tooltip: 'Number of items to be picked up, in total.', config: { min: 0, undefinedValue: 0 } },

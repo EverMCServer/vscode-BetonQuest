@@ -65,25 +65,27 @@ const kinds: Kind<Objective>[] = ([
                 { jsx: BlockSelector, name: 'Block', type: 'string', defaultValue: 'any', placeholder: 'e.g. AIR', tooltip: 'Block Selector' },
             ],
             optional: [
+                { jsx: Checkbox, name: 'Exact State?', key: 'exactMatch', type: 'boolean', tooltip: 'The target block is not allowed to have more BlockStates than specified' },
                 { jsx: BaseLocation, name: 'Location', key: 'loc', type: 'string', config: { optional: true }, allowVariable: true },
                 { jsx: Number, name: 'Range (Radius)', key: 'range', type: 'float', placeholder: '1', config: { min: 0, undefinedValue: 0 }, allowVariable: true },
-                { jsx: Checkbox, name: 'Exact State?', key: 'exactMatch', type: 'boolean', tooltip: 'The target block is not allowed to have more BlockStates than specified' },
                 { jsx: Checkbox, name: 'Cancel Click?', key: 'cancel', type: 'boolean', tooltip: 'Should the clikc, e.g. left click hit mobs, be cancelled?' },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/ArrowShootObjective.java
         value: 'arrow',
         display: 'Arrow',
         description: 'The player needs to shoot an arrow into the target.',
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
-                { jsx: Number, name: 'Precision (Radius)', type: 'float', defaultValue: 1.0, tooltip: 'A radius around location where the arrow must land, should be small', config: { min: 0 } },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
+                { jsx: Number, name: 'Precision (Radius)', type: 'float', defaultValue: 1.0, tooltip: 'A radius around location where the arrow must land, should be small', config: { min: 0 }, allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/BlockObjective.java
         value: 'block',
         display: 'Break or Place Blocks',
         description: 'The player must break or place the specified amount of blocks.',
@@ -93,6 +95,7 @@ const kinds: Kind<Objective>[] = ([
                 { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of blocks', config: { min: 1 } },
             ],
             optional: [
+                { jsx: Checkbox, name: 'Exact State?', key: 'exactMatch', type: 'boolean', tooltip: 'The target block is not allowed to have more BlockStates than specified' },
                 { jsx: Checkbox, name: 'Disable Safety Check', key: 'noSafety', type: 'boolean', tooltip: 'Disable cheat checking. It will counts the blocks the player placed themself.' },
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
                 // { jsx: OptionalNumber, name: 'Notify', key: 'notify', type: 'int', placeholder: '1', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, setMinToNull: true } },
@@ -100,6 +103,7 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/BreedObjective.java
         value: 'breed',
         display: 'Breed animals',
         description: 'The player must breed a type of animals for certain amounts.',
@@ -114,12 +118,13 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/ChestPutObjective.java
         value: 'chestput',
         display: 'Put items in a chest',
         description: 'The player must put the specified items in a specified chest.',
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', tooltip: 'Chest\'s location' },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', tooltip: 'Chest\'s location', allowVariable: true },
                 { jsx: ItemList, name: 'Item List', type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
             ],
             optional: [
@@ -129,6 +134,7 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/BlockObjective.java
         value: 'consume',
         display: 'Eat / Drink',
         description: 'The player must eat the specified foods, or drink the specified potion.',
@@ -137,22 +143,24 @@ const kinds: Kind<Objective>[] = ([
                 { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_item', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
-                { jsx: Number, name: 'Amount', key: 'amount', type: 'int', tooltip: 'Number of items', placeholder: '1', config: { min: 0, undefinedValue: 0 } },
+                { jsx: Number, name: 'Amount', key: 'amount', type: 'int', tooltip: 'Number of items', placeholder: '1', config: { min: 0, undefinedValue: 0 }, allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/CraftingObjective.java
         value: 'craft',
         display: 'Crafting',
         description: 'The player must craft specified items.',
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_item', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of items', config: { min: 1 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of items', config: { min: 1 }, allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/EnchantObjective.java
         value: 'enchant',
         display: 'Enchant item',
         description: 'The player must enchant the specified quest item with a specified enchantment.',
@@ -177,7 +185,7 @@ const kinds: Kind<Objective>[] = ([
                         allowClear: true
                     }
                 },
-                { jsx: Number, name: 'Amount', key: 'amount', type: 'int', placeholder: '1', tooltip: 'Number of items to be enchanted', config: { min: 0, undefinedValue: 0 } },
+                { jsx: Number, name: 'Amount', key: 'amount', type: 'int', placeholder: '1', tooltip: 'Number of items to be enchanted', config: { min: 0, undefinedValue: 0 }, allowVariable: true },
             ]
         }
     },
@@ -189,7 +197,7 @@ const kinds: Kind<Objective>[] = ([
         // e.g. experience 25 events:reward
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Level', type: 'float', defaultValue: 1.0, tooltip: 'Number could be a decimal', config: { min: 0 } },
+                { jsx: Number, name: 'Level', type: 'float', defaultValue: 1.0, tooltip: 'Number could be a decimal', config: { min: 0 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
@@ -197,6 +205,7 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/DelayObjective.java
         value: 'delay',
         display: 'Wait',
         description: 'The player must wait for certain amount of time, including offline. Unit defaults to "minutes".',
@@ -215,6 +224,7 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/DieObjective.java
         value: 'die',
         display: 'Death',
         description: 'The player must die with conditions.',
@@ -222,27 +232,29 @@ const kinds: Kind<Objective>[] = ([
             mandatory: [],
             optional: [
                 { jsx: Checkbox, name: 'Cancel Death?', key: 'cancel', type: 'boolean', tooltip: 'Cancel player\' death?' },
-                { jsx: BaseLocation, name: 'Respawn Location', key: 'respawn', type: 'string', config: { optional: true } },
+                { jsx: BaseLocation, name: 'Respawn Location', key: 'respawn', type: 'string', config: { optional: true }, allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/FishObjective.java
         value: 'fish',
         display: 'Fishing',
         description: 'The player must catch something with the fishing rod. The "fish" could be any item.',
         argumentsPattern: {
             mandatory: [
                 { jsx: BlockSelector, name: 'Item', type: 'string', defaultValue: 'AIR', placeholder: 'e.g. AIR', tooltip: 'The item that must be caught' },
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, config: { min: 1 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, config: { min: 1 }, allowVariable: true },
             ],
             optional: [
-                { jsx: BaseLocation, name: 'Hook Location', key: 'hookLocation', type: 'string', tooltip: 'Where the hook needs to be', config: { optional: true } },
-                { jsx: Number, name: 'Radius', key: 'range', type: 'float', tooltip: 'A radius around the hook\'s landing', config: { min: 0 } },
+                { jsx: BaseLocation, name: 'Hook Location', key: 'hookLocation', type: 'string', tooltip: 'Where the hook needs to be', config: { optional: true }, allowVariable: true },
+                { jsx: Number, name: 'Radius', key: 'range', type: 'float', tooltip: 'A radius around the hook\'s landing', config: { min: 0 }, allowVariable: true },
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/EntityInteractObjective.java
         value: 'interact',
         display: 'Interact with entity',
         description: 'The player must click on an entity.',
@@ -258,16 +270,16 @@ const kinds: Kind<Objective>[] = ([
                     }
                 },
                 { jsx: EntityType, name: 'Entity Type', type: 'string', defaultValue: 'ZOMBIE' },
-                { jsx: Number, name: 'Mobs', type: 'int', defaultValue: 1, tooltip: 'How many UNIQUE mobs that need to be cliked (not the same mob)', config: { min: 1 } },
+                { jsx: Number, name: 'Mobs', type: 'int', defaultValue: 1, tooltip: 'How many UNIQUE mobs that need to be cliked (not the same mob)', config: { min: 1 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mob to be clicked', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
                 { jsx: Input, name: 'Real Name', key: 'realname', type: 'string', placeholder: 'e.g. "Notch"', tooltip: 'If the mob is a player, the real name of the player to be clicked', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Should the mobs have the same mark from the spawn mob event?', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Checkbox, name: 'Cancel Click?', key: 'cancel', type: 'boolean', tooltip: 'Should the clikc, e.g. left click hit mobs, be cancelled?' },
-                { jsx: BaseLocation, name: 'Location', key: 'loc', type: 'string', tooltip: 'Where the click should be happened', config: { optional: true } },
+                { jsx: BaseLocation, name: 'Location', key: 'loc', type: 'string', tooltip: 'Where the click should be happened', config: { optional: true }, allowVariable: true },
                 { jsx: Number, name: 'Radius', key: 'range', type: 'float', tooltip: 'A radius around the location', config: { min: 0 } },
-                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 }, allowVariable: true },
             ]
         }
     },
@@ -289,17 +301,19 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/LocationObjective.java
         value: 'location',
         display: 'Location',
         description: 'The player must move into a specified range of a location.',
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
-                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 1.0, tooltip: 'A radius around location where the player must be', config: { min: 0 } },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
+                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 1.0, tooltip: 'A radius around location where the player must be', config: { min: 0 }, allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/LoginObjective.java
         value: 'login',
         display: 'Login',
         description: 'The player simply needs to login to the server.',
@@ -308,6 +322,7 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/LogoutObjective.java
         value: 'logout',
         display: 'Logout',
         description: 'The player simply needs to leave the server.',
@@ -316,6 +331,7 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/PasswordObjective.java
         // TODO: a seprated standalone editor for password preview
         value: 'password',
         display: 'Password',
@@ -332,27 +348,29 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/PickupObjective.java
         value: 'pickup',
         display: 'Pickup Item',
         description: 'The player needs to pickup the specified amount of items.',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_item', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: 'Item List', type: 'string[,]', defaultValue: ["a_quest_item_1"], placeholder: 'e.g. emerald' },
             ],
             optional: [
-                { jsx: Number, name: 'Total Amount', key: 'amount', type: 'int', placeholder: '1', tooltip: 'Number of items to be picked up, in total.', config: { min: 0, undefinedValue: 0 } },
+                { jsx: Number, name: 'Total Amount', key: 'amount', type: 'int', placeholder: '1', tooltip: 'Number of items to be picked up, in total.', config: { min: 0, undefinedValue: 0 }, allowVariable: true },
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/MobKillObjective.java
         value: 'mobkill',
         display: 'Entity Kill',
         description: 'The player must kill the specified amount of entities.',
         argumentsPattern: {
             mandatory: [
                 { jsx: EntityTypeList, name: 'Type', type: 'string[,]', defaultValue: ['ZOMBIE'] },
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of mobs to be killed', config: { min: 1 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of mobs to be killed', config: { min: 1 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mob to be killed', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
@@ -362,13 +380,14 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/BrewObjective.java
         value: 'brew',
         display: 'Potion Brewing',
         description: 'The player needs to brew specified amount of specified potions.',
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_potion', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of potions', config: { min: 1 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of potions', config: { min: 1 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
@@ -376,12 +395,13 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/ShearObjective.java
         value: 'shear',
         display: 'Sheep shearing',
         description: 'The player has to shear specified amount of sheep.',
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of sheeps', config: { min: 1 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of sheeps', config: { min: 1 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Farmer\'s Sheep"', tooltip: 'The name of the sheep', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
@@ -391,13 +411,14 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/SmeltingObjective.java
         value: 'smelt',
         display: 'Smelting',
         description: 'The player must smelt the specified item.',
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Item', type: 'string', defaultValue: 'a_quest_item', tooltip: 'Quest\'s item name', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of items to be smelt', config: { min: 1 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of items to be smelt', config: { min: 1 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
@@ -405,6 +426,7 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/StageObjective.java
         value: 'stage',
         display: 'Stages',
         description: <><div>The player must complete the specified stages.</div><div>You can modify the stages with the `stage` event and check it with the `stage` condition.</div></>,
@@ -418,23 +440,25 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/StepObjective.java
         value: 'step',
         display: 'Step on pressure plate',
         description: 'The player has to step on a pressure plate at a given location. The type of plate does not matter.',
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/TameObjective.java
         value: 'tame',
         display: 'Taming',
         description: 'The player must tame some amount of mobs.',
         argumentsPattern: {
             mandatory: [
                 { jsx: EntityType, name: 'Type', type: 'string', defaultValue: 'WOLF' },
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of mobs', config: { min: 1 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of mobs', config: { min: 1 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
@@ -442,12 +466,13 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/JumpObjective.java
         value: 'jump',
         display: 'Player must Jump',
         description: <><div>The player must jump.</div><div>This feature requires <a href="https://papermc.io/" target="_blank">Paper</a>.</div></>,
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of jumps', config: { min: 1 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of jumps', config: { min: 1 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
@@ -455,6 +480,7 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/RideObjective.java
         value: 'ride',
         display: 'Ride an entity',
         description: 'The player must ride a specific entitiy',
@@ -465,6 +491,7 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/CommandObjective.java
         value: 'command',
         display: 'Run a Command',
         description: 'The player must execute a specified command.',
@@ -481,6 +508,7 @@ const kinds: Kind<Objective>[] = ([
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/objectives/EquipItemObjective.java
         value: 'equip',
         display: 'Equip Armor Item',
         description: <><div>The player must equip the specified quest item in the specified slot.</div><div>This feature requires <a href="https://papermc.io/" target="_blank">Paper</a>.</div></>,
@@ -505,7 +533,7 @@ const kinds: Kind<Objective>[] = ([
         value: 'variable',
         display: 'Variable',
         description: <><div>Stores custom variables. It also allows the player to set custom variables typed in chat with format "key: value".</div><div>For more details, please refer to the <a href="https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Building-Blocks/Objectives-List/#variable-variable" target="_blank">documentation</a>.</div></>,
-        // e.g. variable
+        // e.g. variable no-chat
         argumentsPattern: {
             mandatory: [],
             optional: [
