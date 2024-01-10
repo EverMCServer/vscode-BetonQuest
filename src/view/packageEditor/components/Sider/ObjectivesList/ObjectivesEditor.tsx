@@ -92,7 +92,7 @@ const kinds: Kind<Objective>[] = ([
         argumentsPattern: {
             mandatory: [
                 { jsx: BlockSelector, name: 'Block', type: 'string', defaultValue: 'any', placeholder: 'e.g. AIR', tooltip: 'Block Selector' },
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of blocks', config: { min: 1 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of blocks', config: { min: 1 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Checkbox, name: 'Exact State?', key: 'exactMatch', type: 'boolean', tooltip: 'The target block is not allowed to have more BlockStates than specified' },
@@ -110,7 +110,7 @@ const kinds: Kind<Objective>[] = ([
         argumentsPattern: {
             mandatory: [
                 { jsx: EntityType, name: 'Type', type: 'string', defaultValue: 'PIG' },
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of animals', config: { min: 1 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 1, tooltip: 'Number of animals', config: { min: 1 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
@@ -216,7 +216,7 @@ const kinds: Kind<Objective>[] = ([
         description: 'The player must wait for certain amount of time, including offline. Unit defaults to "minutes".',
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Time', type: 'int', defaultValue: 1.0, tooltip: 'Time duration', config: { min: 0 } },
+                { jsx: Number, name: 'Time', type: 'int', defaultValue: 1.0, tooltip: 'Time duration', config: { min: 0 }, allowVariable: true },
             ],
             optional: [
                 // Bad design. Should use "Select" instead.
@@ -283,8 +283,8 @@ const kinds: Kind<Objective>[] = ([
                 { jsx: Input, name: 'Marked', key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: 'Should the mobs have the same mark from the spawn mob event?', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Checkbox, name: 'Cancel Click?', key: 'cancel', type: 'boolean', tooltip: 'Should the clikc, e.g. left click hit mobs, be cancelled?' },
                 { jsx: BaseLocation, name: 'Location', key: 'loc', type: 'string', tooltip: 'Where the click should be happened', config: { optional: true }, allowVariable: true },
-                { jsx: Number, name: 'Radius', key: 'range', type: 'float', tooltip: 'A radius around the location', config: { min: 0 } },
-                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 }, allowVariable: true },
+                { jsx: Number, name: 'Radius', key: 'range', type: 'float', tooltip: 'A radius around the location', config: { min: 0 }, allowVariable: true },
+                { jsx: Number, name: 'Notify', key: 'notify', type: 'int', placeholder: '(none)', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
