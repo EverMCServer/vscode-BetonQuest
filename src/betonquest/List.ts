@@ -74,7 +74,7 @@ export default class List<T extends ListElement> {
 
         // Add value onto the YAML
         try {
-            this.yaml.contents.addIn(name, this.yaml.createPair(new Scalar<string>(name), new Scalar<string>("")));
+            this.yaml.contents.add(this.yaml.createPair(new Scalar<string>(name), new Scalar<string>("")));
         } catch (e) {
             throw e;
         }
