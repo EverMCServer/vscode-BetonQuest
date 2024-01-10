@@ -466,7 +466,7 @@ const kinds: Kind<Objective>[] = ([
     },
     {
         // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/VehicleObjective.java
-        value: 'ride',
+        value: 'riding',
         display: 'Ride an entity',
         description: 'The player must ride a specific entitiy',
         // e.g. riding horse
