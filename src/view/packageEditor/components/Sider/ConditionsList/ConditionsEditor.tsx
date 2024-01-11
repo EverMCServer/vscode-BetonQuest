@@ -125,11 +125,12 @@ const kinds: Kind<Condition>[] = [
         description: 'Does the player could begin a specified conversation? It checks the conversation\'s starting options to see if any of them return true.',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Conversation ID', type: 'string', defaultValue: 'a_conversation_1', placeholder: 'e.g. innkeeper', tooltip: 'ID of a conversation e.g. "innkeeper"', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Conversation Name', type: 'string', defaultValue: 'a_conversation_1', placeholder: 'e.g. innkeeper', tooltip: 'Name of a conversation e.g. "innkeeper"', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
     {
+        // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/conditions/DayOfWeekCondition.java
         value: 'dayofweek',
         display: 'Day of week',
         description: 'What day it is today?',
@@ -182,9 +183,10 @@ const kinds: Kind<Condition>[] = [
         description: 'Are there any specified amount of mobs in an area?',
         argumentsPattern: {
             mandatory: [
+                // TODO: variable amount
                 { jsx: EntityTypeListWithAmount, name: 'Type', type: '[string:number?][,]', defaultValue: [['ZOMBIE', 1]], placeholder: ['', '1'] },
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
-                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 1.0, tooltip: 'A radius around location where the mobs must be', config: { min: 0 } },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
+                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 1.0, tooltip: 'A radius around location where the mobs must be', config: { min: 0 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Input, name: 'Name', key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: 'The name of the mob', escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
@@ -198,7 +200,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Does the player have the specified amount of experience levels?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Level', type: 'float', defaultValue: 1.0, tooltip: 'Number could be a decimal', config: { min: 0 } },
+                { jsx: Number, name: 'Level', type: 'float', defaultValue: 1.0, tooltip: 'Number could be a decimal', config: { min: 0 }, allowVariable: true },
             ]
         }
     },
@@ -257,7 +259,10 @@ const kinds: Kind<Condition>[] = [
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Name', type: 'string', defaultValue: 'a_global_point_1', placeholder: 'e.g. a_global_point_1', tooltip: 'The name of a Global Point', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: 'Point', type: 'int', defaultValue: 0, config: { min: 0 } },
+                { jsx: Number, name: 'Point', type: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
+            ],
+            optional: [
+                { jsx: Checkbox, name: 'Equal?', key: 'equal', type: 'boolean', tooltip: 'The Global Point should have exact number of points and no more' },
             ]
         }
     },
@@ -290,7 +295,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Does the player have equal or more health than specified amount?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Health', type: 'float', defaultValue: 0.0, tooltip: 'Health level could be a decimal', config: { min: 0 } },
+                { jsx: Number, name: 'Health', type: 'float', defaultValue: 0.0, tooltip: 'Health level could be a decimal', config: { min: 0 }, allowVariable: true },
             ]
         }
     },
@@ -300,7 +305,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Does the player stand BELOW specific height?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Height', type: 'float', defaultValue: 255.0, tooltip: 'Height Y could be a decimal' },
+                { jsx: Number, name: 'Height', type: 'float', defaultValue: 255.0, tooltip: 'Height Y could be a decimal', allowVariable: true },
             ]
         }
     },
@@ -310,7 +315,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Does the player have equal or more specified Hunger Level? Note that the player can not sprint if the hunger level is below 7.',
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Hunger Level', type: 'float', defaultValue: 0.0, tooltip: 'Hunger Level could be a decimal', config: { min: 0 } },
+                { jsx: Number, name: 'Hunger Level', type: 'float', defaultValue: 0.0, tooltip: 'Hunger Level could be a decimal', config: { min: 0 }, allowVariable: true },
             ]
         }
     },
@@ -321,7 +326,7 @@ const kinds: Kind<Condition>[] = [
         argumentsPattern: {
             mandatory: [],
             optional: [
-                { jsx: Input, name: 'Conversation ID', key: 'conversation', type: 'string', placeholder: 'e.g. "innkeeper"', tooltip: 'ID of a conversation e.g. "innkeeper"', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Conversation Name', key: 'conversation', type: 'string', placeholder: 'e.g. "innkeeper"', tooltip: 'Name of a conversation e.g. "innkeeper"', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -353,7 +358,7 @@ const kinds: Kind<Condition>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: Number, name: 'Durability', type: 'float', defaultValue: 0.0, tooltip: 'Durability could be a decimal', config: { min: 0 } },
+                { jsx: Number, name: 'Durability', type: 'float', defaultValue: 0.0, tooltip: 'Durability could be a decimal', config: { min: 0 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Checkbox, name: '0-1 Scale?', key: 'relative', type: 'boolean', tooltip: 'Define the durability above on a 0.0 to 1.0 scale? Instead of a real value, you can define 0.0 as completely broken, 1.0 as maximun durability.' },
@@ -386,8 +391,8 @@ const kinds: Kind<Condition>[] = [
         description: 'Does the player stand within a specified location?',
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world' },
-                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 1.0, tooltip: 'A radius around the location', config: { min: 0 } },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
+                { jsx: Number, name: 'Radius', type: 'float', defaultValue: 1.0, tooltip: 'A radius around the location', config: { min: 0 }, allowVariable: true },
             ]
         }
     },
@@ -399,7 +404,7 @@ const kinds: Kind<Condition>[] = [
         argumentsPattern: {
             mandatory: [],
             optional: [
-                { jsx: BaseLocation, name: 'Location', key: 'loc', type: 'string', placeholder: 'e.g. 12.0;14.0;-15.0;world', config: { optional: true } },
+                { jsx: BaseLocation, name: 'Location', key: 'loc', type: 'string', placeholder: 'e.g. 12.0;14.0;-15.0;world', config: { optional: true }, allowVariable: true },
                 { jsx: BlockSelector, name: 'Type of Block', key: 'type', type: 'string', placeholder: 'e.g. AIR', tooltip: 'Type of Block' },
                 { jsx: Checkbox, name: 'Exact State?', key: 'exactMatch', type: 'boolean', tooltip: 'The target block is not allowed to have more BlockStates than specified' },
             ]
@@ -434,7 +439,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Is one number greater / less / equals to another?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Number A', type: 'string', defaultValue: '0', placeholder: 'e.g. %ph.other_plugin:points%', tooltip: 'Could be a variable', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Number A', type: 'string', defaultValue: '0', placeholder: 'e.g. %ph.other_plugin:points%', tooltip: 'Could be a variable', config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
                 {
                     jsx: Select, name: 'Compare', type: 'string', defaultValue: '=', placeholder: 'e.g. =', config: {
                         options: [
@@ -447,7 +452,7 @@ const kinds: Kind<Condition>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: Input, name: 'Number A', type: 'string', defaultValue: '0', placeholder: 'e.g. %ph.other_plugin:points%', tooltip: 'Could be a variable', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Number A', type: 'string', defaultValue: '0', placeholder: 'e.g. %ph.other_plugin:points%', tooltip: 'Could be a variable', config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
             ]
         }
     },
@@ -457,7 +462,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Does the player have an active objective?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Objective ID', type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: 'Name of an Objective', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Objective Name', type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: 'Name of an Objective', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -478,9 +483,9 @@ const kinds: Kind<Condition>[] = [
         argumentsPattern: {
             mandatory: [],
             optional: [
-                { jsx: InputList, name: 'Day of Month', key: 'day', type: 'string[,]', placeholder: 'e.g. 2-4', tooltip: 'The day of the month, e.g. 2 means 2nd of every month', config: { allowedPatterns: [/^[0-9-]*$/] } },
-                { jsx: InputList, name: 'Month', key: 'month', type: 'string[,]', placeholder: 'e.g. 2-4', tooltip: 'The month of the year, e.g. 2-4 means from February to April', config: { allowedPatterns: [/^[0-9-]*$/] } },
-                { jsx: InputList, name: 'Year', key: 'year', type: 'string[,]', placeholder: 'e.g. 2-4', tooltip: 'Year, e.g. 2024-2025', config: { allowedPatterns: [/^[0-9-]*$/] } },
+                { jsx: Input, name: 'Day of Month', key: 'day', type: 'string[,]', placeholder: 'e.g. 2-4', tooltip: 'The day of the month, e.g. 2 means 2nd of every month', config: { allowedPatterns: [/^[0-9-]*$/] } },
+                { jsx: Input, name: 'Month', key: 'month', type: 'string[,]', placeholder: 'e.g. 2-4', tooltip: 'The month of the year, e.g. 2-4 means from February to April', config: { allowedPatterns: [/^[0-9-]*$/] } },
+                { jsx: Input, name: 'Year', key: 'year', type: 'string[,]', placeholder: 'e.g. 2-4', tooltip: 'Year, e.g. 2024-2025', config: { allowedPatterns: [/^[0-9-]*$/] } },
             ]
         }
     },
@@ -490,7 +495,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Check conditions within party members.',
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Distance', type: 'float', defaultValue: 0.0, tooltip: 'The coverage distance from the player whom triggers this condition', config: { min: 0 } },
+                { jsx: Number, name: 'Distance', type: 'float', defaultValue: 0.0, tooltip: 'The coverage distance from the player whom triggers this condition', config: { min: 0 }, allowVariable: true },
                 { jsx: InputList, name: 'Condition Names', type: 'string[,]', placeholder: '(none)', defaultValue: ['a_condition_1'], tooltip: 'Party member will be selected with these conditions', config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
@@ -517,7 +522,10 @@ const kinds: Kind<Condition>[] = [
         argumentsPattern: {
             mandatory: [
                 { jsx: Input, name: 'Name', type: 'string', defaultValue: 'a_point_1', placeholder: 'e.g. a_point_1', tooltip: 'The name of a Point', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: 'Point', type: 'int', defaultValue: 0, config: { min: 0 } },
+                { jsx: Number, name: 'Point', type: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
+            ],
+            optional: [
+                { jsx: Checkbox, name: 'Equal?', key: 'equal', type: 'boolean', tooltip: 'The player should have exact number of points and no more' },
             ]
         }
     },
@@ -538,6 +546,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Randomly return true by probability',
         argumentsPattern: {
             mandatory: [
+                // TODO: Custom editor with variables support
                 { jsx: Input, name: 'Probability', type: 'string', defaultValue: '0-100', placeholder: 'e.g. 12-100', tooltip: 'e.g. 12-100 means 12 out of 100 times return true', config: { allowedPatterns: [/^[0-9-]*$/] } },
             ]
         }
@@ -548,7 +557,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Is the armor have enough protection (armor icons) the plaryer wearing?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 0, tooltip: 'Increament by 1, equals to 0.5 armor icon in-game', config: { min: 0 } },
+                { jsx: Number, name: 'Amount', type: 'int', defaultValue: 0, tooltip: 'Increament by 1, equals to 0.5 armor icon in-game', config: { min: 0 }, allowVariable: true },
             ]
         }
     },
@@ -559,6 +568,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Is the current real-world\'s time within a range?',
         argumentsPattern: {
             mandatory: [
+                // TODO: Custom editor with variables support
                 { jsx: Input, name: 'Time Range', type: 'string', defaultValue: '0:00-23:59', placeholder: 'e.g. 8:00-13:30', tooltip: '24-Hour format, seprated by a dash "-"', config: { allowedPatterns: [/^[0-9:-]*$/] } },
             ]
         }
@@ -569,8 +579,8 @@ const kinds: Kind<Condition>[] = [
         description: 'Does the playe gained enough score in a specified objective on a scoreboard?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Objective ID', type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: 'Name of an Objective', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: 'Score', type: 'int', defaultValue: 0, config: { min: 0 } },
+                { jsx: Input, name: 'Objective Name', type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: 'Name of an Objective', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: 'Score', type: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
             ]
         }
     },
@@ -588,7 +598,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Compares the players current stage with the given stage by its index numbers.',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Objective Name', type: 'string', defaultValue: ['an_objective_1'], placeholder: 'e.g. an_objective_1', tooltip: 'The ID of a stage Objective', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Objective Name', type: 'string', defaultValue: ['an_objective_1'], placeholder: 'e.g. an_objective_1', tooltip: 'The name of a stage Objective', config: { allowedPatterns: [/^\S*$/] } },
                 {
                     jsx: Select, name: 'Compare', type: 'string', defaultValue: '=', placeholder: 'e.g. =', config: {
                         options: [
@@ -601,7 +611,7 @@ const kinds: Kind<Condition>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: Input, name: 'Stage Name', type: 'string', defaultValue: ['some_stage_1'], placeholder: 'e.g. stage_1', tooltip: 'Name of a stage', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Stage Name', type: 'string', defaultValue: ['some_stage_1'], placeholder: 'e.g. stage_1', tooltip: 'Name of a stage', config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
             ]
         }
     },
@@ -621,7 +631,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Is there a specific block on a location?',
         argumentsPattern: {
             mandatory: [
-                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', tooltip: 'Block\'s location' },
+                { jsx: BaseLocation, name: 'Location', type: 'string', defaultValue: '0.5;64;0.5;world', tooltip: 'Block\'s location', allowVariable: true },
                 { jsx: BlockSelector, name: 'Type of Block', type: 'string', defaultValue: 'AIR', placeholder: 'e.g. AIR', tooltip: 'Type of Block' },
             ],
             optional: [
@@ -635,6 +645,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Is the in-game time within a specific range?',
         argumentsPattern: {
             mandatory: [
+                // TODO: Custom editor
                 { jsx: Input, name: 'Time Range', type: 'string', defaultValue: '0-23', placeholder: 'e.g. 2-16', tooltip: 'Hour, 0 to 24', config: { allowedPatterns: [/^[0-9-]*$/] } },
             ]
         }

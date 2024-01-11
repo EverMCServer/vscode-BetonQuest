@@ -167,7 +167,7 @@ const kinds: Kind<Event>[] = [
         // e.g. conversation village_smith
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Conversation ID', type: 'string', defaultValue: 'a_conversation_id_1', placeholder: 'e.g. village_smith', tooltip: 'ID of the conversation', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Conversation Name', type: 'string', defaultValue: 'a_conversation_id_1', placeholder: 'e.g. village_smith', tooltip: 'Name of the conversation', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -191,7 +191,7 @@ const kinds: Kind<Event>[] = [
         // e.g. deletepoint npc_attitude
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. npc_attitude', tooltip: 'ID of the point', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Point Category', type: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. npc_attitude', tooltip: 'Name of the point', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -367,7 +367,7 @@ const kinds: Kind<Event>[] = [
         // e.g. global_knownusers 1
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. bonus', tooltip: 'ID of the global point', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Point Category', type: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. bonus', tooltip: 'Name of the global point', config: { allowedPatterns: [/^\S*$/] } },
                 // TODO: custom standalone editor
                 { jsx: Input, name: 'Amount', type: 'string', defaultValue: '0', placeholder: 'e.g. *12', tooltip: 'Amount to change, could be multiply' },
             ],
@@ -398,7 +398,7 @@ const kinds: Kind<Event>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: Input, name: 'Tag ID', type: 'string', defaultValue: 'a_global_tag_id_1', placeholder: 'e.g. reward_claimed', tooltip: 'ID of the global tag', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Tag Name', type: 'string', defaultValue: 'a_global_tag_id_1', placeholder: 'e.g. reward_claimed', tooltip: 'Name of the global tag', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -445,7 +445,7 @@ const kinds: Kind<Event>[] = [
                 },
                 // TODO: New optional data type: string
                 // TODO: ... Or a seprated standalone editor
-                { jsx: Input, name: 'Journal ID', type: 'string', defaultValue: '', placeholder: 'e.g. a_journal_id_1', tooltip: 'Leave it blank if you selected "Update"', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Journal Name', type: 'string', defaultValue: '', placeholder: 'e.g. a_journal_id_1', tooltip: 'Leave it blank if you selected "Update"', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -647,7 +647,7 @@ const kinds: Kind<Event>[] = [
         // e.g. point points 1.25 notify
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Point ID', type: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. bonus', tooltip: 'ID of the global point', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Point Category', type: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. bonus', tooltip: 'ID of the global point', config: { allowedPatterns: [/^\S*$/] } },
                 // TODO: custom standalone editor
                 { jsx: Input, name: 'Amount', type: 'float', defaultValue: '0', placeholder: 'e.g. *12', tooltip: 'Amount to change, could be multiply' },
             ],
@@ -839,7 +839,7 @@ const kinds: Kind<Event>[] = [
         // e.g. variable CustomVariable MyFirstVariable Goodbye!
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Variable Objective ID', type: 'string', defaultValue: 'a_variable_objective_1', tooltip: 'The `variable` Objective\' ID which you want to store the variable onto. You must define this Objective in you Objective list first.', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Variable Objective Name', type: 'string', defaultValue: 'a_variable_objective_1', tooltip: 'The `variable` Objective\' Name which you want to store the variable onto. You must define this Objective in you Objective list first.', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Input, name: 'Variable Name', type: 'string', defaultValue: 'a_variable_name_1', tooltip: '', config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
                 { jsx: Input, name: 'Value', type: '*', defaultValue: '""', tooltip: 'Input "" to delete the value', allowVariable: true },
             ],

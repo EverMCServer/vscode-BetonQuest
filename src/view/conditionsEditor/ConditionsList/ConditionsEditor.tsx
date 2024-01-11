@@ -116,7 +116,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Does the player could begin a specified conversation? It checks the conversation\'s start options to see if any of them return true.',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Conversation ID', type: 'string', defaultValue: 'a_conversation_1', placeholder: 'e.g. innkeeper', tooltip: 'ID of a conversation e.g. "innkeeper"', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Conversation Name', type: 'string', defaultValue: 'a_conversation_1', placeholder: 'e.g. innkeeper', tooltip: 'Name of a conversation e.g. "innkeeper"', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -261,7 +261,7 @@ const kinds: Kind<Condition>[] = [
                 { jsx: Number, name: 'Point', type: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
             ],
             optional: [
-                { jsx: Checkbox, name: 'Equal Only?', key: 'equal', type: 'boolean', tooltip: 'Match the Global Point exactely. Greater means not met.' },
+                { jsx: Checkbox, name: 'Equal?', key: 'equal', type: 'boolean', tooltip: 'The Global Point should have exact number of points and no more' },
             ]
         }
     },
@@ -392,7 +392,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Does the player have an active objective?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Objective ID', type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: 'Name of an Objective', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Objective Name', type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: 'Name of an Objective', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -415,9 +415,9 @@ const kinds: Kind<Condition>[] = [
         argumentsPattern: {
             mandatory: [],
             optional: [
-                { jsx: InputList, name: 'Day of Month', key: 'day', type: 'string[,]', placeholder: 'e.g. 2-4', tooltip: 'The day of the month, e.g. 2 means 2nd of every month', config: { allowedPatterns: [/^[0-9-]*$/] } },
-                { jsx: InputList, name: 'Month', key: 'month', type: 'string[,]', placeholder: 'e.g. 2-4', tooltip: 'The month of the year, e.g. 2-4 means from February to April', config: { allowedPatterns: [/^[0-9-]*$/] } },
-                { jsx: InputList, name: 'Year', key: 'year', type: 'string[,]', placeholder: 'e.g. 2-4', tooltip: 'Year, e.g. 2024-2025', config: { allowedPatterns: [/^[0-9-]*$/] } },
+                { jsx: Input, name: 'Day of Month', key: 'day', type: 'string[,]', placeholder: 'e.g. 2-4', tooltip: 'The day of the month, e.g. 2 means 2nd of every month', config: { allowedPatterns: [/^[0-9-]*$/] } },
+                { jsx: Input, name: 'Month', key: 'month', type: 'string[,]', placeholder: 'e.g. 2-4', tooltip: 'The month of the year, e.g. 2-4 means from February to April', config: { allowedPatterns: [/^[0-9-]*$/] } },
+                { jsx: Input, name: 'Year', key: 'year', type: 'string[,]', placeholder: 'e.g. 2-4', tooltip: 'Year, e.g. 2024-2025', config: { allowedPatterns: [/^[0-9-]*$/] } },
             ]
         }
     },
@@ -460,7 +460,7 @@ const kinds: Kind<Condition>[] = [
                 { jsx: Number, name: 'Point', type: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
             ],
             optional: [
-                { jsx: Checkbox, name: 'Equal Only?', key: 'equal', type: 'boolean', tooltip: 'Match the Point exactely. Greater means not met.' },
+                { jsx: Checkbox, name: 'Equal?', key: 'equal', type: 'boolean', tooltip: 'The player should have exact number of points and no more' },
             ]
         }
     },
@@ -518,7 +518,7 @@ const kinds: Kind<Condition>[] = [
         description: 'Does the playe gained enough score in a specified objective on a scoreboard?',
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Objective ID', type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: 'Name of an Objective', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: 'Objective Name', type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: 'Name of an Objective', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Number, name: 'Score', type: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
             ]
         }
