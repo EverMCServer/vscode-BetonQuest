@@ -4,10 +4,15 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [0.2.3] - TBD
+## [0.2.3] - 2024-01-11
+
+### Added
+- Add Events / Objectives / Conditions editing for 1.x!
+- Supports Variables in Events, Conditions, Objectives Editors
 
 ### Fixed
 - Fix sider drag not working when cursor leaves window
+- Fix variaous mistakes on Events, Objectives and Conditions editing
 
 ## [0.2.2] - 2024-01-05
 

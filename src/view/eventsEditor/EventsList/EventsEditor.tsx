@@ -39,7 +39,7 @@ const kinds: Kind<Event>[] = [
     {
         // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/events/CancelEvent.java
         value: 'cancel',
-        display: 'Cancel (cancel)',
+        display: 'Cancel',
         description: 'Cancel a quest predefined in a Quest Canceler.',
         argumentsPattern: {
             mandatory: [
