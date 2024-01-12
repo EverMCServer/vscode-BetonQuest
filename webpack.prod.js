@@ -19,6 +19,10 @@ const extensionConfig = merge(common[0], {
 const reactConfig = merge(common[1], {
   mode: "production",
   devtool: 'hidden-source-map',
+  optimization: {
+    usedExports: true,
+    minimize: true,
+  },
 });
 
 /** @type WebpackConfig */
