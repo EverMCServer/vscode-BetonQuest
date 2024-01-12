@@ -59,16 +59,6 @@ const nodeTypes = {
     startNode: StartNode,
 };
 
-// Global variables from vscode
-declare global {
-    // var initialConfig: {
-    //     translationSelection?: string; // Conversation YAML's translation selection.
-    // };
-
-    // Save current active tab key
-    var activeTabKey: string;
-}
-
 interface ConversationEditorProps {
     conversation: Conversation,
     conversationName: string,

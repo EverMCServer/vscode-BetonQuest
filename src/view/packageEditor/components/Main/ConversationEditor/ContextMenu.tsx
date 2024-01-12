@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import * as React from "react";
 import { Edge, Node, useReactFlow } from "reactflow";
 import { NodeData } from "./Nodes";
+import L from "../../../../../i18n/i18n";
 
 interface ContextMenuProps {
   id: string;
@@ -36,7 +37,7 @@ export default function contextMenu({
       className="context-menu"
       {...props}
     >
-      <button onClick={deleteNode}>delete</button>
+      <button onClick={deleteNode}>{L("delete")}</button>
     </div>
   );
 }

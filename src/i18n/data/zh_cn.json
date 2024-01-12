@@ -1,6 +1,11 @@
 {
-    "1": "甲",
-    "2": "乙",
+    "delete": "删除",
+
+    "conversation.startNode.start": "初始对话",
+    "conversation.startNode.quester": "NPC 名字",
+    "conversation.startNode.stop": "玩家离开时中断对话",
+    "conversation.startNode.finalEvents": "最终事件",
+    "conversation.startNode.interceptor": "拦截器",
     
     "betonquest.event.list.cancel.name": "取消任务",
     "betonquest.event.list.cancel.description": "取消一个任务",

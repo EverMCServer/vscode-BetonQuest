@@ -11,15 +11,17 @@ import { ConfigProvider, Layout } from "antd";
 // const { Content } = Layout;
 import { YAMLError } from "yaml";
 
+import { InitialConfig } from "../../conversationEditorProvider";
 import Conversation from "../../betonquest/Conversation";
+
 import ConversationEditor from "./components/ConversationEditor";
 import YamlErrorPage from "../components/YamlErrorPage";
 
 // Global variables from vscode
 declare global {
-    var initialConfig: {
-        translationSelection?: string; // Conversation YAML's translation selection.
-    };
+    namespace conversationEditor{
+        var initialConfig: InitialConfig;
+    }
 }
 
 // Cache of the Package's YAML
@@ -44,7 +46,9 @@ export default function app() {
 
     // Get document's content update from vscode when init
     useEffect(() => {
-        // notify vscode when webview startup completed.
+        // Set language
+        setLocale(conversationEditor.initialConfig.locale || "en");
+        // Notify vscode when webview startup completed.
         vscode.postMessage({
             type: "webview-lifecycle",
             content: "started",
@@ -118,7 +122,7 @@ export default function app() {
                     }}
                 >
                     <Layout style={{ display: "block" }}>
-                        <ConversationEditor conversation={conversation} syncYaml={syncYaml} translationSelection={globalThis.initialConfig.translationSelection}></ConversationEditor>
+                        <ConversationEditor conversation={conversation} syncYaml={syncYaml} translationSelection={conversationEditor.initialConfig.translationSelection}></ConversationEditor>
                     </Layout>
                 </Layout>
             }

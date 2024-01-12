@@ -12,10 +12,6 @@ import "./Main.css";
 
 // Global variables from vscode
 declare global {
-    // var initialConfig: {
-    //     translationSelection?: string; // Conversation YAML's translation selection.
-    // };
-
     // Save current active tab key
     var activeTabKey: string;
 }
@@ -125,7 +121,7 @@ export default function main(props: MainProps) {
     const [newConversationKeyConfig, setNewConversationKeyConfig] = useState("new_conv");
     // Multilingual selection
     const [isMultilingualConfig, setIsMultilingualConfig] = useState(true);
-    const [translationNameConfig, setTranslationNameConfig] = useState(globalThis.initialConfig.translationSelection || 'en');
+    const [translationNameConfig, setTranslationNameConfig] = useState(packageEditor.initialConfig.translationSelection || 'en');
 
     // Handle conversation creation
     const onConversationCreate = () => {

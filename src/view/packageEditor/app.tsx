@@ -11,6 +11,7 @@ import { ConfigProvider, Layout } from "antd";
 // const { Content } = Layout;
 import { YAMLError } from "yaml";
 
+import { InitialConfig } from "../../packageEditorProvider";
 import Package from '../../betonquest/Package';
 
 import ResizableSider from '../components/ResizableSider';
@@ -20,9 +21,9 @@ import YamlErrorPage from "../components/YamlErrorPage";
 
 // Global variables from vscode
 declare global {
-    var initialConfig: {
-        translationSelection?: string; // Conversation YAML's translation selection.
-    };
+    namespace packageEditor {
+        var initialConfig: InitialConfig;
+    }
 }
 
 // Cache of the Package's YAML
@@ -51,6 +52,8 @@ export default function app() {
 
     // Get document's content update from vscode
     useEffect(() => {
+        // Set language
+        setLocale(packageEditor.initialConfig.locale || "en");
         // Notify vscode when webview startup completed.
         vscode.postMessage({
             type: "webview-lifecycle",

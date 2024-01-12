@@ -1,6 +1,11 @@
 {
-    "1": "a",
-    "2": "b",
+    "delete": "Delete",
+
+    "conversation.startNode.start": "Start",
+    "conversation.startNode.quester": "NPC Name",
+    "conversation.startNode.stop": "Stop when player leave",
+    "conversation.startNode.finalEvents": "Final events",
+    "conversation.startNode.interceptor": "Interceptor",
 
     "betonquest.event.list.cancel.name": "Cancel",
     "betonquest.event.list.cancel.description": "Cancel a quest",

@@ -11,6 +11,7 @@ import { connectionAvaliable } from "../utils/commonUtils";
 import "./styles.css";
 import { Select } from "antd";
 import { NodeData } from "./Nodes";
+import L from "../../../../../i18n/i18n";
 
 export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const [getTrigger, setTrigger] = useState(false);
@@ -84,11 +85,11 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   return (
     <div style={{ width: "100%" }}>
       <div className="title-box start">
-        Start
+        {L("conversation.startNode.start")}
       </div>
       <div className="box">
         <div>
-          NPC name:
+          {L("conversation.startNode.quester")}:
           <input
             type="text"
             className="nodrag input"
@@ -98,10 +99,10 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         </div>
         <hr className="line"></hr>
         <div>
-          Stop when player leave:&nbsp;
+          {L("conversation.startNode.stop")}:&nbsp;
           <Select
             value={getStop()}
-            dropdownAlign={{points:['tr', 'br']}}
+            dropdownAlign={{ points: ['tr', 'br'] }}
             getPopupContainer={triggerNode => triggerNode.parentElement.parentElement}
             className="nodrag"
             size="small"
@@ -113,16 +114,16 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         </div>
         <hr className="line"></hr>
         <div>
-          Final events:&nbsp;
+          {L("conversation.startNode.finalEvents")}:&nbsp;
           <Select
             value={getFinalEvents()}
-            dropdownAlign={{points:['tr', 'br']}}
+            dropdownAlign={{ points: ['tr', 'br'] }}
             getPopupContainer={triggerNode => triggerNode.parentElement.parentElement}
             className="nodrag"
             size="small"
             mode="tags"
             popupMatchSelectWidth={false}
-            style={{width: "100%"}}
+            style={{ width: "100%" }}
             placeholder={"(none)"}
             tokenSeparators={[',', ' ']}
             onChange={e => setFinalEvents(e)}
@@ -131,16 +132,16 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         </div>
         <hr className="line"></hr>
         <div>
-          Interceptor:&nbsp;
+          {L("conversation.startNode.interceptor")}:&nbsp;
           <Select
             value={getInterceptor()}
-            dropdownAlign={{points:['tr', 'br']}}
+            dropdownAlign={{ points: ['tr', 'br'] }}
             getPopupContainer={triggerNode => triggerNode.parentElement.parentElement}
             className="nodrag"
             size="small"
             mode="multiple"
             popupMatchSelectWidth={false}
-            style={{width: "100%"}}
+            style={{ width: "100%" }}
             placeholder={"(none)"}
             onChange={e => setInterceptor(e)}
             options={[{ value: "simple" }, { value: "packet" }, { value: "none" }]}

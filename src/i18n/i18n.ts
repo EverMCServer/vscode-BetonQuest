@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import _en from './data/en.json';
 const en = _en as TTranslation;
-import _zh_CN from './data/zh-CN.json';
-const zh_CN = _zh_CN as TTranslation;
+import _zh_cn from './data/zh_CN.json';
+const zh_cn = _zh_cn as TTranslation;
 
 const defaultLocale = "en"; // default to "en"
 let locale = defaultLocale;
@@ -10,10 +10,11 @@ let locale = defaultLocale;
 type TTranslation = { [key: string]: string };
 
 // Translation table
-const translations: { [key: string]: { [key: string]: string } } = {
-    "en": en,
-    "zh_CN": zh_CN,
-};
+// { [key: string]: { [key: string]: string } }
+const translations: Map<string, TTranslation> = new Map([
+    ["en", en],
+    ["zh_cn", zh_cn],
+]);
 
 // Set language code, e.g. "en", "zh-CN"
 // Language codes are defined as IETF language tag with ISO 639‑1 & ISO 3166‑1 standards https://en.wikipedia.org/wiki/IETF_language_tag
@@ -23,18 +24,23 @@ export function setLocale(languageCode: string) {
         languageCode = "en";
     }
 
-    if (["en", "zh_CN"].includes(languageCode)) {
+    if (translations.has(languageCode)) {
         locale = languageCode;
     }
 }
 
 // Get translation by key
-export default function L(key: string): string {
-    if (translations[locale][key]) {
-        return translations[locale][key];
-    } else {
-        return translations[defaultLocale][key];
+export default function L(key: string, variables?: string[]): string {
+    let str = translations.get(locale)?.[key] ?? translations.get(defaultLocale)?.[key] ?? key;
+
+    // Substitutes variables in string
+    if (variables) {
+        for (let i = 0; i < variables.length; i++) {
+            str = str.replaceAll(`{${i}}`, variables[i]);
+        }
     }
+
+    return str;
 }
 
 // Languages come from
