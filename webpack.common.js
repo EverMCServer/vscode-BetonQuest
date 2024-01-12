@@ -46,7 +46,7 @@ const extensionConfig = {
 
 /** @type WebpackConfig */
 const reactConfig = {
-  target: "node", // VS Code extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
+  target: "web",
 
   // entry: './src/extension.ts', // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
   entry: {
@@ -57,6 +57,53 @@ const reactConfig = {
     objectivesEditor: "./src/view/objectivesEditor/index.tsx",
     packageEditor: "./src/view/packageEditor/index.tsx",
   }, // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
+  optimization: {
+    splitChunks: {
+      minSize: 0,
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendor",
+          chunks: "all",
+        },
+        betonquest: {
+          test: /[\\/]src[\\/]betonquest[\\/]/,
+          name: "betonquest",
+          chunks: "all",
+        },
+        bukkit: {
+          test: /[\\/]src[\\/]bukkit[\\/]/,
+          name: "bukkit",
+          chunks: "all",
+        },
+        i18n: {
+          test: /[\\/]src[\\/]i18n[\\/]/,
+          name: "i18n",
+          chunks: "all",
+        },
+        utils: {
+          test: /[\\/]src[\\/]utils[\\/]/,
+          name: "utils",
+          chunks: "all",
+        },
+        viewComponents: {
+          test: /[\\/]src[\\/]view[\\/]components[\\/]/,
+          name: "view/components",
+          chunks: "all",
+        },
+        viewLegacyListEditor: {
+          test: /[\\/]src[\\/]view[\\/]legacyListEditor[\\/]/,
+          name: "view/legacyListEditor",
+          chunks: "all",
+        },
+        viewStyle: {
+          test: /[\\/]src[\\/]view[\\/]style[\\/]/,
+          name: "view/style",
+          chunks: "all",
+        },
+      },
+    },
+  },
   output: {
     // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/
     // path: path.resolve(__dirname, 'dist'),
@@ -64,6 +111,10 @@ const reactConfig = {
     // libraryTarget: 'commonjs2'
     path: path.resolve(__dirname, "dist"),
     filename: "[name].js",
+    // library: {
+    //   type: "var",
+    //   name: "[name]"
+    // }
   },
   externals: {
     vscode: "commonjs vscode", // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/

@@ -1,5 +1,9 @@
 import * as vscode from 'vscode';
 
+interface InitialConfig {
+    // translationSelection?: string,
+}
+
 export class ObjectivesEditorProvider implements vscode.CustomTextEditorProvider {
 
     public static register(context: vscode.ExtensionContext): vscode.Disposable {
@@ -33,7 +37,19 @@ export class ObjectivesEditorProvider implements vscode.CustomTextEditorProvider
         };
 
         // Initialize HTML content in Webview
-        webviewPanel.webview.html = this.getWebviewContent(webviewPanel.webview, document);
+        webviewPanel.webview.html = this.getWebviewContent(
+            webviewPanel.webview,
+            this.context.extensionUri,
+            [
+                "vendor",
+                "betonquest",
+                "bukkit",
+                "i18n",
+                "utils",
+                "view/components",
+                "view/legacyListEditor",
+                "view/style",
+            ]);
 
         // Define a method to update Webview
         function sendDocumentToWebview() {
@@ -121,10 +137,12 @@ export class ObjectivesEditorProvider implements vscode.CustomTextEditorProvider
     }
 
     // Initialize Webview content
-    private getWebviewContent(webview: vscode.Webview, document: vscode.TextDocument): string {
+    private getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri, libraries: string[], initialConfig?: InitialConfig): string {
 
         // get root.js url for React-JS
-        const reactAppPathOnDisk = vscode.Uri.joinPath(this.context.extensionUri, "dist", "objectivesEditor.js");
+        const pathReactApp = vscode.Uri.joinPath(extensionUri, "dist", "objectivesEditor.js");
+        // get lib urls
+        const pathLibs = libraries.map(lib => webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, "dist", lib + '.js')));
 
         return `<!DOCTYPE html>
         <html lang="en">
@@ -147,7 +165,8 @@ export class ObjectivesEditorProvider implements vscode.CustomTextEditorProvider
         <body style="padding: 0px;">
             <div id="root">Loading...</div>
 
-            <script src="${webview.asWebviewUri(reactAppPathOnDisk)}"></script>
+            ${pathLibs.map(lib => `<script src="${webview.asWebviewUri(lib)}"></script>`).join('\n')}
+            <script src="${webview.asWebviewUri(pathReactApp)}"></script>
         </body>
         </html>`;
     }

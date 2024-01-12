@@ -41,10 +41,20 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
         // Initialize HTML content in Webview
         webviewPanel.webview.html = this.getWebviewContent(
             webviewPanel.webview,
+            this.context.extensionUri,
+            [
+                "vendor",
+                "betonquest",
+                "bukkit",
+                "i18n",
+                "utils",
+                "view/components",
+                "view/legacyListEditor",
+                "view/style",
+            ],
             {
                 translationSelection: vscode.workspace.getConfiguration('betonquest.setting').get<string>('translationSelection'),
-            },
-            document,
+            }
         );
 
         // Define a method to update Webview
@@ -213,10 +223,12 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
     }
 
     // Initialize Webview content
-    private getWebviewContent(webview: vscode.Webview, initialConfig: InitialConfig, document: vscode.TextDocument): string {
+    private getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri, libraries: string[], initialConfig?: InitialConfig): string {
 
         // get root.js url for React-JS
-        const reactAppPathOnDisk = vscode.Uri.joinPath(this.context.extensionUri, "dist", "conversationEditor.js");
+        const pathReactApp = vscode.Uri.joinPath(extensionUri, "dist", "conversationEditor.js");
+        // get lib urls
+        const pathLibs = libraries.map(lib => webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, "dist", lib + '.js')));
 
         return `<!DOCTYPE html>
         <html lang="en">
@@ -240,7 +252,8 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
         <body style="padding: 0px;">
             <div id="root">Loading...</div>
 
-            <script src="${webview.asWebviewUri(reactAppPathOnDisk)}"></script>
+            ${pathLibs.map(lib => `<script src="${webview.asWebviewUri(lib)}"></script>`).join('\n')}
+            <script src="${webview.asWebviewUri(pathReactApp)}"></script>
         </body>
         </html>`;
     }
