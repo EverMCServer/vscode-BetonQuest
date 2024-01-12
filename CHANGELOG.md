@@ -4,6 +4,12 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.2.4] - TBD
+
+### Added
+- Optimize initial loading speed
+- Minimize extension
+
 ## [0.2.3] - 2024-01-11
 
 ### Added

@@ -63,27 +63,27 @@ const reactConfig = {
       cacheGroups: {
         vendor: {
           test: /[\\/]node_modules[\\/]/,
-          name: "vendor",
+          name: "lib/vendor",
           chunks: "all",
         },
         betonquest: {
           test: /[\\/]src[\\/]betonquest[\\/]/,
-          name: "betonquest",
+          name: "lib/betonquest",
           chunks: "all",
         },
         bukkit: {
           test: /[\\/]src[\\/]bukkit[\\/]/,
-          name: "bukkit",
+          name: "lib/bukkit",
           chunks: "all",
         },
         i18n: {
           test: /[\\/]src[\\/]i18n[\\/]/,
-          name: "i18n",
+          name: "lib/i18n",
           chunks: "all",
         },
         utils: {
           test: /[\\/]src[\\/]utils[\\/]/,
-          name: "utils",
+          name: "lib/utils",
           chunks: "all",
         },
         viewComponents: {
@@ -91,14 +91,14 @@ const reactConfig = {
           name: "view/components",
           chunks: "all",
         },
-        viewLegacyListEditor: {
-          test: /[\\/]src[\\/]view[\\/]legacyListEditor[\\/]/,
-          name: "view/legacyListEditor",
-          chunks: "all",
-        },
         viewStyle: {
           test: /[\\/]src[\\/]view[\\/]style[\\/]/,
           name: "view/style",
+          chunks: "all",
+        },
+        viewLegacyListEditor: {
+          test: /[\\/]src[\\/]view[\\/]legacyListEditor[\\/]/,
+          name: "view/legacyListEditor",
           chunks: "all",
         },
       },

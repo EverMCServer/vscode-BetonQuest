@@ -41,14 +41,15 @@ export class ObjectivesEditorProvider implements vscode.CustomTextEditorProvider
             webviewPanel.webview,
             this.context.extensionUri,
             [
-                "vendor",
-                "betonquest",
-                "bukkit",
-                "i18n",
-                "utils",
-                "view/components",
-                "view/legacyListEditor",
+                "lib/vendor", // node_modules
+                "lib/betonquest",
+                "lib/bukkit",
+                "lib/i18n",
+                "lib/utils",
+                // "view/components",
                 "view/style",
+
+                "view/legacyListEditor",
             ]);
 
         // Define a method to update Webview

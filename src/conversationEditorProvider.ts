@@ -43,13 +43,12 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
             webviewPanel.webview,
             this.context.extensionUri,
             [
-                "vendor",
-                "betonquest",
-                "bukkit",
-                "i18n",
-                "utils",
+                "lib/vendor", // node_modules
+                "lib/betonquest",
+                // "lib/bukkit",
+                "lib/i18n",
+                "lib/utils",
                 "view/components",
-                "view/legacyListEditor",
                 "view/style",
             ],
             {
