@@ -7,8 +7,8 @@ interface InitialConfig {
 export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
 
     public static register(context: vscode.ExtensionContext): vscode.Disposable {
-        const provider = new EventsEditorProvider(context);
-        const providerRegistration = vscode.window.registerCustomEditorProvider(EventsEditorProvider.viewType, provider);
+        const provider = new this(context);
+        const providerRegistration = vscode.window.registerCustomEditorProvider(this.viewType, provider);
         return providerRegistration;
     }
 
@@ -50,7 +50,8 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
                 "view/style",
 
                 "view/legacyListEditor",
-            ]);
+            ],
+        );
 
         // Define a method to update Webview
         function sendDocumentToWebview() {
@@ -161,6 +162,10 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
 
             <script>
                 window.vscode = acquireVsCodeApi();
+                window.locale = "${vscode.env.language}";
+                window.legacyListEditor = {
+                    initialConfig: ${JSON.stringify(initialConfig)}
+                };
             </script>
         </head>
         <body style="padding: 0px;">

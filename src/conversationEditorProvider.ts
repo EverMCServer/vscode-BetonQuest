@@ -3,7 +3,6 @@ import findYamlNodeByOffset from './utils/findYamlNodeByOffset';
 import findOffestByYamlNode from './utils/findOffestByYamlNode';
 
 export interface InitialConfig {
-    locale?: string, // VSCode's language setting
     translationSelection?: string, // Conversation YAML's translation selection
 }
 
@@ -53,7 +52,6 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                 "view/style",
             ],
             {
-                locale: vscode.env.language,
                 translationSelection: vscode.workspace.getConfiguration('betonquest.setting').get<string>('translationSelection'),
             }
         );
@@ -247,6 +245,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
 
             <script>
                 window.vscode = acquireVsCodeApi();
+                window.locale = "${vscode.env.language}";
                 window.conversationEditor = {
                     initialConfig: ${JSON.stringify(initialConfig)}
                 };

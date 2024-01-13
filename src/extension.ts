@@ -7,7 +7,6 @@ import { ConditionsEditorProvider } from "./conditionsEditorProvider";
 import { ObjectivesEditorProvider } from "./objectivesEditorProvider";
 import { PackageEditorProvider } from "./packageEditorProvider";
 // import { ExampleEditorProvider } from './exampleEditorProvider';
-import { setLocale } from "./i18n/i18n";
 // import * as fs from 'fs';
 import * as path from 'path';
 
@@ -175,9 +174,6 @@ export function activate(context: vscode.ExtensionContext) {
       }
     )
   );
-
-  // Initialize i18n localization
-  setLocale(vscode.env.language);
 
   // Register custom editor
   context.subscriptions.push(ConversationEditorProvider.register(context));

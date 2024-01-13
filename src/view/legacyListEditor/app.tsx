@@ -4,12 +4,8 @@ import { ConfigProvider } from "antd";
 import { YAMLError } from "yaml";
 import { vscode } from "./vscode";
 
-// test locale
-import { setLocale } from '../../i18n/i18n';
-import L from '../../i18n/i18n';
-
 import List from "../../betonquest/List";
-import ListElement, { ListElementType } from "../../betonquest/ListElement";
+import ListElement from "../../betonquest/ListElement";
 import CommonList, { ListEditorProps } from "./components/CommonList";
 
 import '../style/vscodeButton.css';
@@ -19,13 +15,12 @@ import "../style/vscodeInputNumber.css";
 import "../style/vscodePopover.css";
 import "../style/vscodeTooltip.css";
 
-// // Global variables from vscode
-// declare global {
-//     var initialConfig: {
-//         translationSelection?: string; // Conversation YAML's translation selection.
-//         type?: ListElementType; // List's type e.g. "event".
-//     };
-// }
+// Global variables from vscode
+declare global {
+    namespace legacyListEditor {
+        var initialConfig: any;
+    }
+}
 
 // Cache of the YAML
 let cachedYaml = "";
@@ -101,11 +96,6 @@ export default function app<T extends ListElement>(props: ListEditorProps<T>) {
             });
         }, delay);
     };
-
-    // // Test i18n
-    // console.log(L("1"));
-    // console.log(setLocale("zh-CN"));
-    // console.log(L("1"));
 
     return (
         <ConfigProvider

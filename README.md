@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue?style=flat-square)](https://github.com/EverMCServer/vscode-BetonQuest/blob/main/LICENSE)
 
 
-A GUI based editor for [BetonQuest 2.0](https://github.com/BetonQuest/BetonQuest) scripting.
+A GUI based editor for [BetonQuest](https://github.com/BetonQuest/BetonQuest) scripting.
 
 ![conversation editor](assets/screenshot-conversation-light.jpg)
 
@@ -26,7 +26,7 @@ A GUI based editor for [BetonQuest 2.0](https://github.com/BetonQuest/BetonQuest
 - ✅ Formated `Objectives` Editors
 - ✅ Formated `Events`, `Conditions`, `Objectives` Editors for the **1.x file structure**
 - ✅ Supports [Variables](https://betonquest.org/2.0/Documentation/Scripting/Building-Blocks/Variables-List) in `Events`, `Conditions`, `Objectives` Editors.
--  i18n support.
+- ⬜ i18n support.
 - ⬜ [Journal](https://betonquest.org/2.0/Documentation/Features/Journal/) editing.
 - ⬜ [Items](https://betonquest.org/2.0/Documentation/Features/Items/) editing.
 - ⬜ [Intergrated plugins](https://betonquest.org/2.0/Documentation/Scripting/Building-Blocks/Integration-List/) support.
@@ -38,7 +38,7 @@ A GUI based editor for [BetonQuest 2.0](https://github.com/BetonQuest/BetonQuest
 ## Limitations
 
 - `Conversations` Editor does not support [cross-conversation pointers](https://betonquest.org/2.0/Documentation/Features/Conversations/#cross-conversation-pointers) at this moment.
-- [Global Variables](https://betonquest.org/2.0/Documentation/Scripting/Building-Blocks/Variables-List/#global-variables) are conflicted with this extension. Please consider convert your scripts before using the extension. Global Variables support may be added in the far future.
+- [Global Variables](https://betonquest.org/2.0/Documentation/Scripting/Building-Blocks/Variables-List/#global-variables) conflict with this extension. Please consider convert your scripts before using this extension. Support for Global Variables may be added in the far future.
 
 ## Extension Settings
 
@@ -51,7 +51,7 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 - Zoom-in and out is limited to certain degrees.
 - (2.0 related) Conversation's tabs are not properly switched when clicked on the YAML file.
 - (2.0 related) Conversation's tabs are switched to the first one when the YAML edited.
-- `notify` Events are not fully supported at this moment.
+- `notify` Event is not fully supported at this moment.
 
 ## Release Notes
 

@@ -161,6 +161,10 @@ export class ObjectivesEditorProvider implements vscode.CustomTextEditorProvider
 
             <script>
                 window.vscode = acquireVsCodeApi();
+                window.locale = "${vscode.env.language}";
+                window.legacyListEditor = {
+                    initialConfig: ${JSON.stringify(initialConfig)}
+                };
             </script>
         </head>
         <body style="padding: 0px;">

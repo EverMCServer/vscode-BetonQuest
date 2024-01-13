@@ -1,6 +1,7 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { DefaultOptionType } from "antd/es/select";
 
+import L from "../../../i18n/i18n";
 import Event from "../../../betonquest/Event";
 import { Kind, ListElementEditorProps } from "../../legacyListEditor/components/CommonList/CommonEditor";
 import CommonEditor from "../../legacyListEditor/components/CommonList/CommonEditor";
@@ -27,11 +28,11 @@ import TextAreaList from "../../legacyListEditor/components/CommonList/Input/Tex
 const kinds: Kind<Event>[] = [
     {
         value: '*',
-        display: '*',
+        display: L("betonquest.v1.event.*.display"),
         description: undefined,
         argumentsPattern: {
             mandatory: [
-                { jsx: TextArea, name: 'Value', type: '*', defaultValue: '' },
+                { jsx: TextArea, name: L("betonquest.v1.event.*.mandatory.value.name"), type: '*', defaultValue: '' },
             ],
             keepWhitespaces: true
         }
@@ -39,11 +40,11 @@ const kinds: Kind<Event>[] = [
     {
         // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/events/CancelEvent.java
         value: 'cancel',
-        display: 'Cancel',
-        description: 'Cancel a quest predefined in a Quest Canceler.',
+        display: L("betonquest.v1.event.cancel.display"),
+        description: L("betonquest.v1.event.cancel.description"),
         argumentsPattern: {
             mandatory: [
-                { jsx: Input, name: 'Canceler', type: 'string', defaultValue: 'a_canceler_name_1', tooltip: 'A canceler name predefined in the package\'s `cancel:` section', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: L("betonquest.v1.event.cancel.mandatory.canceler.name"), type: 'string', defaultValue: 'a_canceler_name_1', tooltip: L("betonquest.v1.event.cancel.mandatory.canceler.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },

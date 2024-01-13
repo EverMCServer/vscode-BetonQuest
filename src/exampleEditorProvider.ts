@@ -178,6 +178,10 @@ export class ExampleEditorProvider implements vscode.CustomTextEditorProvider {
 
             <script>
                 window.vscode = acquireVsCodeApi();
+                window.locale = "${vscode.env.language}";
+                window.exampleEditor = {
+                    initialConfig: ${JSON.stringify(initialConfig)}
+                };
             </script>
         </head>
         <body style="padding: 0px;">

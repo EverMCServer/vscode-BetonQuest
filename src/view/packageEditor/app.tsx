@@ -3,10 +3,6 @@ import { useEffect, useState } from "react";
 
 import { vscode } from "./vscode";
 
-// test locale
-import { setLocale } from '../../i18n/i18n';
-import L from '../../i18n/i18n';
-
 import { ConfigProvider, Layout } from "antd";
 // const { Content } = Layout;
 import { YAMLError } from "yaml";
@@ -52,8 +48,6 @@ export default function app() {
 
     // Get document's content update from vscode
     useEffect(() => {
-        // Set language
-        setLocale(packageEditor.initialConfig.locale || "en");
         // Notify vscode when webview startup completed.
         vscode.postMessage({
             type: "webview-lifecycle",
@@ -81,7 +75,7 @@ export default function app() {
                         if (message.isInit) {
                             // Fully expand the sider if there is no conversation.
                             if (!p.getConversations().size) {
-                                setSiderWidth(document.body.scrollWidth-5);
+                                setSiderWidth(document.body.scrollWidth - 5);
                             }
                             // Pops out the sider if there are any events, conditions, objectives or items.
                             if (p.getAllEvents().length || p.getAllConditions().length || p.getAllObjectives().length || p.getAllItems().length) {
@@ -112,11 +106,6 @@ export default function app() {
             });
         }, delay);
     };
-
-    // // Test i18n
-    // console.log(L("1"));
-    // console.log(setLocale("zh-CN"));
-    // console.log(L("1"));
 
     // Collapsible Sider
     const [collapsed, setCollapsed] = useState(true);

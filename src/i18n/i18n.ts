@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import _en from './data/en.json';
 const en = _en as TTranslation;
-import _zh_cn from './data/zh_CN.json';
+import _zh_cn from './data/zh_cn.json';
 const zh_cn = _zh_cn as TTranslation;
+
+declare global {
+    var locale: string;
+}
 
 const defaultLocale = "en"; // default to "en"
 let locale = defaultLocale;
@@ -13,14 +17,14 @@ type TTranslation = { [key: string]: string };
 // { [key: string]: { [key: string]: string } }
 const translations: Map<string, TTranslation> = new Map([
     ["en", en],
-    ["zh_cn", zh_cn],
+    ["zh-cn", zh_cn],
 ]);
 
 // Set language code, e.g. "en", "zh-CN"
 // Language codes are defined as IETF language tag with ISO 639‑1 & ISO 3166‑1 standards https://en.wikipedia.org/wiki/IETF_language_tag
 export function setLocale(languageCode: string) {
-    languageCode = languageCode.replace("-", "_");
-    if (languageCode.startsWith("en_")) {
+    languageCode = languageCode.replace("_", "-");
+    if (languageCode.startsWith("en-")) {
         languageCode = "en";
     }
 
@@ -28,6 +32,7 @@ export function setLocale(languageCode: string) {
         locale = languageCode;
     }
 }
+setLocale(globalThis.locale || defaultLocale);
 
 // Get translation by key
 export default function L(key: string, variables?: string[]): string {
