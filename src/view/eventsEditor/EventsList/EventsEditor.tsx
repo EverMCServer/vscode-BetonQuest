@@ -592,7 +592,7 @@ const kinds: Kind<Event>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: InputList, name: L("betonquest.v1.event.objective.mandatory.objectiveName(S).name"), type: 'string[,]', defaultValue: ['an_objective_1'], config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: L("betonquest.v1.event.objective.mandatory.objectiveNames.name"), type: 'string[,]', defaultValue: ['an_objective_1'], config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
