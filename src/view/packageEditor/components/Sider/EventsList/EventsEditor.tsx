@@ -560,7 +560,7 @@ const kinds: Kind<Event>[] = ([
             mandatory: [
                 { jsx: Input, name: L("betonquest.v2.event.if.mandatory.conditionName.name"), type: 'string', defaultValue: 'a_positve_condition_1', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Input, name: L("betonquest.v2.event.if.mandatory.positiveEventName.name"), type: 'string', defaultValue: 'a_positive_event_1', config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: () => <>Else</>, name: '', type: 'string', defaultValue: 'else' },
+                { jsx: () => <>{L("betonquest.v1.event.if.mandatory.else.name")}</>, name: '', type: 'string', defaultValue: 'else' },
                 { jsx: Input, name: L("betonquest.v2.event.if.mandatory.negativeEventName.name"), type: 'string', defaultValue: 'a_negative_event_1', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
