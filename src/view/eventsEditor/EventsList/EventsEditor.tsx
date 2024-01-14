@@ -129,12 +129,12 @@ const kinds: Kind<Event>[] = [
                     jsx: Select, name: L("betonquest.v1.event.compass.mandatory.action.name"), type: 'string', defaultValue: 'add', placeholder: 'e.g. add', config: {
                         options: [
                             {
-                                label: L("betonquest.v1.event.compass.mandatory.action.option.give"),
-                                value: 'give'
+                                label: L("betonquest.v1.event.compass.mandatory.action.option.add"),
+                                value: 'add'
                             },
                             {
-                                label: L("betonquest.v1.event.compass.mandatory.action.option.take"),
-                                value: 'take'
+                                label: L("betonquest.v1.event.compass.mandatory.action.option.del"),
+                                value: 'del'
                             },
                             {
                                 label: L("betonquest.v1.event.compass.mandatory.action.option.set"),
@@ -314,14 +314,14 @@ const kinds: Kind<Event>[] = [
                 { jsx: Number, name: L("betonquest.v1.event.folder.optional.delay.name"), key: 'delay', type: 'float', placeholder: '(none)', tooltip: L("betonquest.v1.event.folder.optional.delay.tooltip"), config: { min: 0 }, allowVariable: true },
                 { jsx: Number, name: L("betonquest.v1.event.folder.optional.period.name"), key: 'period', type: 'float', placeholder: '(none)', tooltip: L("betonquest.v1.event.folder.optional.period.tooltip"), config: { min: 0 }, allowVariable: true },
                 // {
-                //     jsx: Select, name: L("betonquest.v1.event.folder.optional.unit.name"), key: 'unit', type: 'select', placeholder: 'Seconds', config: {
+                //     jsx: Select, name: 'Duration Unit', key: 'minutes', type: 'select', placeholder: 'Seconds', config: {
                 //         options: [
                 //             {
-                //                 label: L("betonquest.v1.event.folder.optional.unit.option.minutes"),
+                //                 label: 'Minutes',
                 //                 value: 'minutes'
                 //             },
                 //             {
-                //                 label: L("betonquest.v1.event.folder.optional.unit.option.ticks"),
+                //                 label: 'Ticks',
                 //                 value: 'ticks'
                 //             },
                 //         ] as DefaultOptionType[],
@@ -390,11 +390,11 @@ const kinds: Kind<Event>[] = [
                         options: [
                             {
                                 label: L("betonquest.v1.event.globaltag.mandatory.action.option.add"),
-                                value: 'action:add'
+                                value: 'add'
                             },
                             {
                                 label: L("betonquest.v1.event.globaltag.mandatory.action.option.del"),
-                                value: 'action:del'
+                                value: 'del'
                             },
                         ] as DefaultOptionType[]
                     }
@@ -802,11 +802,11 @@ const kinds: Kind<Event>[] = [
                 //     jsx: Select, name: 'Action', type: 'string', defaultValue: 'add', placeholder: 'e.g. add', config: {
                 //         options: [
                 //             {
-                //                 label: 'Set =', // TODO: i18n
+                //                 label: 'Set =',
                 //                 value: ''
                 //             },
                 //             {
-                //                 label: 'Add +', // TODO: i18n
+                //                 label: 'Add +',
                 //                 value: '+'
                 //             }
                 //         ] as DefaultOptionType[]
@@ -816,7 +816,7 @@ const kinds: Kind<Event>[] = [
                 { jsx: Input, name: L("betonquest.v1.event.time.mandatory.hours.name"), type: 'string', defaultValue: '+0', placeholder: 'e.g. +1.25', tooltip: L("betonquest.v1.event.time.mandatory.hours.tooltip"), config: { allowedPatterns: [/^[\+\-]?\d*\.?\d*$/] } },
             ],
             optional: [
-                { jsx: Input, name: L("betonquest.v1.event.time.mandatory.world.name"), key: 'world', type: 'string', placeholder: '(current)', tooltip: L("betonquest.v1.event.time.mandatory.world.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: L("betonquest.v1.event.time.optional.world.name"), key: 'world', type: 'string', placeholder: '(current)', tooltip: L("betonquest.v1.event.time.optional.world.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
