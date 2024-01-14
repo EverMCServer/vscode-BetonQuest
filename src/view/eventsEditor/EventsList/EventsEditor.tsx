@@ -19,6 +19,7 @@ import Input from "../../legacyListEditor/components/CommonList/Input/Input";
 import InputList from "../../legacyListEditor/components/CommonList/Input/InputList";
 import ItemList from "../../legacyListEditor/components/CommonList/Input/ItemList";
 import Number from "../../legacyListEditor/components/CommonList/Input/Number";
+import PotionEffectType from "../../legacyListEditor/components/CommonList/Input/PotionEffectType";
 import PotionEffectTypeList from "../../legacyListEditor/components/CommonList/Input/PotionEffectTypeList";
 import Select from "../../legacyListEditor/components/CommonList/Input/Select";
 import TextArea from "../../legacyListEditor/components/CommonList/Input/TextArea";
@@ -246,7 +247,7 @@ const kinds: Kind<Event>[] = [
         // e.g. effect BLINDNESS 30 1 ambient icon
         argumentsPattern: {
             mandatory: [
-                { jsx: PotionEffectTypeList, name: L("betonquest.v1.event.effect.mandatory.effects.name"), type: 'string[,]', defaultValue: ['SPEED'], tooltip: L("betonquest.v1.event.effect.mandatory.effects.tooltip") },
+                { jsx: PotionEffectType, name: L("betonquest.v1.event.effect.mandatory.effect.name"), type: 'string[,]', defaultValue: ['SPEED'], tooltip: L("betonquest.v1.event.effect.mandatory.effect.tooltip") },
                 { jsx: Number, name: L("betonquest.v1.event.effect.mandatory.duration.name"), type: 'float', defaultValue: 0.0, tooltip: L("betonquest.v1.event.effect.mandatory.duration.tooltip"), config: { min: 0 }, allowVariable: true },
                 { jsx: Number, name: L("betonquest.v1.event.effect.mandatory.level.name"), type: 'int', defaultValue: 0, tooltip: L("betonquest.v1.event.effect.mandatory.level.tooltip"), config: { min: 0 }, allowVariable: true },
             ],
