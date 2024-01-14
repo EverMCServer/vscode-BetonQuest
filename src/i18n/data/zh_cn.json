@@ -311,6 +311,8 @@
 
     "betonquest.v2.event.*.display": "*",
     "betonquest.v2.event.*.mandatory.value.name": "值",
+    "betonquest.v2.event.*.optional.conditions.name": "额外条件",
+    "betonquest.v2.event.*.optional.conditions.tooltip": "定义需要满足的额外条件名称",
     "betonquest.v2.event.cancel.display": "取消任务",
     "betonquest.v2.event.cancel.description": "取消一个任务。",
     "betonquest.v2.event.cancel.mandatory.canceler.name": "任务取消名称",
@@ -441,7 +443,7 @@
     "betonquest.v2.event.first.description.3": "event1: \"point carry boxes 10 action:add condition:firstCondition\"",
     "betonquest.v2.event.first.description.4": "event2: \"point carry boxes 20 action:add condition:secondCondition\"",
     "betonquest.v2.event.first.description.5": "event3: \"point carry boxes 40 action:add condition:thirdCondition\"",
-    "betonquest.v2.event.first.mandatory.eventNameS.name": "事件名称",
+    "betonquest.v2.event.first.mandatory.eventNames.name": "事件名称",
     "betonquest.v2.event.give.display": "给予",
     "betonquest.v2.event.give.description": "给予玩家预定义的物品。",
     "betonquest.v2.event.give.mandatory.itemList.name": "物品列表",

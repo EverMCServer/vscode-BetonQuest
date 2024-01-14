@@ -28,7 +28,7 @@ import { ArgumentsPatternOptional } from "../../../../../betonquest/Arguments";
 
 // Default optional arguments for every kind
 const defaultOptionalArguments: ArgumentsPatternOptional[] = [
-    { jsx: InputList, name: 'Conditions', key: 'conditions', type: 'string[,]', placeholder: '(none)', tooltip: 'Conditions to be satisfied or it will not be executed', config: { allowedPatterns: [/^\S*$/] } },
+    { jsx: InputList, name: L("betonquest.v2.event.*.optional.conditions.name"), key: 'conditions', type: 'string[,]', placeholder: '(none)', tooltip: L("betonquest.v2.event.*.optional.conditions.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
 ];
 
 // All kinds
@@ -330,7 +330,7 @@ const kinds: Kind<Event>[] = ([
                 },
             ],
             optional: [
-                { jsx: Checkbox, name: <div><s>L("betonquest.v2.event.experience.optional.level.name</s></div>, key: 'level', type: 'boolean', tooltip: L("betonquest.v2.event.experience.optional.level.tooltip") },
+                { jsx: Checkbox, name: <div><s>{L("betonquest.v2.event.experience.optional.level.name")}</s></div>, key: 'level', type: 'boolean', tooltip: L("betonquest.v2.event.experience.optional.level.tooltip") },
             ]
         }
     },
@@ -1329,7 +1329,7 @@ const kinds: Kind<Event>[] = ([
     }
 ] as Kind<Event>[]).map(kind => {
     if (kind.argumentsPattern.optional) {
-        kind.argumentsPattern.optional.unshift(...defaultOptionalArguments);
+        kind.argumentsPattern.optional.push(...defaultOptionalArguments);
     } else {
         kind.argumentsPattern.optional = defaultOptionalArguments;
     }

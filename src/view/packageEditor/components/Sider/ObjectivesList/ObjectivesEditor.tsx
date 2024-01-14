@@ -548,7 +548,7 @@ const kinds: Kind<Objective>[] = ([
     },
 ] as Kind<Objective>[]).map(kind => {
     if (kind.argumentsPattern.optional) {
-        kind.argumentsPattern.optional.unshift(...defaultOptionalArguments);
+        kind.argumentsPattern.optional.push(...defaultOptionalArguments);
     } else {
         kind.argumentsPattern.optional = defaultOptionalArguments;
     }
