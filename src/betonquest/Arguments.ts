@@ -272,10 +272,10 @@ export default class Arguments {
         const mandatoryUnKeyedLength = pattern.mandatory.filter(e => !e.key).length;
         let iTo = mandatoryUnKeyedLength;
         if (pattern.optionalAtFirst) {
-            iFrom = pattern.optional?.length || 0;
             iTo = argStrs.length;
+            iFrom = iTo - mandatoryUnKeyedLength;
         }
-        const argStrsMandatory = argStrs.slice(iFrom, iTo);
+        const argStrsMandatoryUnKeyed = argStrs.slice(iFrom, iTo);
         for (let i = 0; i < pattern.mandatory.length; i++) {
             const pat = pattern.mandatory[i];
 
@@ -292,7 +292,7 @@ export default class Arguments {
                 });
             } else {
                 // Without key
-                argStr = argStrsMandatory[i];
+                argStr = argStrsMandatoryUnKeyed[i];
             }
 
             // Check if variable and parse it
@@ -337,7 +337,7 @@ export default class Arguments {
                 }) || pat.defaultValue;
                 this.mandatory[i].setValue(parseError ? pat.defaultValue : parsedArg);
             } else if (pat.type === '*') {
-                this.mandatory[i].setValue(argStrsMandatory.slice(i)
+                this.mandatory[i].setValue(argStrsMandatoryUnKeyed.slice(i)
                     .map(v => this.unescapeCharacters(escapeCharacters, v))
                     .join(" ") || pat.defaultValue);
                 break;
@@ -353,7 +353,7 @@ export default class Arguments {
             let iFrom = 0;
             let iTo = argStrs.length;
             if (pattern.optionalAtFirst) {
-                iTo = pattern.optional.length;
+                iTo -= mandatoryUnKeyedLength;
             } else {
                 iFrom = mandatoryUnKeyedLength;
             }
