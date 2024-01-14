@@ -215,7 +215,7 @@
     "betonquest.v1.event.point.display": "Point",
     "betonquest.v1.event.point.description": "Manipulates player's points.",
     "betonquest.v1.event.point.mandatory.pointCategory.name": "Point Category",
-    "betonquest.v1.event.point.mandatory.pointCategory.tooltip": "ID of the global point",
+    "betonquest.v1.event.point.mandatory.pointCategory.tooltip": "ID of the point",
     "betonquest.v1.event.point.mandatory.amount.name": "Amount",
     "betonquest.v1.event.point.mandatory.amount.tooltip": "Amount to change, could be multiply",
     "betonquest.v1.event.point.optional.notify.name": "Notify",
