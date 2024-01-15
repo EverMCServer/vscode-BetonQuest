@@ -66,9 +66,6 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
         const newListElements = props.package.getAllListElements<T>(props.type);
         setListElements(newListElements);
         setListElementEditorList(getListElementEditorList(newListElements));
-        const expandids = listElementEditorListCache.current?.map(e => e.id!);
-        if (expandids){
-        setCollapseActiveKeys(expandids);}
     }, [props.package]);
 
     // Handle Collapse
