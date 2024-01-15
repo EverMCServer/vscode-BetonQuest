@@ -276,7 +276,7 @@ const kinds: Kind<Objective>[] = ([
                     }
                 },
                 { jsx: EntityType, name: L("betonquest.v2.objective.interact.mandatory.entityType.name"), type: 'string', defaultValue: 'ZOMBIE' },
-                { jsx: Number, name: L("betonquest.v2.objective.interact.mandatory.mobs.name"), type: 'int', defaultValue: 1, tooltip: L("betonquest.v2.objective.interact.mandatory.mobs.tooltip"), config: { min: 1 }, allowVariable: true },
+                { jsx: Number, name: L("betonquest.v2.objective.interact.mandatory.amount.name"), type: 'int', defaultValue: 1, tooltip: L("betonquest.v2.objective.interact.mandatory.mobs.tooltip"), config: { min: 1 }, allowVariable: true },
             ],
             optional: [
                 { jsx: Input, name: L("betonquest.v2.objective.interact.optional.name.name"), key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: L("betonquest.v2.objective.interact.optional.name.tooltip"), escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
