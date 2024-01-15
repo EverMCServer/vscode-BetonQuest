@@ -662,7 +662,7 @@ const kinds: Kind<Event>[] = [
         // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/events/RunEvent.java
         value: 'run',
         display: L("betonquest.v1.event.run.display"),
-        description: <><div style={{ marginBottom: 8 }}>{L("betonquest.v1.event.run.description")}</div><div>{L("betonquest.v1.event.run.description.1")}</div></>,
+        description: L("betonquest.v1.event.run.description"),
         // e.g. run ^tag add beton ^give emerald:5 ^entry add beton ^kill
         argumentsPattern: {
             mandatory: [
@@ -788,14 +788,7 @@ const kinds: Kind<Event>[] = [
         // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/events/TimeEvent.java
         value: 'time',
         display: L("betonquest.v1.event.time.display"),
-        description: <>
-            <div style={{ marginBottom: 8 }}>{L("betonquest.v1.event.time.description")}</div>
-            <ul>
-                <li>{L("betonquest.v1.event.time.description.1")}</li>
-                <li>{L("betonquest.v1.event.time.description.2")}</li>
-                <li>{L("betonquest.v1.event.time.description.3")}</li>
-            </ul>
-        </>,
+        description: L("betonquest.v1.event.time.description"),
         // e.g. time -12 world:rpgworld
         argumentsPattern: {
             mandatory: [

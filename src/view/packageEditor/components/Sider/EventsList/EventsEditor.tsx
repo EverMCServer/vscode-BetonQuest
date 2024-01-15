@@ -416,16 +416,13 @@ const kinds: Kind<Event>[] = ([
         // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/logic/FirstEventFactory.java
         value: 'first',
         display: L("betonquest.v2.event.first.display"),
-        description: <>
-            <div>{L("betonquest.v2.event.first.description")}</div>
-            <div>{L("betonquest.v2.event.first.description.1")}</div>
+        description: L("betonquest.v2.event.first.description", [`
             <ul>
-                <li>{L("betonquest.v2.event.first.description.2")}</li>
-                <li>{L("betonquest.v2.event.first.description.3")}</li>
-                <li>{L("betonquest.v2.event.first.description.4")}</li>
-                <li>{L("betonquest.v2.event.first.description.5")}</li>
-            </ul>
-        </>,
+                <li>firstExample: "first event1,event2,event3"</li>
+                <li>event1: "point carry boxes 10 action:add condition:firstCondition"</li>
+                <li>event2: "point carry boxes 20 action:add condition:secondCondition"</li>
+                <li>event3: "point carry boxes 40 action:add condition:thirdCondition"</li>
+            </ul>`]),
         argumentsPattern: {
             mandatory: [
                 { jsx: InputList, name: L("betonquest.v2.event.first.mandatory.eventNames.name"), type: 'string[,]', defaultValue: ['an_event_1'], config: { allowedPatterns: [/^\S*$/] } },
@@ -769,7 +766,7 @@ const kinds: Kind<Event>[] = ([
         // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/log/LogEventFactory.java
         value: 'log',
         display: L("betonquest.v2.event.log.display"),
-        description: <><div style={{ marginBottom: 8 }}>{L("betonquest.v2.event.log.description")}</div><div>{L("betonquest.v2.event.log.description.1")}</div></>,
+        description: L("betonquest.v2.event.log.description"),
         // e.g. log level:DEBUG daily quests have been reset
         argumentsPattern: {
             mandatory: [
@@ -944,7 +941,7 @@ const kinds: Kind<Event>[] = ([
         // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/events/RunEvent.java
         value: 'run',
         display: L("betonquest.v2.event.run.display"),
-        description: <><div style={{ marginBottom: 8 }}>{L("betonquest.v2.event.run.description")}</div><div>{L("betonquest.v2.event.run.description.1")}</div></>,
+        description: L("betonquest.v2.event.run.description"),
         // e.g. run ^tag add beton ^give emerald:5 ^entry add beton ^kill
         argumentsPattern: {
             mandatory: [
@@ -957,7 +954,7 @@ const kinds: Kind<Event>[] = ([
         // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/run/RunForAllEventFactory.java
         value: 'runForAll',
         display: L("betonquest.v2.event.runForAll.display"),
-        description: <><div style={{ marginBottom: 8 }}>{L("betonquest.v2.event.runForAll.description")}<b>{L("betonquest.v2.event.runForAll.description.1")}</b>{L("betonquest.v2.event.runForAll.description.2")}</div></>,
+        description: L("betonquest.v2.event.runForAll.description"),
         // e.g. runForAll where:!isOp events:kickPlayer,restartQuest
         argumentsPattern: {
             mandatory: [
@@ -976,16 +973,7 @@ const kinds: Kind<Event>[] = ([
         // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/run/RunIndependentEventFactory.java
         value: 'runIndependent',
         display: L("betonquest.v2.event.runIndependent.display"),
-        description: <>
-            <div style={{ marginBottom: 8 }}>{L("betonquest.v2.event.runIndependent.description")}</div>
-            <div style={{ marginBottom: 8 }}>{L("betonquest.v2.event.runIndependent.description.2")}</div>
-            <ul>
-                <li>{L("betonquest.v2.event.runIndependent.description.3")}</li>
-                <li>{L("betonquest.v2.event.runIndependent.description.4")}</li>
-                <li>{L("betonquest.v2.event.runIndependent.description.5")}</li>
-                <li>{L("betonquest.v2.event.runIndependent.description.6")}</li>
-            </ul>
-        </>,
+        description: L("betonquest.v2.event.runIndependent.description"),
         // e.g. runIndependent events:removeObjective,clearTags,resetJournal
         argumentsPattern: {
             mandatory: [
@@ -1053,7 +1041,7 @@ const kinds: Kind<Event>[] = ([
         // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/stage/StageEventFactory.java
         value: 'stage',
         display: L("betonquest.v2.event.stage.display"),
-        description: <><div style={{ marginBottom: 8 }}>{L("betonquest.v2.event.stage.description")}</div><div>{L("betonquest.v2.event.stage.description.1")}</div></>,
+        description: L("betonquest.v2.event.stage.description"),
         // e.g. stage bakeCookies decrease 2
         argumentsPattern: {
             mandatory: [
@@ -1168,14 +1156,7 @@ const kinds: Kind<Event>[] = ([
         // https://github.com/BetonQuest/BetonQuest/blob/main/src/main/java/org/betonquest/betonquest/quest/event/time/TimeEventFactory.java
         value: 'time',
         display: L("betonquest.v2.event.time.display"),
-        description: <>
-            <div style={{ marginBottom: 8 }}>{L("betonquest.v2.event.time.description")}</div>
-            <ul>
-                <li>{L("betonquest.v2.event.time.description.1")}</li>
-                <li>{L("betonquest.v2.event.time.description.2")}</li>
-                <li>{L("betonquest.v2.event.time.description.3")}</li>
-            </ul>
-        </>,
+        description: L("betonquest.v2.event.time.description"),
         // e.g. time -12 world:rpgworld
         // e.g. time +%randomnumber.whole.100~2000% world:pvpworld ticks
         argumentsPattern: {
