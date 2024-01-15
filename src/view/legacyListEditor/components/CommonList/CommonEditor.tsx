@@ -44,7 +44,7 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
 
     const optionsCache = useRef(props.kinds.slice(1).map(k => ({
         value: k.value,
-        label: k.display,
+        label: `${k.display} (${k.value})`,
     })));
 
     const [options, setOptions] = useState<{ label: string, value: string }[]>(optionsCache.current);
