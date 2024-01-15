@@ -1,5 +1,10 @@
 {
     "delete": "删除",
+    "cancel": "取消",
+
+    "legacyListEditor.commonList.collapseExtra.popconfirmTitle": "你确定要删除 {0} 吗？",
+
+    "packageEditor.sider.commonList.collapseExtra.popconfirmTitle": "你确定要删除 {0} 吗？",
 
     "conversation.startNode.start": "初始对话",
     "conversation.startNode.quester": "NPC 名字",

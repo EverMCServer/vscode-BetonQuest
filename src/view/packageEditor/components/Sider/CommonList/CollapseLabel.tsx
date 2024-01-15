@@ -93,7 +93,7 @@ export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
                     <Input
                         autoFocus
                         defaultValue={title}
-                        placeholder="Please enter the name of event"
+                        placeholder="Please enter the name"
                         value={titleEditValue}
                         onChange={onTitleEditTyping}
                         onBlur={() => setIsTitleEditing(false)}

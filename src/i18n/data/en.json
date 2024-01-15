@@ -1,5 +1,10 @@
 {
     "delete": "Delete",
+    "cancel": "Cancel",
+
+    "legacyListEditor.commonList.collapseExtra.popconfirmTitle": "Are you sure you want to delete {0}?",
+
+    "packageEditor.sider.commonList.collapseExtra.popconfirmTitle": "Are you sure you want to delete {0}?",
 
     "conversation.startNode.start": "Start",
     "conversation.startNode.quester": "NPC Name",

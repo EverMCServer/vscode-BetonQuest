@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Popconfirm, Tooltip } from "antd";
 import { VscTrash, VscWarning } from "react-icons/vsc";
 
+import L from "../../../../i18n/i18n";
 import { CommonListProps } from "../CommonList";
 import ListElement, { ListElementType } from "../../../../betonquest/ListElement";
 
@@ -34,12 +35,12 @@ export default function <T extends ListElement>(props: CollapseExtraProps<T>) {
                 onOpenChange={() => setName(props.listElement.getName())}
                 onConfirm={onElementRemove}
                 placement="topRight"
-                title={`Are you sure you want to delete "${name}"?`}
-                okText="Delete"
-                cancelText="Cancel"
+                title={L("legacyListEditor.commonList.collapseExtra.popconfirmTitle", [name])}
+                okText={L("delete")}
+                cancelText={L("cancel")}
                 onPopupClick={e => e.stopPropagation()} // Prevent parent Collapse being toggled when clicked
             >
-                <Tooltip placement="left" title="Delete">
+                <Tooltip placement="left" title={L("delete")}>
                     <VscTrash
                         style={{
                             margin: '0 6px 0 0',
