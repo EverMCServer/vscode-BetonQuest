@@ -1156,7 +1156,6 @@
     "betonquest.v2.event.weather.mandatory.type.name": "类型",
     "betonquest.v2.event.weather.mandatory.type.option.sun": "晴天",
     "betonquest.v2.event.weather.mandatory.type.option.rain": "下雨",
-    "betonquest.v2.event.weather.mandatory.type.option.thunder": "雷暴",
     "betonquest.v2.event.weather.mandatory.type.option.storm": "暴风雨",
     "betonquest.v2.event.weather.optional.duration.name": "持续时间",
     "betonquest.v2.event.weather.optional.duration.tooltip": "持续时间，以秒为单位",

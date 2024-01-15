@@ -1156,7 +1156,6 @@
     "betonquest.v2.event.weather.mandatory.type.name": "Type",
     "betonquest.v2.event.weather.mandatory.type.option.sun": "Sun / Clear",
     "betonquest.v2.event.weather.mandatory.type.option.rain": "Rain",
-    "betonquest.v2.event.weather.mandatory.type.option.thunder": "Thunder",
     "betonquest.v2.event.weather.mandatory.type.option.storm": "Storm",
     "betonquest.v2.event.weather.optional.duration.name": "Duration",
     "betonquest.v2.event.weather.optional.duration.tooltip": "How long it will last, in seconds",

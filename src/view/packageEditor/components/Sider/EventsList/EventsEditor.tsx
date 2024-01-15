@@ -1290,10 +1290,6 @@ const kinds: Kind<Event>[] = ([
                                 value: 'rain'
                             },
                             {
-                                label: L("betonquest.v2.event.weather.mandatory.type.option.thunder"),
-                                value: 'thunder'
-                            },
-                            {
                                 label: L("betonquest.v2.event.weather.mandatory.type.option.storm"),
                                 value: 'storm'
                             },
