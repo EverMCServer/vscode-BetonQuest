@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Button, InputNumber, Select, Space, Tooltip } from "antd";
+import { Button, Select, Space } from "antd";
 import { DefaultOptionType } from "antd/es/select";
 import { VscClose } from "react-icons/vsc";
 
+import L from "../../../../../../i18n/i18n";
 import { InputProps } from "./Common";
 import ENTITY_TYPE_LIST from "../../../../../../bukkit/Data/EntityTypeList";
 
@@ -157,7 +158,7 @@ export default function (props: InputProps) {
                 size="small"
                 onClick={onAdd}
             >
-                Add
+                {L("betonquest.*.input.entity*.add")}
             </Button>
         </Space>
     );

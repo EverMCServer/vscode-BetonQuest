@@ -35,7 +35,7 @@ export default function <T extends ListElement>(props: CollapseExtraProps<T>) {
                 onOpenChange={() => setName(props.listElement.getName())}
                 onConfirm={onElementRemove}
                 placement="topRight"
-                title={L("packageEditor.sider.commonList.collapseExtra.popconfirmTitle", [name])}
+                title={L("packageEditor.commonList.collapseExtra.popconfirmTitle", [name])}
                 okText={L("delete")}
                 cancelText={L("cancel")}
                 onPopupClick={e => e.stopPropagation()} // Prevent parent Collapse being toggled when clicked

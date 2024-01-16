@@ -7,6 +7,7 @@ import {
   NodeProps,
   Connection,
 } from "reactflow";
+import L from "../../../../../i18n/i18n";
 import { connectionAvaliable } from "../utils/commonUtils";
 import "./styles.css";
 import { NodeData } from "./Nodes";
@@ -100,14 +101,14 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   return (
     <div style={{ width: "100%" }}>
       <div className="title-box npc">
-        NPC
+        {L("*.conversation.npcNode.npc")}
         <div className="nodeName">
           ({data.option?.getName()})
         </div>
       </div>
       <div className="box">
         <div className="container">
-          conditions:
+          {L("*.conversation.*.conditions")}
           <div className="buttons">
             <button onClick={conditionDel} className="actionButton">
               -
@@ -127,7 +128,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
           />
         ))}
         <hr className="line"></hr>
-        text:
+        {L("*.conversation.*.text")}
         <textarea
           className="nodrag textArea"
           value={textGet()}
@@ -136,7 +137,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         />
         <hr className="line"></hr>
         <div className="container">
-          events:
+          {L("*.conversation.*.events")}
           <div className="buttons">
             <button onClick={eventDel} className="actionButton">
               -

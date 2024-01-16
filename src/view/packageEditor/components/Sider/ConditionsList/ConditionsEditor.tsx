@@ -497,7 +497,7 @@ const kinds: Kind<Condition>[] = [
         argumentsPattern: {
             mandatory: [
                 { jsx: Number, name: L("betonquest.v2.condition.party.mandatory.distance.name"), type: 'float', defaultValue: 0.0, tooltip: L("betonquest.v2.condition.party.mandatory.distance.tooltip"), config: { min: 0 }, allowVariable: true },
-                { jsx: InputList, name: L("betonquest.v2.condition.party.mandatory.conditionNames.name"), type: 'string[,]', placeholder: '(none)', defaultValue: ['a_condition_1'], tooltip: L("betonquest.v2.condition.party.mandatory.conditionNames.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: L("betonquest.v2.condition.party.mandatory.conditionNames.name"), type: 'string[,]', defaultValue: ['a_condition_1'], tooltip: L("betonquest.v2.condition.party.mandatory.conditionNames.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
                 { jsx: InputList, name: L("betonquest.v2.condition.party.optional.every.name"), key: 'every', type: 'string[,]', placeholder: 'e.g. some_condition_1', tooltip: L("betonquest.v2.condition.party.optional.every.tooltip"), config: { allowedPatterns: [/^\S*$/] } },

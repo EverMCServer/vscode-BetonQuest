@@ -4,6 +4,7 @@ import { Button, Collapse, CollapseProps, Input } from "antd";
 import { ItemType } from "rc-collapse/es/interface";
 import { VscChevronRight } from "react-icons/vsc";
 
+import L from "../../../../i18n/i18n";
 import Package from "../../../../betonquest/Package";
 import ListElement, { ListElementType } from "../../../../betonquest/ListElement";
 import CollapseLabel from "./CommonList/CollapseLabel";
@@ -213,7 +214,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
                         width: "-webkit-fill-available",
                     }}
                 >
-                    New
+                    {L("*.commonList.new")}
                 </Button>
             </div>
         </>

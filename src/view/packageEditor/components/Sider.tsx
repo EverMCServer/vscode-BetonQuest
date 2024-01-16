@@ -9,6 +9,7 @@ import EventsList from "./Sider/EventsList";
 import ConditionsList from "./Sider/ConditionsList";
 import ObjectivesList from "./Sider/ObjectivesList";
 import ItemsList from "./Sider/ItemsList";
+import L from "../../../i18n/i18n";
 
 interface ListEditorProps {
     package: Package,
@@ -126,7 +127,7 @@ export default function sider(props: ListEditorProps) {
                 items={[
                     {
                         key: "Events",
-                        label: <Tooltip placement="bottomRight" title="Events"><PiPlayFill /></Tooltip>,
+                        label: <Tooltip placement="bottomRight" title={L("packageEditor.sider.events")}><PiPlayFill /></Tooltip>,
                         children: <EventsList package={props.package} syncYaml={props.syncYaml}></EventsList>,
                         style: {
                             height: "calc(100% - 20px)"
@@ -136,7 +137,7 @@ export default function sider(props: ListEditorProps) {
                     },
                     {
                         key: "Conditions",
-                        label: <Tooltip placement="bottom" title="Conditions"><AiOutlineQuestionCircle /></Tooltip>,
+                        label: <Tooltip placement="bottom" title={L("packageEditor.sider.conditions")}><AiOutlineQuestionCircle /></Tooltip>,
                         children: <ConditionsList package={props.package} syncYaml={props.syncYaml}></ConditionsList>,
                         style: {
                             height: "calc(100% - 20px)"
@@ -144,7 +145,7 @@ export default function sider(props: ListEditorProps) {
                     },
                     {
                         key: "Objectives",
-                        label: <Tooltip placement="bottom" title="Objectives"><LuSearchCheck /></Tooltip>,
+                        label: <Tooltip placement="bottom" title={L("packageEditor.sider.objectives")}><LuSearchCheck /></Tooltip>,
                         children: <ObjectivesList package={props.package} syncYaml={props.syncYaml}></ObjectivesList>,
                         style: {
                             height: "calc(100% - 20px)"
@@ -152,7 +153,7 @@ export default function sider(props: ListEditorProps) {
                     },
                     {
                         key: "Items",
-                        label: <Tooltip placement="bottom" title="Items"><LuSword /></Tooltip>,
+                        label: <Tooltip placement="bottom" title={L("packageEditor.sider.items")}><LuSword /></Tooltip>,
                         children: <ItemsList package={props.package} syncYaml={props.syncYaml}></ItemsList>,
                         style: {
                             height: "calc(100% - 20px)"

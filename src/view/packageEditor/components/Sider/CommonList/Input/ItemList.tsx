@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Input, InputNumber, Space, Tooltip } from "antd";
 import { VscClose } from "react-icons/vsc";
 
+import L from "../../../../../../i18n/i18n";
 import { InputProps } from "./Common";
 
 /**
@@ -67,7 +68,7 @@ export default function (props: InputProps) {
                         size="small"
                         style={{ width: 'inherit' }}
                     />
-                    <Tooltip title="Amount, defaul to 1">
+                    <Tooltip title={L("betonquest.*.input.item*.amountTooltip")}>
                         <InputNumber
                             value={amount}
                             onChange={v => {
@@ -117,7 +118,7 @@ export default function (props: InputProps) {
                         props.onChange(valueUpdate);
                     }}
                 >
-                    Add
+                    {L("betonquest.*.input.item*.add")}
                 </Button>
             </div>
         </Space>

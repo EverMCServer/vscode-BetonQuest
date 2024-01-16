@@ -3,6 +3,7 @@ import { Button, InputNumber, Select, Space, Tooltip } from "antd";
 import { DefaultOptionType } from "antd/es/select";
 import { VscClose } from "react-icons/vsc";
 
+import L from "../../../../../i18n/i18n";
 import { InputProps } from "./Common";
 import ENCHANTMENT_LIST from "../../../../../bukkit/Data/EnchantmentList";
 
@@ -145,7 +146,7 @@ export default function (props: InputProps) {
                         size="small"
                         style={{ width: '100%' }}
                     />
-                    <Tooltip title="Level, defaul to 1">
+                    <Tooltip title={L("betonquest.*.input.enchantment*.levelTooltip", ["1"])}>
                         <InputNumber
                             value={level}
                             onChange={v => {
@@ -185,7 +186,7 @@ export default function (props: InputProps) {
                 size="small"
                 onClick={onAdd}
             >
-                Add
+                {L("betonquest.*.input.enchantment*.add")}
             </Button>
         </Space>
     );

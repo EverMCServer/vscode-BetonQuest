@@ -312,8 +312,8 @@ const kinds: Kind<Event>[] = [
                 { jsx: InputList, name: L("betonquest.v1.event.folder.mandatory.eventNames.name"), type: 'string[,]', defaultValue: ['an_event_1'], placeholder: 'e.g. event1', tooltip: L("betonquest.v1.event.folder.mandatory.eventNames.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
-                { jsx: Number, name: L("betonquest.v1.event.folder.optional.delay.name"), key: 'delay', type: 'float', placeholder: '(none)', tooltip: L("betonquest.v1.event.folder.optional.delay.tooltip"), config: { min: 0 }, allowVariable: true },
-                { jsx: Number, name: L("betonquest.v1.event.folder.optional.period.name"), key: 'period', type: 'float', placeholder: '(none)', tooltip: L("betonquest.v1.event.folder.optional.period.tooltip"), config: { min: 0 }, allowVariable: true },
+                { jsx: Number, name: L("betonquest.v1.event.folder.optional.delay.name"), key: 'delay', type: 'float', placeholder: L("(none)"), tooltip: L("betonquest.v1.event.folder.optional.delay.tooltip"), config: { min: 0 }, allowVariable: true },
+                { jsx: Number, name: L("betonquest.v1.event.folder.optional.period.name"), key: 'period', type: 'float', placeholder: L("(none)"), tooltip: L("betonquest.v1.event.folder.optional.period.tooltip"), config: { min: 0 }, allowVariable: true },
                 // {
                 //     jsx: Select, name: 'Duration Unit', key: 'minutes', type: 'select', placeholder: 'Seconds', config: {
                 //         options: [
@@ -331,7 +331,7 @@ const kinds: Kind<Event>[] = [
                 // },
                 { jsx: Checkbox, name: L("betonquest.v1.event.folder.optional.minutes.name"), key: 'minutes', type: 'boolean', tooltip: L("betonquest.v1.event.folder.optional.minutes.tooltip") },
                 { jsx: Checkbox, name: L("betonquest.v1.event.folder.optional.ticks.name"), key: 'ticks', type: 'boolean', tooltip: L("betonquest.v1.event.folder.optional.ticks.tooltip") },
-                { jsx: Number, name: L("betonquest.v1.event.folder.optional.random.name"), key: 'random', type: 'int', placeholder: '(none)', tooltip: L("betonquest.v1.event.folder.optional.random.tooltip"), config: { min: 0 }, allowVariable: true },
+                { jsx: Number, name: L("betonquest.v1.event.folder.optional.random.name"), key: 'random', type: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v1.event.folder.optional.random.tooltip"), config: { min: 0 }, allowVariable: true },
                 { jsx: Checkbox, name: L("betonquest.v1.event.folder.optional.cancelOnLogout.name"), key: 'cancelOnLogout', type: 'boolean', tooltip: L("betonquest.v1.event.folder.optional.cancelOnLogout.tooltip") },
             ],
         },
@@ -619,7 +619,7 @@ const kinds: Kind<Event>[] = [
         argumentsPattern: {
             mandatory: [
                 { jsx: Number, name: L("betonquest.v1.event.party.mandatory.distance.name"), type: 'float', defaultValue: 0.0, tooltip: L("betonquest.v1.event.party.mandatory.distance.tooltip"), config: { min: 0 }, allowVariable: true },
-                { jsx: InputList, name: L("betonquest.v1.event.party.mandatory.conditionNames.name"), type: 'string[,]', placeholder: '(none)', defaultValue: ['a_condition_1'], tooltip: L("betonquest.v1.event.party.mandatory.conditionNames.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: L("betonquest.v1.event.party.mandatory.conditionNames.name"), type: 'string[,]', placeholder: L("(none)"), defaultValue: ['a_condition_1'], tooltip: L("betonquest.v1.event.party.mandatory.conditionNames.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: InputList, name: L("betonquest.v1.event.party.mandatory.eventNames.name"), type: 'string[,]', placeholder: 'any', defaultValue: ['an_event_1'], tooltip: L("betonquest.v1.event.party.mandatory.eventNames.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
         }

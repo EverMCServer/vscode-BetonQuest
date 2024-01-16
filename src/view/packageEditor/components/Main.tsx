@@ -3,10 +3,10 @@ import { Button, Input, Modal, Radio, Select, Space, Tabs } from "antd";
 import type { Tab } from 'rc-tabs/lib/interface';
 import { VscTrash } from "react-icons/vsc";
 
+import L, { allLanguages } from "../../../i18n/i18n";
 import ConversationEditor from "./Main/ConversationEditor";
 import ConversationTabLabel from "./Main/ConversationTabLabel";
 import Package from "../../../betonquest/Package";
-import { allLanguages } from "../../../i18n/i18n";
 
 import "./Main.css";
 
@@ -102,10 +102,11 @@ export default function main(props: MainProps) {
             case 'remove':
                 // Prompt the confirmation modal
                 modal.confirm({
-                    title: "Delete the Conversation!",
-                    content: `Are you sure you want to delete Conversation "${targetKey}"?`,
-                    okText: "DELETE",
+                    title: L("packageEditor.main.deleteConfirm.title"),
+                    content: L("packageEditor.main.deleteConfirm.content", [targetKey as string]),
+                    okText: L("packageEditor.main.deleteConfirm.ok"),
                     okType: 'danger',
+                    cancelText: L("cancel"),
                     onOk: () => {
                         // Remove the whole script from YAML
                         removeTab(targetKey);
@@ -145,9 +146,9 @@ export default function main(props: MainProps) {
 
             return <Space>
                 <Space.Compact direction="vertical" size="small">
-                    <div>Name:</div>
-                    <div>Multilingual:</div>
-                    {isMultilingualEnabled ? <div>Language:</div> : null}
+                    <div>{L("packageEditor.main.createModal.name")}</div>
+                    <div>{L("packageEditor.main.createModal.multilingual")}</div>
+                    {isMultilingualEnabled ? <div>{L("packageEditor.main.createModal.language")}</div> : null}
                 </Space.Compact>
                 <Space.Compact direction="vertical" size="small">
                     <Input
@@ -156,13 +157,13 @@ export default function main(props: MainProps) {
                         onChange={e => { key = e.target.value; setNewConversationKeyConfig(e.target.value); }}
                     ></Input>
                     <Radio.Group onChange={e => { isMultilingual = e.target.value; setIsMultilingualConfig(e.target.value); setIsMultilingualEnabled(e.target.value); }} defaultValue={isMultilingual}>
-                        <Radio value={true}>Enable</Radio>
-                        <Radio value={false}>Disable</Radio>
+                        <Radio value={true}>{L("packageEditor.main.createModal.enable")}</Radio>
+                        <Radio value={false}>{L("packageEditor.main.createModal.disable")}</Radio>
                     </Radio.Group>
                     {isMultilingualEnabled ?
                         <Select
                             popupMatchSelectWidth={false}
-                            placeholder="New Translation"
+                            placeholder={L("packageEditor.main.createModal.languagePlaceholder")}
                             size="small"
                             showSearch
                             defaultValue={translationName}
@@ -180,9 +181,10 @@ export default function main(props: MainProps) {
 
         // Prompt a modal for collecting conversation's name and translation setting
         modal.confirm({
-            title: "New Conversation",
+            title: L("packageEditor.main.createModal.title"),
             content: <ModalConversationCreate></ModalConversationCreate>,
-            okText: "Create",
+            okText: L("packageEditor.main.createModal.ok"),
+            cancelText: L("cancel"),
             onOk: () => { newConversation(key, isMultilingual, translationName); },
             // onCancel: "",
         });
@@ -246,7 +248,7 @@ export default function main(props: MainProps) {
                             type="default"
                             onClick={() => { onConversationCreate(); }}
                         >
-                            Click here to create a new Conversation
+                            {L("packageEditor.main.createConversation")}
                         </Button>
                     </div>
             }

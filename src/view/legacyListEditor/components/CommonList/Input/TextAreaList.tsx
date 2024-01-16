@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Space } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { VscClose } from "react-icons/vsc";
 
+import L from "../../../../../i18n/i18n";
 import { InputProps } from "./Common";
 
 /**
@@ -78,7 +79,7 @@ export default function (props: InputProps) {
                     refreshUI();
                 }}
             >
-                Add
+                {L("betonquest.*.input.textAreaList.add")}
             </Button>
         </Space>
     );

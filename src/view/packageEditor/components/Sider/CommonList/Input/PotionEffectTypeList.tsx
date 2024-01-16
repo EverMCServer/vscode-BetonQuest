@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Select, Space } from "antd";
 import { VscClose } from "react-icons/vsc";
 
+import L from "../../../../../../i18n/i18n";
 import { InputProps } from "./Common";
 import POTION_EFFECT_TYPE_LIST from "../../../../../../bukkit/Data/PotionEffectTypeList";
 import { DefaultOptionType } from "antd/es/select";
@@ -156,7 +157,7 @@ export default function (props: InputProps) {
                 size="small"
                 onClick={onAdd}
             >
-                Add
+                {L("betonquest.*.input.potionEffectType*.add")}
             </Button>
         </Space>
     );

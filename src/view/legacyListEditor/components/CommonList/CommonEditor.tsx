@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Row, Col, Divider, Select } from "antd";
 
+import L from "../../../../i18n/i18n";
 import ListElement from "../../../../betonquest/ListElement";
 import { BaseListProps } from "../CommonList";
 import { ArgumentsPattern } from "../../../../betonquest/Arguments";
@@ -127,7 +128,7 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
         <div style={{ padding: "0 8px" }}>
             <Row ref={parentRef} justify="space-between" gutter={[0, 4]} style={{ padding: "8px 8px" }}>
                 <Col span={spanL}>
-                    <span>Kind:</span>
+                    <span>{L("*.commonList.commonEditor.kind")}</span>
                 </Col>
                 <Col span={spanR}>
                     <Select
@@ -136,7 +137,7 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
                         defaultOpen={!props.listElement.getKind()}
                         autoFocus={!props.listElement.getKind()}
                         value={props.listElement.getKind() || undefined}
-                        placeholder="(Please enter a kind)"
+                        placeholder={L("*.commonList.commonEditor.kindPlaceholder")}
                         defaultActiveFirstOption={false}
                         // suffixIcon={null}
                         onChange={(e) => {

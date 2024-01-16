@@ -3,6 +3,7 @@ import { Col, Divider, Row, Tooltip } from "antd";
 import { VscQuestion } from "react-icons/vsc";
 import { TbVariableOff, TbVariablePlus } from "react-icons/tb";
 
+import L from "../../../../../../i18n/i18n";
 import Event from "../../../../../../betonquest/Event";
 import { MandatoryArgumentDataType, OptionalArgumentDataType } from "../../../../../../betonquest/Arguments";
 import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
@@ -77,7 +78,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
         <div ref={parentRef}>
             {(props.argumentsPattern.mandatory.length > 0 && props.argumentsPattern.optional) &&
                 <Divider orientation="center" plain>
-                    <u>Mandatory Arguments</u>
+                    <u>{L("*.commonList.editor.default.mandatoryArguments")}</u>
                 </Divider>
             }
             {props.argumentsPattern.mandatory.map((pat, index) => {
@@ -96,7 +97,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                     </sup>&nbsp;
                                 </>}
                             </div>
-                            {pat.allowVariable && <Tooltip title="Toggle Variable input" placement="bottom">
+                            {pat.allowVariable && <Tooltip title={L("*.commonList.editor.default.toggleVariableTooltip")} placement="bottom">
                                 <span
                                     onClick={() => {
                                         if (variableEnabled.get(index)) {
@@ -118,7 +119,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                         <Col span={spanR}>
                             {pat.jsx && (pat.allowVariable && variableEnabled.get(index) &&
                                 <Variable
-                                    placeholder="(Variable)"
+                                    placeholder={L("*.commonList.editor.default.toggleVariablePlaceholder")}
                                     value={arg.getType() === 'variable' ? argValue as string : "%%"}
                                     onChange={(str) => {
                                         args.setMandatoryArgument(index, str);
@@ -146,7 +147,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
             {props.argumentsPattern.optional &&
                 <>
                     <Divider orientation="center" plain>
-                        <u>Optional Arguments</u>
+                        <u>{L("*.commonList.editor.default.optionalArguments")}</u>
                     </Divider>
                     {props.argumentsPattern.optional?.map((pat, index) => {
                         const arg = args.getOptionalArgument(pat.key);
@@ -163,7 +164,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                             </sup>&nbsp;
                                         </>}
                                     </div>
-                                    {pat.allowVariable && <Tooltip title="Toggle Variable input" placement="bottom">
+                                    {pat.allowVariable && <Tooltip title={L("*.commonList.editor.default.toggleVariableTooltip")} placement="bottom">
                                         <span
                                             onClick={() => {
                                                 if (variableEnabled.get(pat.key)) {
@@ -185,7 +186,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                 <Col span={spanR}>
                                     {pat.jsx && (pat.allowVariable && variableEnabled.get(pat.key) &&
                                         <Variable
-                                            placeholder="(Variable)"
+                                            placeholder={L("*.commonList.editor.default.toggleVariablePlaceholder")}
                                             value={arg?.getType() === 'variable' ? argValue as string : "%%"}
                                             onChange={(str) => {
                                                 args.setOptionalArgument(pat.key, str);

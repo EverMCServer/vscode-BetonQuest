@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Input, Tooltip } from "antd";
 import { VscClose } from "react-icons/vsc";
 
+import L from "../../../../../i18n/i18n";
 import { InputProps } from "./Common";
 
 /**
@@ -31,7 +32,7 @@ export default function (props: InputProps) {
 
     return (
         <>
-            {valueArray.map((value, index) => <Tooltip title='Hit "Enter" to add more!' key={index}>
+            {valueArray.map((value, index) => <Tooltip title={L("betonquest.*.input.inputList.tooltip")} key={index}>
                 <Input
                     value={value || ""}
                     onChange={(e) => {
@@ -65,7 +66,7 @@ export default function (props: InputProps) {
                     size="small"
                     style={index > 0 ? { marginTop: 4 } : undefined}
                     suffix={
-                        valueArray.length > 1 ? <Tooltip title="Remove">
+                        valueArray.length > 1 ? <Tooltip title={L("remove")}>
                             <VscClose
                                 onClick={() => {
                                     const valueUpdate = [...valueArray.slice(0, index), ...valueArray.slice(index + 1)];

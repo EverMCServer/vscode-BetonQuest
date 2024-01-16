@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Modal } from "antd";
+import L from "../../../../i18n/i18n";
 import Package from "../../../../betonquest/Package";
 
 interface ConversationTabLabelProps {
@@ -49,11 +50,13 @@ export default function conversationTabLabel(props: ConversationTabLabelProps) {
                 open={isConvTabLabelModalOpen}
                 onOk={onModalOk}
                 onCancel={onModalCancel}
+                okText={L("packageEditor.main.conversationTabLabel.rename.ok")}
+                cancelText={L("cancel")}
                 destroyOnClose={true}
             >
-                <div>Rename the script:</div>
+                <div>{L("packageEditor.main.conversationTabLabel.rename.content")}</div>
                 <input value={inputValue} onChange={onInputChange} placeholder={props.label} style={isSetValueError ? { color: "red" } : undefined}></input>
-                {isSetValueError ? <div style={{ color: "red" }}>Value "{inputValue}" is already exists. Please consider rename it.</div> : undefined}
+                {isSetValueError ? <div style={{ color: "red" }}>{L("packageEditor.main.conversationTabLabel.rename.duplicated", [inputValue])}</div> : undefined}
             </Modal>
         </>
     );

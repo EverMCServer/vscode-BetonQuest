@@ -29,8 +29,8 @@ import OptionalNumber from "../CommonList/Input/OptionalNumber";
 
 // Default optional arguments for every kind
 const defaultOptionalArguments: ArgumentsPatternOptional[] = [
-    { jsx: InputList, name: L("betonquest.v1.objective.*.optional.conditions.name"), key: 'conditions', type: 'string[,]', placeholder: '(none)', tooltip: L("betonquest.v1.objective.*.optional.conditions.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
-    { jsx: InputList, name: L("betonquest.v1.objective.*.optional.events.name"), key: 'events', type: 'string[,]', placeholder: '(none)', tooltip: L("betonquest.v1.objective.*.optional.events.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+    { jsx: InputList, name: L("betonquest.v1.objective.*.optional.conditions.name"), key: 'conditions', type: 'string[,]', placeholder: L("(none)"), tooltip: L("betonquest.v1.objective.*.optional.conditions.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+    { jsx: InputList, name: L("betonquest.v1.objective.*.optional.events.name"), key: 'events', type: 'string[,]', placeholder: L("(none)"), tooltip: L("betonquest.v1.objective.*.optional.events.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
 ];
 
 // All kinds
@@ -98,7 +98,7 @@ const kinds: Kind<Objective>[] = ([
             optional: [
                 { jsx: Checkbox, name: L("betonquest.v2.objective.block.optional.exactMatch.name"), key: 'exactMatch', type: 'boolean', tooltip: L("betonquest.v2.objective.block.optional.exactMatch.tooltip") },
                 { jsx: Checkbox, name: L("betonquest.v2.objective.block.optional.noSafety.name"), key: 'noSafety', type: 'boolean', tooltip: L("betonquest.v2.objective.block.optional.noSafety.tooltip") },
-                { jsx: Number, name: L("betonquest.v2.objective.block.optional.notify.name"), key: 'notify', type: 'int', placeholder: '(none)', tooltip: L("betonquest.v2.objective.block.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Number, name: L("betonquest.v2.objective.block.optional.notify.name"), key: 'notify', type: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.block.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
                 // { jsx: OptionalNumber, name: 'Notify', key: 'notify', type: 'int', placeholder: '1', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, setMinToNull: true } },
             ]
         }
@@ -114,7 +114,7 @@ const kinds: Kind<Objective>[] = ([
                 { jsx: Number, name: L("betonquest.v2.objective.breed.mandatory.amount.name"), type: 'int', defaultValue: 1, tooltip: L("betonquest.v2.objective.breed.mandatory.amount.tooltip"), config: { min: 1 }, allowVariable: true },
             ],
             optional: [
-                { jsx: Number, name: L("betonquest.v2.objective.breed.optional.notify.name"), key: 'notify', type: 'int', placeholder: '(none)', tooltip: L("betonquest.v2.objective.breed.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Number, name: L("betonquest.v2.objective.breed.optional.notify.name"), key: 'notify', type: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.breed.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -145,7 +145,7 @@ const kinds: Kind<Objective>[] = ([
             ],
             optional: [
                 { jsx: Number, name: L("betonquest.v2.objective.consume.optional.amount.name"), key: 'amount', type: 'int', tooltip: L("betonquest.v2.objective.consume.optional.amount.tooltip"), placeholder: '1', config: { min: 0, undefinedValue: 0 }, allowVariable: true },
-                { jsx: Number, name: L("betonquest.v2.objective.consume.optional.notify.name"), key: 'notify', type: 'int', placeholder: '(none)', tooltip: L("betonquest.v2.objective.consume.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Number, name: L("betonquest.v2.objective.consume.optional.notify.name"), key: 'notify', type: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.consume.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -160,7 +160,7 @@ const kinds: Kind<Objective>[] = ([
                 { jsx: Number, name: L("betonquest.v2.objective.craft.mandatory.amount.name"), type: 'int', defaultValue: 1, tooltip: L("betonquest.v2.objective.craft.mandatory.amount.tooltip"), config: { min: 1 }, allowVariable: true },
             ],
             optional: [
-                { jsx: Number, name: L("betonquest.v2.objective.craft.optional.notify.name"), key: 'notify', type: 'int', placeholder: '(none)', tooltip: L("betonquest.v2.objective.craft.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Number, name: L("betonquest.v2.objective.craft.optional.notify.name"), key: 'notify', type: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.craft.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -191,7 +191,7 @@ const kinds: Kind<Objective>[] = ([
                     }
                 },
                 { jsx: Number, name: L("betonquest.v2.objective.enchant.optional.amount.name"), key: 'amount', type: 'int', placeholder: '1', tooltip: L("betonquest.v2.objective.enchant.optional.amount.tooltip"), config: { min: 0, undefinedValue: 0 }, allowVariable: true },
-                { jsx: Number, name: L("betonquest.v2.objective.enchant.optional.notify.name"), key: 'notify', type: 'int', placeholder: '(none)', tooltip: L("betonquest.v2.objective.enchant.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Number, name: L("betonquest.v2.objective.enchant.optional.notify.name"), key: 'notify', type: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.enchant.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -206,7 +206,7 @@ const kinds: Kind<Objective>[] = ([
                 { jsx: Number, name: L("betonquest.v2.objective.experience.mandatory.level.name"), type: 'float', defaultValue: 1.0, tooltip: L("betonquest.v2.objective.experience.mandatory.level.tooltip"), config: { min: 0 }, allowVariable: true },
             ],
             optional: [
-                { jsx: Number, name: L("betonquest.v2.objective.experience.optional.notify.name"), key: 'notify', type: 'int', placeholder: '(none)', tooltip: L("betonquest.v2.objective.experience.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Number, name: L("betonquest.v2.objective.experience.optional.notify.name"), key: 'notify', type: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.experience.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -255,7 +255,7 @@ const kinds: Kind<Objective>[] = ([
             optional: [
                 { jsx: BaseLocation, name: L("betonquest.v2.objective.fish.optional.hookLocation.name"), key: 'hookLocation', type: 'string', tooltip: L("betonquest.v2.objective.fish.optional.hookLocation.tooltip"), config: { optional: true }, allowVariable: true },
                 { jsx: Number, name: L("betonquest.v2.objective.fish.optional.range.name"), key: 'range', type: 'float', tooltip: L("betonquest.v2.objective.fish.optional.range.tooltip"), config: { min: 0 }, allowVariable: true },
-                { jsx: Number, name: L("betonquest.v2.objective.fish.optional.notify.name"), key: 'notify', type: 'int', placeholder: '(none)', tooltip: L("betonquest.v2.objective.fish.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Number, name: L("betonquest.v2.objective.fish.optional.notify.name"), key: 'notify', type: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.fish.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -285,7 +285,7 @@ const kinds: Kind<Objective>[] = ([
                 { jsx: Checkbox, name: L("betonquest.v2.objective.interact.optional.cancel.name"), key: 'cancel', type: 'boolean', tooltip: L("betonquest.v2.objective.interact.optional.cancel.tooltip") },
                 { jsx: BaseLocation, name: L("betonquest.v2.objective.interact.optional.loc.name"), key: 'loc', type: 'string', tooltip: L("betonquest.v2.objective.interact.optional.loc.tooltip"), config: { optional: true }, allowVariable: true },
                 { jsx: Number, name: L("betonquest.v2.objective.interact.optional.range.name"), key: 'range', type: 'float', tooltip: L("betonquest.v2.objective.interact.optional.range.tooltip"), config: { min: 0 }, allowVariable: true },
-                { jsx: Number, name: L("betonquest.v2.objective.interact.optional.notify.name"), key: 'notify', type: 'int', placeholder: '(none)', tooltip: L("betonquest.v2.objective.interact.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Number, name: L("betonquest.v2.objective.interact.optional.notify.name"), key: 'notify', type: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.interact.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -301,8 +301,8 @@ const kinds: Kind<Objective>[] = ([
             ],
             optional: [
                 { jsx: Input, name: L("betonquest.v2.objective.kill.optional.name.name"), key: 'name', type: 'string', placeholder: 'e.g. "Notch"', tooltip: L("betonquest.v2.objective.kill.optional.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: InputList, name: L("betonquest.v2.objective.kill.optional.required.name"), key: 'required', type: 'string[,]', placeholder: '(none)', tooltip: L("betonquest.v2.objective.kill.optional.required.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: L("betonquest.v2.objective.kill.optional.notify.name"), key: 'notify', type: 'int', placeholder: '(none)', tooltip: L("betonquest.v2.objective.kill.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: InputList, name: L("betonquest.v2.objective.kill.optional.required.name"), key: 'required', type: 'string[,]', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.kill.optional.required.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: L("betonquest.v2.objective.kill.optional.notify.name"), key: 'notify', type: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.kill.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -349,7 +349,7 @@ const kinds: Kind<Objective>[] = ([
             optional: [
                 { jsx: Checkbox, name: L("betonquest.v2.objective.password.optional.ignoreCase.name"), key: 'ignoreCase', type: 'boolean', tooltip: L("betonquest.v2.objective.password.optional.ignoreCase.tooltip") },
                 { jsx: Input, name: L("betonquest.v2.objective.password.optional.prefix.name"), key: 'prefix', type: 'string', placeholder: 'e.g. "Secret Password"', tooltip: L("betonquest.v2.objective.password.optional.prefix.tooltip"), escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
-                { jsx: InputList, name: L("betonquest.v2.objective.password.optional.fail.name"), key: 'fail', type: 'string[,]', placeholder: '(none)', tooltip: L("betonquest.v2.objective.password.optional.fail.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: L("betonquest.v2.objective.password.optional.fail.name"), key: 'fail', type: 'string[,]', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.password.optional.fail.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -364,7 +364,7 @@ const kinds: Kind<Objective>[] = ([
             ],
             optional: [
                 { jsx: Number, name: L("betonquest.v2.objective.pickup.optional.amount.name"), key: 'amount', type: 'int', placeholder: '1', tooltip: L("betonquest.v2.objective.pickup.optional.amount.tooltip"), config: { min: 0, undefinedValue: 0 }, allowVariable: true },
-                { jsx: Number, name: L("betonquest.v2.objective.pickup.optional.notify.name"), key: 'notify', type: 'int', placeholder: '(none)', tooltip: L("betonquest.v2.objective.pickup.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Number, name: L("betonquest.v2.objective.pickup.optional.notify.name"), key: 'notify', type: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.pickup.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -381,7 +381,7 @@ const kinds: Kind<Objective>[] = ([
             optional: [
                 { jsx: Input, name: L("betonquest.v2.objective.mobkill.optional.name.name"), key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: L("betonquest.v2.objective.mobkill.optional.name.tooltip"), escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
                 { jsx: Input, name: L("betonquest.v2.objective.mobkill.optional.marked.name"), key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: L("betonquest.v2.objective.mobkill.optional.marked.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: L("betonquest.v2.objective.mobkill.optional.notify.name"), key: 'notify', type: 'int', placeholder: '(none)', tooltip: L("betonquest.v2.objective.mobkill.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Number, name: L("betonquest.v2.objective.mobkill.optional.notify.name"), key: 'notify', type: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.mobkill.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -396,7 +396,7 @@ const kinds: Kind<Objective>[] = ([
                 { jsx: Number, name: L("betonquest.v2.objective.brew.mandatory.amount.name"), type: 'int', defaultValue: 1, tooltip: L("betonquest.v2.objective.brew.mandatory.amount.tooltip"), config: { min: 1 }, allowVariable: true },
             ],
             optional: [
-                { jsx: Number, name: L("betonquest.v2.objective.brew.optional.notify.name"), key: 'notify', type: 'int', placeholder: '(none)', tooltip: L("betonquest.v2.objective.brew.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Number, name: L("betonquest.v2.objective.brew.optional.notify.name"), key: 'notify', type: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.brew.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -412,7 +412,7 @@ const kinds: Kind<Objective>[] = ([
             optional: [
                 { jsx: Input, name: L("betonquest.v2.objective.shear.optional.name.name"), key: 'name', type: 'string', placeholder: 'e.g. "Farmer\'s Sheep"', tooltip: L("betonquest.v2.objective.shear.optional.name.tooltip"), escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
                 { jsx: DyeColor, name: L("betonquest.v2.objective.shear.optional.color.name"), key: 'color', type: 'string', placeholder: 'e.g. "black"', config: { allowClear: true } },
-                { jsx: Number, name: L("betonquest.v2.objective.shear.optional.notify.name"), key: 'notify', type: 'int', placeholder: '(none)', tooltip: L("betonquest.v2.objective.shear.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Number, name: L("betonquest.v2.objective.shear.optional.notify.name"), key: 'notify', type: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.shear.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -427,7 +427,7 @@ const kinds: Kind<Objective>[] = ([
                 { jsx: Number, name: L("betonquest.v2.objective.smelt.mandatory.amount.name"), type: 'int', defaultValue: 1, tooltip: L("betonquest.v2.objective.smelt.mandatory.amount.tooltip"), config: { min: 1 }, allowVariable: true },
             ],
             optional: [
-                { jsx: Number, name: L("betonquest.v2.objective.smelt.optional.notify.name"), key: 'notify', type: 'int', placeholder: '(none)', tooltip: L("betonquest.v2.objective.smelt.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Number, name: L("betonquest.v2.objective.smelt.optional.notify.name"), key: 'notify', type: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.smelt.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -467,7 +467,7 @@ const kinds: Kind<Objective>[] = ([
                 { jsx: Number, name: L("betonquest.v2.objective.tame.mandatory.amount.name"), type: 'int', defaultValue: 1, tooltip: L("betonquest.v2.objective.tame.mandatory.amount.tooltip"), config: { min: 1 }, allowVariable: true },
             ],
             optional: [
-                { jsx: Number, name: L("betonquest.v2.objective.tame.optional.notify.name"), key: 'notify', type: 'int', placeholder: '(none)', tooltip: L("betonquest.v2.objective.tame.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Number, name: L("betonquest.v2.objective.tame.optional.notify.name"), key: 'notify', type: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.tame.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -481,7 +481,7 @@ const kinds: Kind<Objective>[] = ([
                 { jsx: Number, name: L("betonquest.v2.objective.jump.mandatory.amount.name"), type: 'int', defaultValue: 1, tooltip: L("betonquest.v2.objective.jump.mandatory.amount.tooltip"), config: { min: 1 }, allowVariable: true },
             ],
             optional: [
-                { jsx: Number, name: L("betonquest.v2.objective.jump.optional.notify.name"), key: 'notify', type: 'int', placeholder: '(none)', tooltip: L("betonquest.v2.objective.jump.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
+                { jsx: Number, name: L("betonquest.v2.objective.jump.optional.notify.name"), key: 'notify', type: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.jump.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
             ]
         }
     },
@@ -509,7 +509,7 @@ const kinds: Kind<Objective>[] = ([
                 { jsx: Checkbox, name: L("betonquest.v2.objective.command.optional.ignoreCase.name"), key: 'ignoreCase', type: 'boolean', tooltip: L("betonquest.v2.objective.command.optional.ignoreCase.tooltip") },
                 { jsx: Checkbox, name: L("betonquest.v2.objective.command.optional.exact.name"), key: 'exact', type: 'boolean', tooltip: L("betonquest.v2.objective.command.optional.exact.tooltip") },
                 { jsx: Checkbox, name: L("betonquest.v2.objective.command.optional.cancel.name"), key: 'cancel', type: 'boolean', tooltip: L("betonquest.v2.objective.command.optional.cancel.tooltip") },
-                { jsx: InputList, name: L("betonquest.v2.objective.command.optional.failEvents.name"), key: 'failEvents', type: 'string[,]', placeholder: '(none)', tooltip: L("betonquest.v2.objective.command.optional.failEvents.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: L("betonquest.v2.objective.command.optional.failEvents.name"), key: 'failEvents', type: 'string[,]', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.command.optional.failEvents.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },

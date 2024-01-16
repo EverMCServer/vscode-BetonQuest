@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Flex, Input } from "antd";
 
+import L from "../../../../../../i18n/i18n";
 import { InputProps } from "./Common";
 
 /**
@@ -48,7 +49,7 @@ export default function (props: InputProps) {
                     setValue(v);
                     props.onChange('%' + v + '%');
                 }}
-                placeholder={props.placeholder || "(Variable)"}
+                placeholder={props.placeholder || L("*.commonList.editor.default.toggleVariablePlaceholder")}
                 size="small"
             />
             %

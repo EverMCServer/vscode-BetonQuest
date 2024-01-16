@@ -7,11 +7,11 @@ import {
   NodeProps,
   Connection,
 } from "reactflow";
+import L from "../../../../i18n/i18n";
 import { connectionAvaliable } from "../utils/commonUtils";
 import "./styles.css";
 import { Select } from "antd";
 import { NodeData } from "./Nodes";
-import L from "../../../../i18n/i18n";
 
 export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const [getTrigger, setTrigger] = useState(false);
@@ -85,11 +85,11 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   return (
     <div style={{ width: "100%" }}>
       <div className="title-box start">
-        {L("conversation.startNode.start")}
+        {L("*.conversation.startNode.start")}
       </div>
       <div className="box">
         <div>
-          {L("conversation.startNode.quester")}:
+          {L("*.conversation.startNode.quester")}:
           <input
             type="text"
             className="nodrag input"
@@ -99,7 +99,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         </div>
         <hr className="line"></hr>
         <div>
-          {L("conversation.startNode.stop")}:&nbsp;
+          {L("*.conversation.startNode.stop")}:&nbsp;
           <Select
             value={getStop()}
             dropdownAlign={{ points: ['tr', 'br'] }}
@@ -114,7 +114,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         </div>
         <hr className="line"></hr>
         <div>
-          {L("conversation.startNode.finalEvents")}:&nbsp;
+          {L("*.conversation.startNode.finalEvents")}:&nbsp;
           <Select
             value={getFinalEvents()}
             dropdownAlign={{ points: ['tr', 'br'] }}
@@ -124,7 +124,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
             mode="tags"
             popupMatchSelectWidth={false}
             style={{ width: "100%" }}
-            placeholder={"(none)"}
+            placeholder={L("(none)")}
             tokenSeparators={[',', ' ']}
             onChange={e => setFinalEvents(e)}
             options={[]}
@@ -132,7 +132,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         </div>
         <hr className="line"></hr>
         <div>
-          {L("conversation.startNode.interceptor")}:&nbsp;
+          {L("*.conversation.startNode.interceptor")}:&nbsp;
           <Select
             value={getInterceptor()}
             dropdownAlign={{ points: ['tr', 'br'] }}
@@ -142,7 +142,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
             mode="multiple"
             popupMatchSelectWidth={false}
             style={{ width: "100%" }}
-            placeholder={"(none)"}
+            placeholder={L("(none)")}
             onChange={e => setInterceptor(e)}
             options={[{ value: "simple" }, { value: "packet" }, { value: "none" }]}
           />

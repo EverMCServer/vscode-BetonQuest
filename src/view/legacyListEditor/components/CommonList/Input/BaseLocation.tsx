@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Checkbox, Input, InputNumber, Space, Tooltip } from "antd";
 
+import L from "../../../../../i18n/i18n";
 import { InputProps } from "./Common";
 
 // https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Data-Formats/#block-selectors
@@ -154,7 +155,7 @@ export default function (props: InputProps) {
                 </Space.Compact>
                 <Space.Compact block>
                     <Input
-                        placeholder="* World"
+                        placeholder={"* " + L("betonquest.*.input.baseLocation.world")}
                         style={{
                             width: "min-content",
                             borderRight: 0,
@@ -171,13 +172,13 @@ export default function (props: InputProps) {
                             setValue(x, y, z, e.target.value || defaultWorld, yaw, pitch);
                         }}
                         size="small"
-                        title="Name of the world"
+                        title={L("betonquest.*.input.baseLocation.worldTooltip")}
                         style={{ width: "inherit" }}
                     />
                 </Space.Compact>
                 <Space.Compact block>
                     <Input
-                        placeholder="Yaw"
+                        placeholder={L("betonquest.*.input.baseLocation.yaw")}
                         style={{
                             width: "min-content",
                             borderRight: 0,
@@ -187,16 +188,11 @@ export default function (props: InputProps) {
                         size="small"
                     />
                     <Tooltip
-                        title={<div>
-                            <div>-180.0: north</div>
-                            <div>-90.0: east</div>
-                            <div>0.0: south</div>
-                            <div>90.0: west</div>
-                        </div>}
+                        title={<div dangerouslySetInnerHTML={{ __html: L("betonquest.*.input.baseLocation.yawTooltip") }}></div>}
                     >
                         <InputNumber
                             value={yaw}
-                            placeholder="(none)"
+                            placeholder={L("(none)")}
                             onChange={e => {
                                 setYaw(e);
                                 setValue(x, y, z, world, e, pitch);
@@ -208,7 +204,7 @@ export default function (props: InputProps) {
                 </Space.Compact>
                 <Space.Compact block>
                     <Input
-                        placeholder="Pitch"
+                        placeholder={L("betonquest.*.input.baseLocation.pitch")}
                         style={{
                             width: "min-content",
                             borderRight: 0,
@@ -218,15 +214,11 @@ export default function (props: InputProps) {
                         size="small"
                     />
                     <Tooltip
-                        title={<div>
-                            <div>0.0: look horizontally</div>
-                            <div>90.0: look straight down</div>
-                            <div>-90.0: look straight up</div>
-                        </div>}
+                        title={<div dangerouslySetInnerHTML={{ __html: L("betonquest.*.input.baseLocation.pitchTooltip") }}></div>}
                     >
                         <InputNumber
                             value={pitch}
-                            placeholder="(none)"
+                            placeholder={L("(none)")}
                             min={-90}
                             max={90}
                             onChange={e => {
@@ -234,7 +226,6 @@ export default function (props: InputProps) {
                                 setValue(x, y, z, world, yaw, e);
                             }}
                             size="small"
-                            title="Pitch"
                             style={{ width: "inherit" }}
                         />
                     </Tooltip>

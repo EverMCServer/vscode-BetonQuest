@@ -3,6 +3,7 @@ import { Button, Divider, Input, Select, Space, Tooltip } from "antd";
 import { VscClose } from "react-icons/vsc";
 import { compile as compileJavaRegex } from "java-regex-js";
 
+import L from "../../../../../i18n/i18n";
 import { InputProps } from "./Common";
 import MATERIAL_LIST from "../../../../../bukkit/Data/MaterialList";
 
@@ -82,7 +83,7 @@ export default function (props: InputProps) {
 
     return (
         <>
-            <span>Namespace:</span>
+            <span>{L("betonquest.*.input.blockSelector.namespace")}</span>
             <Input
                 value={namespace}
                 defaultValue={"minecraft"}
@@ -99,7 +100,7 @@ export default function (props: InputProps) {
                 size="small"
             />
             <Divider />
-            <span>Tag:</span>
+            <span>{L("betonquest.*.input.blockSelector.tag")}</span>
             <Input
                 value={tag}
                 defaultValue={""}
@@ -116,7 +117,7 @@ export default function (props: InputProps) {
                 size="small"
             />
             <Divider />
-            <span><sup>*</sup>Block ID:</span>
+            <span><sup>*</sup>{L("betonquest.*.input.blockSelector.id")}</span>
             <Select
                 value={blockId}
                 // defaultValue={props.value}
@@ -168,7 +169,7 @@ export default function (props: InputProps) {
                 style={{ width: '100%' }}
             />
             <Divider />
-            <div>State:</div>
+            <div>{L("betonquest.*.input.blockSelector.states")}</div>
             {/* <Space direction="vertical"> */}
             {state.map(([key, value], index) =>
                 <Space.Compact block key={index} style={{ width: '100%' }}>
@@ -253,7 +254,7 @@ export default function (props: InputProps) {
                         setValue(namespace, tag, blockId, newState);
                     }}
                 >
-                    Add
+                    {L("betonquest.*.input.blockSelector.add")}
                 </Button>
             </div>
         </>

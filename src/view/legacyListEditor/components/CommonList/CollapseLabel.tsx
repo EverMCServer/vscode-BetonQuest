@@ -2,6 +2,7 @@ import React, { useState, KeyboardEvent, ChangeEvent, useEffect } from "react";
 
 import { VscEdit } from "react-icons/vsc";
 
+import L from "../../../../i18n/i18n";
 import { CommonListProps } from "../CommonList";
 import ListElement from "../../../../betonquest/ListElement";
 import { Input, Popover, Tooltip } from "antd";
@@ -113,7 +114,7 @@ export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
                         {title}
                     </span>
                     &nbsp;
-                    <Tooltip placement="right" title="Rename">
+                    <Tooltip placement="right" title={L("rename")}>
                         <VscEdit
                             style={{
                                 color: 'var(--vscode-tab-inactiveForeground)',
