@@ -157,7 +157,7 @@
         "betonquest.setting.translationSelection": {
           "type": "string",
           "default": "en",
-          "description": "The translation selection for conversation flowchart. Default to 'en'."
+          "description": "%extension.setting.translationSelection.description%"
         }
       }
     }
