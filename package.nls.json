@@ -1,3 +1,13 @@
 {
+    "extension.command.openConversationEditor.title": "BetonQuest: Open Conversation Flowchart",
+    "extension.command.openEventsEditor.title": "BetonQuest: Open Events Editor",
+    "extension.command.openConditionsEditor.title": "BetonQuest: Open Conditions Editor",
+    "extension.command.openObjectivesEditor.title": "BetonQuest: Open Objectives Editor",
+    "extension.command.openPackageEditor.title": "BetonQuest: Open Package Editor",
+    "extension.customEditors.conversationEditor.displayName": "Conversation Flowchart",
+    "extension.customEditors.eventsEditor.displayName": "Events Editor",
+    "extension.customEditors.conditionsEditor.displayName": "Conditions Editor",
+    "extension.customEditors.objectivesEditor.displayName": "Objectives Editor",
+    "extension.customEditors.packageEditor.displayName": "Package Editor",
     "extension.setting.translationSelection.description": "The translation selection for conversation flowchart. Default to 'en'."
 }

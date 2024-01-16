@@ -31,7 +31,7 @@
     "commands": [
       {
         "command": "betonquest.openConversationEditor",
-        "title": "BetonQuest: Open Conversation Flowchart",
+        "title": "%extension.command.openConversationEditor.title%",
         "icon": {
           "light": "assets/icon-conversations-edit-light.svg",
           "dark": "assets/icon-conversations-edit-dark.svg"
@@ -39,7 +39,7 @@
       },
       {
         "command": "betonquest.openEventsEditor",
-        "title": "BetonQuest: Open Events Editor",
+        "title": "%extension.command.openEventsEditor.title%",
         "icon": {
           "light": "assets/icon-events-edit-light.svg",
           "dark": "assets/icon-events-edit-dark.svg"
@@ -47,7 +47,7 @@
       },
       {
         "command": "betonquest.openConditionsEditor",
-        "title": "BetonQuest: Open Conditions Editor",
+        "title": "%extension.command.openConditionsEditor.title%",
         "icon": {
           "light": "assets/icon-conditions-edit-light.svg",
           "dark": "assets/icon-conditions-edit-dark.svg"
@@ -55,7 +55,7 @@
       },
       {
         "command": "betonquest.openObjectivesEditor",
-        "title": "BetonQuest: Open Objectives Editor",
+        "title": "%extension.command.openObjectivesEditor.title%",
         "icon": {
           "light": "assets/icon-objectives-edit-light.svg",
           "dark": "assets/icon-objectives-edit-dark.svg"
@@ -63,7 +63,7 @@
       },
       {
         "command": "betonquest.openPackageEditor",
-        "title": "BetonQuest: Open Package Editor",
+        "title": "%extension.command.openPackageEditor.title%",
         "icon": {
           "light": "assets/icon-conversations-edit-light.svg",
           "dark": "assets/icon-conversations-edit-dark.svg"
@@ -102,7 +102,7 @@
     "customEditors": [
       {
         "viewType": "betonquest.conversationEditor",
-        "displayName": "Conversation Flowchart",
+        "displayName": "%extension.customEditors.conversationEditor.displayName%",
         "priority": "option",
         "selector": [
           {
@@ -112,7 +112,7 @@
       },
       {
         "viewType": "betonquest.eventsEditor",
-        "displayName": "Events Editor",
+        "displayName": "%extension.customEditors.eventsEditor.displayName%",
         "priority": "option",
         "selector": [
           {
@@ -122,7 +122,7 @@
       },
       {
         "viewType": "betonquest.conditionsEditor",
-        "displayName": "Conditions Editor",
+        "displayName": "%extension.customEditors.conditionsEditor.displayName%",
         "priority": "option",
         "selector": [
           {
@@ -132,7 +132,7 @@
       },
       {
         "viewType": "betonquest.objectivesEditor",
-        "displayName": "Objectives Editor",
+        "displayName": "%extension.customEditors.objectivesEditor.displayName%",
         "priority": "option",
         "selector": [
           {
@@ -142,7 +142,7 @@
       },
       {
         "viewType": "betonquest.packageEditor",
-        "displayName": "Conversation Flowchart",
+        "displayName": "%extension.customEditors.packageEditor.displayName%",
         "priority": "option",
         "selector": [
           {
