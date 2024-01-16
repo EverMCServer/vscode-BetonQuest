@@ -26,13 +26,18 @@ A GUI based editor for [BetonQuest](https://github.com/BetonQuest/BetonQuest) sc
 - ✅ Formated `Objectives` Editors
 - ✅ Formated `Events`, `Conditions`, `Objectives` Editors for the **1.x file structure**
 - ✅ Supports [Variables](https://betonquest.org/2.0/Documentation/Scripting/Building-Blocks/Variables-List) in `Events`, `Conditions`, `Objectives` Editors.
-- ⬜ i18n support.
+- ✅ i18n support.
+    - English
+    - Simplified Chinese 简体中文
+- ⬜ Click and jump to the code / flowchart / editor.
+- ⬜ Advanced Variable editor.
 - ⬜ [Journal](https://betonquest.org/2.0/Documentation/Features/Journal/) editing.
 - ⬜ [Items](https://betonquest.org/2.0/Documentation/Features/Items/) editing.
 - ⬜ [Intergrated plugins](https://betonquest.org/2.0/Documentation/Scripting/Building-Blocks/Integration-List/) support.
 - ⬜ Package configuration.
 - ⬜ [Menu](https://betonquest.org/2.0/Documentation/Features/Menus/Menu/) editing.
 - and more. Please [suggest](https://github.com/EverMCServer/vscode-BetonQuest/issues).
+- ⬜ Code referencing. Click any Events, Condiitons or Objectives then jump to the definition.
 - ⬜ [Global Variables](https://betonquest.org/2.0/Documentation/Scripting/Building-Blocks/Variables-List/#global-variables) support.
 
 ## Limitations
@@ -53,7 +58,60 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 - (2.0 related) Conversation's tabs are switched to the first one when the YAML edited.
 - `notify` Event is not fully supported at this moment.
 
+## About Translation
+
+Currently only English and Simplified Chinese are available. If you want to contribute your translation, here are the instructions:
+
+1. [Fork this project](https://github.com/EverMCServer/vscode-BetonQuest/fork) and clone it down.
+
+1. Search and install a [VSCode's Language Pack](https://code.visualstudio.com/docs/getstarted/locales) extension from the [marketplace](https://code.visualstudio.com/docs/editor/extension-marketplace) of which you want to translate. Then reload your VSCode.
+
+1. There are only 3 files you need to change:
+
+    - Copy `src/i18n/data/en.json` to `src/i18n/data/[locale_code].json` then translate it.
+
+        The `[locale_code]` part is referer to the list [here](https://code.visualstudio.com/docs/getstarted/locales#_available-locales). If the locale contains a dash `-`, please convert it to an underscore `_`.
+
+    - Copy `package.nls.json` to `package.nls.[locale-code].json` then translate it.
+
+        This time you should not convert any dash to underscore.
+
+    - Add new imports on `src/i18n/i18n.ts`:
+
+        ```typescript
+        import en from './data/en.json';
+        import zh_cn from './data/zh_cn.json';
+        // ...
+        import locale_code_with_underscore from './data/[locale_code_with_underscore].json'; // New
+
+        // Translation table
+        const translations: Map<string, TTranslation> = new Map([
+            ["en", en as TTranslation],
+            ["zh-cn", zh_cn as TTranslation],
+            // ...
+            ["[locale-code-with-dash]", locale_code_with_underscore as TTranslation], // New
+        ]);
+
+        // ...
+        ```
+
+1. If you want to test run the project. You need to install [Node.js](https://nodejs.org/en/download). After that just reload your VSCode and hit `F5`.
+
+1. Push your codes
+
+1. Submit a [Pull Request](https://github.com/EverMCServer/vscode-BetonQuest/pulls) onto the `main` branch. Once everything checked your work will be merged.
+
+Helps on translating this extension are welcomed. Please consider submitting your Pull Request onto the repository. 🥺
+
+
 ## Release Notes
+
+### 0.3.0
+- i18n supported!
+- Fully supports Simplified Chinese 完全支持简体中文
+- Optimize initial loading speed
+- Minimize extension
+- Removes the `thunder` option from the `weather` Event BetonQuest/BetonQuest/pull/2671
 
 ### 0.2.3
 - Add Events / Objectives / Conditions editing for 1.x!
@@ -65,10 +123,5 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 
 - Conditions editing for 2.0! (1.0 is on the way)
 - Fix various bugs on Events and Objectives editing
-
-### 0.2.1
-
-- Objectives editing for 2.0! (1.0 is on the way)
-- Fix various bugs on Events editing
 
 (For more detailes, please check [CHANGELOG.md](CHANGELOG.md))

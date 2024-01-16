@@ -4,11 +4,16 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [0.2.4] - TBD
+## [0.3.0] - 2024-01-16
 
 ### Added
+- i18n supported!
+- Fully supports Simplified Chinese 完全支持简体中文
 - Optimize initial loading speed
 - Minimize extension
+
+### Fixed
+- Removes the `thunder` option from the `weather` Event BetonQuest/BetonQuest/pull/2671
 
 ## [0.2.3] - 2024-01-11
 
