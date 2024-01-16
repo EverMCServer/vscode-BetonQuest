@@ -35,12 +35,8 @@ export default function (props: InputProps) {
                 onChange={(e) => {
                     let v = e.target.value;
 
-                    // escape space ` `
-                    v = v.replace(' ', '_');
-
                     // Filter out unwanted input
-                    if (props.config?.allowedPatterns &&
-                        !/^\S*$/.test(v)
+                    if (!/^\S*$/.test(v)
                     ) {
                         return;
                     }

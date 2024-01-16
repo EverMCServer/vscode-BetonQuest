@@ -1210,9 +1210,8 @@ const kinds: Kind<Event>[] = ([
             mandatory: [
                 { jsx: Input, name: L("betonquest.v2.event.variable.mandatory.variableObjectiveName.name"), type: 'string', defaultValue: 'a_variable_objective_1', tooltip: L("betonquest.v2.event.variable.mandatory.variableObjectiveName.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Input, name: L("betonquest.v2.event.variable.mandatory.variableName.name"), type: 'string', defaultValue: 'a_variable_name_1', tooltip: '', config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
-                { jsx: Input, name: L("betonquest.v2.event.variable.mandatory.value.name"), type: '*', defaultValue: '""', tooltip: L("betonquest.v2.event.variable.mandatory.value.tooltip"), allowVariable: true },
-            ],
-            keepWhitespaces: true
+                { jsx: Input, name: L("betonquest.v2.event.variable.mandatory.value.name"), type: 'string', defaultValue: '""', tooltip: L("betonquest.v2.event.variable.mandatory.value.tooltip"), escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] }, allowVariable: true },
+            ]
         }
     },
     // TODO: vector Input
