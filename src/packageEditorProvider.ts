@@ -164,6 +164,7 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
                     return;
 
                 // Move cursor on text editor.
+                // @ts-ignore
                 case 'cursor-yaml-path':
                     offset = findOffestByYamlNode(e.content, document.getText());
                 case 'cursor-postion':

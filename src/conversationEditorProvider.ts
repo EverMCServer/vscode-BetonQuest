@@ -171,6 +171,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                     return;
 
                 // Move cursor on text editor.
+                // @ts-ignore
                 case 'cursor-yaml-path':
                     offset = findOffestByYamlNode(e.content, document.getText());
                 case 'cursor-postion':
