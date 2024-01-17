@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import React, { useEffect, useRef, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import type { InputRef } from 'antd';
@@ -5,18 +6,20 @@ import { Space, Input, Tag } from 'antd';
 import { DndContext, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, arrayMove, horizontalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 
-type Item = {
+import L from '../../i18n/i18n';
+
+export type Item = {
     id: string;
     text: string;
 };
 
-type DraggableTagProps = {
+type TagProps = {
     tag: Item;
     index: number;
     removeTag: (tag: string) => void;
 };
 
-const TagElement: React.FC<DraggableTagProps> = ({ tag, index, removeTag }) => {
+const TagElement: React.FC<TagProps> = ({ tag, index, removeTag }) => {
     const { listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: tag.id });
 
     const commonStyle = {
@@ -39,21 +42,32 @@ const TagElement: React.FC<DraggableTagProps> = ({ tag, index, removeTag }) => {
             {...listeners}
             closable={true}
             onClose={() => removeTag(tag.text)}
+            className='nodrag'
         >
             {tag.text}
         </Tag>
     );
 };
 
-const App: React.FC = () => {
-    const [tags, setTags] = useState<Item[]>([
-        { id: '1', text: 'Tag 1' },
-        { id: '2', text: 'Tag 2' },
-        { id: '3', text: 'Tag 3' },
-    ]);
+type DraggableTagProps = {
+    items?: Item[];
+    onAdd?: (item: Item) => void;
+    onRemove?: (tag: Item) => void;
+    onChange?: (items: Item[]) => void;
+    onTagChange?: (items: Item) => void;
+};
+
+const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onChange, onTagChange }) => {
+    const [tags, setTags] = useState<Item[]>(items ?? []);
     const [inputVisible, setInputVisible] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const inputRef = useRef<InputRef>(null);
+
+    useEffect(() => {
+        if (items) {
+            setTags(items);
+        }
+    }, [items]);
 
     useEffect(() => {
         if (inputVisible) {
@@ -62,7 +76,7 @@ const App: React.FC = () => {
     }, [inputVisible]);
 
     const handleClose = (removedTag: string) => {
-        const newTags = tags.filter((tag) => tag.text !== removedTag);
+        const newTags = tags.filter((tag) => tag.text !== removedTag || (onRemove && onRemove(tag)));
         setTags(newTags);
     };
 
@@ -72,7 +86,9 @@ const App: React.FC = () => {
 
     const handleInputConfirm = () => {
         if (inputValue && !tags.some((tag) => tag.text === inputValue)) {
-            setTags([...tags, { id: `${tags.length + 1}`, text: inputValue }]);
+            const newTag = { id: `${tags.length + 1}`, text: inputValue };
+            setTags([...tags, newTag]);
+            onTagChange && onTagChange(newTag);
         }
         setInputVisible(false);
         setInputValue('');
@@ -91,7 +107,9 @@ const App: React.FC = () => {
         if (active.id !== over.id) {
             const oldIndex = tags.findIndex((tag) => tag.id === active.id);
             const newIndex = tags.findIndex((tag) => tag.id === over.id);
-            setTags(arrayMove(tags, oldIndex, newIndex));
+            const newTags = arrayMove(tags, oldIndex, newIndex);
+            setTags(newTags);
+            onChange && onChange(newTags);
         }
     };
 
@@ -111,9 +129,10 @@ const App: React.FC = () => {
                             onChange={handleInputChange}
                             onBlur={handleInputConfirm}
                             onPressEnter={handleInputConfirm}
+                            className='nodrag'
                         />
                     ) : (
-                        <Tag onClick={() => setInputVisible(true)}>
+                        <Tag onClick={() => setInputVisible(true)} className='nodrag'>
                             <PlusOutlined /> New Tag
                         </Tag>
                     )}

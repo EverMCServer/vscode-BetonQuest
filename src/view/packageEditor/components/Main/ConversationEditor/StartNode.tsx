@@ -7,11 +7,14 @@ import {
   NodeProps,
   Connection,
 } from "reactflow";
-import L from "../../../../../i18n/i18n";
-import { connectionAvaliable } from "../utils/commonUtils";
-import "./styles.css";
 import { Select } from "antd";
+
+import L from "../../../../../i18n/i18n";
+import DraggableTag from "../../../../components/DraggableTag";
+import { connectionAvaliable } from "../utils/commonUtils";
 import { NodeData } from "./Nodes";
+
+import "./styles.css";
 
 export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const [getTrigger, setTrigger] = useState(false);
@@ -115,6 +118,9 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         <hr className="line"></hr>
         <div>
           {L("*.conversation.startNode.finalEvents")}:&nbsp;
+          {/* // */}
+          <DraggableTag></DraggableTag>
+          <div>&nbsp;</div>
           <Select
             value={getFinalEvents()}
             dropdownAlign={{ points: ['tr', 'br'] }}
