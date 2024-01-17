@@ -29,12 +29,15 @@
     "packageEditor.commonList.collapseExtra.popconfirmTitle": "Are you sure you want to delete {0}?",
 
     "*.commonList.new": "New",
+    "*.commonList.search": "New",
     "*.commonList.commonEditor.kind": "Kind:",
     "*.commonList.commonEditor.kindPlaceholder": "(Please enter a kind)",
     "*.commonList.editor.default.mandatoryArguments": "Mandatory Arguments",
     "*.commonList.editor.default.optionalArguments": "Optional Arguments",
     "*.commonList.editor.default.toggleVariableTooltip": "Toggle Variable input mode",
     "*.commonList.editor.default.toggleVariablePlaceholder": "(Variable)",
+    "*.commonList.collapseLabel.duplicated": "Duplicated name {0} Please try another.",
+    "*.commonList.collapseLabel.inputPlaceholder": "(Please enter a name)",
 
     "*.conversation.startNode.start": "Start",
     "*.conversation.startNode.quester": "NPC Name",
@@ -46,6 +49,8 @@
     "*.conversation.*.conditions": "Conditions:",
     "*.conversation.*.text": "Text:",
     "*.conversation.*.events": "Events:",
+    "*.conversation.translationSelector.placeholder": "(Translation)",
+    "*.conversation.translationSelector.newTranslationPlaceholder": "(New Translation)",
 
     "betonquest.*.input.baseLocation.world": "World",
     "betonquest.*.input.baseLocation.worldTooltip": "Name of the world",

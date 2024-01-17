@@ -181,7 +181,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
     return (
         <>
             <Input
-                placeholder="Search"
+                placeholder={L("*.commonList.search")}
                 size="small"
                 style={{
                     margin: "8px",

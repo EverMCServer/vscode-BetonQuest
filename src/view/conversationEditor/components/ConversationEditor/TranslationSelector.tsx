@@ -1,7 +1,7 @@
 import * as React from "react";
-
 import { Space, Select, Divider, Button } from 'antd';
-import { allLanguages } from "../../../../i18n/i18n";
+
+import L, { allLanguages } from "../../../../i18n/i18n";
 
 interface Props {
     enabled: boolean,
@@ -62,7 +62,7 @@ export default function translationSelector(props: Props): React.JSX.Element {
             size="small"
             showSearch
             popupMatchSelectWidth={false}
-            placeholder="language"
+            placeholder={L("*.conversation.translationSelector.placeholder")}
             // dropdownAlign={{points:['tr', 'br']}}
             // dropdownStyle={{alignItems: "right"}}
             dropdownRender={(menu) => (
@@ -75,7 +75,7 @@ export default function translationSelector(props: Props): React.JSX.Element {
                         </Button>
                         <Select
                             popupMatchSelectWidth={false}
-                            placeholder="New Translation"
+                            placeholder={L("*.conversation.translationSelector.newTranslationPlaceholder")}
                             size="small"
                             showSearch
                             value={name || undefined}

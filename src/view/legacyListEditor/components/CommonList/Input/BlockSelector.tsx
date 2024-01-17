@@ -217,7 +217,7 @@ export default function (props: InputProps) {
                         }}
                         size="small"
                     />
-                    <Tooltip title="Remove">
+                    <Tooltip title={L("remove")}>
                         <Button
                             onClick={() => {
                                 // Remove state

@@ -38,7 +38,7 @@ export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
             // Display a Popover for notice
             clearTimeout(editPopoverTimeout);
             setIsShowEditPopover(true);
-            setEditPopoverMessage(`Duplicated name "${titleEditValue}"! Please change it.`);
+            setEditPopoverMessage(L("*.commonList.collapseLabel.duplicated", [titleEditValue]));
             editPopoverTimeout = setTimeout(() => {
                 setIsShowEditPopover(false);
             }, 2000);
@@ -94,7 +94,7 @@ export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
                     <Input
                         autoFocus
                         defaultValue={title}
-                        placeholder="Please enter the name"
+                        placeholder={L("*.commonList.collapseLabel.inputPlaceholder")}
                         value={titleEditValue}
                         onChange={onTitleEditTyping}
                         onBlur={() => setIsTitleEditing(false)}
