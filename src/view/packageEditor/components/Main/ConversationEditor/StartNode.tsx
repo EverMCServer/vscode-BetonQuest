@@ -10,7 +10,7 @@ import {
 import { Select } from "antd";
 
 import L from "../../../../../i18n/i18n";
-import DraggableTag from "../../../../components/DraggableTag";
+import DraggableTag from "../../../../components/DraggableTag2";
 import { connectionAvaliable } from "../utils/commonUtils";
 import { NodeData } from "./Nodes";
 

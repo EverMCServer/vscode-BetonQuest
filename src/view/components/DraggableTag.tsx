@@ -3,95 +3,153 @@ import React, { useEffect, useRef, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import type { InputRef } from 'antd';
 import { Space, Input, Tag } from 'antd';
-import { DndContext, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, arrayMove, horizontalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 
 import L from '../../i18n/i18n';
 
 export type Item = {
-    id: string;
+    id: number;
     text: string;
 };
 
 type TagProps = {
     tag: Item;
-    index: number;
     removeTag: (tag: string) => void;
+    onChange?: (item: Item) => void;
+    onClick?: (item: Item) => void;
 };
 
-const TagElement: React.FC<TagProps> = ({ tag, index, removeTag }) => {
-    const { listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: tag.id });
+const TagElement: React.FC<TagProps> = ({ tag, removeTag, onChange, onClick }) => {
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: tag.id });
 
-    const commonStyle = {
+    const commonStyle: React.CSSProperties = {
         cursor: 'move',
         transition: 'unset',
+        padding: '0 8px 0 0'
     };
 
-    const style = transform
-        ? {
-            ...commonStyle,
-            transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-            transition: isDragging ? 'unset' : transition,
-        }
-        : commonStyle;
+    const style: React.CSSProperties = transform ? {
+        ...commonStyle,
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        transition: isDragging ? 'unset' : transition,
+    } : commonStyle;
+
+    const [isEditing, setIsEditing] = useState(false);
+
+    const onEditingStart = () => {
+        setIsEditing(true);
+    };
+
+    const onInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        onEditingEnd(e.target.value);
+    };
+    const onInputEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        onEditingEnd(e.currentTarget.value);
+    };
+    const onEditingEnd = (value: string) => {
+        setIsEditing(false);
+        tag.text = value;
+        onChange && onChange(tag);
+    };
 
     return (
-        <Tag
-            style={style}
+        <div
             ref={setNodeRef}
+            style={style}
+            {...attributes}
             {...listeners}
-            closable={true}
-            onClose={() => removeTag(tag.text)}
             className='nodrag'
         >
+            <div
+                style={{
+                    border: "solid 2px",
+                    padding: "2px 8px"
+                }}
+            >
             {tag.text}
-        </Tag>
+            </div>
+        </div>
+        // <Tag
+        //     style={style}
+        //     ref={setNodeRef}
+        //     {...listeners}
+        //     closable={!isEditing}
+        //     onClose={() => removeTag(tag.text)}
+        //     className='nodrag'
+        //     onDoubleClick={onEditingStart}
+        //     onClick={() => onClick && onClick(tag)}
+        // >
+        //     {isEditing ?
+        //         <Input
+        //             defaultValue={tag.text}
+        //             autoFocus={true}
+        //             onBlur={onInputBlur}
+        //             onPressEnter={onInputEnter}
+        //             size='small'
+        //             bordered={false}
+        //         />
+        //         : tag.text
+        //     }
+        // </Tag>
     );
 };
 
 type DraggableTagProps = {
-    items?: Item[];
-    onAdd?: (item: Item) => void;
-    onRemove?: (tag: Item) => void;
-    onChange?: (items: Item[]) => void;
-    onTagChange?: (items: Item) => void;
+    items?: string[];
+    onAdd?: (items: Item[], item?: Item) => void;
+    onRemove?: (items: Item[], item?: Item) => void;
+    onSort?: (items: Item[]) => void;
+    onChange?: (items: Item[], item?: Item) => void; // TODO
+    onTagClick?: (item: Item) => void;
 };
 
-const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onChange, onTagChange }) => {
-    const [tags, setTags] = useState<Item[]>(items ?? []);
+const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onSort, onChange, onTagClick }) => {
+    const [tags, setTags] = useState<Item[]>([
+        { id: 1, text: 'a' },
+        { id: 2, text: 'b' },
+        { id: 3, text: 'c' },
+        { id: 4, text: 'd' },
+        { id: 5, text: 'e' },
+        { id: 6, text: 'f' },
+    ]);
     const [inputVisible, setInputVisible] = useState(false);
-    const [inputValue, setInputValue] = useState('');
     const inputRef = useRef<InputRef>(null);
 
     useEffect(() => {
         if (items) {
-            setTags(items);
+            setTags(items.map((str, i) => { return { id: i + 1, text: str } as Item; }));
         }
     }, [items]);
 
-    useEffect(() => {
-        if (inputVisible) {
-            inputRef.current?.focus();
-        }
-    }, [inputVisible]);
-
     const handleClose = (removedTag: string) => {
-        const newTags = tags.filter((tag) => tag.text !== removedTag || (onRemove && onRemove(tag)));
+        let deletedTag: Item | undefined;
+        const newTags = tags.filter((tag) => {
+            if (tag.text !== removedTag) {
+                return true;
+            } else {
+                deletedTag = tag;
+            }
+            return false;
+        });
+        onRemove && onRemove(newTags, deletedTag);
         setTags(newTags);
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInputValue(e.target.value);
+    const onInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        handleInputConfirm(e.target.value);
     };
-
-    const handleInputConfirm = () => {
+    const onInputEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        handleInputConfirm(e.currentTarget.value);
+    };
+    const handleInputConfirm = (inputValue: string) => {
         if (inputValue && !tags.some((tag) => tag.text === inputValue)) {
-            const newTag = { id: `${tags.length + 1}`, text: inputValue };
-            setTags([...tags, newTag]);
-            onTagChange && onTagChange(newTag);
+            const newTag: Item = { id: tags.length + 1, text: inputValue };
+            const newTags = [...tags, newTag];
+            setTags(newTags);
+            onAdd && onAdd(newTags, newTag);
         }
         setInputVisible(false);
-        setInputValue('');
     };
 
     const sensors = useSensors(useSensor(PointerSensor, {
@@ -100,7 +158,7 @@ const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onChange, on
         },
     }));
 
-    const handleDragEnd = (event: any) => {
+    const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
         if (!over) { return; }
 
@@ -109,34 +167,53 @@ const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onChange, on
             const newIndex = tags.findIndex((tag) => tag.id === over.id);
             const newTags = arrayMove(tags, oldIndex, newIndex);
             setTags(newTags);
-            onChange && onChange(newTags);
+            onSort && onSort(newTags);
         }
     };
 
+    const handleTagChange = (tag: Item) => {
+        // const newTags = tags.map(t => t.id === tag.id ? tag : t);
+        onChange && onChange(tags, tag);
+    };
+
     return (
-        <DndContext sensors={sensors} onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
-            <SortableContext items={tags} strategy={horizontalListSortingStrategy}>
-                <Space size={[0, 8]} wrap>
-                    {tags.map((tag, index) => (
-                        <TagElement tag={tag} index={index} key={tag.id} removeTag={handleClose} />
+        <DndContext
+            sensors={sensors}
+            onDragEnd={handleDragEnd}
+        // collisionDetection={closestCenter}
+        // autoScroll={false} // todo remove
+        >
+            <SortableContext
+                items={tags}
+            // strategy={horizontalListSortingStrategy}
+            >
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        flexWrap: "wrap",
+                        width: "100%"
+                    }}
+                >
+                    {tags.map((tag) => (
+                        <TagElement tag={tag} key={tag.id} removeTag={handleClose} onChange={handleTagChange} onClick={onTagClick} />
                     ))}
-                    {inputVisible ? (
+                    {/* {inputVisible ? (
                         <Input
                             ref={inputRef}
+                            onBlur={onInputBlur}
+                            onPressEnter={onInputEnter}
+                            className='nodrag'
                             type="text"
                             size="small"
-                            value={inputValue}
-                            onChange={handleInputChange}
-                            onBlur={handleInputConfirm}
-                            onPressEnter={handleInputConfirm}
-                            className='nodrag'
+                            autoFocus={true}
                         />
                     ) : (
                         <Tag onClick={() => setInputVisible(true)} className='nodrag'>
                             <PlusOutlined /> New Tag
                         </Tag>
-                    )}
-                </Space>
+                    )} */}
+                </div>
             </SortableContext>
         </DndContext>
     );
