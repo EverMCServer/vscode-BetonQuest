@@ -5,6 +5,7 @@ import type { InputRef } from 'antd';
 import { Space, Input, Tag } from 'antd';
 import { DndContext, DragEndEvent, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, arrayMove, horizontalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { useViewport } from 'reactflow';
 
 import L from '../../i18n/i18n';
 
@@ -26,12 +27,14 @@ const TagElement: React.FC<TagProps> = ({ tag, removeTag, onChange, onClick }) =
     const commonStyle: React.CSSProperties = {
         cursor: 'move',
         transition: 'unset',
-        padding: '0 8px 0 0'
+        // padding: '0 8px 0 0'
     };
+
+    const viewport = useViewport(); // Compensates ReactFlow's zooming
 
     const style: React.CSSProperties = transform ? {
         ...commonStyle,
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        transform: `translate3d(${transform.x / viewport.zoom}px, ${transform.y / viewport.zoom}px, 0)`,
         transition: isDragging ? 'unset' : transition,
     } : commonStyle;
 
@@ -54,44 +57,45 @@ const TagElement: React.FC<TagProps> = ({ tag, removeTag, onChange, onClick }) =
     };
 
     return (
-        <div
-            ref={setNodeRef}
+        // <div
+        //     ref={setNodeRef}
+        //     style={style}
+        //     {...attributes}
+        //     {...listeners}
+        //     className='nodrag'
+        // >
+        //     <div
+        //         style={{
+        //             border: "solid 2px",
+        //             padding: "2px 8px"
+        //         }}
+        //     >
+        //     {tag.text}
+        //     </div>
+        // </div>
+        <Tag
             style={style}
+            ref={setNodeRef}
             {...attributes}
             {...listeners}
+            closable={!isEditing}
+            onClose={() => removeTag(tag.text)}
             className='nodrag'
+            onDoubleClick={onEditingStart}
+            onClick={() => onClick && onClick(tag)}
         >
-            <div
-                style={{
-                    border: "solid 2px",
-                    padding: "2px 8px"
-                }}
-            >
-            {tag.text}
-            </div>
-        </div>
-        // <Tag
-        //     style={style}
-        //     ref={setNodeRef}
-        //     {...listeners}
-        //     closable={!isEditing}
-        //     onClose={() => removeTag(tag.text)}
-        //     className='nodrag'
-        //     onDoubleClick={onEditingStart}
-        //     onClick={() => onClick && onClick(tag)}
-        // >
-        //     {isEditing ?
-        //         <Input
-        //             defaultValue={tag.text}
-        //             autoFocus={true}
-        //             onBlur={onInputBlur}
-        //             onPressEnter={onInputEnter}
-        //             size='small'
-        //             bordered={false}
-        //         />
-        //         : tag.text
-        //     }
-        // </Tag>
+            {isEditing ?
+                <Input
+                    defaultValue={tag.text}
+                    autoFocus={true}
+                    onBlur={onInputBlur}
+                    onPressEnter={onInputEnter}
+                    size='small'
+                    bordered={false}
+                />
+                : tag.text
+            }
+        </Tag>
     );
 };
 
@@ -112,6 +116,9 @@ const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onSort, onCh
         { id: 4, text: 'd' },
         { id: 5, text: 'e' },
         { id: 6, text: 'f' },
+        { id: 7, text: 'g' },
+        { id: 8, text: 'h' },
+        { id: 9, text: 'i' },
     ]);
     const [inputVisible, setInputVisible] = useState(false);
     const inputRef = useRef<InputRef>(null);
@@ -187,18 +194,19 @@ const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onSort, onCh
                 items={tags}
             // strategy={horizontalListSortingStrategy}
             >
-                <div
+                <Space size={[0, 4]} wrap>
+                {/* <div
                     style={{
                         display: "flex",
                         flexDirection: "row",
                         flexWrap: "wrap",
                         width: "100%"
                     }}
-                >
+                > */}
                     {tags.map((tag) => (
                         <TagElement tag={tag} key={tag.id} removeTag={handleClose} onChange={handleTagChange} onClick={onTagClick} />
                     ))}
-                    {/* {inputVisible ? (
+                    {inputVisible ? (
                         <Input
                             ref={inputRef}
                             onBlur={onInputBlur}
@@ -212,8 +220,9 @@ const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onSort, onCh
                         <Tag onClick={() => setInputVisible(true)} className='nodrag'>
                             <PlusOutlined /> New Tag
                         </Tag>
-                    )} */}
-                </div>
+                    )}
+                {/* </div> */}
+                </Space>
             </SortableContext>
         </DndContext>
     );
