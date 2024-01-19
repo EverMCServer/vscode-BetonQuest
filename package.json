@@ -215,7 +215,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
-    "react-sortable-hoc": "^2.0.0",
     "reactflow": "^11.7.4",
     "yaml": "^2.3.2"
   }

@@ -1,5 +1,4 @@
-import { memo, useState } from "react";
-import * as React from 'react';
+import React, { memo, useState } from "react";
 import {
   Handle,
   Position,
@@ -7,10 +6,13 @@ import {
   NodeProps,
   Connection,
 } from "reactflow";
+
 import L from "../../../../../i18n/i18n";
+import DraggableTag from "../../../../components/DraggableTag";
 import { connectionAvaliable } from "../utils/commonUtils";
-import "./styles.css";
 import { NodeData } from "./Nodes";
+
+import "./styles.css";
 
 export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const [getTrigger, setTrigger] = useState(false);
@@ -28,16 +30,21 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
     data.syncYaml();
     refreshUI();
   };
-  const conditionDel = (): void => {
-    const arr = [...conditionsGet()];
-    arr?.pop();
-    data.option?.setConditionNames(arr);
+  const conditionDel = (pos: number): void => {
+    const arr = conditionsGet();
+    data.option?.setConditionNames([...arr.slice(0, pos), ...arr.slice(pos + 1)]);
 
     data.syncYaml();
     refreshUI();
   };
   const conditionUpdate = (index: number, value: string): void => {
     data.option?.editConditionName(index, value);
+
+    data.syncYaml();
+    refreshUI();
+  };
+  const conditionsSet = (conditions: string[]) => {
+    data.option?.setConditionNames(conditions);
 
     data.syncYaml();
     refreshUI();
@@ -58,16 +65,9 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const eventsGet = (): string[] => {
     return data.option?.getEventNames() || [];
   };
-  const eventAdd = (): void => {
-    data.option?.insertEventNames([""]);
-
-    data.syncYaml();
-    refreshUI();
-  };
-  const eventDel = (): void => {
-    const arr = [...eventsGet()];
-    arr.pop();
-    data.option?.setEventNames(arr);
+  const eventDel = (pos: number): void => {
+    const arr = eventsGet();
+    data.option?.setEventNames([...arr.slice(0, pos), ...arr.slice(pos + 1)]);
 
     data.syncYaml();
     refreshUI();
@@ -78,9 +78,15 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
     data.syncYaml();
     refreshUI();
   };
+  const eventsSet = (conditions: string[]) => {
+    data.option?.setEventNames(conditions);
+
+    data.syncYaml();
+    refreshUI();
+  };
 
   // Connect
-  const { getNode } = useReactFlow();
+  const { getNode } = useReactFlow<NodeData>();
   const isConnectable = (line: Connection): boolean => {
     if (!line) {
       return false;
@@ -90,7 +96,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
     if (!source || !target) {
       return false;
     }
-    return connectionAvaliable(
+    return connectionAvaliable( //
       source.type || "",
       line.sourceHandle || "",
       target.type || "",
@@ -109,24 +115,17 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
       <div className="box">
         <div className="container">
           {L("*.conversation.*.conditions")}
-          <div className="buttons">
-            <button onClick={conditionDel} className="actionButton">
-              -
-            </button>
-            <button onClick={conditionAdd} className="actionButton">
-              +
-            </button>
-          </div>
         </div>
-        {conditionsGet().map((value, index) => (
-          <input
-            key={index}
-            type="text"
-            value={value}
-            onChange={(e) => conditionUpdate(index, e.target.value)}
-            className="nodrag input"
-          />
-        ))}
+        <DraggableTag
+          items={conditionsGet()}
+          onAdd={(v, i) => conditionUpdate(i, v)}
+          onRemove={(_, i) => conditionDel(i)}
+          onSort={e => conditionsSet(e)}
+          onChange={(_, __, e) => conditionsSet(e)}
+          onTagClick={e => console.log("clicked condition:", e)}
+          newTagText={<>+ {L("*.conversation.*.addCondition")}</>}
+          tagTextPattern={/^[\S]+$/}
+        />
         <hr className="line"></hr>
         {L("*.conversation.*.text")}
         <textarea
@@ -138,24 +137,17 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         <hr className="line"></hr>
         <div className="container">
           {L("*.conversation.*.events")}
-          <div className="buttons">
-            <button onClick={eventDel} className="actionButton">
-              -
-            </button>
-            <button onClick={eventAdd} className="actionButton">
-              +
-            </button>
-          </div>
         </div>
-        {eventsGet().map((value, index) => (
-          <input
-            key={index}
-            type="text"
-            value={value}
-            onChange={(e) => eventUpdate(index, e.target.value)}
-            className="nodrag input"
-          />
-        ))}
+        <DraggableTag
+          items={eventsGet()}
+          onAdd={(v, i) => eventUpdate(i, v)}
+          onRemove={(_, i) => eventDel(i)}
+          onSort={e => eventsSet(e)}
+          onChange={(_, __, e) => eventsSet(e)}
+          onTagClick={e => console.log("clicked event:", e)}
+          newTagText={<>+ {L("*.conversation.*.addEvent")}</>}
+          tagTextPattern={/^[\S]+$/}
+        />
       </div>
 
       <Handle
@@ -170,6 +162,13 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         type="source"
         position={Position.Bottom}
         className="handleOut"
+        isValidConnection={(e) => isConnectable(e)}
+      />
+      <Handle
+        id="handleN"
+        type="source"
+        position={Position.Right}
+        className="handleN"
         isValidConnection={(e) => isConnectable(e)}
       />
     </div>

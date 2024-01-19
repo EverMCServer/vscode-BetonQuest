@@ -73,13 +73,13 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
         label: string;
     } | undefined) => {
         try {
-            const patten = new RegExp(input, 'i');
+            const pattern = new RegExp(input, 'i');
             return (
-                option?.value.match(patten)
-                || option?.label.match(patten)
+                option?.value.match(pattern)
+                || option?.label.match(pattern)
             ) ? true : false;
         } catch (e) {
-            // Handle regex patten error
+            // Handle regex pattern error
             return false;
         }
     };

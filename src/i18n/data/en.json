@@ -47,8 +47,10 @@
     "*.conversation.npcNode.npc": "NPC",
     "*.conversation.playerNode.player": "Player",
     "*.conversation.*.conditions": "Conditions:",
+    "*.conversation.*.addCondition": "Add Condition",
     "*.conversation.*.text": "Text:",
     "*.conversation.*.events": "Events:",
+    "*.conversation.*.addEvent": "Add Event",
     "*.conversation.translationSelector.placeholder": "(Translation)",
     "*.conversation.translationSelector.newTranslationPlaceholder": "(New Translation)",
 

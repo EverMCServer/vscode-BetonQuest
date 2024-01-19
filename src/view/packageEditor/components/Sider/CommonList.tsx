@@ -76,13 +76,13 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
     const onElementSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.value.length > 0) {
             try {
-                const patten = new RegExp(e.target.value, 'i');
+                const pattern = new RegExp(e.target.value, 'i');
                 const filteredElements = listElements.filter(element => {
-                    return element.getName().match(patten) || element.toString().match(patten);
+                    return element.getName().match(pattern) || element.toString().match(pattern);
                 });
                 setListElementEditorList(getListElementEditorList(filteredElements));
             } catch (e) {
-                // Handle regex patten error
+                // Handle regex pattern error
                 setListElementEditorList([]);
             }
         } else {

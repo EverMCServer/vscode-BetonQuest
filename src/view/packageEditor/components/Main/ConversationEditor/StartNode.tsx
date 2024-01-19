@@ -1,5 +1,4 @@
-import { memo, useState } from "react";
-import * as React from 'react';
+import React, { memo, useState } from "react";
 import {
   Handle,
   Position,
@@ -118,22 +117,14 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         <hr className="line"></hr>
         <div>
           {L("*.conversation.startNode.finalEvents")}:&nbsp;
-          {/* // */}
-          <DraggableTag></DraggableTag>
-          <div>&nbsp;</div>
-          <Select
-            value={getFinalEvents()}
-            dropdownAlign={{ points: ['tr', 'br'] }}
-            getPopupContainer={triggerNode => triggerNode.parentElement.parentElement}
-            className="nodrag"
-            size="small"
-            mode="tags"
-            popupMatchSelectWidth={false}
-            style={{ width: "100%" }}
-            placeholder={L("(none)")}
-            tokenSeparators={[',', ' ']}
-            onChange={e => setFinalEvents(e)}
-            options={[]}
+          <DraggableTag
+            items={getFinalEvents()}
+            onAdd={(_, __, e) => setFinalEvents(e)}
+            onRemove={(_, __, e) => setFinalEvents(e)}
+            onSort={e => setFinalEvents(e)}
+            onChange={(_, __, e) => setFinalEvents(e)}
+            onTagClick={e => console.log("clicked tag:", e)}
+            newTagText={<>+ {L("*.conversation.*.addEvent")}</>}
           />
         </div>
         <hr className="line"></hr>

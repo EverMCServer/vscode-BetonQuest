@@ -47,8 +47,10 @@
     "*.conversation.npcNode.npc": "NPC",
     "*.conversation.playerNode.player": "玩家",
     "*.conversation.*.conditions": "条件:",
+    "*.conversation.*.addCondition": "添加条件",
     "*.conversation.*.text": "文本:",
     "*.conversation.*.events": "事件:",
+    "*.conversation.*.addEvent": "添加事件",
     "*.conversation.translationSelector.placeholder": "(翻译)",
     "*.conversation.translationSelector.newTranslationPlaceholder": "(新翻译)",
 
