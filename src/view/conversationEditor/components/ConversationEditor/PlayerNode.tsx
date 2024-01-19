@@ -1,5 +1,4 @@
-import { memo, useState } from "react";
-import * as React from 'react';
+import React, { memo, useState } from "react";
 import {
   Handle,
   Position,
