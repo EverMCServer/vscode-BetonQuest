@@ -68,7 +68,7 @@ export default function (props: InputProps) {
                         size="small"
                         style={{ width: 'inherit' }}
                     />
-                    <Tooltip title={L("betonquest.*.input.item*.amountTooltip")}>
+                    <Tooltip title={L("betonquest.*.input.item*.amountTooltip", [`${props.defaultValue[0][1]}`])}>
                         <InputNumber
                             value={amount}
                             onChange={v => {
