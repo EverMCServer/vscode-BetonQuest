@@ -12,6 +12,17 @@ export type Item = {
     text: string;
 };
 
+const commonTagStyle: React.CSSProperties = {
+    cursor: 'move',
+    transition: 'unset',
+    width: "100%",
+    border: '1px solid transparent', // var(--vscode-checkbox-border)
+    borderRadius: '2px',
+    padding: '2px 4px',
+    backgroundColor: 'var(--vscode-badge-background)',
+    color: 'var(--vscode-badge-foreground)',
+};
+
 type TagProps = {
     tag: Item;
     removeTag: (item: Item) => void;
@@ -22,21 +33,13 @@ type TagProps = {
 const TagElement: React.FC<TagProps> = ({ tag, removeTag, onChange, onClick }) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: tag.id });
 
-    const commonStyle: React.CSSProperties = {
-        cursor: 'move',
-        transition: 'unset',
-        width: "100%",
-        border: '1px solid var(--vscode-checkbox-border)',
-        borderRadius: '4px',
-    };
-
     const viewport = useViewport(); // Compensates ReactFlow's zooming
 
     const style: React.CSSProperties = transform ? {
-        ...commonStyle,
+        ...commonTagStyle,
         transform: `translate3d(${transform.x / viewport.zoom}px, ${transform.y / viewport.zoom}px, 0)`,
         transition: isDragging ? 'unset' : transition,
-    } : commonStyle;
+    } : commonTagStyle;
 
     const [isEditing, setIsEditing] = useState(false);
 
@@ -62,38 +65,19 @@ const TagElement: React.FC<TagProps> = ({ tag, removeTag, onChange, onClick }) =
             style={style}
             ref={setNodeRef}
             {...attributes}
-            // {...listeners}
             {...(!isEditing && listeners)}
             className='nodrag'
         >
-            {/* <Input
-                defaultValue={tag.text}
-                disabled={!isEditing}
-                autoFocus={true}
-                onDoubleClick={onEditingStart}
-                onBlur={onInputBlur}
-                onPressEnter={onInputEnter}
-                onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                    if (e.key === 'Escape') {
-                        setIsEditing(false);
-                    }
-                }}
-                onClick={() => onClick && onClick(tag.text, tag.id - 1)}
-                style={{ width: 'inherit' }}
-                suffix={!isEditing ? <VscClose onClick={() => removeTag(tag)} /> : null}
-                size='small'
-            /> */}
             <Space.Compact block>
                 <div
                     onDoubleClick={onEditingStart}
                     onClick={() => onClick && onClick(tag.text, tag.id - 1)}
-                    style={{ width: 'inherit' }}
+                    style={{ width: 'inherit', overflow: 'hidden' }}
                 >
                     {isEditing ?
                         <Input
-                            style={{ padding: 0 }}
-                            defaultValue={tag.text}
                             autoFocus={true}
+                            defaultValue={tag.text}
                             onBlur={onInputBlur}
                             onPressEnter={onInputEnter}
                             onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -102,12 +86,13 @@ const TagElement: React.FC<TagProps> = ({ tag, removeTag, onChange, onClick }) =
                                 }
                             }}
                             size='small'
+                            style={{ padding: 0 }}
                             bordered={false}
                         />
                         : tag.text
                     }
                 </div>
-                {!isEditing ? <VscClose cursor={'pointer'} onClick={() => removeTag(tag)} /> : null}
+                {!isEditing ? <VscClose style={{ cursor: 'pointer', height: 'inherit' }} onClick={() => removeTag(tag)} /> : null}
             </Space.Compact>
         </div >
     );
@@ -204,33 +189,40 @@ const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onSort, onCh
                     {tags.map((tag) => (
                         <TagElement tag={tag} key={tag.id} removeTag={handleClose} onChange={handleTagChange} onClick={onTagClick} />
                     ))}
-                    {inputVisible ? (
-                        <Input
-                            ref={inputRef}
-                            onBlur={onInputBlur}
-                            onPressEnter={onInputEnter}
-                            onKeyUp={(e) => {
-                                if (e.key === 'Escape') {
-                                    setInputVisible(false);
-                                }
-                            }}
-                            // pattern={tagTextPattern}
-                            onInput={event => {
-                                if (tagTextPattern && !tagTextPattern.test(event.currentTarget.value)) {
-                                    // console.log("failed check");
-                                    // TODO
-                                }
-                            }}
-                            className='nodrag'
-                            type="text"
-                            size="small"
-                            autoFocus={true}
-                        />
-                    ) : (
-                        <Tag onClick={() => setInputVisible(true)} className='nodrag'>
-                            {newTagText ?? <>+ New Tag</>}
-                        </Tag>
-                    )}
+                    <div
+                        onClick={() => setInputVisible(true)}
+                        style={{...commonTagStyle, cursor: 'pointer'}}
+                        className='nodrag'
+                    >
+                        {inputVisible ? (
+                            <Input
+                                ref={inputRef}
+                                autoFocus={true}
+                                onBlur={onInputBlur}
+                                onPressEnter={onInputEnter}
+                                onKeyUp={(e) => {
+                                    if (e.key === 'Escape') {
+                                        setInputVisible(false);
+                                    }
+                                }}
+                                // pattern={tagTextPattern}
+                                onInput={event => {
+                                    if (tagTextPattern && !tagTextPattern.test(event.currentTarget.value)) {
+                                        // console.log("failed check");
+                                        // TODO
+                                    }
+                                }}
+                                size="small"
+                                className='nodrag'
+                                type="text"
+                                style={{ padding: 0 }}
+                                bordered={false}
+
+                            />
+                        ) : (
+                            <>{newTagText ?? <>+ New Tag</>}</>
+                        )}
+                    </div>
                 </Space>
             </SortableContext>
         </DndContext>
