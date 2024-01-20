@@ -1,26 +1,17 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useEffect, useRef, useState } from 'react';
 import type { InputRef } from 'antd';
-import { Space, Input, Tag } from 'antd';
+import { Space, Input } from 'antd';
 import { DndContext, DragEndEvent, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, arrayMove, horizontalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { useViewport } from 'reactflow';
 import { VscClose } from 'react-icons/vsc';
 
+import styles from './DraggableList.module.css';
+
 export type Item = {
     id: number;
     text: string;
-};
-
-const commonTagStyle: React.CSSProperties = {
-    cursor: 'move',
-    transition: 'unset',
-    width: "100%",
-    border: '1px solid transparent', // var(--vscode-checkbox-border)
-    borderRadius: '2px',
-    padding: '2px 4px',
-    backgroundColor: 'var(--vscode-badge-background)',
-    color: 'var(--vscode-badge-foreground)',
 };
 
 type TagProps = {
@@ -36,10 +27,9 @@ const TagElement: React.FC<TagProps> = ({ tag, removeTag, onChange, onClick }) =
     const viewport = useViewport(); // Compensates ReactFlow's zooming
 
     const style: React.CSSProperties = transform ? {
-        ...commonTagStyle,
         transform: `translate3d(${transform.x / viewport.zoom}px, ${transform.y / viewport.zoom}px, 0)`,
         transition: isDragging ? 'unset' : transition,
-    } : commonTagStyle;
+    } : {};
 
     const [isEditing, setIsEditing] = useState(false);
 
@@ -63,10 +53,10 @@ const TagElement: React.FC<TagProps> = ({ tag, removeTag, onChange, onClick }) =
     return (
         <div
             style={style}
+            className={`nodrag ${styles.tag}`}
             ref={setNodeRef}
             {...attributes}
             {...(!isEditing && listeners)}
-            className='nodrag'
         >
             <Space.Compact block>
                 <div
@@ -191,8 +181,8 @@ const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onSort, onCh
                     ))}
                     <div
                         onClick={() => setInputVisible(true)}
-                        style={{...commonTagStyle, cursor: 'pointer'}}
-                        className='nodrag'
+                        style={{ cursor: 'pointer' }}
+                        className={`nodrag ${styles.tag}`}
                     >
                         {inputVisible ? (
                             <Input

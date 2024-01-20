@@ -1,0 +1,10 @@
+.tag {
+    cursor: row-resize;
+    transition: unset;
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    padding: 2px 4px;
+    color: var(--vscode-badge-foreground);
+    background-color: var(--vscode-badge-background);
+}

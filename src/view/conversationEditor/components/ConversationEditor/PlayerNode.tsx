@@ -8,7 +8,7 @@ import {
 } from "reactflow";
 
 import L from "../../../../i18n/i18n";
-import DraggableTag from "../../../components/DraggableTag";
+import DraggableList from "../../../components/DraggableList";
 import { connectionAvaliable } from "../utils/commonUtils";
 import { NodeData } from "./Nodes";
 
@@ -116,7 +116,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         <div className="container">
           {L("*.conversation.*.conditions")}
         </div>
-        <DraggableTag
+        <DraggableList
           items={conditionsGet()}
           onAdd={(v, i) => conditionUpdate(i, v)}
           onRemove={(_, i) => conditionDel(i)}
@@ -138,7 +138,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         <div className="container">
           {L("*.conversation.*.events")}
         </div>
-        <DraggableTag
+        <DraggableList
           items={eventsGet()}
           onAdd={(v, i) => eventUpdate(i, v)}
           onRemove={(_, i) => eventDel(i)}

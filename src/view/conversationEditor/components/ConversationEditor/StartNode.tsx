@@ -9,7 +9,7 @@ import {
 import { Select } from "antd";
 
 import L from "../../../../i18n/i18n";
-import DraggableTag from "../../../components/DraggableTag";
+import DraggableList from "../../../components/DraggableList";
 import { connectionAvaliable } from "../utils/commonUtils";
 import { NodeData } from "./Nodes";
 
@@ -117,7 +117,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         <hr className="line"></hr>
         <div>
           {L("*.conversation.startNode.finalEvents")}:&nbsp;
-          <DraggableTag
+          <DraggableList
             items={getFinalEvents()}
             onAdd={(_, __, e) => setFinalEvents(e)}
             onRemove={(_, __, e) => setFinalEvents(e)}
