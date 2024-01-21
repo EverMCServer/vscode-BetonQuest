@@ -6,7 +6,7 @@ import {
   NodeProps,
   Connection,
 } from "reactflow";
-import { Select } from "antd";
+import { Input, Select } from "antd";
 
 import L from "../../../../../i18n/i18n";
 import DraggableList from "../../../../components/DraggableList";
@@ -92,11 +92,12 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
       <div className="box">
         <div>
           {L("*.conversation.startNode.quester")}:
-          <input
+          <Input
             type="text"
-            className="nodrag input"
+            className="nodrag"
             value={getQuester()}
             onChange={(e) => setQuester(e.target.value)}
+            size="small"
           />
         </div>
         <hr className="line"></hr>

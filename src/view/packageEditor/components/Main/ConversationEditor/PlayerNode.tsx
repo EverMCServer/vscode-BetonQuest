@@ -6,6 +6,7 @@ import {
   NodeProps,
   Connection,
 } from "reactflow";
+import TextArea from "antd/es/input/TextArea";
 
 import L from "../../../../../i18n/i18n";
 import DraggableList from "../../../../components/DraggableList";
@@ -128,11 +129,13 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         />
         <hr className="line"></hr>
         {L("*.conversation.*.text")}
-        <textarea
-          className="nodrag textArea"
+        <TextArea
+          className="nodrag"
           value={textGet()}
           onChange={(e) => textUpdate(e.target.value)}
           spellCheck="false"
+          autoSize={{ minRows: 2, maxRows: 8 }}
+          size="small"
         />
         <hr className="line"></hr>
         <div className="container">

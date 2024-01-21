@@ -60,7 +60,7 @@ function autoLayout(nodes: Node[], edges: Edge[]): LayoutResult | void {
         }
     }
 
-    const space = 60;
+    const space = 130;
     const widthMaxDict: Record<number, number> = {};
     const heightMaxDict: Record<number, number> = {};
     for (let i = 0; i < nodes.length; i++) {

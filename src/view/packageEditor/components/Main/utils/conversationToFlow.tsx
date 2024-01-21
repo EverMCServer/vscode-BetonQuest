@@ -136,7 +136,7 @@ export function conversationToFlow(
 
         // Calculate node's height
         if (node.type === "startNode") {
-            node.height = 270 + 33 * (node.data.conversation?.getFinalEventNames().length ?? 0);
+            node.height = 275 + 33 * (node.data.conversation?.getFinalEventNames().length ?? 0);
         } else {
             let count = 0;
             const condis = node.data.option?.getConditionNames();
@@ -147,7 +147,7 @@ export function conversationToFlow(
             if (events) {
                 count += events.length;
             }
-            node.height = 250 + 33 * count;
+            node.height = 230 + 33 * count;
         }
 
         orderedNodes = arrayAppend(orderedNodes, node);
@@ -167,7 +167,7 @@ export function conversationToFlow(
 
         // Calculate node's height
         if (node.type === "startNode") {
-            node.height = 270 + 33 * (node.data.conversation?.getFinalEventNames().length ?? 0);
+            node.height = 275 + 33 * (node.data.conversation?.getFinalEventNames().length ?? 0);
             // node.height = 148;
         } else {
             let count = 0;
@@ -179,7 +179,7 @@ export function conversationToFlow(
             if (events) {
                 count += events.length;
             }
-            node.height = 250 + 33 * count;
+            node.height = 230 + 33 * count;
         }
 
         // Connect free-hanging nodes and their downstreams
