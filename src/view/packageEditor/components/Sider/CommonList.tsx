@@ -135,12 +135,12 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
             // Create new editor
             const newListElementEditor = getListElementEditor(newListElement);
             // Append new editor to elementEditorList
-            setListElementEditorList(listElementEditorList?.concat(newListElementEditor));
+            setListElementEditorList(listElementEditorListCache.current?.concat(newListElementEditor));
             // Expand editor
             onCollapseExpand(newListElement.getName());
             props.syncYaml();
         };
-    }, [listElements, listElementEditorList, collapseActiveKeys]);
+    }, [listElements, props.package]);
 
     // Handle remove
     const onElementRemove = (type: ListElementType, name: string) => {
@@ -162,7 +162,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
             props.package.removeListElement(type, name);
             props.syncYaml();
         };
-    }, [collapseActiveKeys]);
+    }, [collapseActiveKeys, props.package]);
 
     // Handle rename / change key
     const onElementRemane = (oldName: string, newName: string) => {
