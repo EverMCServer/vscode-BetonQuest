@@ -71,6 +71,30 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
 
     // Handle Collapse
     const [collapseActiveKeys, setCollapseActiveKeys] = useState<string | string[]>([]);
+    // Method to open a collapse
+    const onCollapseExpand = (key: string) => {
+        if (typeof collapseActiveKeys === 'string') {
+            if (collapseActiveKeys !== key) {
+                setCollapseActiveKeys([collapseActiveKeys, key]);
+            }
+        } else {
+            if (!collapseActiveKeys.find(e => e === key)) {
+                setCollapseActiveKeys([...collapseActiveKeys, key]);
+            }
+        }
+    };
+    // Method to close a collapse
+    const onCollapseCollapse = (key: string) => {
+        if (typeof collapseActiveKeys === 'string') {
+            if (collapseActiveKeys === key) {
+                setCollapseActiveKeys([]);
+            }
+        } else {
+            if (collapseActiveKeys.find(e => e === key)) {
+                setCollapseActiveKeys(collapseActiveKeys.filter(e => e !== key));
+            }
+        }
+    };
 
     // Handle search
     const onElementSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,11 +137,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
             // Append new editor to elementEditorList
             setListElementEditorList(listElementEditorList?.concat(newListElementEditor));
             // Expand editor
-            if (typeof collapseActiveKeys === 'string') {
-                setCollapseActiveKeys([collapseActiveKeys, newListElement.getName()]);
-            } else {
-                setCollapseActiveKeys([...collapseActiveKeys, newListElement.getName()]);
-            }
+            onCollapseExpand(newListElement.getName());
             props.syncYaml();
         };
     }, [listElements, listElementEditorList, collapseActiveKeys]);
@@ -136,11 +156,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
             const newListElementEditorList = listElementEditorListCache.current?.filter(e => e.key !== name);
             setListElementEditorList(newListElementEditorList);
             // Remove from expanded collapse keys
-            if (typeof collapseActiveKeys === 'string' && collapseActiveKeys === name) {
-                setCollapseActiveKeys([]);
-            } else {
-                setCollapseActiveKeys((collapseActiveKeys as string[]).filter(e => e !== name));
-            }
+            onCollapseCollapse(name);
 
             // Remove from package
             props.package.removeListElement(type, name);
