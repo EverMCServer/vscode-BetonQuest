@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useEffect, useRef, useState } from 'react';
 import type { InputRef } from 'antd';
-import { Space, Input } from 'antd';
+import { Space, Input, Tooltip } from 'antd';
 import { DndContext, DragEndEvent, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, arrayMove, horizontalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { useViewport } from 'reactflow';
-import { VscClose } from 'react-icons/vsc';
+import { VscClose, VscGoToFile } from 'react-icons/vsc';
 
 import styles from './DraggableList.module.css';
+import L from '../../i18n/i18n';
 
 export type Item = {
     id: number;
@@ -16,12 +17,11 @@ export type Item = {
 
 type TagProps = {
     tag: Item;
-    removeTag: (item: Item) => void;
     onChange?: (item: Item) => void;
-    onClick?: (item: string, pos: number) => void;
+    suffix?: React.ReactNode;
 };
 
-const TagElement: React.FC<TagProps> = ({ tag, removeTag, onChange, onClick }) => {
+const TagElement: React.FC<TagProps> = ({ tag, onChange, suffix }) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: tag.id });
 
     const viewport = useViewport(); // Compensates ReactFlow's zooming
@@ -35,7 +35,6 @@ const TagElement: React.FC<TagProps> = ({ tag, removeTag, onChange, onClick }) =
 
     const onEditingStart = () => {
         setIsEditing(true);
-        console.log("a");
     };
 
     const onInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -61,7 +60,6 @@ const TagElement: React.FC<TagProps> = ({ tag, removeTag, onChange, onClick }) =
             <Space.Compact block>
                 <div
                     onDoubleClick={onEditingStart}
-                    onClick={() => onClick && onClick(tag.text, tag.id - 1)}
                     style={{ width: 'inherit', overflow: 'hidden' }}
                 >
                     {isEditing ?
@@ -82,24 +80,26 @@ const TagElement: React.FC<TagProps> = ({ tag, removeTag, onChange, onClick }) =
                         : tag.text
                     }
                 </div>
-                {!isEditing ? <VscClose style={{ cursor: 'pointer', height: 'inherit' }} onClick={() => removeTag(tag)} /> : null}
+                {!isEditing ? suffix : null}
             </Space.Compact>
         </div >
     );
 };
 
 type DraggableTagProps = {
+    // itemSource?: DefaultOptionType[]; // TODO
     items?: string[];
     onAdd?: (newItem: string, pos: number, newItems: string[]) => void;
     onRemove?: (item: string, pos: number, newItems: string[]) => void;
     onSort?: (newItems: string[]) => void;
     onChange?: (newItem: string, pos: number, newItems: string[]) => void; // TODO
     onTagClick?: (item: string, pos: number) => void;
+    onTagClickTooltip?: string;
     newTagText?: React.ReactElement | string;
     tagTextPattern?: RegExp; // Check tag's text pattern, prevent unwanted characters etc.
 };
 
-const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onSort, onChange, onTagClick, newTagText, tagTextPattern }) => {
+const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onSort, onChange, onTagClick, onTagClickTooltip, newTagText, tagTextPattern }) => {
     const [tags, setTags] = useState<Item[]>([]);
     const [inputVisible, setInputVisible] = useState(false);
     const inputRef = useRef<InputRef>(null);
@@ -177,7 +177,18 @@ const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onSort, onCh
             >
                 <Space direction="vertical" size="small" style={{ width: "100%" }}>
                     {tags.map((tag) => (
-                        <TagElement tag={tag} key={tag.id} removeTag={handleClose} onChange={handleTagChange} onClick={onTagClick} />
+                        <TagElement
+                            tag={tag}
+                            key={tag.id}
+                            onChange={handleTagChange}
+                            suffix={<>
+                                <Tooltip title={onTagClickTooltip}>
+                                    <VscGoToFile style={{ cursor: 'pointer', height: 'inherit' }} onClick={() => onTagClick && onTagClick(tag.text, tag.id - 1)} />
+                                </Tooltip>
+                                &nbsp;
+                                <VscClose style={{ cursor: 'pointer', height: 'inherit' }} onClick={() => handleClose(tag)} />
+                            </>}
+                        />
                     ))}
                     <div
                         onClick={() => setInputVisible(true)}

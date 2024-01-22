@@ -48,9 +48,11 @@
     "*.conversation.playerNode.player": "玩家",
     "*.conversation.*.conditions": "条件:",
     "*.conversation.*.addCondition": "添加条件",
+    "*.conversation.*.gotoConditionTooltip": "转到条件的定义",
     "*.conversation.*.text": "文本:",
     "*.conversation.*.events": "事件:",
     "*.conversation.*.addEvent": "添加事件",
+    "*.conversation.*.gotoEventTooltip": "转到事件的定义",
     "*.conversation.translationSelector.placeholder": "(翻译)",
     "*.conversation.translationSelector.newTranslationPlaceholder": "(新翻译)",
 

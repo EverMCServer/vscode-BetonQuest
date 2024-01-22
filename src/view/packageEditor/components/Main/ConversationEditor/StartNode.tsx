@@ -128,17 +128,16 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         <hr className="line"></hr>
         <div>
           {L("*.conversation.startNode.finalEvents")}:&nbsp;
-          <div>
-            <DraggableList
-              items={getFinalEvents()}
-              onAdd={(_, __, e) => setFinalEvents(e)}
-              onRemove={(_, __, e) => setFinalEvents(e)}
-              onSort={e => setFinalEvents(e)}
-              onChange={(_, __, e) => setFinalEvents(e)}
-              onTagClick={onFinalEventClick}
-              newTagText={<>+ {L("*.conversation.*.addEvent")}</>}
-            />
-          </div>
+          <DraggableList
+            items={getFinalEvents()}
+            onAdd={(_, __, e) => setFinalEvents(e)}
+            onRemove={(_, __, e) => setFinalEvents(e)}
+            onSort={e => setFinalEvents(e)}
+            onChange={(_, __, e) => setFinalEvents(e)}
+            onTagClick={onFinalEventClick}
+            onTagClickTooltip={L("*.conversation.*.gotoEventTooltip")}
+            newTagText={<>+ {L("*.conversation.*.addEvent")}</>}
+          />
         </div>
         <hr className="line"></hr>
         <div>

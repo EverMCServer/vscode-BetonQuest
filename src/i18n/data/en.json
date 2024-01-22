@@ -48,9 +48,11 @@
     "*.conversation.playerNode.player": "Player",
     "*.conversation.*.conditions": "Conditions:",
     "*.conversation.*.addCondition": "Add Condition",
+    "*.conversation.*.gotoConditionTooltip": "Goto Condition's definition",
     "*.conversation.*.text": "Text:",
     "*.conversation.*.events": "Events:",
     "*.conversation.*.addEvent": "Add Event",
+    "*.conversation.*.gotoEventTooltip": "Goto Event's definition",
     "*.conversation.translationSelector.placeholder": "(Translation)",
     "*.conversation.translationSelector.newTranslationPlaceholder": "(New Translation)",
 
