@@ -248,7 +248,7 @@ export default class Package {
         if (yaml instanceof YAMLMap) {
             yaml.items.forEach((pair, i) => {
                 if (pair.value instanceof YAMLMap) {
-                    map.set(pair.key.toString(), new Conversation({ yamlMap: pair.value }));
+                    map.set(pair.key.toString(), new Conversation({ yamlMap: pair.value }, pair.key.toString()));
                 }
             });
         }
@@ -262,7 +262,7 @@ export default class Package {
         if (yaml instanceof YAMLMap) {
             yaml.items.forEach(pair => {
                 if (pair.key instanceof Scalar && pair.key.value === scriptName) {
-                    result = new Conversation({ yamlMap: pair.value });
+                    result = new Conversation({ yamlMap: pair.value }, pair.key.value);
                 }
             });
         }

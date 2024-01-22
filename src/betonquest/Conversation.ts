@@ -4,8 +4,10 @@ import YAML, { Pair, Scalar, YAMLError, YAMLMap } from 'yaml';
 export default class Conversation {
     private yaml: YAMLMap;
     private yamlErrors?: YAMLError[];
+    private name: string;
 
-    constructor(yaml: { yamlMap?: YAMLMap, yamlText?: string, yamlParseOption?: (YAML.ParseOptions & YAML.DocumentOptions & YAML.SchemaOptions) }) {
+    constructor(yaml: { yamlMap?: YAMLMap, yamlText?: string, yamlParseOption?: (YAML.ParseOptions & YAML.DocumentOptions & YAML.SchemaOptions) }, name?: string) {
+        this.name = name ?? "";
         if (yaml.yamlMap) {
             this.yaml = yaml.yamlMap;
         } else if (yaml.yamlText) {
@@ -17,6 +19,9 @@ export default class Conversation {
         } else {
             this.yaml = new YAMLMap();
         }
+
+    console.log("conversation constructor");
+
     }
 
     // Get Yaml parse errors
@@ -32,6 +37,10 @@ export default class Conversation {
             nullStr: ``,
             ...yamlToStringOptions
         }) || "";
+    }
+
+    getName() {
+        return this.name;
     }
 
     getQuester(translation?: string): string {
