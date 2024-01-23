@@ -1,4 +1,4 @@
-import React, { useState, KeyboardEvent, ChangeEvent, useEffect } from "react";
+import React, { useState, KeyboardEvent, ChangeEvent, useEffect, useRef, useContext } from "react";
 
 import { VscEdit } from "react-icons/vsc";
 
@@ -7,15 +7,19 @@ import { CommonListProps } from "../CommonList";
 import ListElement from "../../../../../betonquest/ListElement";
 import { Input, Popover, Tooltip } from "antd";
 import { SpecialCharactersRegex } from "../../../../../utils/yaml";
+import { YamlPathPointer } from "../../../../../utils/yamlPathPointery";
 
 let editPopoverTimeout: string | number | NodeJS.Timeout | undefined;
 
-interface CollapseLabelProps<T extends ListElement> extends CommonListProps<T> {
+interface CollapseLabelProps<T extends ListElement> extends CommonListProps<T>, React.RefAttributes<HTMLDivElement> {
     listElement: T,
     onListElementRemane: (oldName: string, newName: string) => void
 }
 
 export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
+
+    // Ref
+    const ref = useRef<HTMLDivElement>(null);
 
     // Cache title name
     const [title, setTitle] = useState("");
@@ -83,8 +87,25 @@ export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
     const [isShowEditPopover, setIsShowEditPopover] = useState(false);
     const [editPopoverMessage, setEditPopoverMessage] = useState<React.ReactNode>("");
 
+    // Scroll to this if pointer received
+    const { yamlPathPointer } = useContext(YamlPathPointer);
+    useEffect(() => {
+        if (yamlPathPointer.length < 2) {
+            return;
+        };
+        if (!yamlPathPointer[yamlPathPointer.length - 2].includes(props.type)) {
+            return;
+        }
+        if (yamlPathPointer[yamlPathPointer.length - 1] === title) {
+            // Delay the scroll, make sure it is scrolled only after the view loaded.
+            setTimeout(() => {
+                ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+            }, 1);
+        }
+    }, [yamlPathPointer]);
+
     return (
-        <div style={{ padding: "0 0 4px 0" }}>
+        <div style={{ padding: "0 0 4px 0" }} ref={ref}>
             {isTitleEditing ?
                 <Popover
                     content={editPopoverMessage}
