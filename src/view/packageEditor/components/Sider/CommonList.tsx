@@ -197,8 +197,6 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
 
     // Get Yaml Path Pointer
     const { yamlPathPointer } = useContext(YamlPathPointer);
-    console.log("getter rerender");
-    console.log(yamlPathPointer);
     useEffect(() => {
         if (yamlPathPointer.length < 2) {
             return;
@@ -207,18 +205,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
             return;
         }
         const name = yamlPathPointer[yamlPathPointer.length - 1];
-        console.log(name);
-        if (typeof collapseActiveKeys === 'string') {
-            if (collapseActiveKeys !== name) {
-                setCollapseActiveKeys([collapseActiveKeys, name]);
-                console.log(name);
-            }
-        } else {
-            if (!collapseActiveKeys.find(e => e === name)) {
-                setCollapseActiveKeys([...collapseActiveKeys, name]);
-                console.log(name);
-            }
-        }
+        onCollapseExpand(name);
     }, [yamlPathPointer]);
 
     return (

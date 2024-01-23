@@ -89,10 +89,9 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const { setYamlPathPointer } = useContext(YamlPathPointer);
   const onFinalEventClick = (item: string, pos: number) => {
     // Broadcast Yaml Pointer
-    setYamlPathPointer(["conversation", data.conversation?.getName() ?? "", "final_events", item]);
+    // setYamlPathPointer(["conversation", data.conversation?.getName() ?? "", "final_events", item]);
+    setYamlPathPointer(["events", item]);
   };
-  console.log("setter rerender");
-
 
   return (
     <div style={{ width: "100%" }}>

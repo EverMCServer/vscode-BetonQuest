@@ -113,7 +113,17 @@ export default function app() {
 
     // Yaml's path pointer cache, to sync between components
     const [yamlPathPointer, setYamlPathPointer] = useState<string[]>([]);
-    console.log("parent rerender");
+    // Expand collapse if pointer refer to a event, condition, objective or item.
+    useEffect(() => {
+        if (yamlPathPointer.length > 1) {
+            const pointer = yamlPathPointer[0];
+            ["event", "condition", "objective", "item"].find(e => {
+                if (pointer.toLowerCase().includes(e)) {
+                    setCollapsed(false);
+                }
+            });
+        }
+    }, [yamlPathPointer]);
 
     return (
         <YamlPathPointer.Provider value={{ yamlPathPointer: yamlPathPointer, setYamlPathPointer: setYamlPathPointer }}>
