@@ -196,7 +196,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
     }, [collapseActiveKeys]);
 
     // Get Yaml Path Pointer
-    const { editorPathPointer } = useContext(YamlPathPointer);
+    const { setDocumentPathPointer, editorPathPointer } = useContext(YamlPathPointer);
     useEffect(() => {
         if (editorPathPointer.length < 2) {
             return;
@@ -234,7 +234,18 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
                     // ghost={true}
                     // bordered={false}
                     activeKey={collapseActiveKeys}
-                    onChange={setCollapseActiveKeys}
+                    onChange={key => {
+                        setCollapseActiveKeys(key);
+                        // Jump to code
+                        if (typeof key === 'string') {
+                            setDocumentPathPointer([props.type, key]);
+                        } else {
+                            const difference = key.filter(e => !collapseActiveKeys.includes(e));
+                            if (difference.length > 0) {
+                                setDocumentPathPointer([props.type, difference[difference.length - 1]]);
+                            }
+                        }
+                    }}
                     destroyInactivePanel={true}
                 ></Collapse>
                 <Button
