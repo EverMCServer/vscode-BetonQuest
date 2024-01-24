@@ -11,8 +11,8 @@
     height: 16px;
     top: -8px;
     border-radius: 6px;
-    background: rgb(255, 255, 255, 0.5);
-    border: 1px solid #999;
+    background: var(--vscode-badge-background);
+    border: 1px solid var(--vscode-inputValidation-warningBorder);
 }
 
 .react-flow .handleOut {
@@ -20,8 +20,8 @@
     height: 16px;
     bottom: -8px;
     border-radius: 6px;
-    background: rgb(255, 255, 255, 0.5);
-    border: 1px solid #999;
+    background: var(--vscode-badge-background);
+    border: 1px solid var(--vscode-inputValidation-warningBorder);
 }
 
 .react-flow .handleN {
@@ -30,8 +30,8 @@
     top: 52px;
     right: -8px;
     border-radius: 6px;
-    background: rgba(255, 138, 138, 0.5);
-    border: 1px solid #999;
+    background: var(--vscode-inputValidation-errorBackground);
+    border: 1px solid var(--vscode-inputValidation-errorBorder);
 }
 
 .react-flow__node {
