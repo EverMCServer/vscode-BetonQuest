@@ -194,6 +194,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
             ></Input>
             <div
                 style={{
+                    overflowX: "hidden",
                     overflowY: "auto",
                     height: "inherit"
                 }}

@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useContext, useState } from "react";
 import {
   Handle,
   Position,
@@ -12,6 +12,7 @@ import L from "../../../../../i18n/i18n";
 import DraggableList from "../../../../components/DraggableList";
 import { connectionAvaliable } from "../utils/commonUtils";
 import { NodeData } from "./Nodes";
+import { YamlPathPointer } from "../../../../../utils/yamlPathPointer";
 
 import "./styles.css";
 
@@ -105,6 +106,17 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
     );
   };
 
+  // Handle Conditions and Events' click
+  const { setYamlPathPointer } = useContext(YamlPathPointer);
+  const onConditionClick = (item: string, pos: number) => {
+    // Broadcast Yaml Pointer
+    setYamlPathPointer(["conditions", item]);
+  };
+  const onEventClick = (item: string, pos: number) => {
+    // Broadcast Yaml Pointer
+    setYamlPathPointer(["events", item]);
+  };
+
   return (
     <div style={{ width: "100%" }}>
       <div className="title-box player">
@@ -123,7 +135,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
           onRemove={(_, i) => conditionDel(i)}
           onSort={e => conditionsSet(e)}
           onChange={(_, __, e) => conditionsSet(e)}
-          onTagClick={e => console.log("clicked condition:", e)}
+          onTagClick={onConditionClick}
           newTagText={<>+ {L("*.conversation.*.addCondition")}</>}
           tagTextPattern={/^[\S]+$/}
         />
@@ -147,7 +159,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
           onRemove={(_, i) => eventDel(i)}
           onSort={e => eventsSet(e)}
           onChange={(_, __, e) => eventsSet(e)}
-          onTagClick={e => console.log("clicked event:", e)}
+          onTagClick={onEventClick}
           newTagText={<>+ {L("*.conversation.*.addEvent")}</>}
           tagTextPattern={/^[\S]+$/}
         />

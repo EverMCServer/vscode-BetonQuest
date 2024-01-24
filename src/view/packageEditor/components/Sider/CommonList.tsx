@@ -10,7 +10,7 @@ import ListElement, { ListElementType } from "../../../../betonquest/ListElement
 import CollapseLabel from "./CommonList/CollapseLabel";
 import CollapseExtra from "./CommonList/CollapseExtra";
 import { ListElementEditorProps } from "./CommonList/CommonEditor";
-import { YamlPathPointer } from "../../../../utils/yamlPathPointery";
+import { YamlPathPointer } from "../../../../utils/yamlPathPointer";
 
 export interface BaseListProps {
     package: Package,
@@ -46,7 +46,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
             key: name,
             label: <CollapseLabel {...props} listElement={e} onListElementRemane={onElementRemane}></CollapseLabel>,
             children: <props.editor key={name} {...props} listElement={e}></props.editor>,
-            style: { padding: "4px 0 0 0" },
+            style: { padding: "4px 0 0 0", wordBreak: "break-word" },
             extra: <CollapseExtra {...props} listElement={e} removeElement={onElementRemove} />
         };
     };
@@ -222,6 +222,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
             ></Input>
             <div
                 style={{
+                    overflowX: "hidden",
                     overflowY: "auto",
                     height: "inherit"
                 }}

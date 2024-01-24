@@ -14,7 +14,7 @@ import ResizableSider from '../components/ResizableSider';
 import Main from "./components/Main";
 import Sider from "./components/Sider";
 import YamlErrorPage from "../components/YamlErrorPage";
-import { YamlPathPointer } from "../../utils/yamlPathPointery";
+import { YamlPathPointer } from "../../utils/yamlPathPointer";
 
 // Global variables from vscode
 declare global {

@@ -12,7 +12,7 @@ import L from "../../../../../i18n/i18n";
 import DraggableList from "../../../../components/DraggableList";
 import { connectionAvaliable } from "../utils/commonUtils";
 import { NodeData } from "./Nodes";
-import { YamlPathPointer } from "../../../../../utils/yamlPathPointery";
+import { YamlPathPointer } from "../../../../../utils/yamlPathPointer";
 
 import "./styles.css";
 

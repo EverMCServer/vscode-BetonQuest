@@ -7,7 +7,7 @@ import { CommonListProps } from "../CommonList";
 import ListElement from "../../../../../betonquest/ListElement";
 import { Input, Popover, Tooltip } from "antd";
 import { SpecialCharactersRegex } from "../../../../../utils/yaml";
-import { YamlPathPointer } from "../../../../../utils/yamlPathPointery";
+import { YamlPathPointer } from "../../../../../utils/yamlPathPointer";
 
 let editPopoverTimeout: string | number | NodeJS.Timeout | undefined;
 
@@ -99,13 +99,15 @@ export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
         if (yamlPathPointer[yamlPathPointer.length - 1] === title) {
             // Delay the scroll, make sure it is scrolled only after the view loaded.
             setTimeout(() => {
-                ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+                ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Add "scrollMarginInlineStart: 34.864px" style onto the div to prevent horizontal scroll, if content overflowed
+                // (See below)
             }, 1);
         }
     }, [yamlPathPointer]);
 
     return (
-        <div style={{ padding: "0 0 4px 0" }} ref={ref}>
+        <div style={{ padding: "0 0 4px 0", scrollMarginInlineStart: "34.864px" }} ref={ref}>
             {isTitleEditing ?
                 <Popover
                     content={editPopoverMessage}

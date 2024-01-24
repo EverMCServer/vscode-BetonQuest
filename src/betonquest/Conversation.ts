@@ -19,9 +19,6 @@ export default class Conversation {
         } else {
             this.yaml = new YAMLMap();
         }
-
-    console.log("conversation constructor");
-
     }
 
     // Get Yaml parse errors

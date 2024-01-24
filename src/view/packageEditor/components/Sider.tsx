@@ -10,7 +10,7 @@ import EventsList from "./Sider/EventsList";
 import ConditionsList from "./Sider/ConditionsList";
 import ObjectivesList from "./Sider/ObjectivesList";
 import ItemsList from "./Sider/ItemsList";
-import { YamlPathPointer } from "../../../utils/yamlPathPointery";
+import { YamlPathPointer } from "../../../utils/yamlPathPointer";
 
 interface ListEditorProps {
     package: Package,
@@ -26,7 +26,7 @@ export default function sider(props: ListEditorProps) {
             label: <Tooltip placement="bottomRight" title={L("packageEditor.sider.events")}><PiPlayFill /></Tooltip>,
             children: <EventsList package={props.package} syncYaml={props.syncYaml}></EventsList>,
             style: {
-                height: "calc(100% - 20px)"
+                height: "calc(100% - 21.1px)"
                 // overflowY: "auto",
                 // height: "inherit"
             },
@@ -36,24 +36,24 @@ export default function sider(props: ListEditorProps) {
             label: <Tooltip placement="bottom" title={L("packageEditor.sider.conditions")}><AiOutlineQuestionCircle /></Tooltip>,
             children: <ConditionsList package={props.package} syncYaml={props.syncYaml}></ConditionsList>,
             style: {
-                height: "calc(100% - 20px)"
-            },
+                height: "calc(100% - 21.1px)"
+            }
         },
         {
             key: "Objectives",
             label: <Tooltip placement="bottom" title={L("packageEditor.sider.objectives")}><LuSearchCheck /></Tooltip>,
             children: <ObjectivesList package={props.package} syncYaml={props.syncYaml}></ObjectivesList>,
             style: {
-                height: "calc(100% - 20px)"
-            },
+                height: "calc(100% - 21.1px)"
+            }
         },
         {
             key: "Items",
             label: <Tooltip placement="bottom" title={L("packageEditor.sider.items")}><LuSword /></Tooltip>,
             children: <ItemsList package={props.package} syncYaml={props.syncYaml}></ItemsList>,
             style: {
-                height: "calc(100% - 20px)"
-            },
+                height: "calc(100% - 21.1px)"
+            }
         },
     ];
 
