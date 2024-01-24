@@ -86,7 +86,9 @@ export default function app() {
                         break;
                     }
                     break;
-                case 'betonquest-translationSelection':
+                case "cursor-yaml-path":
+                    setEditorPathPointer(message.content);
+                // case 'betonquest-translationSelection':
                 // setTranslationSelection(message.content);
             }
         });
@@ -112,21 +114,37 @@ export default function app() {
     const [collapsed, setCollapsed] = useState(true);
 
     // Yaml's path pointer cache, to sync between components
-    const [yamlPathPointer, setYamlPathPointer] = useState<string[]>([]);
-    // Expand collapse if pointer refer to a event, condition, objective or item.
+    const [documentPathPointer, setDocumentPathPointer] = useState<string[]>([]); // -> * document *
+    const [editorPathPointer, setEditorPathPointer] = useState<string[]>([]); // -> * editor *
     useEffect(() => {
-        if (yamlPathPointer.length > 1) {
-            const pointer = yamlPathPointer[0];
-            ["event", "condition", "objective", "item"].find(e => {
-                if (pointer.toLowerCase().includes(e)) {
-                    setCollapsed(false);
-                }
+        // Move the cursor on the YAML document
+        if (pkg.hasPath(documentPathPointer)) {
+            vscode.postMessage({
+                type: "cursor-yaml-path",
+                content: documentPathPointer,
             });
         }
-    }, [yamlPathPointer]);
+    }, [documentPathPointer]);
+    useEffect(() => {
+        // Expand collapse if pointer refer to a event, condition, objective or item.
+        if (editorPathPointer.length > 1) {
+            switch (editorPathPointer[0]) {
+                case "events":
+                case "conditions":
+                case "objectives":
+                case "items":
+                    setCollapsed(false);
+            }
+        }
+    }, [editorPathPointer]);
 
     return (
-        <YamlPathPointer.Provider value={{ yamlPathPointer: yamlPathPointer, setYamlPathPointer: setYamlPathPointer }}>
+        <YamlPathPointer.Provider value={{
+            documentPathPointer: documentPathPointer,
+            setDocumentPathPointer: setDocumentPathPointer,
+            editorPathPointer: editorPathPointer,
+            setEditorPathPointer: setEditorPathPointer,
+        }}>
             <ConfigProvider
                 theme={{
                     components: {

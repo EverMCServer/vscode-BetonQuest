@@ -183,10 +183,24 @@ const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onSort, onCh
                             onChange={handleTagChange}
                             suffix={<>
                                 <Tooltip title={onTagClickTooltip}>
-                                    <VscGoToFile style={{ cursor: 'pointer', height: 'inherit' }} onClick={() => onTagClick && onTagClick(tag.text, tag.id - 1)} />
+                                    <VscGoToFile
+                                        style={{ cursor: 'pointer', height: 'inherit' }}
+                                        onClick={e => {
+                                            if (onTagClick) {
+                                                onTagClick(tag.text, tag.id - 1);
+                                                e.stopPropagation();
+                                            }
+                                        }}
+                                    />
                                 </Tooltip>
                                 &nbsp;
-                                <VscClose style={{ cursor: 'pointer', height: 'inherit' }} onClick={() => handleClose(tag)} />
+                                <VscClose
+                                    style={{ cursor: 'pointer', height: 'inherit' }}
+                                    onClick={e => {
+                                        handleClose(tag);
+                                        e.stopPropagation();
+                                    }}
+                                />
                             </>}
                         />
                     ))}

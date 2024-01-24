@@ -45,6 +45,11 @@ export default class Package {
         });
     }
 
+    // Check if yaml path exists
+    hasPath(path: string[]) {
+        return this.yaml.hasIn(path);
+    }
+
     private getListElementsYaml(type: ListElementType) {
         const yaml = this.yaml.get(type);
         if (yaml instanceof YAMLMap) {

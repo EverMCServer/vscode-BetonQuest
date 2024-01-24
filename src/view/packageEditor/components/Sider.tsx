@@ -22,7 +22,7 @@ export default function sider(props: ListEditorProps) {
     // Tab items
     const items = [
         {
-            key: "Events",
+            key: "events",
             label: <Tooltip placement="bottomRight" title={L("packageEditor.sider.events")}><PiPlayFill /></Tooltip>,
             children: <EventsList package={props.package} syncYaml={props.syncYaml}></EventsList>,
             style: {
@@ -32,7 +32,7 @@ export default function sider(props: ListEditorProps) {
             },
         },
         {
-            key: "Conditions",
+            key: "conditions",
             label: <Tooltip placement="bottom" title={L("packageEditor.sider.conditions")}><AiOutlineQuestionCircle /></Tooltip>,
             children: <ConditionsList package={props.package} syncYaml={props.syncYaml}></ConditionsList>,
             style: {
@@ -40,7 +40,7 @@ export default function sider(props: ListEditorProps) {
             }
         },
         {
-            key: "Objectives",
+            key: "objectives",
             label: <Tooltip placement="bottom" title={L("packageEditor.sider.objectives")}><LuSearchCheck /></Tooltip>,
             children: <ObjectivesList package={props.package} syncYaml={props.syncYaml}></ObjectivesList>,
             style: {
@@ -48,7 +48,7 @@ export default function sider(props: ListEditorProps) {
             }
         },
         {
-            key: "Items",
+            key: "items",
             label: <Tooltip placement="bottom" title={L("packageEditor.sider.items")}><LuSword /></Tooltip>,
             children: <ItemsList package={props.package} syncYaml={props.syncYaml}></ItemsList>,
             style: {
@@ -64,16 +64,16 @@ export default function sider(props: ListEditorProps) {
     };
 
     // Switch tab for pointer changed
-    const { yamlPathPointer } = useContext(YamlPathPointer);
+    const { editorPathPointer } = useContext(YamlPathPointer);
     useEffect(() => {
-        if (yamlPathPointer.length > 1) {
+        if (editorPathPointer.length > 1) {
             items.map(e => e.key).find(e => {
-                if (e.toLowerCase().includes(yamlPathPointer[0])) {
+                if (e === editorPathPointer[0]) {
                     setTabsActiveKey(e);
                 }
             });
         }
-    }, [yamlPathPointer]);
+    }, [editorPathPointer]);
 
     return (
         <Tabs

@@ -88,15 +88,15 @@ export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
     const [editPopoverMessage, setEditPopoverMessage] = useState<React.ReactNode>("");
 
     // Scroll to this if pointer received
-    const { yamlPathPointer } = useContext(YamlPathPointer);
+    const { editorPathPointer } = useContext(YamlPathPointer);
     useEffect(() => {
-        if (yamlPathPointer.length < 2) {
+        if (editorPathPointer.length < 2) {
             return;
         };
-        if (!yamlPathPointer[yamlPathPointer.length - 2].includes(props.type)) {
+        if (editorPathPointer[0] !== props.type) {
             return;
         }
-        if (yamlPathPointer[yamlPathPointer.length - 1] === title) {
+        if (editorPathPointer[1] === title) {
             // Delay the scroll, make sure it is scrolled only after the view loaded.
             setTimeout(() => {
                 ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -104,7 +104,7 @@ export default function <T extends ListElement>(props: CollapseLabelProps<T>) {
                 // (See below)
             }, 1);
         }
-    }, [yamlPathPointer]);
+    }, [editorPathPointer]);
 
     return (
         <div style={{ padding: "0 0 4px 0", scrollMarginInlineStart: "34.864px" }} ref={ref}>

@@ -86,11 +86,12 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   };
 
   // Handle Final Events' click
-  const { setYamlPathPointer } = useContext(YamlPathPointer);
+  const { setDocumentPathPointer, setEditorPathPointer } = useContext(YamlPathPointer);
   const onFinalEventClick = (item: string, pos: number) => {
     // Broadcast Yaml Pointer
-    // setYamlPathPointer(["conversation", data.conversation?.getName() ?? "", "final_events", item]);
-    setYamlPathPointer(["events", item]);
+    // setEditorPathPointer(["conversation", data.conversation?.getName() ?? "", "final_events", item]);
+    setDocumentPathPointer(["events", item]);
+    setEditorPathPointer(["events", item]);
   };
 
   return (
