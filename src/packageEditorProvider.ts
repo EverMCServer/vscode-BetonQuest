@@ -167,7 +167,7 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
                 // @ts-ignore
                 case 'cursor-yaml-path':
                     offset = findOffestByYamlNode(e.content, document.getText());
-                case 'cursor-postion':
+                case 'cursor-position':
                     let curPos = document.positionAt(offset || e.content);
                     if (e.activateDocuemnt) {
                         // Switch to the document if requested

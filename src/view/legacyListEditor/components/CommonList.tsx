@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 import { Button, Collapse, CollapseProps, Input } from "antd";
 import { ItemType } from "rc-collapse/es/interface";
@@ -10,6 +10,7 @@ import ListElement, { ListElementType } from "../../../betonquest/ListElement";
 import CollapseLabel from "./CommonList/CollapseLabel";
 import CollapseExtra from "./CommonList/CollapseExtra";
 import { ListElementEditorProps } from "./CommonList/CommonEditor";
+import { YamlPathPointer } from "../../../utils/yamlPathPointer";
 
 export interface BaseListProps<T extends ListElement> {
     list: List<T>,
@@ -47,7 +48,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
             key: name,
             label: <CollapseLabel {...props} listElement={e} onListElementRemane={onElementRemane}></CollapseLabel>,
             children: <props.editor key={name} {...props} listElement={e}></props.editor>,
-            style: { padding: "4px 0 0 0" },
+            style: { padding: "4px 0 0 0", wordBreak: "break-word" },
             extra: <CollapseExtra {...props} listElement={e} removeElement={onElementRemove} />
         };
     };
@@ -73,6 +74,30 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
 
     // Handle Collapse
     const [collapseActiveKeys, setCollapseActiveKeys] = useState<string | string[]>([]);
+    // Method to open a collapse
+    const onCollapseExpand = (key: string) => {
+        if (typeof collapseActiveKeys === 'string') {
+            if (collapseActiveKeys !== key) {
+                setCollapseActiveKeys([collapseActiveKeys, key]);
+            }
+        } else {
+            if (!collapseActiveKeys.find(e => e === key)) {
+                setCollapseActiveKeys([...collapseActiveKeys, key]);
+            }
+        }
+    };
+    // Method to close a collapse
+    const onCollapseCollapse = (key: string) => {
+        if (typeof collapseActiveKeys === 'string') {
+            if (collapseActiveKeys === key) {
+                setCollapseActiveKeys([]);
+            }
+        } else {
+            if (collapseActiveKeys.find(e => e === key)) {
+                setCollapseActiveKeys(collapseActiveKeys.filter(e => e !== key));
+            }
+        }
+    };
 
     // Handle search
     const onElementSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,16 +138,12 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
             // Create new editor
             const newListElementEditor = getListElementEditor(newListElement);
             // Append new editor to elementEditorList
-            setListElementEditorList(listElementEditorList?.concat(newListElementEditor));
+            setListElementEditorList(listElementEditorListCache.current?.concat(newListElementEditor));
             // Expand editor
-            if (typeof collapseActiveKeys === 'string') {
-                setCollapseActiveKeys([collapseActiveKeys, newListElement.getName()]);
-            } else {
-                setCollapseActiveKeys([...collapseActiveKeys, newListElement.getName()]);
-            }
+            onCollapseExpand(newListElement.getName());
             props.syncYaml();
         };
-    }, [listElements, listElementEditorList, collapseActiveKeys]);
+    }, [listElements, collapseActiveKeys]);
 
     // Handle remove
     const onElementRemove = (type: ListElementType, name: string) => {
@@ -138,11 +159,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
             const newListElementEditorList = listElementEditorListCache.current?.filter(e => e.key !== name);
             setListElementEditorList(newListElementEditorList);
             // Remove from expanded collapse keys
-            if (typeof collapseActiveKeys === 'string' && collapseActiveKeys === name) {
-                setCollapseActiveKeys([]);
-            } else {
-                setCollapseActiveKeys((collapseActiveKeys as string[]).filter(e => e !== name));
-            }
+            onCollapseCollapse(name);
 
             // Remove from package
             props.list.removeListElement(name);
@@ -180,6 +197,16 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
         };
     }, [collapseActiveKeys]);
 
+    // Get and update Yaml Path Pointer
+    const { setDocumentPathPointer, editorPathPointer } = useContext(YamlPathPointer);
+    useEffect(() => {
+        if (editorPathPointer.length < 1) {
+            return;
+        };
+        const name = editorPathPointer[0];
+        onCollapseExpand(name);
+    }, [editorPathPointer]);
+
     return (
         <>
             <Input
@@ -206,7 +233,18 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
                     // ghost={true}
                     // bordered={false}
                     activeKey={collapseActiveKeys}
-                    onChange={setCollapseActiveKeys}
+                    onChange={key => {
+                        setCollapseActiveKeys(key);
+                        // Jump to code
+                        if (typeof key === 'string') {
+                            setDocumentPathPointer([key]);
+                        } else {
+                            const difference = key.filter(e => !collapseActiveKeys.includes(e));
+                            if (difference.length > 0) {
+                                setDocumentPathPointer([difference[difference.length - 1]]);
+                            }
+                        }
+                    }}
                     destroyInactivePanel={true}
                 ></Collapse>
                 <Button

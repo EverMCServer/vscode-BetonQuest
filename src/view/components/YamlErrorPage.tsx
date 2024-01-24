@@ -45,7 +45,7 @@ export default function yamlErrorPage(props: YamlErrorProps) {
                                 }}
                                 onClick={() => {
                                     props.vscode.postMessage({
-                                        type: "cursor-postion",
+                                        type: "cursor-position",
                                         content: e.pos[0],
                                         activateDocuemnt: true,
                                     });

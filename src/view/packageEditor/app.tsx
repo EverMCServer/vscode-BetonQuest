@@ -88,7 +88,8 @@ export default function app() {
                     break;
                 case "cursor-yaml-path":
                     setEditorPathPointer(message.content);
-                // case 'betonquest-translationSelection':
+                    break;
+                case 'betonquest-translationSelection':
                 // setTranslationSelection(message.content);
             }
         });

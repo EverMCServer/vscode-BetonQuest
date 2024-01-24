@@ -1,4 +1,6 @@
 import * as vscode from 'vscode';
+import findYamlNodeByOffset from './utils/findYamlNodeByOffset';
+import findOffestByYamlNode from './utils/findOffestByYamlNode';
 
 interface InitialConfig {
     // translationSelection?: string,
@@ -75,14 +77,16 @@ export class ExampleEditorProvider implements vscode.CustomTextEditorProvider {
         });
 
         const changeSelectionSubscription = vscode.window.onDidChangeTextEditorSelection(e => {
-            if (e && e.textEditor.document.fileName.endsWith("events.yml")) {
+            if ((e.kind === vscode.TextEditorSelectionChangeKind.Keyboard ||
+                e.kind === vscode.TextEditorSelectionChangeKind.Mouse) &&
+                vscode.window.activeTextEditor &&
+                e.textEditor.document.uri.toString() === document.uri.toString()) {
                 let curPos = e.selections[0].active;
                 let offset = e.textEditor.document.offsetAt(curPos);
-                console.log("\ncurPos: ", curPos, "\noffset: ", offset);
 
                 webviewPanel.webview.postMessage({
-                    type: 'curPos',
-                    content: curPos
+                    type: 'cursor-yaml-path',
+                    content: findYamlNodeByOffset(offset, document.getText())
                 });
             }
         });
@@ -99,6 +103,7 @@ export class ExampleEditorProvider implements vscode.CustomTextEditorProvider {
 
         // Receive message from the webview.
         const onDidReceiveMessage = webviewPanel.webview.onDidReceiveMessage(e => {
+            let offset: number | undefined;
             switch (e.type) {
                 case 'webview-lifecycle':
                     switch (e.content) {
@@ -107,12 +112,11 @@ export class ExampleEditorProvider implements vscode.CustomTextEditorProvider {
                             sendDocumentToWebview();
                             return;
                     }
+
                 case 'edit':
                     console.log(e.content);
-
                     // update editted yml
                     this.updateTextDocument(document, e.content);
-
                     return;
 
                 case 'save':
@@ -131,6 +135,34 @@ export class ExampleEditorProvider implements vscode.CustomTextEditorProvider {
                     setTimeout(() => {
                         console.log("new betonquest-translationSelection:", vscode.workspace.getConfiguration('betonquest.setting').get<string>('translationSelection'));
                     }, 1000);
+
+                // Move cursor on text editor.
+                // @ts-ignore
+                case 'cursor-yaml-path':
+                    offset = findOffestByYamlNode(e.content, document.getText());
+                case 'cursor-position':
+                    let curPos = document.positionAt(offset || e.content);
+                    if (e.activateDocuemnt) {
+                        // Switch to the document if requested
+                        let viewColumn = webviewPanel.viewColumn;
+                        viewColumn = vscode.window.tabGroups.
+                            all.flatMap(group => group.tabs).
+                            find(tab => tab.group.viewColumn !== viewColumn && tab.label === document.fileName.split("/").slice(-1)[0])?.group.viewColumn
+                            || vscode.window.tabGroups.all.map(group => group.viewColumn).find(v => v !== webviewPanel.viewColumn)
+                            || webviewPanel.viewColumn;
+                        vscode.window.showTextDocument(document.uri, { preview: false, viewColumn: viewColumn }).then(editor => {
+                            // Set the cursor position.
+                            editor.selections = [new vscode.Selection(curPos, curPos)];
+                        });
+                    } else {
+                        // Iterate all opened documents, set the cursor position.
+                        for (const editor of vscode.window.visibleTextEditors) {
+                            if (editor.document.uri.toString() === document.uri.toString()) {
+                                editor.selections = [new vscode.Selection(curPos, curPos)];
+                            }
+                        }
+                    }
+                    return;
             }
         });
 

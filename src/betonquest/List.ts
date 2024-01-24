@@ -39,6 +39,11 @@ export default class List<T extends ListElement> {
         });
     }
 
+    // Check if yaml path exists
+    hasPath(path: string[]) {
+        return this.yaml.hasIn(path);
+    }
+
     getListElement(name: string): T | undefined {
         const index = this.yaml.contents.items.findIndex(pair => pair.key.value === name);
         if (index !== -1) {

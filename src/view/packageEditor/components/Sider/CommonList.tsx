@@ -195,7 +195,7 @@ export default function <T extends ListElement>(props: CommonListProps<T>) {
         };
     }, [collapseActiveKeys]);
 
-    // Get Yaml Path Pointer
+    // Get and update Yaml Path Pointer
     const { setDocumentPathPointer, editorPathPointer } = useContext(YamlPathPointer);
     useEffect(() => {
         if (editorPathPointer.length < 2) {

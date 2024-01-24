@@ -36,6 +36,11 @@ export default class Conversation {
         }) || "";
     }
 
+    // Check if yaml path exists
+    hasPath(path: string[]) {
+        return this.yaml.hasIn(path);
+    }
+
     getName() {
         return this.name;
     }
