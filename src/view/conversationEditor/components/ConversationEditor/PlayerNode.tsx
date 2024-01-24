@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useContext, useState } from "react";
 import {
   Handle,
   Position,
@@ -12,6 +12,7 @@ import L from "../../../../i18n/i18n";
 import DraggableList from "../../../components/DraggableList";
 import { connectionAvaliable } from "../utils/commonUtils";
 import { NodeData } from "./Nodes";
+import { YamlPathPointer } from "../../../../utils/yamlPathPointer";
 
 import "./styles.css";
 
@@ -24,12 +25,6 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   // Conditions
   const conditionsGet = (): string[] => {
     return data.option?.getConditionNames() || [];
-  };
-  const conditionAdd = (): void => {
-    data.option?.insertConditionNames([""]);
-
-    data.syncYaml();
-    refreshUI();
   };
   const conditionDel = (pos: number): void => {
     const arr = conditionsGet();
@@ -105,6 +100,18 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
     );
   };
 
+  // Handle Conditions and Events' click
+  const { setDocumentPathPointer, setEditorPathPointer } = useContext(YamlPathPointer);
+  const onConditionClick = (item: string, pos: number) => {
+    // Broadcast Yaml Pointer
+    setDocumentPathPointer(["conditions", item]);
+    setEditorPathPointer(["conditions", item]);
+  };
+  const onEventClick = (item: string, pos: number) => {
+    // Broadcast Yaml Pointer
+    setDocumentPathPointer(["@events", item]);
+  };
+
   return (
     <div style={{ width: "100%" }}>
       <div className="title-box player">
@@ -123,7 +130,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
           onRemove={(_, i) => conditionDel(i)}
           onSort={e => conditionsSet(e)}
           onChange={(_, __, e) => conditionsSet(e)}
-          onTagClick={e => console.log("clicked condition:", e)}
+          // onTagGotoClick={onConditionClick}
           newTagText={<>+ {L("*.conversation.*.addCondition")}</>}
           tagTextPattern={/^[\S]+$/}
         />
@@ -147,7 +154,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
           onRemove={(_, i) => eventDel(i)}
           onSort={e => eventsSet(e)}
           onChange={(_, __, e) => eventsSet(e)}
-          onTagClick={e => console.log("clicked event:", e)}
+          // onTagGotoClick={onEventClick}
           newTagText={<>+ {L("*.conversation.*.addEvent")}</>}
           tagTextPattern={/^[\S]+$/}
         />

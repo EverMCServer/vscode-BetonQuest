@@ -26,12 +26,6 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const conditionsGet = (): string[] => {
     return data.option?.getConditionNames() || [];
   };
-  const conditionAdd = (): void => {
-    data.option?.insertConditionNames([""]);
-
-    data.syncYaml();
-    refreshUI();
-  };
   const conditionDel = (pos: number): void => {
     const arr = conditionsGet();
     data.option?.setConditionNames([...arr.slice(0, pos), ...arr.slice(pos + 1)]);
@@ -137,7 +131,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
           onRemove={(_, i) => conditionDel(i)}
           onSort={e => conditionsSet(e)}
           onChange={(_, __, e) => conditionsSet(e)}
-          onTagClick={onConditionClick}
+          onTagGotoClick={onConditionClick}
           newTagText={<>+ {L("*.conversation.*.addCondition")}</>}
           tagTextPattern={/^[\S]+$/}
         />
@@ -161,7 +155,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
           onRemove={(_, i) => eventDel(i)}
           onSort={e => eventsSet(e)}
           onChange={(_, __, e) => eventsSet(e)}
-          onTagClick={onEventClick}
+          onTagGotoClick={onEventClick}
           newTagText={<>+ {L("*.conversation.*.addEvent")}</>}
           tagTextPattern={/^[\S]+$/}
         />

@@ -93,13 +93,13 @@ type DraggableTagProps = {
     onRemove?: (item: string, pos: number, newItems: string[]) => void;
     onSort?: (newItems: string[]) => void;
     onChange?: (newItem: string, pos: number, newItems: string[]) => void; // TODO
-    onTagClick?: (item: string, pos: number) => void;
+    onTagGotoClick?: (item: string, pos: number) => void;
     onTagClickTooltip?: string;
     newTagText?: React.ReactElement | string;
     tagTextPattern?: RegExp; // Check tag's text pattern, prevent unwanted characters etc.
 };
 
-const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onSort, onChange, onTagClick, onTagClickTooltip, newTagText, tagTextPattern }) => {
+const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onSort, onChange, onTagGotoClick, onTagClickTooltip, newTagText, tagTextPattern }) => {
     const [tags, setTags] = useState<Item[]>([]);
     const [inputVisible, setInputVisible] = useState(false);
     const inputRef = useRef<InputRef>(null);
@@ -182,18 +182,18 @@ const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onSort, onCh
                             key={tag.id}
                             onChange={handleTagChange}
                             suffix={<>
-                                <Tooltip title={onTagClickTooltip}>
+                                {onTagGotoClick && <><Tooltip title={onTagClickTooltip}>
                                     <VscGoToFile
                                         style={{ cursor: 'pointer', height: 'inherit' }}
                                         onClick={e => {
-                                            if (onTagClick) {
-                                                onTagClick(tag.text, tag.id - 1);
+                                            if (onTagGotoClick) {
+                                                onTagGotoClick(tag.text, tag.id - 1);
                                                 e.stopPropagation();
                                             }
                                         }}
                                     />
                                 </Tooltip>
-                                &nbsp;
+                                    &nbsp;</>}
                                 <VscClose
                                     style={{ cursor: 'pointer', height: 'inherit' }}
                                     onClick={e => {

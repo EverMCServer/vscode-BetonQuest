@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useContext, useState } from "react";
 import {
   Handle,
   Position,
@@ -12,6 +12,7 @@ import L from "../../../../i18n/i18n";
 import DraggableList from "../../../components/DraggableList";
 import { connectionAvaliable } from "../utils/commonUtils";
 import { NodeData } from "./Nodes";
+import { YamlPathPointer } from "../../../../utils/yamlPathPointer";
 
 import "./styles.css";
 
@@ -84,6 +85,13 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
     );
   };
 
+  // Handle Final Events' click
+  const { setDocumentPathPointer, setEditorPathPointer } = useContext(YamlPathPointer);
+  const onFinalEventClick = (item: string, pos: number) => {
+    // Broadcast Yaml Pointer
+    setDocumentPathPointer(["@events", item]);
+  };
+
   return (
     <div style={{ width: "100%" }}>
       <div className="title-box start">
@@ -124,7 +132,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
             onRemove={(_, __, e) => setFinalEvents(e)}
             onSort={e => setFinalEvents(e)}
             onChange={(_, __, e) => setFinalEvents(e)}
-            onTagClick={e => console.log("clicked tag:", e)}
+            // onTagGotoClick={onFinalEventClick}
             newTagText={<>+ {L("*.conversation.*.addEvent")}</>}
           />
         </div>

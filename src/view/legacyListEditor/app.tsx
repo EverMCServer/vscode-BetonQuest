@@ -106,7 +106,6 @@ export default function app<T extends ListElement>(props: ListEditorProps<T>) {
     const [editorPathPointer, setEditorPathPointer] = useState<string[]>([]); // -> * editor *
     useEffect(() => {
         // Move the cursor on the YAML document
-        console.log("app")
         if (list.hasPath(documentPathPointer)) {
             vscode.postMessage({
                 type: "cursor-yaml-path",

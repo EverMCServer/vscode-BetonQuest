@@ -1,17 +1,14 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-
-import { vscode } from "./vscode";
-
 import { ConfigProvider, Layout } from "antd";
-// const { Content } = Layout;
 import { YAMLError } from "yaml";
+import { vscode } from "./vscode";
 
 import { InitialConfig } from "../../conversationEditorProvider";
 import Conversation from "../../betonquest/Conversation";
-
 import ConversationEditor from "./components/ConversationEditor";
 import YamlErrorPage from "../components/YamlErrorPage";
+import { YamlPathPointer } from "../../utils/yamlPathPointer";
 
 // Global variables from vscode
 declare global {
@@ -90,10 +87,26 @@ export default function app() {
         }, delay);
     };
 
-    // Collapsible Sider
-    const [collapsed, setCollapsed] = useState(true);
+    // Yaml's path pointer cache, to sync between components
+    const [documentPathPointer, setDocumentPathPointer] = useState<string[]>([]); // -> * document *
+    const [editorPathPointer, setEditorPathPointer] = useState<string[]>([]); // -> * editor *
+    useEffect(() => {
+        // Move the cursor on the YAML document
+        if (conversation.hasPath(documentPathPointer)) {
+            vscode.postMessage({
+                type: "cursor-yaml-path",
+                content: documentPathPointer,
+            });
+        }
+    }, [documentPathPointer]);
 
     return (
+        <YamlPathPointer.Provider value={{
+            documentPathPointer: documentPathPointer,
+            setDocumentPathPointer: setDocumentPathPointer,
+            editorPathPointer: editorPathPointer,
+            setEditorPathPointer: setEditorPathPointer,
+        }}>
         <ConfigProvider
             theme={{
                 components: {
@@ -193,5 +206,6 @@ export default function app() {
                 </Layout>
             }
         </ConfigProvider>
+        </YamlPathPointer.Provider>
     );
 }

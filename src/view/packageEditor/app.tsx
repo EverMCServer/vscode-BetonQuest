@@ -1,15 +1,11 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-
-import { vscode } from "./vscode";
-
 import { ConfigProvider, Layout } from "antd";
-// const { Content } = Layout;
 import { YAMLError } from "yaml";
+import { vscode } from "./vscode";
 
 import { InitialConfig } from "../../packageEditorProvider";
 import Package from '../../betonquest/Package';
-
 import ResizableSider from '../components/ResizableSider';
 import Main from "./components/Main";
 import Sider from "./components/Sider";
