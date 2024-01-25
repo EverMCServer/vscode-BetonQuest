@@ -29,7 +29,7 @@
     "packageEditor.commonList.collapseExtra.popconfirmTitle": "Are you sure you want to delete {0}?",
 
     "*.commonList.new": "New",
-    "*.commonList.search": "New",
+    "*.commonList.search": "Search",
     "*.commonList.commonEditor.kind": "Kind:",
     "*.commonList.commonEditor.kindPlaceholder": "(Please enter a kind)",
     "*.commonList.editor.default.mandatoryArguments": "Mandatory Arguments",
