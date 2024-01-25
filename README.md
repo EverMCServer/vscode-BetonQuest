@@ -16,6 +16,12 @@ A GUI based editor for [BetonQuest](https://github.com/BetonQuest/BetonQuest) sc
 ### Build `Events` on click of a button:
 ![demo](assets/screenshot-demo-new-event.gif)
 
+### Locate `Conditions` has never been so easy:
+![demo](assets/screenshot-demo-goto.gif)
+
+### Theme
+![demo](assets/screenshot-demo-theme.gif)
+
 ### Feature Roadmap
 - ✅ Web extension support. Just go to https://vscode.dev and try it.
 - ✅ Edit `Conversations` with an interactive flowchart UI.
@@ -29,7 +35,7 @@ A GUI based editor for [BetonQuest](https://github.com/BetonQuest/BetonQuest) sc
 - ✅ i18n support.
     - English
     - Simplified Chinese 简体中文
-- ⬜ Click and jump to the code / flowchart / editor.
+- ✅ Click and jump to the code / flowchart / editor.
 - ⬜ Advanced Variable editor.
 - ⬜ [Journal](https://betonquest.org/2.0/Documentation/Features/Journal/) editing.
 - ⬜ [Items](https://betonquest.org/2.0/Documentation/Features/Items/) editing.
@@ -37,7 +43,7 @@ A GUI based editor for [BetonQuest](https://github.com/BetonQuest/BetonQuest) sc
 - ⬜ Package configuration.
 - ⬜ [Menu](https://betonquest.org/2.0/Documentation/Features/Menus/Menu/) editing.
 - and more. Please [suggest](https://github.com/EverMCServer/vscode-BetonQuest/issues).
-- ⬜ Code referencing. Click any Events, Condiitons or Objectives then jump to the definition.
+- ⬜ Code referencing with LSP. Click any Events, Condiitons or Objectives then jump to the definition.
 - ⬜ [Global Variables](https://betonquest.org/2.0/Documentation/Scripting/Building-Blocks/Variables-List/#global-variables) support.
 
 ## Limitations
@@ -106,6 +112,12 @@ Helps on translating this extension are welcomed. Please consider submitting you
 
 ## Release Notes
 
+### 0.4.0
+
+- Add "goto" support, now you can jump between the code and the editor when clicking on an Events / Objectives / Conditions
+- Adjust flowchart style to better suite VSCode's color theme
+- Fix missing translation
+
 ### 0.3.0
 - i18n supported!
 - Fully supports Simplified Chinese 完全支持简体中文
@@ -118,10 +130,5 @@ Helps on translating this extension are welcomed. Please consider submitting you
 - Supports Variables in Events, Conditions, Objectives Editors
 - Fix sider drag not working when cursor leaves window
 - Fix variaous mistakes on Events, Objectives and Conditions editing
-
-### 0.2.2
-
-- Conditions editing for 2.0! (1.0 is on the way)
-- Fix various bugs on Events and Objectives editing
 
 (For more detailes, please check [CHANGELOG.md](CHANGELOG.md))

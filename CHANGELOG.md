@@ -4,11 +4,14 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [0.4.0] - TBD
+## [0.4.0] - 2024-01-25
 
 ### Added
-- Add pointer synchronization support, now you can jump between the code and the editor when clicking on an Events / Objectives / Conditions
+- Add "goto" support, now you can jump between the code and the editor when clicking on an Events / Objectives / Conditions
 - Adjust flowchart style to better suite VSCode's color theme
+
+### Fixed
+- Fix missing translation
 
 ## [0.3.0] - 2024-01-16
 
