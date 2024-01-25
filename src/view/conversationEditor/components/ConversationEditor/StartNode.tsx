@@ -132,7 +132,8 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
             onRemove={(_, __, e) => setFinalEvents(e)}
             onSort={e => setFinalEvents(e)}
             onChange={(_, __, e) => setFinalEvents(e)}
-            // onTagGotoClick={onFinalEventClick}
+            // onGotoClick={onFinalEventClick}
+            // onGotoClickTooltip={L("*.conversation.*.gotoEventTooltip")}
             newTagText={<>+ {L("*.conversation.*.addEvent")}</>}
           />
         </div>

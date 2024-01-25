@@ -130,7 +130,8 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
           onRemove={(_, i) => conditionDel(i)}
           onSort={e => conditionsSet(e)}
           onChange={(_, __, e) => conditionsSet(e)}
-          // onTagGotoClick={onConditionClick}
+          // onGotoClick={onConditionClick}
+          // onGotoClickTooltip={L("*.conversation.*.gotoConditionTooltip")}
           newTagText={<>+ {L("*.conversation.*.addCondition")}</>}
           tagTextPattern={/^[\S]+$/}
         />
@@ -154,7 +155,8 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
           onRemove={(_, i) => eventDel(i)}
           onSort={e => eventsSet(e)}
           onChange={(_, __, e) => eventsSet(e)}
-          // onTagGotoClick={onEventClick}
+          // onGotoClick={onEventClick}
+          // onGotoClickTooltip={L("*.conversation.*.gotoEventTooltip")}
           newTagText={<>+ {L("*.conversation.*.addEvent")}</>}
           tagTextPattern={/^[\S]+$/}
         />

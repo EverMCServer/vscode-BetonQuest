@@ -93,13 +93,13 @@ type DraggableTagProps = {
     onRemove?: (item: string, pos: number, newItems: string[]) => void;
     onSort?: (newItems: string[]) => void;
     onChange?: (newItem: string, pos: number, newItems: string[]) => void; // TODO
-    onTagGotoClick?: (item: string, pos: number) => void;
-    onTagClickTooltip?: string;
+    onGotoClick?: (item: string, pos: number) => void;
+    onGotoClickTooltip?: string;
     newTagText?: React.ReactElement | string;
     tagTextPattern?: RegExp; // Check tag's text pattern, prevent unwanted characters etc.
 };
 
-const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onSort, onChange, onTagGotoClick, onTagClickTooltip, newTagText, tagTextPattern }) => {
+const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onSort, onChange, onGotoClick, onGotoClickTooltip, newTagText, tagTextPattern }) => {
     const [tags, setTags] = useState<Item[]>([]);
     const [inputVisible, setInputVisible] = useState(false);
     const inputRef = useRef<InputRef>(null);
@@ -182,12 +182,12 @@ const App: React.FC<DraggableTagProps> = ({ items, onAdd, onRemove, onSort, onCh
                             key={tag.id}
                             onChange={handleTagChange}
                             suffix={<>
-                                {onTagGotoClick && <><Tooltip title={onTagClickTooltip}>
+                                {onGotoClick && <><Tooltip title={onGotoClickTooltip}>
                                     <VscGoToFile
                                         style={{ cursor: 'pointer', height: 'inherit' }}
                                         onClick={e => {
-                                            if (onTagGotoClick) {
-                                                onTagGotoClick(tag.text, tag.id - 1);
+                                            if (onGotoClick) {
+                                                onGotoClick(tag.text, tag.id - 1);
                                                 e.stopPropagation();
                                             }
                                         }}
