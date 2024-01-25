@@ -3,7 +3,6 @@
     stroke-width: 3;
 } */
 .react-flow__edge .react-flow__edge-path {
-    stroke: var(--vscode-input-foreground);
     stroke-width: 2;
 }
 
@@ -13,7 +12,7 @@
     top: -8px;
     border-radius: 6px;
     background: var(--vscode-badge-background);
-    border: 1px solid var(--vscode-inputValidation-warningBorder);
+    border: 2px solid var(--vscode-editorGroup-border);
 }
 
 .react-flow .handleOut {
@@ -22,7 +21,7 @@
     bottom: -8px;
     border-radius: 6px;
     background: var(--vscode-badge-background);
-    border: 1px solid var(--vscode-inputValidation-warningBorder);
+    border: 2px solid var(--vscode-editorGroup-border);
 }
 
 .react-flow .handleN {
@@ -32,7 +31,7 @@
     right: -8px;
     border-radius: 6px;
     background: var(--vscode-inputValidation-errorBackground);
-    border: 1px solid var(--vscode-inputValidation-errorBorder);
+    border: 2px solid var(--vscode-editorGroup-border);
 }
 
 .react-flow__node {

@@ -145,6 +145,7 @@ export default function app<T extends ListElement>(props: ListEditorProps<T>) {
                             // optionSelectedBg: 'var(--vscode-list-activeSelectionBackground)', // = controlItemBgActive
                             optionSelectedColor: 'var(--vscode-list-activeSelectionForeground)', // text color of selected item
                             // optionActiveBg: 'var(--vscode-list-hoverBackground)', // = controlItemBgHover
+                            multipleItemBg: 'var(--vscode-badge-background)', // multiple selected item's background
 
                             // global
                             colorBgContainer: 'var(--vscode-input-background)', // background color of input box
