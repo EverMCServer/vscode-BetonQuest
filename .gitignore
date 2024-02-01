@@ -1,7 +1,7 @@
 /*/out/
 /*/dist/
 node_modules/
-src/bukkit/Data/*.json
+/client/src/bukkit/Data/*.json
 .vscode-test/
 .vscode-test-web/
 *.vsix
