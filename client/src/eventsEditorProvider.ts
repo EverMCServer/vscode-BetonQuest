@@ -2,19 +2,19 @@ import * as vscode from 'vscode';
 import findYamlNodeByOffset from './utils/findYamlNodeByOffset';
 import findOffestByYamlNode from './utils/findOffestByYamlNode';
 
-export interface InitialConfig {
-    translationSelection?: string, // Conversation YAML's translation selection
+interface InitialConfig {
+    // translationSelection?: string,
 }
 
-export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
+export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
 
     public static register(context: vscode.ExtensionContext): vscode.Disposable {
-        const provider = new PackageEditorProvider(context);
-        const providerRegistration = vscode.window.registerCustomEditorProvider(PackageEditorProvider.viewType, provider);
+        const provider = new this(context);
+        const providerRegistration = vscode.window.registerCustomEditorProvider(this.viewType, provider);
         return providerRegistration;
     }
 
-    private static readonly viewType = 'betonquest.packageEditor';
+    private static readonly viewType = 'betonquest.eventsEditor';
 
     constructor(
         private readonly context: vscode.ExtensionContext
@@ -34,7 +34,7 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
         webviewPanel.webview.options = {
             enableScripts: true,
             localResourceRoots: [
-                vscode.Uri.joinPath(this.context.extensionUri, "dist") // see webpack.config.js for name
+                vscode.Uri.joinPath(this.context.extensionUri, "client", "dist") // see webpack.config.js for name
             ]
         };
 
@@ -48,20 +48,18 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
                 "lib/bukkit",
                 "lib/i18n",
                 "lib/utils",
-                "view/components",
+                // "view/components",
                 "view/style",
+
+                "view/legacyListEditor",
             ],
-            {
-                translationSelection: vscode.workspace.getConfiguration('betonquest.setting').get<string>('translationSelection'),
-            },
         );
 
         // Define a method to update Webview
-        function sendDocumentToWebview(isInit: boolean = false) {
+        function sendDocumentToWebview() {
             webviewPanel.webview.postMessage({
                 type: 'update',
-                content: document.getText(),
-                isInit: isInit,
+                content: document.getText()
             });
         }
 
@@ -73,35 +71,9 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
         // Remember that a single text document can also be shared between multiple custom
         // editors (this happens for example when you split a custom editor)
 
-        let timeoutHandler: NodeJS.Timeout; // Use timeout to avoid frenquent update / flowchart flickering
         const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(e => {
-            // Send updated content into webview
             if (e.document.uri.toString() === document.uri.toString()) {
-                clearTimeout(timeoutHandler);
-                if (e.reason === vscode.TextDocumentChangeReason.Undo || e.reason === vscode.TextDocumentChangeReason.Redo) {
-                    // If docuemnt is changed by undo / redo, it should be updated immediately
-                    sendDocumentToWebview();
-                } else {
-                    timeoutHandler = setTimeout(() => {
-                        sendDocumentToWebview();
-                    }, 1000);
-                }
-            }
-            // TODO: update the complete Package when files saved
-            // (Should it be done with LSP?)
-        });
-
-        // Try to save the document again if the document sync from webview is delayed
-        const saveDocumentSubscription = vscode.workspace.onDidSaveTextDocument((e) => {
-            if (e.uri.toString() === document.uri.toString()) {
-                setTimeout(() => {
-                    if (document.isDirty) {
-                        console.log("dirty");
-                        e.save();
-                    } else {
-                        console.log("non-dirty");
-                    }
-                }, 2000);
+                sendDocumentToWebview();
             }
         });
 
@@ -139,28 +111,15 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
                     switch (e.content) {
                         case 'started':
                             // When the webview just started, send the initial document to webview.
-                            sendDocumentToWebview(true);
-
-                            // Send initial configs
-                            // Translation setting
-                            webviewPanel.webview.postMessage({
-                                type: 'betonquest-translationSelection',
-                                content: vscode.workspace.getConfiguration('betonquest.setting').get<string>('translationSelection')
-                            });
+                            sendDocumentToWebview();
                             return;
                     }
                     return;
 
-                // update editted yml
                 case 'edit':
-                    // console.log(e.content);
+                    console.log("received update editted yml ...");
+                    // update editted yml
                     this.updateTextDocument(document, e.content);
-                    return;
-
-                // Update translation selction configuration.
-                case 'set-betonquest-translationSelection':
-                    console.log("got betonquest-translationSelection from webview:", e.content);
-                    vscode.workspace.getConfiguration('betonquest.setting').update('translationSelection', e.content, vscode.ConfigurationTarget.Global);
                     return;
 
                 // Move cursor on text editor.
@@ -194,13 +153,11 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
         });
 
         // Make sure we get rid of the listener when our editor is closed.
-        const onDidDispose = webviewPanel.onDidDispose(() => {
+        webviewPanel.onDidDispose(() => {
             changeDocumentSubscription.dispose();
-            saveDocumentSubscription.dispose();
             changeSelectionSubscription.dispose();
             changeTranslationSubscription.dispose();
             onDidReceiveMessage.dispose();
-            onDidDispose.dispose();
         });
     }
 
@@ -219,9 +176,9 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
     private getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri, libraries: string[], initialConfig?: InitialConfig): string {
 
         // get root.js url for React-JS
-        const pathReactApp = vscode.Uri.joinPath(extensionUri, "dist", "packageEditor.js");
+        const pathReactApp = vscode.Uri.joinPath(extensionUri, "client", "dist", "eventsEditor.js");
         // get lib urls
-        const pathLibs = libraries.map(lib => webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, "dist", lib + '.js')));
+        const pathLibs = libraries.map(lib => webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, "client", "dist", lib + '.js')));
 
         return `<!DOCTYPE html>
         <html lang="en">
@@ -241,12 +198,12 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
             <script>
                 window.vscode = acquireVsCodeApi();
                 window.locale = "${vscode.env.language}";
-                window.packageEditor = {
+                window.legacyListEditor = {
                     initialConfig: ${JSON.stringify(initialConfig)}
                 };
             </script>
         </head>
-        <body style="padding: 0px; overflow: hidden;">
+        <body style="padding: 0px;">
             <div id="root">Loading...</div>
 
             ${pathLibs.map(lib => `<script src="${webview.asWebviewUri(lib)}"></script>`).join('\n')}

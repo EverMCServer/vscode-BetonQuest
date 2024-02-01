@@ -6,15 +6,15 @@ interface InitialConfig {
     // translationSelection?: string,
 }
 
-export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
+export class ObjectivesEditorProvider implements vscode.CustomTextEditorProvider {
 
     public static register(context: vscode.ExtensionContext): vscode.Disposable {
-        const provider = new this(context);
-        const providerRegistration = vscode.window.registerCustomEditorProvider(this.viewType, provider);
+        const provider = new ObjectivesEditorProvider(context);
+        const providerRegistration = vscode.window.registerCustomEditorProvider(ObjectivesEditorProvider.viewType, provider);
         return providerRegistration;
     }
 
-    private static readonly viewType = 'betonquest.eventsEditor';
+    private static readonly viewType = 'betonquest.objectivesEditor';
 
     constructor(
         private readonly context: vscode.ExtensionContext
@@ -34,7 +34,7 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
         webviewPanel.webview.options = {
             enableScripts: true,
             localResourceRoots: [
-                vscode.Uri.joinPath(this.context.extensionUri, "dist") // see webpack.config.js for name
+                vscode.Uri.joinPath(this.context.extensionUri, "client", "dist") // see webpack.config.js for name
             ]
         };
 
@@ -176,9 +176,9 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
     private getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri, libraries: string[], initialConfig?: InitialConfig): string {
 
         // get root.js url for React-JS
-        const pathReactApp = vscode.Uri.joinPath(extensionUri, "dist", "eventsEditor.js");
+        const pathReactApp = vscode.Uri.joinPath(extensionUri, "client", "dist", "objectivesEditor.js");
         // get lib urls
-        const pathLibs = libraries.map(lib => webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, "dist", lib + '.js')));
+        const pathLibs = libraries.map(lib => webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, "client", "dist", lib + '.js')));
 
         return `<!DOCTYPE html>
         <html lang="en">

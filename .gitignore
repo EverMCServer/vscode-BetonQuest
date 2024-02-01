@@ -1,6 +1,6 @@
-out
-dist
-node_modules
+/*/out/
+/*/dist/
+node_modules/
 src/bukkit/Data/*.json
 .vscode-test/
 .vscode-test-web/

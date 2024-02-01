@@ -27,8 +27,8 @@
 			// 	"webpack://?:*/*": "${workspaceFolder}/*"
 			// },
 			"outFiles": [
-				"${workspaceFolder}/dist/**/*.js",
-				"${workspaceFolder}/out/**/*.js"
+				"${workspaceFolder}/client/dist/**/*.js",
+				"${workspaceFolder}/client/out/**/*.js"
 			],
 			"pauseForSourceMap": true,
 			"preLaunchTask": "npm: watch"
@@ -50,8 +50,8 @@
 				"!**/node_modules/**"
 			],
 			"outFiles": [
-				"${workspaceFolder}/dist/**/*.js",
-				"${workspaceFolder}/out/**/*.js"
+				"${workspaceFolder}/client/dist/**/*.js",
+				"${workspaceFolder}/client/out/**/*.js"
 			],
 			"preLaunchTask": "npm: watch"
 		},
@@ -71,12 +71,12 @@
 			"request": "launch",
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}",
-				"--extensionTestsPath=${workspaceFolder}/out/test/suite/index"
+				"--extensionTestsPath=${workspaceFolder}/client/out/test/suite/index"
 			],
 			"sourceMaps": true,
 			"outFiles": [
-				"${workspaceFolder}/dist/**/*.js",
-				"${workspaceFolder}/out/**/*.js"
+				"${workspaceFolder}/client/dist/**/*.js",
+				"${workspaceFolder}/client/out/**/*.js"
 			],
 			"preLaunchTask": "tasks: watch-tests"
 		}
