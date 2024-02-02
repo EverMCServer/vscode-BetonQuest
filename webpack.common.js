@@ -15,7 +15,7 @@ const extensionConfig = {
   target: "node", // VS Code extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
   mode: "none", // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
 
-  entry: "./src/extension.ts", // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
+  entry: "./src/extension.node.ts", // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
   output: {
     // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/
     path: path.resolve(__dirname, "extension", "dist"),
@@ -42,6 +42,61 @@ const extensionConfig = {
         ],
       },
     ],
+  },
+};
+
+/** @type WebpackConfig */
+const webExtensionConfig = {
+  context: path.join(__dirname, "extension"),
+  target: 'webworker', // extensions run in a webworker context
+  entry: './src/extension.web.ts',
+  output: {
+    filename: 'extension.js',
+    path: path.resolve(__dirname, 'extension', './dist/web'),
+    libraryTarget: 'commonjs',
+    devtoolModuleFilenameTemplate: '../../[resource-path]'
+  },
+  resolve: {
+    mainFields: ['browser', 'module', 'main'], // look for `browser` entry point in imported node modules
+    extensions: ['.ts', '.js'], // support ts-files and js-files
+    alias: {
+      // provides alternate implementation for node module and source files
+    },
+    fallback: {
+      // Webpack 5 no longer polyfills Node.js core modules automatically.
+      // see https://webpack.js.org/configuration/resolve/#resolvefallback
+      // for the list of Node.js core module polyfills.
+      'assert': require.resolve('assert'),
+      'path': require.resolve('path-browserify'),
+      // 'process': require.resolve('process/browser'),
+      'process/browser': require.resolve('process/browser'),
+    }
+  },
+  module: {
+    rules: [{
+      test: /\.ts$/,
+      exclude: /node_modules/,
+      use: [{
+        loader: 'ts-loader'
+      }]
+    }]
+  },
+  plugins: [
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1 // disable chunks by default since web extensions must be a single bundle
+    }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser', // provide a shim for the global `process` variable
+    }),
+  ],
+  externals: {
+    'vscode': 'commonjs vscode', // ignored because it doesn't exist
+  },
+  performance: {
+    hints: false
+  },
+  infrastructureLogging: {
+    level: "log", // enables logging required for problem matchers
   },
 };
 
@@ -178,60 +233,88 @@ const reactConfig = {
 };
 
 /** @type WebpackConfig */
-const webExtensionConfig = {
-  context: path.join(__dirname, "extension"),
-  target: 'webworker', // extensions run in a webworker context
-  entry: {
-    'extension': './src/extension.ts'
-  },
-  output: {
-    filename: '[name].js',
-    path: path.resolve(__dirname, 'extension', './dist/web'),
-    libraryTarget: 'commonjs',
-    devtoolModuleFilenameTemplate: '../../[resource-path]'
-  },
-  resolve: {
-    mainFields: ['browser', 'module', 'main'], // look for `browser` entry point in imported node modules
-    extensions: ['.ts', '.js'], // support ts-files and js-files
-    alias: {
-      // provides alternate implementation for node module and source files
+const lspServerNodeConfig = {
+	context: path.join(__dirname, 'server'),
+	mode: 'none',
+	target: 'node', // VS Code extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
+	entry: './src/server.node.ts',
+	output: {
+		filename: 'server.node.js',
+		path: path.join(__dirname, 'server', 'dist'),
+		library: {
+      name: 'serverExportVar',
+      type: "var"
+      // type: "commonjs2"
     },
-    fallback: {
-      // Webpack 5 no longer polyfills Node.js core modules automatically.
-      // see https://webpack.js.org/configuration/resolve/#resolvefallback
-      // for the list of Node.js core module polyfills.
-      'assert': require.resolve('assert'),
-      'path': require.resolve('path-browserify'),
-      // 'process': require.resolve('process/browser'),
-      'process/browser': require.resolve('process/browser'),
-    }
-  },
-  module: {
-    rules: [{
-      test: /\.ts$/,
-      exclude: /node_modules/,
-      use: [{
-        loader: 'ts-loader'
-      }]
-    }]
-  },
-  plugins: [
-    new webpack.optimize.LimitChunkCountPlugin({
-      maxChunks: 1 // disable chunks by default since web extensions must be a single bundle
-    }),
-    new webpack.ProvidePlugin({
-      process: 'process/browser', // provide a shim for the global `process` variable
-    }),
-  ],
-  externals: {
-    'vscode': 'commonjs vscode', // ignored because it doesn't exist
-  },
-  performance: {
-    hints: false
-  },
-  infrastructureLogging: {
-    level: "log", // enables logging required for problem matchers
-  },
+	},
+	resolve: {
+		mainFields: ['module', 'main'],
+		extensions: ['.ts', '.js'], // support ts-files and js-files
+		alias: {},
+		fallback: {
+			//path: require.resolve("path-browserify")
+		},
+	},
+	module: {
+		rules: [
+			{
+				test: /\.ts$/,
+				exclude: /node_modules/,
+				use: [
+					{
+						loader: 'ts-loader',
+					},
+				],
+			},
+		],
+	},
+	externals: {
+		vscode: 'commonjs vscode', // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
+    // modules added here also need to be added in the .vscodeignore file
+	},
 };
 
-module.exports = [extensionConfig, reactConfig, webExtensionConfig];
+/** @type WebpackConfig */
+const lspServerWebConfig = {
+	context: path.join(__dirname, 'server'),
+	mode: 'none',
+	target: 'webworker', // web extensions run in a webworker context
+	entry: './src/server.web.ts',
+	output: {
+		filename: 'server.web.js',
+		path: path.join(__dirname, 'server', 'dist'),
+		library: {
+      name: 'serverExportVar',
+      type: 'var'
+    },
+	},
+	resolve: {
+		mainFields: ['module', 'main'],
+		extensions: ['.ts', '.js'], // support ts-files and js-files
+		alias: {},
+		fallback: {
+			//path: require.resolve("path-browserify")
+		},
+	},
+	module: {
+		rules: [
+			{
+				test: /\.ts$/,
+				exclude: /node_modules/,
+				use: [
+					{
+						loader: 'ts-loader',
+					},
+				],
+			},
+		],
+	},
+	externals: {
+		vscode: 'commonjs vscode', // ignored because it doesn't exist
+	},
+	performance: {
+		hints: false,
+	},
+};
+
+module.exports = [extensionConfig, webExtensionConfig, reactConfig, lspServerNodeConfig, lspServerWebConfig];

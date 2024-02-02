@@ -1,18 +1,18 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
+import * as path from 'path';
+
 import { ConversationEditorProvider } from "./conversationEditorProvider";
 import { EventsEditorProvider } from "./eventsEditorProvider";
 import { ConditionsEditorProvider } from "./conditionsEditorProvider";
 import { ObjectivesEditorProvider } from "./objectivesEditorProvider";
 import { PackageEditorProvider } from "./packageEditorProvider";
 // import { ExampleEditorProvider } from './exampleEditorProvider';
-// import * as fs from 'fs';
-import * as path from 'path';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export function _activate(context: vscode.ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
   // console.log(
@@ -186,11 +186,11 @@ export function activate(context: vscode.ExtensionContext) {
 
 async function checkIfFileExists(filePath: vscode.Uri): Promise<boolean> {
   try {
-      await vscode.workspace.fs.stat(filePath);
-      return true;
+    await vscode.workspace.fs.stat(filePath);
+    return true;
   } catch (error) {
-      // If an error occurs, the file does not exist
-      return false;
+    // If an error occurs, the file does not exist
+    return false;
   }
 }
 
@@ -216,4 +216,4 @@ function checkIfFileExistsInAllParents(filePath: string, fileName: string): Prom
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() { }
+export function _deactivate() { }

@@ -30,6 +30,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
     "reactflow": "^11.7.4",
+    "vscode-languageclient": "^9.0.1",
     "yaml": "^2.3.2"
   }
 }

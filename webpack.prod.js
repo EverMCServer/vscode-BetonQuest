@@ -16,7 +16,13 @@ const extensionConfig = merge(common[0], {
 });
 
 /** @type WebpackConfig */
-const reactConfig = merge(common[1], {
+const webExtensionConfig = merge(common[1], {
+  mode: "production",
+  devtool: 'hidden-source-map',
+});
+
+/** @type WebpackConfig */
+const reactConfig = merge(common[2], {
   mode: "production",
   devtool: 'hidden-source-map',
   optimization: {
@@ -26,9 +32,15 @@ const reactConfig = merge(common[1], {
 });
 
 /** @type WebpackConfig */
-const webExtensionConfig = merge(common[2], {
+const lspServerNodeConfig = merge(common[3], {
   mode: "production",
   devtool: 'hidden-source-map',
 });
 
-module.exports = [extensionConfig, reactConfig, webExtensionConfig];
+/** @type WebpackConfig */
+const lspServerWebConfig = merge(common[4], {
+  mode: "production",
+  devtool: 'hidden-source-map',
+});
+
+module.exports = [extensionConfig, webExtensionConfig, reactConfig, lspServerNodeConfig, lspServerWebConfig];

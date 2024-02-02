@@ -4,12 +4,12 @@
 		"target": "ES5",
 		"outDir": "out",
 		"lib": [
+			"ES2020",
 			"ES2021",
-			"dom"
+			"WebWorker"
 		],
 		"sourceMap": true,
 		"rootDir": "src",
-		"jsx": "react-jsx",
 		"strict": true, /* enable all strict type-checking options */
 		/* Additional Checks */
 		// "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
@@ -20,6 +20,14 @@
 	},
 	"exclude": [
 		"node_modules",
-		".vscode-test"
+		".vscode-test",
+		".vscode-test-web",
+		"src/view"
+	],
+	"files": [],
+	"references": [
+		{
+			"path": "./src/view"
+		},
 	]
 }

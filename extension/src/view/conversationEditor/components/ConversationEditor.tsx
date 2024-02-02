@@ -634,7 +634,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
         }
 
         // Select and center the node
-        const ndoes2 = getNodes().map(node => {
+        const nodes2 = getNodes().map(node => {
             if (node.type === type && node.data.option?.getName() === yamlPath[1]) {
                 node.selected = true;
                 // Move the Viewport
@@ -648,7 +648,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
             }
             return node;
         });
-        setNodes(ndoes2);
+        setNodes(nodes2);
 
         // de-select all edges
         setEdges(getEdges().map(edge => { edge.selected = false; return edge; }));
