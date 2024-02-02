@@ -6,15 +6,15 @@ export interface InitialConfig {
     translationSelection?: string, // Conversation YAML's translation selection
 }
 
-export class ConversationEditorProvider implements vscode.CustomTextEditorProvider {
+export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
 
     public static register(context: vscode.ExtensionContext): vscode.Disposable {
-        const provider = new ConversationEditorProvider(context);
-        const providerRegistration = vscode.window.registerCustomEditorProvider(ConversationEditorProvider.viewType, provider);
+        const provider = new PackageEditorProvider(context);
+        const providerRegistration = vscode.window.registerCustomEditorProvider(PackageEditorProvider.viewType, provider);
         return providerRegistration;
     }
 
-    private static readonly viewType = 'betonquest.conversationEditor';
+    private static readonly viewType = 'betonquest.packageEditor';
 
     constructor(
         private readonly context: vscode.ExtensionContext
@@ -34,7 +34,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
         webviewPanel.webview.options = {
             enableScripts: true,
             localResourceRoots: [
-                vscode.Uri.joinPath(this.context.extensionUri, "client", "dist") // see webpack.config.js for name
+                vscode.Uri.joinPath(this.context.extensionUri, "extension", "dist") // see webpack.config.js for name
             ]
         };
 
@@ -45,7 +45,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
             [
                 "lib/vendor", // node_modules
                 "lib/betonquest",
-                // "lib/bukkit",
+                "lib/bukkit",
                 "lib/i18n",
                 "lib/utils",
                 "view/components",
@@ -53,7 +53,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
             ],
             {
                 translationSelection: vscode.workspace.getConfiguration('betonquest.setting').get<string>('translationSelection'),
-            }
+            },
         );
 
         // Define a method to update Webview
@@ -75,6 +75,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
 
         let timeoutHandler: NodeJS.Timeout; // Use timeout to avoid frenquent update / flowchart flickering
         const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(e => {
+            // Send updated content into webview
             if (e.document.uri.toString() === document.uri.toString()) {
                 clearTimeout(timeoutHandler);
                 if (e.reason === vscode.TextDocumentChangeReason.Undo || e.reason === vscode.TextDocumentChangeReason.Redo) {
@@ -86,6 +87,8 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                     }, 1000);
                 }
             }
+            // TODO: update the complete Package when files saved
+            // (Should it be done with LSP?)
         });
 
         // Try to save the document again if the document sync from webview is delayed
@@ -154,16 +157,6 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                     this.updateTextDocument(document, e.content);
                     return;
 
-                case 'save':
-                    // console.log(document, e.id);
-                    return;
-
-                case 'test-from-webview':
-                    console.log("received test message from webview to extension:");
-                    console.log(e);
-                    vscode.window.showInformationMessage("received test message from webview to extension: " + e.content);
-                    return;
-
                 // Update translation selction configuration.
                 case 'set-betonquest-translationSelection':
                     console.log("got betonquest-translationSelection from webview:", e.content);
@@ -226,9 +219,9 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
     private getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri, libraries: string[], initialConfig?: InitialConfig): string {
 
         // get root.js url for React-JS
-        const pathReactApp = vscode.Uri.joinPath(extensionUri, "client", "dist", "conversationEditor.js");
+        const pathReactApp = vscode.Uri.joinPath(extensionUri, "extension", "dist", "packageEditor.js");
         // get lib urls
-        const pathLibs = libraries.map(lib => webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, "client", "dist", lib + '.js')));
+        const pathLibs = libraries.map(lib => webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, "extension", "dist", lib + '.js')));
 
         return `<!DOCTYPE html>
         <html lang="en">
@@ -248,12 +241,12 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
             <script>
                 window.vscode = acquireVsCodeApi();
                 window.locale = "${vscode.env.language}";
-                window.conversationEditor = {
+                window.packageEditor = {
                     initialConfig: ${JSON.stringify(initialConfig)}
                 };
             </script>
         </head>
-        <body style="padding: 0px;">
+        <body style="padding: 0px; overflow: hidden;">
             <div id="root">Loading...</div>
 
             ${pathLibs.map(lib => `<script src="${webview.asWebviewUri(lib)}"></script>`).join('\n')}

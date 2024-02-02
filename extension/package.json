@@ -1,5 +1,5 @@
 {
-  "name": "betonquest-client",
+  "name": "betonquest-extension",
   "publisher": "EverMC",
   "displayName": "BetonQuest",
   "description": "A GUI for BetonQuest scripting",

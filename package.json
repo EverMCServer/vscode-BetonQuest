@@ -25,8 +25,8 @@
   "activationEvents": [
     "onStartupFinished"
   ],
-  "main": "./client/dist/extension.js",
-  "browser": "./client/dist/web/extension.js",
+  "main": "./extension/dist/extension.js",
+  "browser": "./extension/dist/web/extension.js",
   "contributes": {
     "commands": [
       {
@@ -167,11 +167,11 @@
     "compile": "npm-run-all postinstall generate-list compile:*",
     "watch": "npm-run-all postinstall generate-list -p watch:*",
     "postinstall": "npm-run-all install:*",
-    "install:client": "cd client/ && npm install",
-    "generate-list": "ts-node client/src/scripts/generateData.ts",
-    "compile:extension": "tsc -p ./client/",
+    "install:extension": "cd extension/ && npm install",
+    "generate-list": "ts-node extension/src/scripts/generateData.ts",
+    "compile:extension": "tsc -p ./extension/",
     "compile:views": "webpack --config webpack.prod.js",
-    "watch:extension": "tsc -watch -p ./client/",
+    "watch:extension": "tsc -watch -p ./extension/",
     "watch:views": "webpack --watch --config webpack.dev.js",
     "open-in-browser": "vscode-test-web --extensionDevelopmentPath=."
   },

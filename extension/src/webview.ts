@@ -4,9 +4,9 @@ import * as vscode from 'vscode';
 export function getContent(webview: vscode.Webview, extensionUri: vscode.Uri, libraries: string[]): string {
 
     // get root.js url for React-JS
-    const pathReactApp = vscode.Uri.joinPath(extensionUri, "client", "dist", "conditionsEditor.js");
+    const pathReactApp = vscode.Uri.joinPath(extensionUri, "extension", "dist", "conditionsEditor.js");
     // get lib urls
-    const pathLibs = libraries.map(lib => webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, "client", "dist", lib + '.js')));
+    const pathLibs = libraries.map(lib => webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, "extension", "dist", lib + '.js')));
 
     return `<!DOCTYPE html>
     <html lang="en">

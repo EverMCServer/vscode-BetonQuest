@@ -11,14 +11,14 @@ const webpack = require("webpack");
 
 /** @type WebpackConfig */
 const extensionConfig = {
-  context: path.join(__dirname, "client"),
+  context: path.join(__dirname, "extension"),
   target: "node", // VS Code extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
   mode: "none", // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
 
   entry: "./src/extension.ts", // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
   output: {
     // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/
-    path: path.resolve(__dirname, "client", "dist"),
+    path: path.resolve(__dirname, "extension", "dist"),
     filename: "extension.js",
     libraryTarget: "commonjs2",
   },
@@ -47,7 +47,7 @@ const extensionConfig = {
 
 /** @type WebpackConfig */
 const reactConfig = {
-  context: path.join(__dirname, "client"),
+  context: path.join(__dirname, "extension"),
   target: "web",
 
   // entry: './src/extension.ts', // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
@@ -108,10 +108,10 @@ const reactConfig = {
   },
   output: {
     // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/
-    // path: path.resolve(__dirname, 'client', 'dist'),
+    // path: path.resolve(__dirname, 'extension', 'dist'),
     // filename: 'extension.js',
     // libraryTarget: 'commonjs2'
-    path: path.resolve(__dirname, "client", "dist"),
+    path: path.resolve(__dirname, "extension", "dist"),
     filename: "[name].js",
     // library: {
     //   type: "var",
@@ -179,14 +179,14 @@ const reactConfig = {
 
 /** @type WebpackConfig */
 const webExtensionConfig = {
-  context: path.join(__dirname, "client"),
+  context: path.join(__dirname, "extension"),
   target: 'webworker', // extensions run in a webworker context
   entry: {
     'extension': './src/extension.ts'
   },
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, 'client', './dist/web'),
+    path: path.resolve(__dirname, 'extension', './dist/web'),
     libraryTarget: 'commonjs',
     devtoolModuleFilenameTemplate: '../../[resource-path]'
   },
