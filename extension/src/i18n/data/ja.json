@@ -33,7 +33,7 @@
     "*.commonList.commonEditor.kind": "種別:",
     "*.commonList.commonEditor.kindPlaceholder": "(種別を選択してください)",
     "*.commonList.editor.default.mandatoryArguments": "必須の引数",
-    "*.commonList.editor.default.optionalArguments": "Optional Arguments",
+    "*.commonList.editor.default.optionalArguments": "オプションの引数",
     "*.commonList.editor.default.toggleVariableTooltip": "Toggle Variable input mode",
     "*.commonList.editor.default.toggleVariablePlaceholder": "(Variable)",
     "*.commonList.collapseLabel.duplicated": "Duplicated name {0} Please try another.",
