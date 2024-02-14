@@ -1,0 +1,13 @@
+{
+    "extension.command.openConversationEditor.title": "BetonQuest: 会話文フローチャートを開く",
+    "extension.command.openEventsEditor.title": "BetonQuest: イベントエディターを開く",
+    "extension.command.openConditionsEditor.title": "BetonQuest: コンディションエディターを開く",
+    "extension.command.openObjectivesEditor.title": "BetonQuest: オブジェクティブエディターを開く",
+    "extension.command.openPackageEditor.title": "BetonQuest: パッケージエディターを開く",
+    "extension.customEditors.conversationEditor.displayName": "会話文 フローチャート",
+    "extension.customEditors.eventsEditor.displayName": "イベント エディター",
+    "extension.customEditors.conditionsEditor.displayName": "コンディション エディター",
+    "extension.customEditors.objectivesEditor.displayName": "オブジェクティブ エディター",
+    "extension.customEditors.packageEditor.displayName": "パッケージエディター",
+    "extension.setting.translationSelection.description": "会話文フローチャートの言語設定は'en'がデフォルトです。"
+}
