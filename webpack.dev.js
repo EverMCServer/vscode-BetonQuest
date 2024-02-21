@@ -28,7 +28,7 @@ const webExtensionConfig = merge(common[1], {
 });
 
 /** @type WebpackConfig */
-const reactConfig = merge(common[2], {
+const webviewConfig = merge(common[2], {
   mode: "none", // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
   devtool: "inline-source-map",
   infrastructureLogging: {
@@ -39,7 +39,7 @@ const reactConfig = merge(common[2], {
 /** @type WebpackConfig */
 const lspServerNodeConfig = merge(common[3], {
   mode: "none", // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
-  devtool: "inline-source-map",
+  devtool: "nosources-source-map",
   infrastructureLogging: {
     level: "log", // enables logging required for problem matchers
   }
@@ -48,10 +48,10 @@ const lspServerNodeConfig = merge(common[3], {
 /** @type WebpackConfig */
 const lspServerWebConfig = merge(common[4], {
   mode: "none", // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
-  devtool: "inline-source-map",
+  devtool: "nosources-source-map",
   infrastructureLogging: {
     level: "log", // enables logging required for problem matchers
   }
 });
 
-module.exports = [extensionConfig, webExtensionConfig, reactConfig, lspServerNodeConfig, lspServerWebConfig];
+module.exports = [extensionConfig, webExtensionConfig, webviewConfig, lspServerNodeConfig, lspServerWebConfig];

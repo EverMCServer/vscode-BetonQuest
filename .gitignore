@@ -1,11 +1,12 @@
+node_modules/
 /*/out/
 /*/dist/
-node_modules/
-/extension/src/bukkit/Data/*.json
+/utils/src/bukkit/Data/*.json
 .vscode-test/
 .vscode-test-web/
 *.vsix
 *.code-workspace
+*.tsbuildinfo
 
 .DS_Store
 __MACOSX/

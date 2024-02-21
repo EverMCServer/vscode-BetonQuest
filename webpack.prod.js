@@ -22,7 +22,7 @@ const webExtensionConfig = merge(common[1], {
 });
 
 /** @type WebpackConfig */
-const reactConfig = merge(common[2], {
+const webviewConfig = merge(common[2], {
   mode: "production",
   devtool: 'hidden-source-map',
   optimization: {
@@ -43,4 +43,4 @@ const lspServerWebConfig = merge(common[4], {
   devtool: 'hidden-source-map',
 });
 
-module.exports = [extensionConfig, webExtensionConfig, reactConfig, lspServerNodeConfig, lspServerWebConfig];
+module.exports = [extensionConfig, webExtensionConfig, webviewConfig, lspServerNodeConfig, lspServerWebConfig];

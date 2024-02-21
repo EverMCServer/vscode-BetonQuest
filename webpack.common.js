@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+
 //@ts-check
+/** @typedef {import('webpack').Configuration} WebpackConfig **/
 
 "use strict";
 
 const path = require("path");
 const webpack = require("webpack");
-
-//@ts-check
-/** @typedef {import('webpack').Configuration} WebpackConfig **/
 
 /** @type WebpackConfig */
 const extensionConfig = {
@@ -52,7 +51,7 @@ const webExtensionConfig = {
   entry: './src/extension.web.ts',
   output: {
     filename: 'extension.js',
-    path: path.resolve(__dirname, 'extension', './dist/web'),
+    path: path.resolve(__dirname, "extension", "dist", "web"),
     libraryTarget: 'commonjs',
     devtoolModuleFilenameTemplate: '../../[resource-path]'
   },
@@ -101,61 +100,73 @@ const webExtensionConfig = {
 };
 
 /** @type WebpackConfig */
-const reactConfig = {
-  context: path.join(__dirname, "extension"),
+const webviewConfig = {
+  context: path.join(__dirname, "webview"),
   target: "web",
 
-  // entry: './src/extension.ts', // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
   entry: {
-    // exampleEditor: "./src/view/exampleEditor/index.tsx",
-    conversationEditor: "./src/view/conversationEditor/index.tsx",
-    eventsEditor: "./src/view/eventsEditor/index.tsx",
-    conditionsEditor: "./src/view/conditionsEditor/index.tsx",
-    objectivesEditor: "./src/view/objectivesEditor/index.tsx",
-    packageEditor: "./src/view/packageEditor/index.tsx",
+    // exampleEditor: "./src/exampleEditor/index.tsx",
+    conversationEditor: "./src/conversationEditor/index.tsx",
+    eventsEditor: "./src/eventsEditor/index.tsx",
+    conditionsEditor: "./src/conditionsEditor/index.tsx",
+    objectivesEditor: "./src/objectivesEditor/index.tsx",
+    packageEditor: "./src/packageEditor/index.tsx",
   }, // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
   optimization: {
     splitChunks: {
       minSize: 0,
       cacheGroups: {
-        vendor: {
-          test: /[\\/]node_modules[\\/]/,
-          name: "lib/vendor",
-          chunks: "all",
-        },
+        // test: {
+        //   test: async (module) => {
+        //     if (module.resource.includes("betonquest")) {
+        //       // for (let i = 0; i < 1000; i++) {
+        //         console.log("module:", module.resource);
+        //       // }
+        //       console.log("wait...");
+        //       await new Promise(r => setTimeout(r, 2000));
+        //     }
+        //     // console.log("module:", module.resource);
+        //     return false;
+        //   },
+        // },
         betonquest: {
-          test: /[\\/]src[\\/]betonquest[\\/]/,
+          test: /[\\/]utils[\\/]out[\\/]betonquest[\\/]/,
           name: "lib/betonquest",
           chunks: "all",
         },
         bukkit: {
-          test: /[\\/]src[\\/]bukkit[\\/]/,
+          test: /[\\/]utils[\\/]out[\\/]bukkit[\\/]/,
           name: "lib/bukkit",
           chunks: "all",
         },
         i18n: {
-          test: /[\\/]src[\\/]i18n[\\/]/,
+          test: /[\\/]utils[\\/]out[\\/]i18n[\\/]/,
           name: "lib/i18n",
           chunks: "all",
         },
-        utils: {
-          test: /[\\/]src[\\/]utils[\\/]/,
-          name: "lib/utils",
+        yaml: {
+          test: /[\\/]utils[\\/]out[\\/]yaml[\\/]/,
+          name: "lib/yaml",
           chunks: "all",
         },
         viewComponents: {
-          test: /[\\/]src[\\/]view[\\/]components[\\/]/,
+          test: /[\\/]webview[\\/]src[\\/]components[\\/]/,
           name: "view/components",
           chunks: "all",
         },
         viewStyle: {
-          test: /[\\/]src[\\/]view[\\/]style[\\/]/,
+          test: /[\\/]webview[\\/]src[\\/]style[\\/]/,
           name: "view/style",
           chunks: "all",
         },
         viewLegacyListEditor: {
-          test: /[\\/]src[\\/]view[\\/]legacyListEditor[\\/]/,
+          test: /[\\/]webview[\\/]src[\\/]legacyListEditor[\\/]/,
           name: "view/legacyListEditor",
+          chunks: "all",
+        },
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "lib/vendor",
           chunks: "all",
         },
       },
@@ -163,10 +174,10 @@ const reactConfig = {
   },
   output: {
     // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/
-    // path: path.resolve(__dirname, 'extension', 'dist'),
+    // path: path.resolve(__dirname, 'dist', 'extension'),
     // filename: 'extension.js',
     // libraryTarget: 'commonjs2'
-    path: path.resolve(__dirname, "extension", "dist"),
+    path: path.resolve(__dirname, "webview", "dist"),
     filename: "[name].js",
     // library: {
     //   type: "var",
@@ -240,7 +251,7 @@ const lspServerNodeConfig = {
 	entry: './src/server.node.ts',
 	output: {
 		filename: 'server.node.js',
-		path: path.join(__dirname, 'server', 'dist'),
+		path: path.join(__dirname, "server", "dist"),
 		library: {
       name: 'serverExportVar',
       type: "var"
@@ -282,7 +293,7 @@ const lspServerWebConfig = {
 	entry: './src/server.web.ts',
 	output: {
 		filename: 'server.web.js',
-		path: path.join(__dirname, 'server', 'dist'),
+		path: path.join(__dirname, "server", "dist"),
 		library: {
       name: 'serverExportVar',
       type: 'var'
@@ -317,4 +328,4 @@ const lspServerWebConfig = {
 	},
 };
 
-module.exports = [extensionConfig, webExtensionConfig, reactConfig, lspServerNodeConfig, lspServerWebConfig];
+module.exports = [extensionConfig, webExtensionConfig, webviewConfig, lspServerNodeConfig, lspServerWebConfig];

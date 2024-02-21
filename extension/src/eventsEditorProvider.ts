@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import findYamlNodeByOffset from './utils/findYamlNodeByOffset';
-import findOffestByYamlNode from './utils/findOffestByYamlNode';
+import findYamlNodeByOffset from 'betonquest-utils/yaml/findYamlNodeByOffset';
+import findOffestByYamlNode from 'betonquest-utils/yaml/findOffestByYamlNode';
 
 interface InitialConfig {
     // translationSelection?: string,
@@ -33,9 +33,9 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
         // Config Webview
         webviewPanel.webview.options = {
             enableScripts: true,
-            localResourceRoots: [
-                vscode.Uri.joinPath(this.context.extensionUri, "extension", "dist") // see webpack.config.js for name
-            ]
+            // localResourceRoots: [
+            //     vscode.Uri.joinPath(this.context.extensionUri, "webview", "dist") // see webpack.config.js for name
+            // ]
         };
 
         // Initialize HTML content in Webview
@@ -47,7 +47,7 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
                 "lib/betonquest",
                 "lib/bukkit",
                 "lib/i18n",
-                "lib/utils",
+                "lib/yaml",
                 // "view/components",
                 "view/style",
 
@@ -176,9 +176,9 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
     private getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri, libraries: string[], initialConfig?: InitialConfig): string {
 
         // get root.js url for React-JS
-        const pathReactApp = vscode.Uri.joinPath(extensionUri, "extension", "dist", "eventsEditor.js");
+        const pathReactApp = vscode.Uri.joinPath(extensionUri, "webview", "dist", "eventsEditor.js");
         // get lib urls
-        const pathLibs = libraries.map(lib => webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, "extension", "dist", lib + '.js')));
+        const pathLibs = libraries.map(lib => vscode.Uri.joinPath(extensionUri, "webview", "dist", lib + '.js'));
 
         return `<!DOCTYPE html>
         <html lang="en">

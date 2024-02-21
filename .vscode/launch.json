@@ -17,8 +17,8 @@
 			// "sourceMaps": true,
 			"resolveSourceMapLocations": [
 				"${workspaceFolder}/**",
-				"${workspaceFolder}/dist/**",
-				"${workspaceFolder}/out/**",
+				"${workspaceFolder}/*/dist/**",
+				"${workspaceFolder}/*/out/**",
 				"!**/node_modules/**"
 			],
 			// "sourceMapPathOverrides": {
@@ -27,8 +27,8 @@
 			// 	"webpack://?:*/*": "${workspaceFolder}/*"
 			// },
 			"outFiles": [
-				"${workspaceFolder}/extension/dist/**/*.js",
-				"${workspaceFolder}/extension/out/**/*.js"
+				"${workspaceFolder}/*/dist/**/*.js",
+				"${workspaceFolder}/*/out/**/*.js"
 			],
 			"pauseForSourceMap": true,
 			"preLaunchTask": "npm: watch"

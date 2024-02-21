@@ -8,7 +8,12 @@ A GUI based editor for [BetonQuest](https://github.com/BetonQuest/BetonQuest) sc
 
 ![conversation editor](assets/screenshot-conversation-light.jpg)
 
-## Features
+## Download
+
+1. Download [VSCode](https://code.visualstudio.com/).
+1. Install from [VS Marketplace](https://marketplace.visualstudio.com/items?itemName=EverMC.betonquest)
+
+## Showcase
 
 ### Edit `Conversations` with drag-and-drop:
 ![demo](assets/screenshot-demo-conversation-new-option.gif)
@@ -19,10 +24,10 @@ A GUI based editor for [BetonQuest](https://github.com/BetonQuest/BetonQuest) sc
 ### Locate `Conditions` has never been so easy:
 ![demo](assets/screenshot-demo-goto.gif)
 
-### Theme
+### Theme:
 ![demo](assets/screenshot-demo-theme.gif)
 
-### Feature Roadmap
+## Feature Roadmap
 - ✅ Web extension support. Just go to https://vscode.dev and try it.
 - ✅ Edit `Conversations` with an interactive flowchart UI.
 - ✅ The legacy **1.x file structure** \[[1](https://betonquest.org/1.12/User-Documentation/Reference/#packages)\] \[[2](https://betonquest.org/1.12/User-Documentation/Conversations/)\] support.
@@ -64,7 +69,7 @@ Please report your issues on https://github.com/EverMCServer/vscode-BetonQuest/i
 - (2.0 related) Conversation's tabs are switched to the first one when the YAML edited.
 - `notify` Event is not fully supported at this moment.
 
-## About Translation
+## About Translations
 
 Currently only English and Simplified Chinese are available. If you want to contribute your translation, here are the instructions:
 
@@ -74,7 +79,7 @@ Currently only English and Simplified Chinese are available. If you want to cont
 
 1. There are only 3 files you need to change:
 
-    - Copy `src/i18n/data/en.json` to `src/i18n/data/[locale_code].json` then translate it.
+    - Copy `utils/i18n/data/en.json` to `utils/i18n/data/[locale_code].json` then translate it.
 
         The `[locale_code]` part is referer to the list [here](https://code.visualstudio.com/docs/getstarted/locales#_available-locales). If the locale contains a dash `-`, please convert it to an underscore `_`.
 
@@ -82,7 +87,7 @@ Currently only English and Simplified Chinese are available. If you want to cont
 
         This time you should not convert any dash to underscore.
 
-    - Add new imports on `src/i18n/i18n.ts`:
+    - Add new imports on `utils/../utils/src/i18n/i18n.ts`:
 
         ```typescript
         import en from './data/en.json';
