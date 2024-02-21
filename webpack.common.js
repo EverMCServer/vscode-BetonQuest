@@ -16,6 +16,7 @@ const extensionConfig = {
 
   entry: "./src/extension.node.ts", // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
   output: {
+    uniqueName: "betonquest_extension",
     // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/
     path: path.resolve(__dirname, "extension", "dist"),
     filename: "extension.js",
@@ -50,6 +51,7 @@ const webExtensionConfig = {
   target: 'webworker', // extensions run in a webworker context
   entry: './src/extension.web.ts',
   output: {
+    uniqueName: "betonquest_extension",
     filename: 'extension.js',
     path: path.resolve(__dirname, "extension", "dist", "web"),
     libraryTarget: 'commonjs',
@@ -173,6 +175,7 @@ const webviewConfig = {
     },
   },
   output: {
+    uniqueName: "betonquest_webview",
     // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/
     // path: path.resolve(__dirname, 'dist', 'extension'),
     // filename: 'extension.js',
@@ -253,7 +256,7 @@ const lspServerNodeConfig = {
 		filename: 'server.node.js',
 		path: path.join(__dirname, "server", "dist"),
 		library: {
-      name: 'serverExportVar',
+      name: 'betonquest_server',
       type: "var"
       // type: "commonjs2"
     },
@@ -295,7 +298,7 @@ const lspServerWebConfig = {
 		filename: 'server.web.js',
 		path: path.join(__dirname, "server", "dist"),
 		library: {
-      name: 'serverExportVar',
+      name: 'betonquest_server',
       type: 'var'
     },
 	},

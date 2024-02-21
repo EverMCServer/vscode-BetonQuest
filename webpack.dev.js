@@ -6,6 +6,7 @@
 //@ts-check
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
 
+const webpack = require("webpack");
 const { merge } = require("webpack-merge");
 const common = require("./webpack.common.js");
 
@@ -13,6 +14,12 @@ const common = require("./webpack.common.js");
 const extensionConfig = merge(common[0], {
   mode: "none", // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
   devtool: 'nosources-source-map', // create a source map that points to the original source file
+  // plugins: [
+  //   new webpack.SourceMapDevToolPlugin({
+  //     filename: '[file].map[query]',
+  //     sourceRoot: 'extension'
+  //   })
+  // ],
   infrastructureLogging: {
     level: "log", // enables logging required for problem matchers
   },
@@ -22,6 +29,12 @@ const extensionConfig = merge(common[0], {
 const webExtensionConfig = merge(common[1], {
   mode: "none", // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
   devtool: 'nosources-source-map', // create a source map that points to the original source file
+  // plugins: [
+  //   new webpack.SourceMapDevToolPlugin({
+  //     filename: '[file].map[query]',
+  //     sourceRoot: 'extension'
+  //   })
+  // ],
   infrastructureLogging: {
     level: "log", // enables logging required for problem matchers
   }
@@ -30,7 +43,7 @@ const webExtensionConfig = merge(common[1], {
 /** @type WebpackConfig */
 const webviewConfig = merge(common[2], {
   mode: "none", // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
-  devtool: "inline-source-map",
+  devtool: "source-map",
   infrastructureLogging: {
     level: "log", // enables logging required for problem matchers
   }

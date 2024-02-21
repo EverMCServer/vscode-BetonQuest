@@ -16,21 +16,24 @@
 			],
 			// "sourceMaps": true,
 			"resolveSourceMapLocations": [
-				"${workspaceFolder}/**",
+				// "${workspaceFolder}/**",
 				"${workspaceFolder}/*/dist/**",
 				"${workspaceFolder}/*/out/**",
-				"!**/node_modules/**"
+				// "!**/node_modules/**"
 			],
-			// "sourceMapPathOverrides": {
-			// 	"meteor://💻app/*": "${workspaceFolder}/*",
-			// 	"webpack:///./~/*": "${workspaceFolder}/node_modules/*",
-			// 	"webpack://?:*/*": "${workspaceFolder}/*"
-			// },
+			"sourceMapPathOverrides": {
+				// "meteor://💻app/*": "${workspaceFolder}/*",
+				// "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
+				// "webpack://?:*/*": "${workspaceFolder}/*"
+				"webpack://betonquest_extension/./*": "${workspaceFolder}/extension/*",
+				"webpack://betonquest_webview/./*": "${workspaceFolder}/webview/*",
+				"webpack://betonquest_server/./*": "${workspaceFolder}/server/*"
+			},
 			"outFiles": [
 				"${workspaceFolder}/*/dist/**/*.js",
 				"${workspaceFolder}/*/out/**/*.js"
 			],
-			"pauseForSourceMap": true,
+			// "pauseForSourceMap": true,
 			"preLaunchTask": "npm: watch"
 		},
 		{
@@ -45,13 +48,21 @@
 			],
 			"resolveSourceMapLocations": [
 				"${workspaceFolder}/**",
-				"${workspaceFolder}/dist/**",
-				"${workspaceFolder}/out/**",
+				"${workspaceFolder}/*/dist/**",
+				"${workspaceFolder}/*/out/**",
 				"!**/node_modules/**"
 			],
+			"sourceMapPathOverrides": {
+				// "meteor://💻app/*": "${workspaceFolder}/*",
+				// "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
+				// "webpack://?:*/*": "${workspaceFolder}/*"
+				"webpack://betonquest_extension/./*": "${workspaceFolder}/extension/*",
+				"webpack://betonquest_webview/./*": "${workspaceFolder}/webview/*",
+				"webpack://betonquest_server/./*": "${workspaceFolder}/server/*"
+			},
 			"outFiles": [
-				"${workspaceFolder}/extension/dist/**/*.js",
-				"${workspaceFolder}/extension/out/**/*.js"
+				"${workspaceFolder}/extension/*/dist/**/*.js",
+				"${workspaceFolder}/extension/*/out/**/*.js"
 			],
 			"preLaunchTask": "npm: watch"
 		},
