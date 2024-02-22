@@ -1183,7 +1183,7 @@
     "betonquest.v2.event.tag.mandatory.action.name": "Action",
     "betonquest.v2.event.tag.mandatory.action.option.add": "Add / Start +",
     "betonquest.v2.event.tag.mandatory.action.option.delete": "Remove / Delete -",
-    "betonquest.v2.event.tag.mandatory.tagNameS.name": "Tag Name(s)",
+    "betonquest.v2.event.tag.mandatory.tagNames.name": "Tag Name(s)",
     "betonquest.v2.event.take.display": "Take Items",
     "betonquest.v2.event.take.description": "Removes items from the player's inventory, armor slots or backpack.",
     "betonquest.v2.event.take.mandatory.itemList.name": "Item List",

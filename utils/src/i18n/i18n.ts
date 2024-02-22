@@ -48,8 +48,8 @@ export default function L(key: string, variables?: string[]): string {
     return str;
 }
 
-// Languages come from
-// https://minecraft.fandom.com/wiki/Language
+// Languages listed from
+// https://minecraft.wiki/w/Language
 export const allLanguages = [
     {
         value: 'af',

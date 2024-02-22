@@ -1434,7 +1434,7 @@
   "betonquest.v2.event.tag.mandatory.action.name": "アクション",
   "betonquest.v2.event.tag.mandatory.action.option.add": "追加/開始 +",
   "betonquest.v2.event.tag.mandatory.action.option.delete": "削除/削除-",
-  "betonquest.v2.event.tag.mandatory.tagNameS.name": "タグ名",
+  "betonquest.v2.event.tag.mandatory.tagNames.name": "タグ名",
   "betonquest.v2.event.take.description": "プレイヤーのインベントリ、防具スロット、またはバックパックからアイテムを削除します。",
   "betonquest.v2.event.take.display": "アイテム剥奪",
   "betonquest.v2.event.take.mandatory.itemList.name": "アイテムリスト",

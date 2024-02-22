@@ -79,7 +79,7 @@ Currently only English and Simplified Chinese are available. If you want to cont
 
 1. There are only 3 files you need to change:
 
-    - Copy `utils/i18n/data/en.json` to `utils/i18n/data/[locale_code].json` then translate it.
+    - Copy `utils/src/i18n/data/en.json` to `utils/src/i18n/data/[locale_code].json` then translate it.
 
         The `[locale_code]` part is referer to the list [here](https://code.visualstudio.com/docs/getstarted/locales#_available-locales). If the locale contains a dash `-`, please convert it to an underscore `_`.
 
@@ -87,7 +87,7 @@ Currently only English and Simplified Chinese are available. If you want to cont
 
         This time you should not convert any dash to underscore.
 
-    - Add new imports on `utils/../utils/src/i18n/i18n.ts`:
+    - Add new imports on `utils/src/i18n/i18n.ts`:
 
         ```typescript
         import en from './data/en.json';
@@ -106,7 +106,7 @@ Currently only English and Simplified Chinese are available. If you want to cont
         // ...
         ```
 
-1. If you want to test run the project. You need to install [Node.js](https://nodejs.org/en/download). After that just reload your VSCode and hit `F5`.
+1. If you want to test run the project. You need to install [Node.js](https://nodejs.org/en/download) and do `npm install`. After that just reload your VSCode then hit `F5`.
 
 1. Push your codes
 
