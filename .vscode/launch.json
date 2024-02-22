@@ -15,19 +15,19 @@
 				"--config=./webpack.dev.js"
 			],
 			// "sourceMaps": true,
-			"resolveSourceMapLocations": [
-				// "${workspaceFolder}/**",
-				"${workspaceFolder}/*/dist/**",
-				"${workspaceFolder}/*/out/**",
-				// "!**/node_modules/**"
-			],
+			// "resolveSourceMapLocations": [
+			// 	// "${workspaceFolder}/**",
+			// 	"${workspaceFolder}/*/dist/**",
+			// 	"${workspaceFolder}/*/out/**",
+			// 	// "!**/node_modules/**"
+			// ],
 			"sourceMapPathOverrides": {
 				// "meteor://💻app/*": "${workspaceFolder}/*",
 				// "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
 				// "webpack://?:*/*": "${workspaceFolder}/*"
-				"webpack://betonquest_extension/./*": "${workspaceFolder}/extension/*",
-				"webpack://betonquest_webview/./*": "${workspaceFolder}/webview/*",
-				"webpack://betonquest_server/./*": "${workspaceFolder}/server/*"
+				"webpack://betonquest_extension/*": "${workspaceFolder}/extension/*",
+				"webpack://betonquest_webview/*": "${workspaceFolder}/webview/*",
+				"webpack://betonquest_server/*": "${workspaceFolder}/server/*"
 			},
 			"outFiles": [
 				"${workspaceFolder}/*/dist/**/*.js",
@@ -46,12 +46,12 @@
 				"--config=./webpack.dev.js",
 				"--extensionDevelopmentKind=web"
 			],
-			"resolveSourceMapLocations": [
-				"${workspaceFolder}/**",
-				"${workspaceFolder}/*/dist/**",
-				"${workspaceFolder}/*/out/**",
-				"!**/node_modules/**"
-			],
+			// "resolveSourceMapLocations": [
+			// 	"${workspaceFolder}/**",
+			// 	"${workspaceFolder}/*/dist/**",
+			// 	"${workspaceFolder}/*/out/**",
+			// 	"!**/node_modules/**"
+			// ],
 			"sourceMapPathOverrides": {
 				// "meteor://💻app/*": "${workspaceFolder}/*",
 				// "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
@@ -61,8 +61,8 @@
 				"webpack://betonquest_server/./*": "${workspaceFolder}/server/*"
 			},
 			"outFiles": [
-				"${workspaceFolder}/extension/*/dist/**/*.js",
-				"${workspaceFolder}/extension/*/out/**/*.js"
+				"${workspaceFolder}/*/dist/**/*.js",
+				"${workspaceFolder}/*/out/**/*.js"
 			],
 			"preLaunchTask": "npm: watch"
 		},
@@ -76,6 +76,14 @@
 				"run-script", "open-in-browser"
 			]
 		},
+		{
+            "name": "Attach to BetonQuest Language Server",
+            "type": "node",
+            "request": "attach",
+            "port": 6008,
+            "restart": true,
+            "outFiles": ["${workspaceRoot}/server/dist/**/*.js"]
+        },
 		{
 			"name": "Extension Tests",
 			"type": "extensionHost",

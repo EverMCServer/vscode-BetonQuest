@@ -4,12 +4,13 @@ import * as vscode from "vscode";
 import { LanguageClient, LanguageClientOptions } from 'vscode-languageclient/browser';
 
 import { _activate, _deactivate } from "./extension.common";
+import path from "path";
 
 let lspClient: LanguageClient;
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
   // console.log(
@@ -25,11 +26,18 @@ export function activate(context: vscode.ExtensionContext) {
     synchronize: {},
     initializationOptions: {}
   };
-  const lspServerModule = vscode.Uri.joinPath(context.extensionUri, 'server/dist/server.web.js').toString();
+  // const lspServerModule = vscode.Uri.joinPath(context.extensionUri, 'server/dist/server.web.js').toString();
+  const lspServerModule = context.asAbsolutePath(path.join('server', 'dist', 'server.web.js'));
   const lspWorker = new Worker(lspServerModule);
   lspClient = new LanguageClient('betonquest', 'BetonQuest Language Server', lspClientOptions, lspWorker);
-  lspClient.start().then(() => {
-    console.log('lsp-web-extension-sample server is ready');
+  await lspClient.start().then(() => {
+    lspClient.onNotification('custom/filetree', (tree: string) => {
+      console.log('BQLS: filetree:', tree);
+    });
+    // lspClient.sendNotification('custom/filetree');
+    console.log('BQLS: betonquest-server is ready');
+  }).catch(reason => {
+    console.error('BQLS: betonquest-server failed to start', reason);
   });
   context.subscriptions.push({
     dispose: () => {
