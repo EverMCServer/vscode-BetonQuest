@@ -40,6 +40,7 @@ A GUI based editor for [BetonQuest](https://github.com/BetonQuest/BetonQuest) sc
 - ✅ i18n support.
     - English
     - Simplified Chinese 简体中文
+    - Japanese 日本語 (contributed by shanaOP @dusty01534)
 - ✅ Click and jump to the code / flowchart / editor.
 - ⬜ Advanced Variable editor.
 - ⬜ [Journal](https://betonquest.org/2.0/Documentation/Features/Journal/) editing.
@@ -117,6 +118,10 @@ Helps on translating this extension are welcomed. Please consider submitting you
 
 ## Release Notes
 
+### 0.4.1
+
+- Fully supports Japanese 日本語に完全対応 (contributed by shanaOP @dusty01534)
+
 ### 0.4.0
 
 - Add "goto" support, now you can jump between the code and the editor when clicking on an Events / Objectives / Conditions
@@ -129,11 +134,5 @@ Helps on translating this extension are welcomed. Please consider submitting you
 - Optimize initial loading speed
 - Minimize extension
 - Removes the `thunder` option from the `weather` Event BetonQuest/BetonQuest/pull/2671
-
-### 0.2.3
-- Add Events / Objectives / Conditions editing for 1.x!
-- Supports Variables in Events, Conditions, Objectives Editors
-- Fix sider drag not working when cursor leaves window
-- Fix variaous mistakes on Events, Objectives and Conditions editing
 
 (For more detailes, please check [CHANGELOG.md](CHANGELOG.md))

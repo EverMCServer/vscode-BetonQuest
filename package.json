@@ -3,7 +3,7 @@
   "publisher": "EverMC",
   "displayName": "BetonQuest",
   "description": "A GUI for BetonQuest scripting",
-  "version": "0.5.0",
+  "version": "0.4.1",
   "icon": "assets/icon-256.png",
   "engines": {
     "vscode": "^1.80.0"
@@ -175,13 +175,13 @@
     "generate-list": "ts-node scripts/generateData.ts",
     "compile:utils": "tsc -p ./utils/",
     "compile:extension": "tsc -p ./extension/",
-    "compile:server": "tsc -p ./server/",
     "compile:webview": "tsc -p ./webview/",
+    "compile:server": "tsc -p ./server/",
     "webpack:compile": "webpack --config webpack.prod.js",
     "watch:utils": "tsc -watch -p ./utils/",
     "watch:extension": "tsc -watch -p ./extension/",
-    "watch:server": "tsc -watch -p ./server/",
     "watch:webview": "tsc -watch -p ./webview/",
+    "watch:server": "tsc -watch -p ./server/",
     "webpack:watch": "webpack --watch --config webpack.dev.js",
     "open-in-browser": "vscode-test-web --extensionDevelopmentPath=."
   },
@@ -189,7 +189,7 @@
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "20.11.19",
-    "@types/vscode": "^1.86.0",
+    "@types/vscode": "^1.80.0",
     "@types/webpack-env": "^1.18.4",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",

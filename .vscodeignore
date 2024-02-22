@@ -9,6 +9,7 @@
 .yarnrc
 webpack.*.js
 **/tsconfig.json
+**/tsconfig.tsbuildinfo
 **/.eslintrc.json
 **/*.map
 **/*.ts

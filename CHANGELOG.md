@@ -4,6 +4,11 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.4.1] - 2024-02-22
+
+### Added
+- Fully supports Japanese 日本語に完全対応 (contributed by shanaOP @dusty01534)
+
 ## [0.4.0] - 2024-01-25
 
 ### Added
