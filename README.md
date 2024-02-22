@@ -40,7 +40,7 @@ A GUI based editor for [BetonQuest](https://github.com/BetonQuest/BetonQuest) sc
 - ✅ i18n support.
     - English
     - Simplified Chinese 简体中文
-    - Japanese 日本語 (contributed by shanaOP @dusty01534)
+    - Japanese 日本語 (contributed by shanaOP [@dusty01534](https://github.com/dusty01534))
 - ✅ Click and jump to the code / flowchart / editor.
 - ⬜ Advanced Variable editor.
 - ⬜ [Journal](https://betonquest.org/2.0/Documentation/Features/Journal/) editing.
@@ -120,7 +120,7 @@ Helps on translating this extension are welcomed. Please consider submitting you
 
 ### 0.4.1
 
-- Fully supports Japanese 日本語に完全対応 (contributed by shanaOP @dusty01534)
+- Fully supports Japanese 日本語に完全対応 (contributed by shanaOP [@dusty01534](https://github.com/dusty01534))
 
 ### 0.4.0
 

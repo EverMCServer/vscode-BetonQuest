@@ -7,7 +7,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [0.4.1] - 2024-02-22
 
 ### Added
-- Fully supports Japanese 日本語に完全対応 (contributed by shanaOP @dusty01534)
+- Fully supports Japanese 日本語に完全対応 (contributed by shanaOP [@dusty01534](https://github.com/dusty01534))
 
 ## [0.4.0] - 2024-01-25
 
