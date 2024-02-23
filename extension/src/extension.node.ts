@@ -18,7 +18,6 @@ export async function activate(context: vscode.ExtensionContext) {
   // );
 
   // Register LSP client, node environment
-  // const lspServerModule = vscode.Uri.joinPath(context.extensionUri, 'server/dist/server.node.js').toString();
   const lspServerModule = context.asAbsolutePath(path.join('server', 'dist', 'server.node.js'));
   const lspClientOptions: LanguageClientOptions = {
     documentSelector: [{ language: 'yaml' }],

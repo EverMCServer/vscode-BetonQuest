@@ -4,7 +4,6 @@ import * as vscode from "vscode";
 import { LanguageClient, LanguageClientOptions } from 'vscode-languageclient/browser';
 
 import { _activate, _deactivate } from "./extension.common";
-import path from "path";
 
 let lspClient: LanguageClient;
 
@@ -26,8 +25,7 @@ export async function activate(context: vscode.ExtensionContext) {
     synchronize: {},
     initializationOptions: {}
   };
-  // const lspServerModule = vscode.Uri.joinPath(context.extensionUri, 'server/dist/server.web.js').toString();
-  const lspServerModule = context.asAbsolutePath(path.join('server', 'dist', 'server.web.js'));
+  const lspServerModule = vscode.Uri.joinPath(context.extensionUri, 'server/dist/server.web.js').toString();
   const lspWorker = new Worker(lspServerModule);
   lspClient = new LanguageClient('betonquest', 'BetonQuest Language Server', lspClientOptions, lspWorker);
   await lspClient.start().then(() => {
