@@ -183,7 +183,7 @@
     "watch:webview": "tsc -watch -p ./webview/",
     "watch:server": "tsc -watch -p ./server/",
     "webpack:watch": "webpack --watch --config webpack.dev.js",
-    "open-in-browser": "vscode-test-web --extensionDevelopmentPath=."
+    "open-in-browser": "vscode-test-web --extensionDevelopmentPath=. --browserOption=--remote-debugging-port=9221"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",

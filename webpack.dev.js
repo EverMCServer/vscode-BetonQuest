@@ -43,7 +43,7 @@ const webExtensionConfig = merge(common[1], {
 /** @type WebpackConfig */
 const webviewConfig = merge(common[2], {
   mode: "none", // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
-  devtool: "source-map",
+  devtool: "inline-source-map",
   infrastructureLogging: {
     level: "log", // enables logging required for problem matchers
   }

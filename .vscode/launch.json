@@ -4,6 +4,41 @@
 // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 {
 	"version": "0.2.0",
+	"compounds": [
+		{
+			"name": "Debug",
+			"configurations": ["Run Extension", "Attach to BetonQuest Language Server"],
+			"preLaunchTask": "npm: watch",
+			"stopAll": true,
+			"presentation": {
+				"hidden": false,
+				"group": "Debug",
+				"order": 1
+			}
+		},
+		{
+			"name": "Debug Web",
+			"configurations": ["Run Web Extension", "Attach to BetonQuest Language Server"],
+			"preLaunchTask": "npm: watch",
+			"stopAll": true,
+			"presentation": {
+				"hidden": false,
+				"group": "Debug",
+				"order": 2
+			}
+		},
+		{
+			"name": "Debug Web in Browser",
+			"configurations": ["Run Web Extension in Browser", "Attach to Browser"],
+			"preLaunchTask": "npm: watch",
+			"stopAll": true,
+			"presentation": {
+				"hidden": false,
+				"group": "Debug",
+				"order": 3
+			}
+		},
+	],
 	"configurations": [
 		{
 			"name": "Run Extension",
@@ -38,7 +73,7 @@
 		},
 		{
 			"name": "Run Web Extension",
-			"type": "pwa-extensionHost",
+			"type": "extensionHost",
 			"debugWebWorkerHost": true,
 			"request": "launch",
 			"args": [
@@ -82,7 +117,33 @@
             "request": "attach",
             "port": 6008,
             "restart": true,
-            "outFiles": ["${workspaceRoot}/server/dist/**/*.js"]
+			"sourceMapPathOverrides": {
+				"webpack://betonquest_extension/*": "${workspaceFolder}/extension/*",
+				"webpack://betonquest_webview/*": "${workspaceFolder}/webview/*",
+				"webpack://betonquest_server/*": "${workspaceFolder}/server/*"
+			},
+			"outFiles": [
+				"${workspaceFolder}/*/dist/**/*.js",
+				"${workspaceFolder}/*/out/**/*.js"
+			],
+			// "pauseForSourceMap": true,
+        },
+		{
+            "name": "Attach to Browser",
+            "type": "chrome",
+            "request": "attach",
+            "port": 9221,
+            "restart": true,
+			"sourceMapPathOverrides": {
+				"webpack://betonquest_extension/*": "${workspaceFolder}/extension/*",
+				"webpack://betonquest_webview/*": "${workspaceFolder}/webview/*",
+				"webpack://betonquest_server/*": "${workspaceFolder}/server/*"
+			},
+			"outFiles": [
+				"${workspaceFolder}/*/dist/**/*.js",
+				"${workspaceFolder}/*/out/**/*.js"
+			],
+			// "pauseForSourceMap": true,
         },
 		{
 			"name": "Extension Tests",
