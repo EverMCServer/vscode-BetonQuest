@@ -1,4 +1,4 @@
-import { Connection, DidChangeConfigurationNotification, InitializeParams, InitializeResult, TextDocumentSyncKind, TextDocuments } from 'vscode-languageserver';
+import { Connection, DidChangeConfigurationNotification, InitializeParams, InitializeResult, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
 // Create a simple text document manager.
@@ -8,9 +8,12 @@ let hasConfigurationCapability: boolean = false;
 let hasWorkspaceFolderCapability: boolean = false;
 let hasDiagnosticRelatedInformationCapability: boolean = false;
 
+let workspaceFolders: WorkspaceFolder[] | null | undefined;
+
 export function server(connection: Connection): void {
 
   connection.onInitialize((params: InitializeParams) => {
+    workspaceFolders = params.workspaceFolders;
     let capabilities = params.capabilities;
 
     // Does the client support the `workspace/configuration` request?
@@ -46,7 +49,7 @@ export function server(connection: Connection): void {
     return result;
   });
 
-  connection.onInitialized(() => {
+  connection.onInitialized(params => {
     if (hasConfigurationCapability) {
       // Register for all configuration changes.
       connection.client.register(DidChangeConfigurationNotification.type, undefined);
@@ -54,20 +57,44 @@ export function server(connection: Connection): void {
     if (hasWorkspaceFolderCapability) {
       connection.workspace.onDidChangeWorkspaceFolders(_event => {
         connection.console.log('Workspace folder change event received.');
+        connection.workspace.getWorkspaceFolders().then(folders => {
+          // workspaceFolders = folders;
+          // TODO
+          // 1. get folders
+          // 2. compare folders, which one is removed / new?
+          // 3. drop / create new AST
+        });
       });
     }
 
-    connection.console.log("hello from lsp server! connection.console.log");
+    connection.console.log("BetonQuest Language Server 1.0.\nWorkspaceFolders: " + workspaceFolders?.map(e => e.name + ":" + e.uri).concat(" "));
+
+    // TODO: Construct the initial BetonQuest AST
+    // 1. iterate workspace folders
+    // 2. request all files from client, through message channel
+    // 3. construct the AST for each folder
+    // ...
+    //
   });
 
+  // Listen to file changed event outside VSCode.
+  // Right now it only works on node environment (not browser).
+  // Requires `synchronize.fileEvents: vscode.workspace.createFileSystemWatcher('glob patten')` registration in the client.
+  connection.onDidChangeWatchedFiles((params) => {
+    connection.console.log("connection.onDidChangeWatchedFiles: " + params.changes.map(e => e.type+":"+e.uri).join(" "));
+  });
+
+  // connection.onDidChangeTextDocument((params) => {
+  //   connection.console.log("connection.onDidChangeTextDocument: " + params.contentChanges.map(e => e.text).join(" "));
+  // });
+
+  // Listen to file editing on VSCode.
   documents.onDidChangeContent(e => {
-    connection.console.log("document " + e.document.uri + " changed. Content: " + e.document.getText());
-    // TODO
-    // Send file tree to client
+    connection.console.log("document " + e.document.uri + " changed. version:" + e.document.version);
+    // TODO: update the AST
+
     connection.sendNotification("custom/filetree", e.document.uri);
   });
-
-  console.log("hello from lsp server! console.log");
 
   // Make the text document manager listen on the connection
   // for open, change and close text document events
