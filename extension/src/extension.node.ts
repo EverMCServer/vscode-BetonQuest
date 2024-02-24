@@ -40,24 +40,9 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   };
   lspClient = new LanguageClient('BetonQuest Language Server', lspServerOptions, lspClientOptions);
-  await lspClient.start().then(() => {
-    lspClient.onNotification('custom/filetree', (tree: string) => {
-      console.log('BQLS: filetree:', tree);
-    });
-    // lspClient.sendNotification('custom/filetree');
-    console.log('BQLS: betonquest-server is ready');
-  }).catch(reason => {
-    console.error('BQLS: betonquest-server failed to start', reason);
-  });
-  context.subscriptions.push({
-    dispose: () => {
-      lspClient.stop();
-      lspClient.dispose();
-    }
-  });
 
   // Execute rest of the activation steps
-  _activate(context);
+  await _activate(context, lspClient);
 }
 
 // This method is called when your extension is deactivated

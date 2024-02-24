@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import * as path from 'path';
+import { BaseLanguageClient } from 'vscode-languageclient/lib/common/client';
 
 import { ConversationEditorProvider } from "./conversationEditorProvider";
 import { EventsEditorProvider } from "./eventsEditorProvider";
@@ -12,7 +13,24 @@ import { PackageEditorProvider } from "./packageEditorProvider";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
-export function _activate(context: vscode.ExtensionContext) {
+export async function _activate(context: vscode.ExtensionContext, lspClient: BaseLanguageClient) {
+  // Register Language Client and methods
+  await lspClient.start().then(() => {
+    lspClient.onNotification('custom/filetree', (tree: string) => {
+      console.log('BQLS: filetree:', tree);
+    });
+    // lspClient.sendNotification('custom/filetree');
+    console.log('BQLS: betonquest-server is ready');
+  }).catch(reason => {
+    console.error('BQLS: betonquest-server failed to start', reason);
+  });
+  context.subscriptions.push({
+    dispose: () => {
+      lspClient.stop();
+      lspClient.dispose();
+    }
+  });
+
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
   // console.log(
@@ -176,12 +194,12 @@ export function _activate(context: vscode.ExtensionContext) {
   );
 
   // Register custom editor
-  context.subscriptions.push(ConversationEditorProvider.register(context));
-  context.subscriptions.push(EventsEditorProvider.register(context));
-  context.subscriptions.push(ConditionsEditorProvider.register(context));
-  context.subscriptions.push(ObjectivesEditorProvider.register(context));
-  // context.subscriptions.push(ExampleEditorProvider.register(context));
-  context.subscriptions.push(PackageEditorProvider.register(context));
+  context.subscriptions.push(ConversationEditorProvider.register(context, lspClient));
+  context.subscriptions.push(EventsEditorProvider.register(context, lspClient));
+  context.subscriptions.push(ConditionsEditorProvider.register(context, lspClient));
+  context.subscriptions.push(ObjectivesEditorProvider.register(context, lspClient));
+  // context.subscriptions.push(ExampleEditorProvider.register(context, lspClient));
+  context.subscriptions.push(PackageEditorProvider.register(context, lspClient));
 }
 
 async function checkIfFileExists(filePath: vscode.Uri): Promise<boolean> {

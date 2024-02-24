@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import findYamlNodeByOffset from 'betonquest-utils/yaml/findYamlNodeByOffset';
 import findOffestByYamlNode from 'betonquest-utils/yaml/findOffestByYamlNode';
+import { BaseLanguageClient } from 'vscode-languageclient/lib/common/client';
 
 export interface InitialConfig {
     translationSelection?: string, // Conversation YAML's translation selection
@@ -8,8 +9,8 @@ export interface InitialConfig {
 
 export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
 
-    public static register(context: vscode.ExtensionContext): vscode.Disposable {
-        const provider = new PackageEditorProvider(context);
+    public static register(context: vscode.ExtensionContext, lspClient: BaseLanguageClient): vscode.Disposable {
+        const provider = new PackageEditorProvider(context, lspClient);
         const providerRegistration = vscode.window.registerCustomEditorProvider(PackageEditorProvider.viewType, provider);
         return providerRegistration;
     }
@@ -17,7 +18,8 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
     private static readonly viewType = 'betonquest.packageEditor';
 
     constructor(
-        private readonly context: vscode.ExtensionContext
+        private readonly context: vscode.ExtensionContext,
+        private readonly lspClient: BaseLanguageClient
     ) { }
 
     /**
