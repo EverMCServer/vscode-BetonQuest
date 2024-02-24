@@ -4,6 +4,7 @@ import * as vscode from "vscode";
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient/node';
 import * as path from 'path';
 
+import { lspClientOptions } from "./lsp/options";
 import { _activate, _deactivate } from "./extension.common";
 
 let lspClient: LanguageClient;
@@ -19,13 +20,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // Register LSP client, node environment
   const lspServerModule = context.asAbsolutePath(path.join('server', 'dist', 'server.node.js'));
-  const lspClientOptions: LanguageClientOptions = {
-    documentSelector: [{ language: 'yaml' }],
-    synchronize: {
-      fileEvents: vscode.workspace.createFileSystemWatcher('**/.clientrc')
-    },
-    initializationOptions: {}
-  };
   const lspServerOptions: ServerOptions = {
     run: {
       module: lspServerModule,

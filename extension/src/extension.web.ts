@@ -1,8 +1,9 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { LanguageClient, LanguageClientOptions } from 'vscode-languageclient/browser';
+import { LanguageClient } from 'vscode-languageclient/browser';
 
+import { lspClientOptions } from "./lsp/options";
 import { _activate, _deactivate } from "./extension.common";
 
 let lspClient: LanguageClient;
@@ -20,11 +21,6 @@ export async function activate(context: vscode.ExtensionContext) {
   // TODO
 
   // Register LSP client, web environment
-  const lspClientOptions: LanguageClientOptions = {
-    documentSelector: [{ language: 'yaml' }],
-    synchronize: {},
-    initializationOptions: {}
-  };
   const lspServerModule = vscode.Uri.joinPath(context.extensionUri, 'server/dist/server.web.js').toString();
   const lspWorker = new Worker(lspServerModule);
   lspClient = new LanguageClient('betonquest', 'BetonQuest Language Server', lspClientOptions, lspWorker);
