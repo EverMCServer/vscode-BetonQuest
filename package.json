@@ -106,7 +106,10 @@
         "priority": "option",
         "selector": [
           {
-            "filenamePattern": "**/conversations/*.ya?ml"
+            "filenamePattern": "**/conversations/*.yml"
+          },
+          {
+            "filenamePattern": "**/conversations/*.yaml"
           }
         ]
       },
@@ -116,7 +119,10 @@
         "priority": "option",
         "selector": [
           {
-            "filenamePattern": "**/events.ya?ml"
+            "filenamePattern": "**/events.yml"
+          },
+          {
+            "filenamePattern": "**/events.yaml"
           }
         ]
       },
@@ -126,7 +132,10 @@
         "priority": "option",
         "selector": [
           {
-            "filenamePattern": "**/conditions.ya?ml"
+            "filenamePattern": "**/conditions.yml"
+          },
+          {
+            "filenamePattern": "**/conditions.yaml"
           }
         ]
       },
@@ -136,7 +145,10 @@
         "priority": "option",
         "selector": [
           {
-            "filenamePattern": "**/objectivesya?ml"
+            "filenamePattern": "**/objectives.yml"
+          },
+          {
+            "filenamePattern": "**/objectives.yaml"
           }
         ]
       },
@@ -146,7 +158,10 @@
         "priority": "option",
         "selector": [
           {
-            "filenamePattern": "**/*.ya?ml"
+            "filenamePattern": "**/*.yml"
+          },
+          {
+            "filenamePattern": "**/*.yaml"
           }
         ]
       }
