@@ -9,19 +9,59 @@ import { EventsEditorProvider } from "./eventsEditorProvider";
 import { ConditionsEditorProvider } from "./conditionsEditorProvider";
 import { ObjectivesEditorProvider } from "./objectivesEditorProvider";
 import { PackageEditorProvider } from "./packageEditorProvider";
+import { ResponseError } from "vscode-languageclient";
 // import { ExampleEditorProvider } from './exampleEditorProvider';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export async function _activate(context: vscode.ExtensionContext, lspClient: BaseLanguageClient) {
   // Register Language Client and methods
-  await lspClient.start().then(() => {
-    lspClient.onNotification('custom/filetree', (tree: string) => {
+  await lspClient.start().then(() => setTimeout(() => {
+    lspClient.onNotification('custom/file/tree', (tree: string) => {
       console.log('BQLS: filetree:', tree);
     });
-    // lspClient.sendNotification('custom/filetree');
-    console.log('BQLS: betonquest-server is ready');
-  }).catch(reason => {
+
+    // TODO
+    // Send all files when requested
+    lspClient.onNotification('custom/file/all', (workspace?: string) => {
+      // Get workspace by name
+      if (workspace) {
+      }
+      lspClient.sendNotification('custom/file/all', {});
+    });
+    // Send all files as initialization
+    lspClient.sendNotification('custom/file/all', {});
+    // let uri = (await vscode.workspace.findFiles("**/*"))[0];
+    // let file = (await vscode.workspace.fs.readFile(uri));
+    // file.toString();
+    lspClient.onRequest('custom/file', async (uriString: string) => {
+      let uri = vscode.Uri.parse(uriString);
+      try {
+        let file = (await vscode.workspace.fs.readFile(uri));
+        return file;
+      } catch (e) {
+        console.log("BQLS: read file error: ", e);
+        if (e instanceof vscode.FileSystemError) {
+          switch (e.code) {
+            case "FileNotFound":
+              return new ResponseError(404, e.message, e.code);
+            case "FileIsADirectory":
+              return new ResponseError(400, e.message, e.code);
+            case "NoPermissions":
+              return new ResponseError(403, e.message, e.code);
+            case "Unavailable":
+              return new ResponseError(429, e.message, e.code);
+            // case "FileExists":
+            // case "FileNotADirectory":
+            default:
+              return new ResponseError(500, e.message, e.code);
+          }
+        }
+      }
+    });
+
+    console.log('BQLS: ready');
+  }, 0)).catch(reason => {
     console.error('BQLS: betonquest-server failed to start', reason);
   });
   context.subscriptions.push({

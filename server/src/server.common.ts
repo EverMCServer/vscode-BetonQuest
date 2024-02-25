@@ -1,4 +1,4 @@
-import { Connection, DidChangeConfigurationNotification, InitializeParams, InitializeResult, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
+import { Connection, DidChangeConfigurationNotification, InitializeParams, InitializeResult, ResponseError, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
 // Create a simple text document manager.
@@ -58,11 +58,20 @@ export function server(connection: Connection): void {
       connection.workspace.onDidChangeWorkspaceFolders(_event => {
         connection.console.log('Workspace folder change event received.');
         connection.workspace.getWorkspaceFolders().then(folders => {
-          // workspaceFolders = folders;
           // TODO
           // 1. get folders
           // 2. compare folders, which one is removed / new?
           // 3. drop / create new AST
+          workspaceFolders = folders;
+          connection.console.log('WorkspaceFolders: ' + workspaceFolders?.map(e => e.name + ":" + e.uri).concat(" "));
+          connection.sendRequest<Uint8Array>('custom/file', workspaceFolders![0].uri + "/testt.txt").then(
+            buffer => {
+              connection.console.log("response from " + workspaceFolders![0].uri + "/test.txt" + ": " + new TextDecoder().decode(buffer));
+            },
+            (reason: ResponseError<string>) => {
+              connection.console.log("request failed: " + [reason.code, reason.data, reason.message].join("\n"));
+            }
+          );
         });
       });
     }
@@ -79,9 +88,9 @@ export function server(connection: Connection): void {
 
   // Listen to file changed event outside VSCode.
   // Right now it only works on node environment (not browser).
-  // Requires `synchronize.fileEvents: vscode.workspace.createFileSystemWatcher('glob patten')` registration in the client.
+  // It requires `synchronize.fileEvents: vscode.workspace.createFileSystemWatcher('glob patten')` registration in the client.
   connection.onDidChangeWatchedFiles((params) => {
-    connection.console.log("connection.onDidChangeWatchedFiles: " + params.changes.map(e => e.type+":"+e.uri).join(" "));
+    connection.console.log("connection.onDidChangeWatchedFiles: " + params.changes.map(e => e.type + ":" + e.uri).join(" "));
   });
 
   // connection.onDidChangeTextDocument((params) => {
