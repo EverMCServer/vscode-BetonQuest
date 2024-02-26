@@ -12,6 +12,8 @@ import { PackageEditorProvider } from "./packageEditorProvider";
 import { ResponseError } from "vscode-languageclient";
 // import { ExampleEditorProvider } from './exampleEditorProvider';
 
+const textDecoder = new TextDecoder();
+
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export async function _activate(context: vscode.ExtensionContext, lspClient: BaseLanguageClient) {
@@ -69,7 +71,7 @@ export async function _activate(context: vscode.ExtensionContext, lspClient: Bas
       let uri = vscode.Uri.parse(uriString);
       try {
         let file = await vscode.workspace.fs.readFile(uri);
-        return file;
+        return textDecoder.decode(file);
       } catch (e) {
         if (e instanceof vscode.FileSystemError) {
           switch (e.code) {
@@ -91,10 +93,10 @@ export async function _activate(context: vscode.ExtensionContext, lspClient: Bas
 
     // Send files in bulk
     lspClient.onRequest('custom/files', async (uriStrings: string[]) => {
-      let files: [string, Uint8Array][] = [];
+      let files: [string, string][] = [];
       for (const uri of uriStrings) {
         try {
-          files.push([uri, await vscode.workspace.fs.readFile(vscode.Uri.parse(uri))]);
+          files.push([uri, textDecoder.decode(await vscode.workspace.fs.readFile(vscode.Uri.parse(uri)))]);
         } catch (e) { }
       }
       return files;
