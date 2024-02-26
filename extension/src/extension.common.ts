@@ -17,36 +17,65 @@ import { ResponseError } from "vscode-languageclient";
 export async function _activate(context: vscode.ExtensionContext, lspClient: BaseLanguageClient) {
   // Register Language Client and methods
   await lspClient.start().then(() => setTimeout(() => {
-    lspClient.onNotification('custom/file/tree', (tree: string) => {
-      console.log('BQLS: filetree:', tree);
-    });
 
-    // TODO
-    // Send all files when requested
-    lspClient.onNotification('custom/file/all', (workspace?: string) => {
-      // Get workspace by name
-      if (workspace) {
-      }
-      lspClient.sendNotification('custom/file/all', {});
-    });
-    // Send all files as initialization
-    lspClient.sendNotification('custom/file/all', {});
-    // let uri = (await vscode.workspace.findFiles("**/*"))[0];
-    // let file = (await vscode.workspace.fs.readFile(uri));
-    // file.toString();
-    lspClient.onRequest('custom/file', async (uriString: string) => {
-      let uri = vscode.Uri.parse(uriString);
+    // Send file tree when requested
+    lspClient.onRequest('custom/file/tree', async ({ uriString, recursive = false, patten }: { uriString: string, recursive: boolean, patten?: string }) => {
       try {
-        let file = (await vscode.workspace.fs.readFile(uri));
-        return file;
+        let files = await vscode.workspace.fs.readDirectory(vscode.Uri.parse(uriString));
+        let result: string[] = files.filter(path => path[1] === vscode.FileType.File).map(path => uriString + encodeURI('/' + path[0])).filter(path => patten ? path.match(patten) : true);
+        // read from subfolders
+        if (recursive) {
+          let iterator = async (parent: string, files: [string, vscode.FileType][]) => {
+            let subFolders: string[] = [];
+            // search subfolders of this folder
+            for (const path of files) {
+              if (path[1] === vscode.FileType.Directory) {
+                try {
+                  let u = parent + encodeURI('/' + path[0]);
+                  let s = await vscode.workspace.fs.readDirectory(vscode.Uri.parse(u));
+                  subFolders.push(...s.filter(p => p[1] === vscode.FileType.File).map(p => u + encodeURI('/' + p[0])).filter(path => patten ? path.match(patten) : true));
+                  // recursivly search subfolders of subfolders
+                  if (s.length > 0) {
+                    subFolders.push(...await iterator(u, s));
+                  }
+                } catch (e) { }
+              }
+            }
+            return subFolders;
+          };
+          result.push(...await iterator(uriString, files));
+        }
+        return result;
       } catch (e) {
-        console.log("BQLS: read file error: ", e);
         if (e instanceof vscode.FileSystemError) {
           switch (e.code) {
             case "FileNotFound":
+            case "FileNotADirectory":
+            case "Unavailable":
               return new ResponseError(404, e.message, e.code);
+            case "NoPermissions":
+              return new ResponseError(403, e.message, e.code);
+            // case "FileExists":
+            // case "FileIsADirectory":
+            default:
+              return new ResponseError(500, e.message, e.code);
+          }
+        }
+      }
+    });
+
+    // Send file when requested
+    lspClient.onRequest('custom/file', async (uriString: string) => {
+      let uri = vscode.Uri.parse(uriString);
+      try {
+        let file = await vscode.workspace.fs.readFile(uri);
+        return file;
+      } catch (e) {
+        if (e instanceof vscode.FileSystemError) {
+          switch (e.code) {
+            case "FileNotFound":
             case "FileIsADirectory":
-              return new ResponseError(400, e.message, e.code);
+              return new ResponseError(404, e.message, e.code);
             case "NoPermissions":
               return new ResponseError(403, e.message, e.code);
             case "Unavailable":
@@ -60,7 +89,16 @@ export async function _activate(context: vscode.ExtensionContext, lspClient: Bas
       }
     });
 
-    console.log('BQLS: ready');
+    // Send files in bulk
+    lspClient.onRequest('custom/files', async (uriStrings: string[]) => {
+      let files: [string, Uint8Array][] = [];
+      for (const uri of uriStrings) {
+        try {
+          files.push([uri, await vscode.workspace.fs.readFile(vscode.Uri.parse(uri))]);
+        } catch (e) { }
+      }
+      return files;
+    });
   }, 0)).catch(reason => {
     console.error('BQLS: betonquest-server failed to start', reason);
   });

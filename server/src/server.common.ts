@@ -1,5 +1,7 @@
+import { FileType } from 'vscode';
 import { Connection, DidChangeConfigurationNotification, InitializeParams, InitializeResult, ResponseError, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
+import { syncWorkspaces } from './ast/workspace';
 
 // Create a simple text document manager.
 let documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
@@ -58,20 +60,11 @@ export function server(connection: Connection): void {
       connection.workspace.onDidChangeWorkspaceFolders(_event => {
         connection.console.log('Workspace folder change event received.');
         connection.workspace.getWorkspaceFolders().then(folders => {
-          // TODO
-          // 1. get folders
-          // 2. compare folders, which one is removed / new?
-          // 3. drop / create new AST
           workspaceFolders = folders;
           connection.console.log('WorkspaceFolders: ' + workspaceFolders?.map(e => e.name + ":" + e.uri).concat(" "));
-          connection.sendRequest<Uint8Array>('custom/file', workspaceFolders![0].uri + "/testt.txt").then(
-            buffer => {
-              connection.console.log("response from " + workspaceFolders![0].uri + "/test.txt" + ": " + new TextDecoder().decode(buffer));
-            },
-            (reason: ResponseError<string>) => {
-              connection.console.log("request failed: " + [reason.code, reason.data, reason.message].join("\n"));
-            }
-          );
+          syncWorkspaces(connection, workspaceFolders);
+          // // DEBUG get file
+          // connection.sendRequest('custom/file', workspaceFolders![0].uri+"/asdf");
         });
       });
     }
@@ -84,6 +77,7 @@ export function server(connection: Connection): void {
     // 3. construct the AST for each folder
     // ...
     //
+    syncWorkspaces(connection, workspaceFolders);
   });
 
   // Listen to file changed event outside VSCode.
