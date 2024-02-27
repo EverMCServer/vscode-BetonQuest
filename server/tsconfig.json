@@ -7,9 +7,17 @@
 			"ES2020",
 			"WebWorker"
 		],
-		"outDir": "out",
-		"rootDir": "src",
 		"sourceMap": true,
+		"outDir": "out",
+		"rootDirs": [
+			"src",
+			"../utils/src",
+		],
+		"paths": {
+			"betonquest-utils/*": [
+				"../utils/src/*"
+			],
+		},
 		"strict": true
 	},
 	"exclude": [
