@@ -1,4 +1,3 @@
-import { FileType } from 'vscode';
 import { Connection, DidChangeConfigurationNotification, InitializeParams, InitializeResult, ResponseError, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { syncWorkspaces } from './init/workspace';
