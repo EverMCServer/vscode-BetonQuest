@@ -6,11 +6,8 @@ export type ObjectiveTypes = 'ObjectiveList' | 'ObjectiveEntry' | 'ObjectiveKey'
 
 export type NodeType = ConversationTypes | EventTypes | ConditionTypes | ObjectiveTypes;
 
-export type Node<T extends NodeType> = {
-  type: T,
-  // name?: string,
-  value?: string,
-  // [key: string]: any,
+export interface Node<T extends NodeType> {
+  kind: T,
   uri?: string,
   startOffset: number,
   startLine: number,
@@ -20,11 +17,45 @@ export type Node<T extends NodeType> = {
   endColumn: number,
   parent?: Node<NodeType>,
   children?: Node<NodeType>[],
+
+  // name?: string,
+  value?: string,
+  // [key: string]: any,
 };
+
+interface EventOptionInterface extends Node<'EventOption'> {
+  key: string;
+  value: any; // TODO
+  type: string; // primitive types, 'string[]' etc
+};
+// class EventOption implements Node<'EventOption'> {
+//   kind: "EventOption" = "EventOption";  
+//   uri?: string | undefined;
+//   startOffset: number;
+//   startLine: number;
+//   startColumn: number;
+//   endOffset: number;
+//   endLine: number;
+//   endColumn: number;
+//   parent?: Node<NodeType> | undefined;
+//   children?: Node<NodeType>[] | undefined;
+
+//   key: string;
+//   value: any; // TODO
+//   type: string; // primitive types, 'string[]' etc
+
+//   constructor(v: EventOptionInterface) {
+//     this.uri = v.uri;
+
+//     this.key = "key";
+//     this.value = "value";
+//     this.type = "string";
+//   }
+// };
 
 // Example
 let a: Node<EventTypes> = {
-  type: "EventList",
+  kind: "EventList",
   uri: "file:///temp/events.yml",
   startOffset: 0,
   startLine: 0,
@@ -33,8 +64,20 @@ let a: Node<EventTypes> = {
   endLine: 0,
   endColumn: 0,
   children: [
+    // new EventOption({
+    //   kind: "EventOption",
+    //   startOffset: 0,
+    //   startLine: 0,
+    //   startColumn: 0,
+    //   endOffset: 0,
+    //   endLine: 0,
+    //   endColumn: 0,
+    //   key: "wood",
+    //   value: "value",
+    //   type: "string",
+    // }),
     {
-      type: "EventEntry",
+      kind: "EventEntry",
       startOffset: 0,
       startLine: 0,
       startColumn: 0,
@@ -43,29 +86,29 @@ let a: Node<EventTypes> = {
       endColumn: 0,
       children: [
         {
-          type: "EventKey",
+          kind: "EventKey",
           value: "wood",
           startOffset: 0,
           startLine: 0,
         } as Node<'EventKey'>,
         {
-          type: "EventKind",
+          kind: "EventKind",
           value: "block",
           startOffset: 0,
           startLine: 0,
         } as Node<'EventKind'>,
         {
-          type: "EventOptions",
+          kind: "EventOptions",
           startOffset: 0,
           startLine: 0,
           children: [
             {
-              type: "EventOption",
+              kind: "EventOption",
               startOffset: 0,
               startLine: 0,
               children: [
                 {
-                  type: "EventOptionValue",
+                  kind: "EventOptionValue",
                   value: "$block$",
                   startOffset: 0,
                   startLine: 0,
@@ -73,12 +116,12 @@ let a: Node<EventTypes> = {
               ]
             } as Node<'EventOption'>,
             {
-              type: "EventOption",
+              kind: "EventOption",
               startOffset: 0,
               startLine: 0,
               children: [
                 {
-                  type: "EventOptionValue",
+                  kind: "EventOptionValue",
                   value: "-16",
                   startOffset: 0,
                   startLine: 0,
@@ -86,30 +129,30 @@ let a: Node<EventTypes> = {
               ]
             } as Node<'EventOption'>,
             {
-              type: "EventOption",
+              kind: "EventOption",
               startOffset: 0,
               startLine: 0,
               children: [
                 {
-                  type: "EventOptionKey",
+                  kind: "EventOptionKey",
                   value: "events",
                   startOffset: 0,
                   startLine: 0,
                 } as Node<'EventOptionKey'>,
                 {
-                  type: "EventOptionValueArray",
+                  kind: "EventOptionValueArray",
                   value: ",", // separator
                   startOffset: 0,
                   startLine: 0,
                   children: [
                     {
-                      type: "EventOptionValue",
+                      kind: "EventOptionValue",
                       value: "tag_wood_done",
                       startOffset: 0,
                       startLine: 0,
                     } as Node<'EventOptionValue'>,
                     {
-                      type: "EventOptionValue",
+                      kind: "EventOptionValue",
                       value: "entry_wood_done",
                       startOffset: 0,
                       startLine: 0,
