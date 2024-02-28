@@ -4,10 +4,10 @@ import { ResponseError } from "vscode-languageclient";
 
 const textDecoder = new TextDecoder();
 
-export const fileTreeHandler =  async({ uriString, recursive = false, patten }: FileTreeParams) => {
+export const fileTreeHandler =  async({ uriString, recursive = false, pattern }: FileTreeParams) => {
   try {
     let files = await vscode.workspace.fs.readDirectory(vscode.Uri.parse(uriString));
-    let result = files.filter(path => path[1] === vscode.FileType.File).map(path => uriString + encodeURI('/' + path[0])).filter(path => patten ? path.match(patten) : true);
+    let result = files.filter(path => path[1] === vscode.FileType.File).map(path => uriString + encodeURI('/' + path[0])).filter(path => pattern ? path.match(pattern) : true);
     // read from subfolders
     if (recursive) {
       let iterator = async (parent: string, files: [string, vscode.FileType][]) => {
@@ -18,7 +18,7 @@ export const fileTreeHandler =  async({ uriString, recursive = false, patten }: 
             try {
               let u = parent + encodeURI('/' + path[0]);
               let s = await vscode.workspace.fs.readDirectory(vscode.Uri.parse(u));
-              subFolders.push(...s.filter(p => p[1] === vscode.FileType.File).map(p => u + encodeURI('/' + p[0])).filter(path => patten ? path.match(patten) : true));
+              subFolders.push(...s.filter(p => p[1] === vscode.FileType.File).map(p => u + encodeURI('/' + p[0])).filter(path => pattern ? path.match(pattern) : true));
               // recursivly search subfolders of subfolders
               if (s.length > 0) {
                 subFolders.push(...await iterator(u, s));

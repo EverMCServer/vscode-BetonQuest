@@ -9,7 +9,7 @@ export function syncWorkspaces(connection: Connection, workspaceFolders: Workspa
       let a = await connection.sendRequest<string[]>('custom/file/tree', {
         uriString: wsFolder.uri, //  + "/2.0"
         recursive: true,
-        patten: "\.ya?ml$"
+        pattern: "\.ya?ml$"
       } as FileTreeParams);
       connection.console.log("file tree:\n" + a.join("\n"));
 

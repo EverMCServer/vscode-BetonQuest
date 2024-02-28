@@ -81,7 +81,7 @@ export function server(connection: Connection): void {
 
   // Listen to file changed event outside VSCode.
   // Right now it only works on node environment (not browser).
-  // It requires `synchronize.fileEvents: vscode.workspace.createFileSystemWatcher('glob patten')` registration in the client.
+  // It requires `synchronize.fileEvents: vscode.workspace.createFileSystemWatcher('glob pattern')` registration in the client.
   connection.onDidChangeWatchedFiles((params) => {
     connection.console.log("connection.onDidChangeWatchedFiles: " + params.changes.map(e => e.type + ":" + e.uri).join(" "));
   });
