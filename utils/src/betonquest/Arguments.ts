@@ -134,24 +134,18 @@ export class MandatoryArgument extends Argument<MandatoryArgumentType, Mandatory
 
 export class OptionalArgument extends Argument<OptionalArgumentType, OptionalArgumentDataType> { }
 
-export default class Arguments {
-    private yaml: Pair<Scalar<string>, Scalar<string>>;
-
+export abstract class ArgumentsAbstract {
     // Pattern
-    private pattern: ArgumentsPattern;
+    protected pattern: ArgumentsPattern;
 
     // Arguments
-    private mandatory: MandatoryArguments = [];
-    private optional: OptionalArguments = new Map();
+    protected mandatory: MandatoryArguments = [];
+    protected optional: OptionalArguments = new Map();
 
     constructor(
-        pair: Pair<Scalar<string>, Scalar<string>>,
         pattern: ArgumentsPattern = { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] }
     ) {
-        this.yaml = pair;
         this.pattern = pattern;
-
-        this.parse();
     }
 
     toString(): string {
@@ -162,28 +156,19 @@ export default class Arguments {
         return this.mandatory[index];
     }
 
+    getMandatoryArguments() {
+        return this.mandatory;
+    }
+
     getOptionalArgument(key: string) {
         return this.optional?.get(key);
     }
 
-    setMandatoryArgument(index: number, value: MandatoryArgumentDataType, type?: MandatoryArgumentType) {
-        this.getMandatoryArgument(index).setValue(value);
-        if (type) {
-            this.getMandatoryArgument(index).setType(type);
-        }
-
-        // Update YAML
-        this.updateYaml();
+    getOptionalArguments() {
+        return this.optional;
     }
 
-    setOptionalArgument(name: string, value: OptionalArgumentDataType, type: OptionalArgumentType = 'string') {
-        this.getOptionalArgument(name)?.setValue(value) || this.optional?.set(name, new OptionalArgument(type, value));
-
-        // Update YAML
-        this.updateYaml();
-    }
-
-    private parse(pattern?: ArgumentsPattern) {
+    protected parse(pattern?: ArgumentsPattern) {
         // Load pattern from this.pattern, if not provided
         if (!pattern) {
             pattern = this.pattern;
@@ -419,40 +404,10 @@ export default class Arguments {
         }
     }
 
-    // Get arguments string from YAML
-    private getArgumentString(): string {
-        const cont = this.yaml.value?.value.split(" ");
-        if (cont && cont.length) {
-            if (cont.length > 1) {
-                return cont.slice(1).join(" ");
-            }
-        }
-        return "";
-    }
-
-    // Set arguments to YAML
-    private updateYaml() {
-        if (!this.yaml.value) {
-            this.yaml.value = new Scalar("");
-        }
-
-        const argStr = this.marshalArguments();
-        if (argStr.length > 0) {
-            this.yaml.value.value = this.getKind() + " " + this.marshalArguments();
-        } else {
-            this.yaml.value.value = this.getKind();
-        }
-    }
-    private getKind(): string {
-        const cont = this.yaml.value?.value.split(" ");
-        if (cont && cont.length) {
-            return cont[0];
-        }
-        return "";
-    }
+    protected abstract getArgumentString(): string;
 
     // Convert mandatory and optional arguments to string
-    private marshalArguments(): string {
+    protected marshalArguments(): string {
         // Convert mandatory arguments to string
         let mandatoryStr = '';
         if (this.pattern.mandatory.length) {
@@ -628,6 +583,83 @@ export default class Arguments {
             str = str.replace(new RegExp(from, 'g'), to);
         });
         return str;
+    }
+}
+
+export class ArgumentsString extends ArgumentsAbstract {
+    private str: string;
+    constructor(str: string, pattern: ArgumentsPattern = { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] }) {
+        super(pattern);
+        this.str = str;
+
+        this.parse();
+    }
+
+    protected getArgumentString(): string {
+        return this.str;
+    }
+}
+
+export default class Arguments extends ArgumentsAbstract {
+    private yaml: Pair<Scalar<string>, Scalar<string>>;
+
+    constructor(
+        pair: Pair<Scalar<string>, Scalar<string>>,
+        pattern: ArgumentsPattern = { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] }
+    ) {
+        super(pattern);
+        this.yaml = pair;
+
+        this.parse();
+    }
+
+    setMandatoryArgument(index: number, value: MandatoryArgumentDataType, type?: MandatoryArgumentType) {
+        this.getMandatoryArgument(index).setValue(value);
+        if (type) {
+            this.getMandatoryArgument(index).setType(type);
+        }
+
+        // Update YAML
+        this.updateYaml();
+    }
+
+    setOptionalArgument(name: string, value: OptionalArgumentDataType, type: OptionalArgumentType = 'string') {
+        this.getOptionalArgument(name)?.setValue(value) || this.optional?.set(name, new OptionalArgument(type, value));
+
+        // Update YAML
+        this.updateYaml();
+    }
+
+    // Get arguments string from YAML
+    protected getArgumentString(): string {
+        const cont = this.yaml.value?.value.split(" ");
+        if (cont && cont.length) {
+            if (cont.length > 1) {
+                return cont.slice(1).join(" ");
+            }
+        }
+        return "";
+    }
+
+    // Set arguments to YAML
+    private updateYaml() {
+        if (!this.yaml.value) {
+            this.yaml.value = new Scalar("");
+        }
+
+        const argStr = this.marshalArguments();
+        if (argStr.length > 0) {
+            this.yaml.value.value = this.getKind() + " " + this.marshalArguments();
+        } else {
+            this.yaml.value.value = this.getKind();
+        }
+    }
+    private getKind(): string {
+        const cont = this.yaml.value?.value.split(" ");
+        if (cont && cont.length) {
+            return cont[0];
+        }
+        return "";
     }
 
 };
