@@ -9,16 +9,15 @@
 		],
 		"sourceMap": true,
 		"outDir": "out",
-		"rootDirs": [
-			"src",
-			"../utils/src",
-		],
+		"rootDir": "src",
 		"paths": {
 			"betonquest-utils/*": [
 				"../utils/out/*"
 			],
 		},
-		"strict": true
+		"strict": true,
+		"jsx": "react-jsx",
+		"resolveJsonModule": true
 	},
 	"exclude": [
 		"dist/**/*",

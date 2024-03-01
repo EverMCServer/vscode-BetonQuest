@@ -23,8 +23,6 @@
     "@dnd-kit/sortable": "^8.0.0",
     "antd": "^5.14.1",
     "async-lock": "^1.4.1",
-    "betonquest-extension": "file:../extension/out",
-    "betonquest-utils": "file:../utils/out",
     "html-to-image": "^1.11.11",
     "java-regex-js": "^0.0.3",
     "react": "^18.2.0",

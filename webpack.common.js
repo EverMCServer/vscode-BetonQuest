@@ -7,6 +7,7 @@
 
 const path = require("path");
 const webpack = require("webpack");
+const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
 
 /** @type WebpackConfig */
 const extensionConfig = {
@@ -28,7 +29,10 @@ const extensionConfig = {
   },
   resolve: {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
-    extensions: [".ts", ".js"],
+    extensions: [".ts", ".js", ".json"],
+    plugins: [new TsconfigPathsPlugin({
+      configFile: path.join(__dirname, "extension", "tsconfig.json"),
+    })]
   },
   module: {
     rules: [
@@ -38,6 +42,9 @@ const extensionConfig = {
         use: [
           {
             loader: "ts-loader",
+            options: {
+              projectReferences: true
+            }
           },
         ],
       },
@@ -59,7 +66,7 @@ const webExtensionConfig = {
   },
   resolve: {
     mainFields: ['browser', 'module', 'main'], // look for `browser` entry point in imported node modules
-    extensions: ['.ts', '.js'], // support ts-files and js-files
+    extensions: ['.ts', '.js', ".json"], // support ts-files and js-files
     alias: {
       // provides alternate implementation for node module and source files
     },
@@ -71,14 +78,20 @@ const webExtensionConfig = {
       'path': require.resolve('path-browserify'),
       // 'process': require.resolve('process/browser'),
       'process/browser': require.resolve('process/browser'),
-    }
+    },
+    plugins: [new TsconfigPathsPlugin({
+      configFile: path.join(__dirname, "extension", "tsconfig.json"),
+    })]
   },
   module: {
     rules: [{
       test: /\.ts$/,
       exclude: /node_modules/,
       use: [{
-        loader: 'ts-loader'
+        loader: 'ts-loader',
+        options: {
+          projectReferences: true
+        }
       }]
     }]
   },
@@ -132,22 +145,22 @@ const webviewConfig = {
         //   },
         // },
         betonquest: {
-          test: /[\\/]utils[\\/]out[\\/]betonquest[\\/]/,
+          test: /[\\/]utils[\\/]src[\\/]betonquest[\\/]/,
           name: "lib/betonquest",
           chunks: "all",
         },
         bukkit: {
-          test: /[\\/]utils[\\/]out[\\/]bukkit[\\/]/,
+          test: /[\\/]utils[\\/]src[\\/]bukkit[\\/]/,
           name: "lib/bukkit",
           chunks: "all",
         },
         i18n: {
-          test: /[\\/]utils[\\/]out[\\/]i18n[\\/]/,
+          test: /[\\/]utils[\\/]src[\\/]i18n[\\/]/,
           name: "lib/i18n",
           chunks: "all",
         },
         yaml: {
-          test: /[\\/]utils[\\/]out[\\/]yaml[\\/]/,
+          test: /[\\/]utils[\\/]src[\\/]yaml[\\/]/,
           name: "lib/yaml",
           chunks: "all",
         },
@@ -193,7 +206,10 @@ const webviewConfig = {
   },
   resolve: {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
-    extensions: [".ts", ".js", ".tsx", ".jsx", ".css"],
+    extensions: [".ts", ".js", ".tsx", ".jsx", ".json", ".css"],
+    plugins: [new TsconfigPathsPlugin({
+      configFile: path.join(__dirname, "webview", "tsconfig.json"),
+    })]
   },
   module: {
     rules: [
@@ -203,6 +219,9 @@ const webviewConfig = {
         use: [
           {
             loader: "ts-loader",
+            options: {
+              projectReferences: true
+            }
           },
         ],
       },
@@ -263,11 +282,14 @@ const lspServerNodeConfig = {
 	},
 	resolve: {
 		mainFields: ['module', 'main'],
-		extensions: ['.ts', '.js'], // support ts-files and js-files
+		extensions: ['.ts', '.js', ".json"], // support ts-files and js-files
 		alias: {},
 		fallback: {
 			//path: require.resolve("path-browserify")
 		},
+    plugins: [new TsconfigPathsPlugin({
+      configFile: path.join(__dirname, "server", "tsconfig.json"),
+    })]
 	},
 	module: {
 		rules: [
@@ -277,6 +299,9 @@ const lspServerNodeConfig = {
 				use: [
 					{
 						loader: 'ts-loader',
+            options: {
+              projectReferences: true
+            }
 					},
 				],
 			},
@@ -304,11 +329,14 @@ const lspServerWebConfig = {
 	},
 	resolve: {
 		mainFields: ['module', 'main'],
-		extensions: ['.ts', '.js'], // support ts-files and js-files
+		extensions: ['.ts', '.js', ".json"], // support ts-files and js-files
 		alias: {},
 		fallback: {
 			//path: require.resolve("path-browserify")
 		},
+    plugins: [new TsconfigPathsPlugin({
+      configFile: path.join(__dirname, "server", "tsconfig.json"),
+    })]
 	},
 	module: {
 		rules: [
@@ -318,6 +346,9 @@ const lspServerWebConfig = {
 				use: [
 					{
 						loader: 'ts-loader',
+            options: {
+              projectReferences: true
+            }
 					},
 				],
 			},

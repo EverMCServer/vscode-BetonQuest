@@ -15,7 +15,6 @@
   "devDependencies": {
   },
   "dependencies": {
-    "betonquest-utils": "file:../utils/out",
     "vscode-languageclient": "^9.0.1"
   }
 }
