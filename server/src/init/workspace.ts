@@ -1,5 +1,6 @@
 import { Connection, ResponseError, WorkspaceFolder } from "vscode-languageserver";
 import { FileTreeParams, FilesResponse } from "betonquest-utils/lsp/file";
+import { parse } from "../ast/ast";
 
 export function syncWorkspaces(connection: Connection, workspaceFolders: WorkspaceFolder[] | null | undefined) {
   // 1. get folders
@@ -15,9 +16,10 @@ export function syncWorkspaces(connection: Connection, workspaceFolders: Workspa
 
       // Get files
       let files = await connection.sendRequest<FilesResponse>('custom/files', a);
-      files.forEach(([uri, content]) => {
-        connection.console.log("file: " + uri + " size: " + content.length + " content: " + content);
-      });
+      // files.forEach(([uri, content]) => {
+      //   connection.console.log("file: " + uri + " size: " + content.length + " content: " + content);
+      // });
+      parse(files);
 
       // connection.sendRequest<string>('custom/file', workspaceFolders![0].uri + "/config.yml").then(
       //   content => {

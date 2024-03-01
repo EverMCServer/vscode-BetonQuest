@@ -52,7 +52,7 @@ const webviewConfig = merge(common[2], {
 /** @type WebpackConfig */
 const lspServerNodeConfig = merge(common[3], {
   mode: "none", // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
-  devtool: "nosources-source-map",
+  devtool: "inline-source-map",
   infrastructureLogging: {
     level: "log", // enables logging required for problem matchers
   }
@@ -61,7 +61,7 @@ const lspServerNodeConfig = merge(common[3], {
 /** @type WebpackConfig */
 const lspServerWebConfig = merge(common[4], {
   mode: "none", // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
-  devtool: "nosources-source-map",
+  devtool: "inline-source-map",
   infrastructureLogging: {
     level: "log", // enables logging required for problem matchers
   }
