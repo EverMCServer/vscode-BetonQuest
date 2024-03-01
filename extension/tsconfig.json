@@ -15,7 +15,7 @@
 		],
 		"paths": {
 			"betonquest-utils/*": [
-				"../utils/src/*"
+				"../utils/out/*"
 			],
 		},
 		"strict": true, /* enable all strict type-checking options */

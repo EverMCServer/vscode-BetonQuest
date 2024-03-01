@@ -11,12 +11,16 @@
 		"outDir": "out",
 		"rootDirs": [
 			"src",
-			"../utils/src/*",
+			"../utils/src",
 			"../extension/src",
 		],
 		"paths": {
-			"betonquest-utils/*": ["../utils/src/*"],
-			"betonquest-extension/*": ["../extension/src/*"],
+			"betonquest-utils/*": [
+				"../utils/out/*"
+			],
+			"betonquest-extension/*": [
+				"../extension/out/*"
+			],
 		},
 		"skipLibCheck": true, // https://stackoverflow.com/questions/61150577/why-is-typescript-giving-duplicate-identifier-error
 		"jsx": "react-jsx",
