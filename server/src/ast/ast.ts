@@ -23,52 +23,86 @@ export const parse = (wsFolderUri: string, allFiles: FilesResponse) => {
   const filesV2 = new Map<string, FilesResponse>();
   const filesV1 = new Map<string, FilesResponse>();
 
-  // Find all packages
+  // Find all V2 packages
   allFiles.forEach(([uri, content]) => {
-    const p = new URL(uri).pathname.split('/');
-    // Get all V2 packages
+    const u = new URL(uri);
+    const p = u.pathname.split('/');
     if (p[p.length - 1].match(/^package\.ya?ml$/i)) {
-      // TOOD: nested packages
-      // ...
-      // filesV2.set(p[p.length - 2] || '', [[uri, content]]);
-      filesV2.set(uri, [[uri, content]]);
+      // Create package's base path
+      const b = new URL(uri);
+      b.pathname = p.slice(0, p.length - 1).join('/');
+      const baseUri = b.toString();
+      // Cache the package's path with a entry file.
+      filesV2.set(baseUri, [[uri, content]]);
     }
-    // Get all V1 packages
+  });
+  // Find all V1 packages
+  allFiles.forEach(([uri, content]) => {
+    const u = new URL(uri);
+    const p = u.pathname.split('/');
     if (p[p.length - 1].match(/^main\.ya?ml$/i)) {
-      // Skip if conflict. We only take the most outer "main.yml" as the package
-      let skip = false;
-      const files = Array.from(filesV1);
-      for (const [path, _] of files) {
-        const basePos = path.lastIndexOf('main.yml') |  path.lastIndexOf('main.yaml');
-        if (basePos > 0) {
-          const base = path.slice(0, basePos);
-          if (uri.startsWith(base)) {
-            skip = true;
-            break;
-          }
+      // Create package's base path
+      const b = new URL(uri);
+      b.pathname = p.slice(0, p.length - 1).join('/');
+      const baseUri = b.toString();
+      // Skip if conflict.
+      // 1. Avoid conflict with V2. Skip if this main.yml is nested in V2 package
+      for (const path of filesV2.keys()) {
+        if (uri.startsWith(path)) {
+          return;
         }
       }
-      if (skip) {
-        return;
+      // 2. We only take the most outer "main.yml" as the package
+      for (const path of filesV1.keys()) {
+        // Skip if parent uri already exists
+        if (uri.startsWith(path)) {
+          return;
+        }
+        // Replace if ther is a child uri nested in this package. We keep the most outer one.
+        if (path.startsWith(baseUri)) {
+          filesV1.delete(path);
+        }
       }
-      // Save package path
-      // filesV1.set(p[p.length - 2] || '', [[uri, content]]);
-      filesV1.set(uri, [[uri, content]]);
+      // Cache the package's path with a entry file.
+      filesV1.set(baseUri, [[uri, content]]);
     }
   });
 
   // Find all files by package
-  // TODO: V2
-  // ...
+  // V2
+  filesV2.forEach((files, baseUri) => {
+    allFiles.filter(([uri, _], i, allFiles) => {
+      if (!uri.startsWith(baseUri) || uri === baseUri+ '/package.yml') { // TODO: ignore case and yml/yaml
+        return false;
+      }
+      // Make sure this file is not inside a sub-package
+      const u = new URL(uri);
+      const p = u.pathname.split('/');
+      const b = new URL(uri);
+      for (let i = p.length - 1; i >= 0; i--) {
+        b.pathname = p.slice(0, i).join('/');
+        const base = b.toString();
+        if (base === baseUri) {
+          break;
+        }
+        if (filesV2.has(base)) {
+          return false;
+        }
+      }
+      return true;
+    }).forEach(([uri, content]) => {
+      files.push([uri, content]);
+    });
+  });
   // V1
-  filesV1.forEach((files, uri) => {
-    allFiles.filter(([u, _]) => u.startsWith(uri)).forEach(([u, content]) => {
-      files.push([u, content]);
+  filesV1.forEach((files, baseUri) => {
+    allFiles.filter(([uri, _]) => uri.startsWith(baseUri)).forEach(([uri, content]) => {
+      files.push([uri, content]);
     });
   });
 
-  console.log(filesV1);
-  console.log(filesV2);
+  console.log("V1:", filesV1);
+  console.log("V2:", filesV2);
 
   // Create AST by versions and packages
 
