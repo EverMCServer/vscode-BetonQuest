@@ -114,4 +114,37 @@ export class AST {
     return [filesV1, filesV2];
   };
 
+  parseAllFilesV1(allFiles: Map<string, FilesResponse>) {
+    allFiles.forEach((filesResp, packageUri) => filesResp.forEach(([fileUri, fileContent]) => {
+      const u = new URL(fileUri);
+      const p = u.pathname.split('/');
+      switch (p[p.length - 1]) {
+        case 'main.yml':
+          break;
+        case 'events.yml':
+          break;
+        case 'conditions.yml':
+          break;
+        case 'objectives.yml':
+          break;
+        case 'journal.yml':
+          break;
+        case 'items.yml':
+          break;
+        case 'custom.yml':
+          break;
+        default:
+          if (p[p.length - 2] === 'conversations') { }
+          break;
+      }
+    })
+    );
+  }
+
+  // getPos(sourcePath: string, address: string) {
+
+  // }
+
+  // // file path -> abstract address (version.package.category.key etc)
+
 }

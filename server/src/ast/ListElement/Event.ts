@@ -14,8 +14,8 @@ export class EventOption extends ListElement<'EventOption'> {
   // [key: string]: any,
 
   // constructor(content: string, parent?: Node<NodeType>) {
-  constructor(version: string, pair: Pair<Scalar<string>, Scalar<string>>, parent?: Node<NodeType>) {
-    super(version, 'EventOption', parent);
+  constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent?: Node<NodeType>) {
+    super('EventOption', parent);
 
     pair.value?.srcToken; // TODO
     this.startOffset = pair.value?.range?.[0];
