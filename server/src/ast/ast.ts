@@ -71,21 +71,24 @@ export const parse = (wsFolderUri: string, allFiles: FilesResponse) => {
   // Find all files by package
   // V2
   filesV2.forEach((files, baseUri) => {
-    allFiles.filter(([uri, _], i, allFiles) => {
-      if (!uri.startsWith(baseUri) || uri === baseUri+ '/package.yml') { // TODO: ignore case and yml/yaml
+    const baseEntryFileRegex = new RegExp(`^${baseUri}/package\.ya?ml$`);
+    allFiles.filter(([uri, _]) => {
+      if (!uri.startsWith(baseUri) || uri.match(baseEntryFileRegex)) {
         return false;
       }
-      // Make sure this file is not inside a sub-package
+      // Make sure this file is not inside another sub-package
       const u = new URL(uri);
       const p = u.pathname.split('/');
       const b = new URL(uri);
-      for (let i = p.length - 1; i >= 0; i--) {
+      for (let i = p.length - 1; i > -1; i--) {
         b.pathname = p.slice(0, i).join('/');
         const base = b.toString();
         if (base === baseUri) {
+          // It belongs to this package only, skip check.
           break;
         }
         if (filesV2.has(base)) {
+          // It belongs to another package, skip this file.
           return false;
         }
       }
@@ -101,8 +104,9 @@ export const parse = (wsFolderUri: string, allFiles: FilesResponse) => {
     });
   });
 
-  console.log("V1:", filesV1);
-  console.log("V2:", filesV2);
+  // DEBUG print packages' file lists
+  console.log("V1:", [...filesV1.entries()].map(([k, v]) => [k, v.map(([k, _]) => k)]));
+  console.log("V2:", [...filesV2.entries()].map(([k, v]) => [k, v.map(([k, _]) => k)]));
 
   // Create AST by versions and packages
 

@@ -12,7 +12,7 @@ export function syncWorkspaces(connection: Connection, workspaceFolders: Workspa
         recursive: true,
         pattern: "\.ya?ml$"
       } as FileTreeParams);
-      connection.console.log("file tree:\n" + a.join("\n"));
+      // connection.console.log("file tree:\n" + a.join("\n"));
 
       // Get files
       let files = await connection.sendRequest<FilesResponse>('custom/files', a);
