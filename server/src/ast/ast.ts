@@ -5,112 +5,113 @@ import { FilesResponse } from "betonquest-utils/lsp/file";
 
 // AST structure for BetonQuest V1
 export class AST {
-  startOffset?: number;
-  endOffset?: number;
-  children?: Node<NodeType>[];
+  v1?: Node<NodeType>[];
+  v2?: Node<NodeType>[];
 
-  constructor() {
+  constructor(allFiles: FilesResponse) {
+    const [filesV1, filesV2] = this.classifyAllFiles(allFiles);
+
+    // Create AST by versions and packages
+    // ...
+
+    // Parse files by versions and packages
+    // ...
   }
-}
-
-export const parse = (wsFolderUri: string, allFiles: FilesResponse) => {
-  const ast: AST = new AST();
 
   // Classify files by versions and packages
-  // Rules:
-  // - V2: package.yml https://betonquest.org/2.0/Documentation/Scripting/Packages-%26-Templates/#structure
-  // - V1: main.yml https://betonquest.org/1.12/User-Documentation/Reference/#packages
-  const filesV2 = new Map<string, FilesResponse>();
-  const filesV1 = new Map<string, FilesResponse>();
+  classifyAllFiles(allFiles: FilesResponse) {
+    // Rules:
+    // - V2: package.yml https://betonquest.org/2.0/Documentation/Scripting/Packages-%26-Templates/#structure
+    // - V1: main.yml https://betonquest.org/1.12/User-Documentation/Reference/#packages
+    const filesV2 = new Map<string, FilesResponse>();
+    const filesV1 = new Map<string, FilesResponse>();
 
-  // Find all V2 packages
-  allFiles.forEach(([uri, content]) => {
-    const u = new URL(uri);
-    const p = u.pathname.split('/');
-    if (p[p.length - 1].match(/^package\.ya?ml$/i)) {
-      // Create package's base path
-      const b = new URL(uri);
-      b.pathname = p.slice(0, p.length - 1).join('/');
-      const baseUri = b.toString();
-      // Cache the package's path with a entry file.
-      filesV2.set(baseUri, [[uri, content]]);
-    }
-  });
-  // Find all V1 packages
-  allFiles.forEach(([uri, content]) => {
-    const u = new URL(uri);
-    const p = u.pathname.split('/');
-    if (p[p.length - 1].match(/^main\.ya?ml$/i)) {
-      // Create package's base path
-      const b = new URL(uri);
-      b.pathname = p.slice(0, p.length - 1).join('/');
-      const baseUri = b.toString();
-      // Skip if conflict.
-      // 1. Avoid conflict with V2. Skip if this main.yml is nested in V2 package
-      for (const path of filesV2.keys()) {
-        if (uri.startsWith(path)) {
-          return;
-        }
-      }
-      // 2. We only take the most outer "main.yml" as the package
-      for (const path of filesV1.keys()) {
-        // Skip if parent uri already exists
-        if (uri.startsWith(path)) {
-          return;
-        }
-        // Replace if ther is a child uri nested in this package. We keep the most outer one.
-        if (path.startsWith(baseUri)) {
-          filesV1.delete(path);
-        }
-      }
-      // Cache the package's path with a entry file.
-      filesV1.set(baseUri, [[uri, content]]);
-    }
-  });
-
-  // Find all files by package
-  // V2
-  filesV2.forEach((files, baseUri) => {
-    const baseEntryFileRegex = new RegExp(`^${baseUri}/package\.ya?ml$`);
-    allFiles.filter(([uri, _]) => {
-      if (!uri.startsWith(baseUri) || uri.match(baseEntryFileRegex)) {
-        return false;
-      }
-      // Make sure this file is not inside another sub-package
+    // Find all V2 packages
+    allFiles.forEach(([uri, content]) => {
       const u = new URL(uri);
       const p = u.pathname.split('/');
-      const b = new URL(uri);
-      for (let i = p.length - 1; i > -1; i--) {
-        b.pathname = p.slice(0, i).join('/');
-        const base = b.toString();
-        if (base === baseUri) {
-          // It belongs to this package only, skip check.
-          break;
+      if (p[p.length - 1].match(/^package\.ya?ml$/i)) {
+        // Create package's base path
+        const b = new URL(uri);
+        b.pathname = p.slice(0, p.length - 1).join('/');
+        const packageUri = b.toString();
+        // Cache the package's path with a entry file.
+        filesV2.set(packageUri, [[uri, content]]);
+      }
+    });
+    // Find all V1 packages
+    allFiles.forEach(([uri, content]) => {
+      const u = new URL(uri);
+      const p = u.pathname.split('/');
+      if (p[p.length - 1].match(/^main\.ya?ml$/i)) {
+        // Create package's base path
+        const b = new URL(uri);
+        b.pathname = p.slice(0, p.length - 1).join('/');
+        const packageUri = b.toString();
+        // Skip if conflict.
+        // 1. Avoid conflict with V2. Skip if this main.yml is nested in V2 package
+        for (const path of filesV2.keys()) {
+          if (uri.startsWith(path)) {
+            return;
+          }
         }
-        if (filesV2.has(base)) {
-          // It belongs to another package, skip this file.
+        // 2. We only take the most outer "main.yml" as the package
+        for (const path of filesV1.keys()) {
+          // Skip if parent uri already exists
+          if (uri.startsWith(path)) {
+            return;
+          }
+          // Replace if ther is a child uri nested in this package. We keep the most outer one.
+          if (path.startsWith(packageUri)) {
+            filesV1.delete(path);
+          }
+        }
+        // Cache the package's path with a entry file.
+        filesV1.set(packageUri, [[uri, content]]);
+      }
+    });
+
+    // Find all files by package
+    // V2
+    filesV2.forEach((files, packageUri) => {
+      const baseEntryFileRegex = new RegExp(`^${packageUri}/package\.ya?ml$`);
+      allFiles.filter(([uri, _]) => {
+        if (!uri.startsWith(packageUri) || uri.match(baseEntryFileRegex)) {
           return false;
         }
-      }
-      return true;
-    }).forEach(([uri, content]) => {
-      files.push([uri, content]);
+        // Make sure this file is not inside another sub-package
+        const u = new URL(uri);
+        const p = u.pathname.split('/');
+        const b = new URL(uri);
+        for (let i = p.length - 1; i > -1; i--) {
+          b.pathname = p.slice(0, i).join('/');
+          const base = b.toString();
+          if (base === packageUri) {
+            // It belongs to this package only, skip check.
+            break;
+          }
+          if (filesV2.has(base)) {
+            // It belongs to another package, skip this file.
+            return false;
+          }
+        }
+        return true;
+      }).forEach(([uri, content]) => {
+        files.push([uri, content]);
+      });
     });
-  });
-  // V1
-  filesV1.forEach((files, baseUri) => {
-    allFiles.filter(([uri, _]) => uri.startsWith(baseUri)).forEach(([uri, content]) => {
-      files.push([uri, content]);
+    // V1
+    filesV1.forEach((files, packageUri) => {
+      allFiles.filter(([uri, _]) => uri.startsWith(packageUri)).forEach(([uri, content]) => {
+        files.push([uri, content]);
+      });
     });
-  });
 
-  // DEBUG print packages' file lists
-  console.log("V1:", [...filesV1.entries()].map(([k, v]) => [k, v.map(([k, _]) => k)]));
-  console.log("V2:", [...filesV2.entries()].map(([k, v]) => [k, v.map(([k, _]) => k)]));
+    // DEBUG print packages' file lists
+    console.log("V1:", [...filesV1.entries()].map(([k, v]) => [k, v.map(([k, _]) => k)]));
+    console.log("V2:", [...filesV2.entries()].map(([k, v]) => [k, v.map(([k, _]) => k)]));
 
-  // Create AST by versions and packages
+    return [filesV1, filesV2];
+  };
 
-  // Parse files by versions and packages
-
-  return ast;
-};
+}
