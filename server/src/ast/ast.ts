@@ -1,21 +1,18 @@
 import { Pair, Scalar } from "yaml";
 
-import { Node, NodeType } from "./node";
+import { PackageV1, PackageV2 } from "./Package";
 import { FilesResponse } from "betonquest-utils/lsp/file";
 
 // AST structure for BetonQuest V1
 export class AST {
-  v1?: Node<NodeType>[];
-  v2?: Node<NodeType>[];
+  packagesV1: PackageV1[] = [];
+  packagesV2: PackageV2[] = [];
 
   constructor(allFiles: FilesResponse) {
     const [filesV1, filesV2] = this.classifyAllFiles(allFiles);
 
     // Create AST by versions and packages
-    // ...
-
-    // Parse files by versions and packages
-    // ...
+    this.parseAllFilesV1(filesV1);
   }
 
   // Classify files by versions and packages
@@ -114,31 +111,22 @@ export class AST {
     return [filesV1, filesV2];
   };
 
+  // Parse all files by packages, v1
   parseAllFilesV1(allFiles: Map<string, FilesResponse>) {
-    allFiles.forEach((filesResp, packageUri) => filesResp.forEach(([fileUri, fileContent]) => {
-      const u = new URL(fileUri);
-      const p = u.pathname.split('/');
-      switch (p[p.length - 1]) {
-        case 'main.yml':
-          break;
-        case 'events.yml':
-          break;
-        case 'conditions.yml':
-          break;
-        case 'objectives.yml':
-          break;
-        case 'journal.yml':
-          break;
-        case 'items.yml':
-          break;
-        case 'custom.yml':
-          break;
-        default:
-          if (p[p.length - 2] === 'conversations') { }
-          break;
-      }
-    })
-    );
+    this.packagesV1 = []; // Purge all cached files
+    allFiles.forEach((filesResp, packageUri) => {
+      // Create Package
+      this.packagesV1.push(new PackageV1(packageUri, filesResp));
+    });
+  }
+
+  // Parse all files by packages, v2
+  parseAllFilesV2(allFiles: Map<string, FilesResponse>) {
+    this.packagesV2 = []; // Purge all cached files
+    allFiles.forEach((filesResp, packageUri) => {
+      // Create Package
+      this.packagesV2.push(new PackageV2(packageUri, filesResp));
+    });
   }
 
   // getPos(sourcePath: string, address: string) {

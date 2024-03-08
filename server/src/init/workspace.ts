@@ -19,7 +19,8 @@ export function syncWorkspaces(connection: Connection, workspaceFolders: Workspa
       // files.forEach(([uri, content]) => {
       //   connection.console.log("file: " + uri + " size: " + content.length + " content: " + content);
       // });
-      new AST(files);
+      const ast = new AST(files);
+      console.log("AST created:", ast);
 
       // connection.sendRequest<string>('custom/file', workspaceFolders![0].uri + "/config.yml").then(
       //   content => {

@@ -8,11 +8,11 @@ export abstract class ListElement<T extends NodeType> implements Node<T> {
   abstract startOffset?: number;
   abstract endOffset?: number;
   parent?: Node<NodeType>;
-  abstract children?: Node<NodeType>[];
+  abstract options?: Node<NodeType>[];
   yaml?: Pair<Scalar<string>, Scalar<string>>;
 
-  constructor(kind: T, parent?: Node<NodeType>, ) {
-    this.type = kind;
+  constructor(type: T, parent?: Node<NodeType>, ) {
+    this.type = type;
     this.parent = parent;
     this.uri = parent?.uri;
   }

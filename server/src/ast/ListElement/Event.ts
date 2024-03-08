@@ -3,19 +3,19 @@ import { Node, NodeType } from "../node";
 import { ListElement } from "./ListElement";
 import { ArgumentsString } from "betonquest-utils/betonquest/Arguments";
 
-export class EventOption extends ListElement<'EventOption'> {
+export class EventEntry extends ListElement<'EventEntry'> {
   startOffset?: number;
   endOffset?: number;
-  children?: Node<NodeType>[];
 
   // name?: string
   kind?: string; // e.g. "spawn"
-  argType?: string; // primitive types, 'string[]' etc
+  options?: Node<NodeType>[];
+  // argType?: string; // primitive types, 'string[]' etc
   // [key: string]: any,
 
   // constructor(content: string, parent?: Node<NodeType>) {
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent?: Node<NodeType>) {
-    super('EventOption', parent);
+    super('EventEntry', parent);
 
     pair.value?.srcToken; // TODO
     this.startOffset = pair.value?.range?.[0];
@@ -36,7 +36,7 @@ export class EventOption extends ListElement<'EventOption'> {
     // Parse ArgumentsString
     const args = new ArgumentsString(str);
     args.getMandatoryArguments().forEach((arg) => {
-      this.children?.push(
+      this.options?.push(
         { } as Node<NodeType>
       );
     });
