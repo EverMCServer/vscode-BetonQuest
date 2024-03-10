@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Checkbox, Col, Divider, Input, Row } from "antd";
 
 import Event from "betonquest-utils/betonquest/Event";
-import Arguments, { ArgumentsPattern } from "betonquest-utils/betonquest/Arguments";
+import Arguments, { ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
 import { ListElementEditorBodyProps } from "../../../legacyListEditor/components/CommonList/CommonEditor";
 
 // e.g. emerald:5,emerald_block:9,important_sign notify backpack
-const pattern: ArgumentsPattern = {
+const pattern: ArgumentsPatterns = {
     mandatory: [
         { name: 'item_list', type: '[string:number?][,]', defaultValue: [["emerald", 5], ["emerald_block", 9], ["important_sign", 1]] },
     ],

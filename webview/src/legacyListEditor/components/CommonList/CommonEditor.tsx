@@ -4,7 +4,7 @@ import { Row, Col, Divider, Select } from "antd";
 import L from "betonquest-utils/i18n/i18n";
 import ListElement from "betonquest-utils/betonquest/ListElement";
 import { BaseListProps } from "../CommonList";
-import { ArgumentsPattern } from "betonquest-utils/betonquest/Arguments";
+import { ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
 
 import styles from "./CommonEditor.module.css";
 
@@ -13,7 +13,7 @@ export interface ListElementEditorProps<T extends ListElement> extends BaseListP
 }
 
 export interface ListElementEditorBodyProps<T extends ListElement> extends ListElementEditorProps<T> {
-    argumentsPattern: ArgumentsPattern,
+    argumentsPattern: ArgumentsPatterns,
 }
 
 export type Kind<T extends ListElement> = {
@@ -21,7 +21,7 @@ export type Kind<T extends ListElement> = {
     display: string,
     description: React.ReactNode,
     editorBody?: (props: ListElementEditorBodyProps<T>) => React.JSX.Element,
-    argumentsPattern: ArgumentsPattern
+    argumentsPattern: ArgumentsPatterns
 };
 
 interface CommonEditorProps<T extends ListElement> extends ListElementEditorProps<T> {

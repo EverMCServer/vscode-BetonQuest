@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Col, Divider, Input, InputNumber, Row } from "antd";
 
 import Event from "betonquest-utils/betonquest/Event";
-import Arguments, { ArgumentsPattern } from "betonquest-utils/betonquest/Arguments";
+import Arguments, { ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
 import { ListElementEditorBodyProps } from "../../../legacyListEditor/components/CommonList/CommonEditor";
 
 // e.g. killmob ZOMBIE 100;200;300;world 40 name:Bolec marked:quest_mob
-const pattern: ArgumentsPattern = {
+const pattern: ArgumentsPatterns = {
     mandatory: [
         { name: 'entity_type', type: 'string', defaultValue: 'ZOMBIE' },
         { name: 'location', type: 'string', defaultValue: '100;200;300;world' },
