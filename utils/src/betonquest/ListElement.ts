@@ -1,5 +1,5 @@
 import { Pair, Scalar } from "yaml";
-import Arguments, { ArgumentsPattern } from "./Arguments";
+import Arguments, { ArgumentsPatterns } from "./Arguments";
 
 export type ListElementType = 'events' | 'conditions' | 'objectives' | 'conversations' | 'items' | 'unknown';
 
@@ -42,7 +42,7 @@ export default class ListElement {
         }
     }
 
-    getArguments(pattern?: ArgumentsPattern): Arguments {
+    getArguments(pattern?: ArgumentsPatterns): Arguments {
         return new Arguments(this.yaml, pattern);
     }
 

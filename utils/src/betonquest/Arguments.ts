@@ -7,9 +7,11 @@ import { Pair, Scalar } from "yaml";
  * * int - interger
  * * float - number with a decimal point
  * * string[,] - string array, separated by comma
- * * string[|] - string array, separated by "|""
+ * * string[|] - string array, separated by "|"
+ * * string[^] - string array, separated by "^"
  * * string:number[,] - Items sepprated by ","
  * * \* - all string till the end, including spaces and optional arguments
+ * * 'variable' - variable quoted by %%
  */
 type MandatoryArgumentType = (
     'string' |
@@ -40,6 +42,7 @@ type MandatoryArguments = Array<MandatoryArgument>;
  * * string[,] - string array, separated by comma
  * * boolean - argument only, no value
  * * string:number[,] - Items sepprated by ","
+ * * 'variable' - variable quoted by %%
  */
 type OptionalArgumentType = (
     'string' |
@@ -63,32 +66,28 @@ export type OptionalArgumentDataType =
     ;
 type OptionalArguments = Map<string, OptionalArgument>;
 
-export type ArgumentsPatternMandatory = {
+type ArgumentsPattern = {
     name: React.ReactNode,
+    escapeCharacters?: string[],
+    jsx?: (props: any) => React.ReactNode,
+    tooltip?: string,
+    placeholder?: string | string[],
+    config?: any,
+    allowVariable?: boolean
+};
+
+export type ArgumentsPatternMandatory = ArgumentsPattern & {
     key?: string,
     type: MandatoryArgumentType,
     defaultValue: MandatoryArgumentDataType,
-    escapeCharacters?: string[],
-    jsx?: (props: any) => React.ReactNode,
-    tooltip?: string,
-    placeholder?: string | string[],
-    config?: any,
-    allowVariable?: boolean
 };
 
-export type ArgumentsPatternOptional = {
-    name: React.ReactNode,
+export type ArgumentsPatternOptional = ArgumentsPattern & {
     key: string,
     type: OptionalArgumentType,
-    escapeCharacters?: string[],
-    jsx?: (props: any) => React.ReactNode,
-    tooltip?: string,
-    placeholder?: string | string[],
-    config?: any,
-    allowVariable?: boolean
 };
 
-export type ArgumentsPattern = {
+export type ArgumentsPatterns = {
     mandatory: ArgumentsPatternMandatory[],
     optional?: ArgumentsPatternOptional[],
     optionalAtFirst?: boolean,
@@ -136,14 +135,14 @@ export class OptionalArgument extends Argument<OptionalArgumentType, OptionalArg
 
 export abstract class ArgumentsAbstract {
     // Pattern
-    protected pattern: ArgumentsPattern;
+    protected pattern: ArgumentsPatterns;
 
     // Arguments
     protected mandatory: MandatoryArguments = [];
     protected optional: OptionalArguments = new Map();
 
     constructor(
-        pattern: ArgumentsPattern = { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] }
+        pattern: ArgumentsPatterns = { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] }
     ) {
         this.pattern = pattern;
     }
@@ -168,7 +167,7 @@ export abstract class ArgumentsAbstract {
         return this.optional;
     }
 
-    protected parse(pattern?: ArgumentsPattern) {
+    protected parse(pattern?: ArgumentsPatterns) {
         // Load pattern from this.pattern, if not provided
         if (!pattern) {
             pattern = this.pattern;
@@ -245,7 +244,7 @@ export abstract class ArgumentsAbstract {
         }
         // }
 
-        console.log("debug");
+        // console.log("debug");
 
         // Prepare default mandatory values
         for (let i = 0; i < pattern.mandatory.length; i++) {
@@ -588,7 +587,7 @@ export abstract class ArgumentsAbstract {
 
 export class ArgumentsString extends ArgumentsAbstract {
     private str: string;
-    constructor(str: string, pattern: ArgumentsPattern = { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] }) {
+    constructor(str: string, pattern: ArgumentsPatterns = { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] }) {
         super(pattern);
         this.str = str;
 
@@ -605,7 +604,7 @@ export default class Arguments extends ArgumentsAbstract {
 
     constructor(
         pair: Pair<Scalar<string>, Scalar<string>>,
-        pattern: ArgumentsPattern = { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] }
+        pattern: ArgumentsPatterns = { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] }
     ) {
         super(pattern);
         this.yaml = pair;
