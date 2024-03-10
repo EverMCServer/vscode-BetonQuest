@@ -1,21 +1,21 @@
-import { Pair, Scalar } from "yaml";
-import { EventEntryType, EventKindType, Node } from "../../node";
+import { EventKindType, Node } from "../../node";
+import { EventEntry } from "./EventEntry";
 
 export class EventKind implements Node<EventKindType> {
   type: EventKindType = "EventKind";
   uri?: string;
-  startOffset?: number;
-  endOffset?: number;
-  parent?: Node<EventEntryType>;
+  offsetStart?: number;
+  offsetEnd?: number;
+  parent?: EventEntry;
 
-  kind: string;
+  value: string;
 
-  constructor(value: Scalar<string>, parent?: Node<EventEntryType>) {
+  constructor(value: string, range: [number?, number?], parent?: EventEntry) {
     this.uri = parent?.uri;
-    this.startOffset = value.range?.[0];
+    this.offsetStart = range[0];
+    this.offsetEnd = range[1];
     this.parent = parent;
 
-    this.kind = value.value.split(" ", 2)[0];
-    this.endOffset = this.startOffset ? (this.startOffset + this.kind.length) : undefined;
+    this.value = value;
   }
 }

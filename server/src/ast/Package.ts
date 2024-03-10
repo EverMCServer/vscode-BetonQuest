@@ -5,8 +5,8 @@ import { EventList } from "./v1/Event/EventList";
 export abstract class Package<T extends PackageTypes> implements Node<T> {
   type: T;
   uri?: string;
-  abstract startOffset?: number;
-  abstract endOffset?: number;
+  abstract offsetStart?: number;
+  abstract offsetEnd?: number;
 
   abstract conversationList?: Node<ConversationListType>;
   abstract eventList?: Node<EventListType>;
@@ -20,8 +20,8 @@ export abstract class Package<T extends PackageTypes> implements Node<T> {
 }
 
 export class PackageV1 extends Package<PackageV1Type> {
-  startOffset?: number;
-  endOffset?: number;
+  offsetStart?: number;
+  offsetEnd?: number;
 
   conversationList?: Node<ConversationListType>; // TODO: Conversations[]
   eventList?: Node<EventListType>;
@@ -60,8 +60,8 @@ export class PackageV1 extends Package<PackageV1Type> {
 }
 
 export class PackageV2 extends Package<PackageV2Type> {
-  startOffset?: number;
-  endOffset?: number;
+  offsetStart?: number;
+  offsetEnd?: number;
 
   conversationList?: Node<ConversationListType>;
   eventList?: Node<EventListType>;

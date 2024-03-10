@@ -5,8 +5,8 @@ import { Node, NodeType } from "../node";
 export abstract class ListElement<T extends NodeType> implements Node<T> {
   type: T;
   uri?: string;
-  abstract startOffset?: number;
-  abstract endOffset?: number;
+  abstract offsetStart?: number;
+  abstract offsetEnd?: number;
   parent?: Node<NodeType>;
   abstract options?: Node<NodeType>[];
   yaml?: Pair<Scalar<string>, Scalar<string>>;

@@ -1,20 +1,21 @@
-import { Document, Scalar, YAMLMap, parseDocument } from "yaml";
-import { EventEntryType, EventListType, Node, PackageTypes } from "../../node";
+import { Scalar, YAMLMap, parseDocument } from "yaml";
+import { EventListType, Node } from "../../node";
 import { EventEntry } from "./EventEntry";
+import { PackageV1 } from "../../Package";
 
 
 export class EventList implements Node<EventListType> {
   type: "EventList" = "EventList";
   uri?: string;
-  startOffset?: number;
-  endOffset?: number;
-  parent?: Node<PackageTypes>;
+  offsetStart?: number;
+  offsetEnd?: number;
+  parent?: PackageV1;
 
   // Cache the parsed yaml document
   yml?: YAMLMap<Scalar<string>, Scalar<string>>;
-  entries: Node<EventEntryType>[] = [];
+  entries: EventEntry[] = [];
 
-  constructor(uri: string, fileContent: string, parent?: Node<PackageTypes>) {
+  constructor(uri: string, fileContent: string, parent?: PackageV1) {
     this.uri = uri;
     this.parent = parent;
 
@@ -32,8 +33,8 @@ export class EventList implements Node<EventListType> {
     this.yml = yml.contents;
 
     // Extract offsets
-    this.startOffset = this.yml.range?.[0];
-    this.endOffset = this.yml.range?.[1];
+    this.offsetStart = this.yml.range?.[0];
+    this.offsetEnd = this.yml.range?.[1];
 
     // Parse Elements
     this.yml.items.forEach(pair => {

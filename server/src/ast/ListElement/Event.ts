@@ -4,8 +4,8 @@ import { ListElement } from "./ListElement";
 import { ArgumentsString } from "betonquest-utils/betonquest/Arguments";
 
 export class EventEntry extends ListElement<'EventEntry'> {
-  startOffset?: number;
-  endOffset?: number;
+  offsetStart?: number;
+  offsetEnd?: number;
 
   // name?: string
   kind?: string; // e.g. "spawn"
@@ -18,8 +18,8 @@ export class EventEntry extends ListElement<'EventEntry'> {
     super('EventEntry', parent);
 
     pair.value?.srcToken; // TODO
-    this.startOffset = pair.value?.range?.[0];
-    this.endOffset = pair.value?.range?.[1];
+    this.offsetStart = pair.value?.range?.[0];
+    this.offsetEnd = pair.value?.range?.[1];
 
 
     // Parse ListElement and get all pos / value / childrens

@@ -71,8 +71,8 @@ export type NodeType = PackageTypes | ConversationTypes | EventTypes | Condition
 export interface Node<T extends NodeType> {
   type: T,
   uri?: string,
-  startOffset?: number;
-  endOffset?: number;
+  offsetStart?: number;
+  offsetEnd?: number;
   parent?: Node<NodeType>,
   // children?: Node<NodeType>[],
 
