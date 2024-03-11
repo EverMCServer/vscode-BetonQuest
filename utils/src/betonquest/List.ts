@@ -1,4 +1,5 @@
-import YAML, { Document, Pair, Scalar, YAMLMap } from "yaml";
+import * as YAML from "yaml";
+import { Document, Pair, Scalar, YAMLMap } from "yaml";
 import ListElement from "./ListElement";
 
 

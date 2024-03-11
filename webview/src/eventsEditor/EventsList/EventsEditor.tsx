@@ -1,4 +1,3 @@
-import React, { ReactNode } from "react";
 import { DefaultOptionType } from "antd/es/select";
 
 import L from "betonquest-utils/i18n/i18n";

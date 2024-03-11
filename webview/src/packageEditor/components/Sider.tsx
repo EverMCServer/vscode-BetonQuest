@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+import * as React from "react";
+import { useContext, useEffect, useState } from "react";
 import Package from "betonquest-utils/betonquest/Package";
 import { Tabs, Tooltip } from "antd";
 import { PiPlayFill } from "react-icons/pi";

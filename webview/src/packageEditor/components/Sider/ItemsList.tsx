@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import Package from "betonquest-utils/betonquest/Package";
 
 interface ItemsListProps {

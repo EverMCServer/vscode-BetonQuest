@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { useEffect, useRef, useState } from 'react';
+import * as React from "react";
+import { useEffect, useRef, useState } from 'react';
 import type { InputRef } from 'antd';
 import { Space, Input, Tag } from 'antd';
 import { DndContext, DragEndEvent, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';

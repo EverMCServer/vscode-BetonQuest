@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import * as React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Checkbox, Input, InputNumber, Space, Tooltip } from "antd";
 
 import L from "betonquest-utils/i18n/i18n";

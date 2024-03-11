@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
+import * as React from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button, Divider, Input, Select, Space, Tooltip } from "antd";
 import { VscClose } from "react-icons/vsc";
 import { compile as compileJavaRegex } from "java-regex-js";

@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import { Col, Divider, Row, Tooltip } from "antd";
 import { VscQuestion } from "react-icons/vsc";
 import { TbVariableOff, TbVariablePlus } from "react-icons/tb";

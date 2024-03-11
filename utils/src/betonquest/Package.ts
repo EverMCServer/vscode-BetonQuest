@@ -1,4 +1,5 @@
-import YAML, { Document, Pair, Scalar, YAMLMap } from 'yaml';
+import * as YAML from "yaml";
+import { Document, Pair, Scalar, YAMLMap } from 'yaml';
 import Conversation from './Conversation';
 import Event from './Event';
 import Condition from './Condition';

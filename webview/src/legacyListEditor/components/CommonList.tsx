@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import * as React from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import { Button, Collapse, CollapseProps, Input } from "antd";
 import { ItemType } from "rc-collapse/es/interface";

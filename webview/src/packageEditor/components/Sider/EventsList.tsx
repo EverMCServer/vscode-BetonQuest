@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 
 import Event from "betonquest-utils/betonquest/Event";
 import EventsEditor from "./EventsList/EventsEditor";

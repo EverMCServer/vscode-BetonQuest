@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React from "react";
+import * as React from "react";
 
 type YamlPathPointer = {
     documentPathPointer: string[],

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+import { useEffect, useState } from "react";
 import { Button, Input, Modal, Radio, Select, Space, Tabs } from "antd";
 import type { Tab } from 'rc-tabs/lib/interface';
 import { VscTrash } from "react-icons/vsc";

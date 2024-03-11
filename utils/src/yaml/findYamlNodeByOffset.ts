@@ -1,4 +1,5 @@
-import YAML, { Document, Node, Pair, Scalar, YAMLMap, YAMLSeq } from 'yaml';
+import * as YAML from "yaml";
+import { Document, Node, Pair, Scalar, YAMLMap, YAMLSeq } from 'yaml';
 
 export default function findYamlNodeByOffset(offset: number, yaml: string): string[] {
     return findYamlMapNodeByOffset(offset, YAML.parseDocument(yaml).contents as YAMLMap | YAMLSeq);

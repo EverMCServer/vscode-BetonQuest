@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+import { useEffect, useState } from "react";
 import { Button, Select, Space } from "antd";
 import { DefaultOptionType } from "antd/es/select";
 import { VscClose } from "react-icons/vsc";

@@ -1,4 +1,5 @@
-import YAML, { Pair, Scalar, YAMLError, YAMLMap } from 'yaml';
+import * as YAML from "yaml";
+import { Pair, Scalar, YAMLError, YAMLMap } from "yaml";
 
 // Conversation
 export default class Conversation {

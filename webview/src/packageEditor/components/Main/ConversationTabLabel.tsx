@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import * as React from "react";
+import { useState } from "react";
 import { Modal } from "antd";
 import L from "betonquest-utils/i18n/i18n";
 import Package from "betonquest-utils/betonquest/Package";

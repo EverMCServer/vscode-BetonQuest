@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+import { useEffect, useState } from "react";
 import { Flex, Input } from "antd";
 
 import L from "betonquest-utils/i18n/i18n";

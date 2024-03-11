@@ -25,5 +25,10 @@
 		"node_modules/**/*",
 		".vscode-test/**/*",
 		".vscode-test-web/**/*"
+	],
+	"references": [
+		{
+			"path": "../utils/"
+		}
 	]
 }

@@ -1,4 +1,5 @@
-import React, { useState, KeyboardEvent, ChangeEvent, useEffect, useRef, useContext } from "react";
+import * as React from "react";
+import { useState, KeyboardEvent, ChangeEvent, useEffect, useRef, useContext } from "react";
 
 import { VscEdit } from "react-icons/vsc";
 

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import * as React from "react";
+import { useState } from "react";
 import { Button, Space } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { VscClose } from "react-icons/vsc";

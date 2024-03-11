@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import { Row, Col, Divider, Select } from "antd";
 
 import L from "betonquest-utils/i18n/i18n";
