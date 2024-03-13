@@ -12,7 +12,7 @@
 		"rootDir": "src",
 		"paths": {
 			"betonquest-utils/*": [
-				"../utils/out/*"
+				"../utils/src/*"
 			],
 		},
 		"strict": true,
