@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useEffect, useState } from "react";
 import { ConfigProvider } from "antd";
 import { YAMLError } from "yaml";
@@ -9,12 +8,7 @@ import ListElement from "betonquest-utils/betonquest/ListElement";
 import CommonList, { ListEditorProps } from "./components/CommonList";
 import { YamlPathPointer } from "betonquest-utils/yaml/yamlPathPointer";
 
-import '../style/vscodeButton.css';
-import '../style/vscodeCheckbox.css';
-import "../style/vscodeDivider.css";
-import "../style/vscodeInputNumber.css";
-import "../style/vscodePopover.css";
-import "../style/vscodeTooltip.css";
+import "betonquest-utils/ui/style/ant";
 
 // Global variables from vscode
 declare global {
@@ -184,7 +178,7 @@ export default function app<T extends ListElement>(props: ListEditorProps<T>) {
                         },
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         Button: {
-                            // See "style/vscodeButton.css"
+                            // See "utils/ui/style/antButton.css"
 
                             // defaultColor: 'var(--vscode-button-foreground)', // text color of button
                             // defaultBg: 'var(--vscode-button-secondaryBackground)', // background color of button, secondary / default
@@ -214,7 +208,7 @@ export default function app<T extends ListElement>(props: ListEditorProps<T>) {
                         },
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         Popover: {
-                            // See "style/vscodePopover.css"
+                            // See "utils/ui/style/antPopover.css"
                         },
                     },
                 }}

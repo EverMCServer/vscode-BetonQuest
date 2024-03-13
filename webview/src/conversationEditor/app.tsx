@@ -160,7 +160,7 @@ export default function app() {
                     },
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     Button: {
-                        // See "style/vscodeButton.css"
+                        // See "utils/ui/style/antButton.css"
 
                         // defaultColor: 'var(--vscode-button-foreground)', // text color of button
                         // defaultBg: 'var(--vscode-button-secondaryBackground)', // background color of button, secondary / default
@@ -190,7 +190,7 @@ export default function app() {
                     },
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     Popover: {
-                        // See "style/vscodePopover.css"
+                        // See "utils/ui/style/antPopover.css"
                     },
                 },
             }}
