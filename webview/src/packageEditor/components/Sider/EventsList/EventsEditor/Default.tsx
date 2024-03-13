@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Col, Divider, Row, Tooltip } from "antd";
 import { VscQuestion } from "react-icons/vsc";
@@ -8,7 +7,8 @@ import L from "betonquest-utils/i18n/i18n";
 import Event from "betonquest-utils/betonquest/Event";
 import { MandatoryArgumentDataType, OptionalArgumentDataType } from "betonquest-utils/betonquest/Arguments";
 import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
-import Variable from "../../CommonList/Input/Variable";
+
+import Variable from "betonquest-utils/ui/Input/Variable";
 
 const colSpanLeft1 = 10;
 const colSpanRight1 = 14;

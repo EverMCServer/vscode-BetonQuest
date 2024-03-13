@@ -4,8 +4,9 @@ import { Row, Col, Divider, Select } from "antd";
 
 import L from "betonquest-utils/i18n/i18n";
 import ListElement from "betonquest-utils/betonquest/ListElement";
-import { BaseListProps } from "../CommonList";
 import { ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
+import { ElementKind } from "betonquest-utils/betonquest/v1/Element";
+import { BaseListProps } from "../CommonList";
 
 import styles from "./CommonEditor.module.css";
 
@@ -17,12 +18,8 @@ export interface ListElementEditorBodyProps<T extends ListElement> extends ListE
     argumentsPattern: ArgumentsPatterns,
 }
 
-export type Kind<T extends ListElement> = {
-    value: string,
-    display: string,
-    description: React.ReactNode,
+export type Kind<T extends ListElement> = ElementKind<T> & {
     editorBody?: (props: ListElementEditorBodyProps<T>) => React.JSX.Element,
-    argumentsPattern: ArgumentsPatterns
 };
 
 interface CommonEditorProps<T extends ListElement> extends ListElementEditorProps<T> {

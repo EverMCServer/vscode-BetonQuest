@@ -5,13 +5,15 @@
 		"moduleResolution": "Node",
 		"target": "ES5",
 		"lib": [
-			"ES2021"
+			"ES2021",
+			"dom"
 		],
 		"sourceMap": true,
 		"outDir": "out",
 		"rootDir": "src",
 		"declaration": true,
 		"declarationMap": true,
+		"skipLibCheck": true, // https://stackoverflow.com/questions/61150577/why-is-typescript-giving-duplicate-identifier-error
 		"strict": true, /* enable all strict type-checking options */
 		/* Additional Checks */
 		// "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */

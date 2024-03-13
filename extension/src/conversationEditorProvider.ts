@@ -45,7 +45,9 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
             webviewPanel.webview,
             this.context.extensionUri,
             [
-                "lib/vendor", // node_modules
+                "lib/react",
+                "lib/react-dom",
+                "lib/vendor", // all other node_modules
                 "lib/betonquest",
                 // "lib/bukkit",
                 "lib/i18n",

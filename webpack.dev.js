@@ -6,8 +6,8 @@
 //@ts-check
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
 
-const webpack = require("webpack");
 const { merge } = require("webpack-merge");
+const CopyPlugin = require("copy-webpack-plugin");
 const common = require("./webpack.common.js");
 
 /** @type WebpackConfig */
@@ -46,7 +46,15 @@ const webviewConfig = merge(common[2], {
   devtool: "inline-source-map",
   infrastructureLogging: {
     level: "log", // enables logging required for problem matchers
-  }
+  },
+  plugins: [
+    new CopyPlugin({
+      patterns: [
+        { from: "./node_modules/react/umd/react.development.js", to: "lib/react.js" },
+        { from: "./node_modules/react-dom/umd/react-dom.development.js", to: "lib/react-dom.js" },
+      ],
+    }),
+  ],
 });
 
 /** @type WebpackConfig */

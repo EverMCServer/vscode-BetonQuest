@@ -7,6 +7,7 @@
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
 
 const { merge } = require("webpack-merge");
+const CopyPlugin = require("copy-webpack-plugin");
 const common = require("./webpack.common.js");
 
 /** @type WebpackConfig */
@@ -29,6 +30,14 @@ const webviewConfig = merge(common[2], {
     usedExports: true,
     minimize: true,
   },
+  plugins: [
+    new CopyPlugin({
+      patterns: [
+        { from: "./node_modules/react/umd/react.production.min.js", to: "lib/react.js" },
+        { from: "./node_modules/react-dom/umd/react-dom.production.min.js", to: "lib/react-dom.js" },
+      ],
+    }),
+  ],
 });
 
 /** @type WebpackConfig */
