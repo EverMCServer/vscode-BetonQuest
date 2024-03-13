@@ -284,7 +284,7 @@ const lspServerNodeConfig = {
 	},
 	resolve: {
 		mainFields: ['module', 'main'],
-		extensions: ['.ts', '.js', ".json"], // support ts-files and js-files
+		extensions: ['.ts', '.js', ".tsx", ".jsx", ".json"], // support ts-files and js-files
 		alias: {},
 		fallback: {
 			//path: require.resolve("path-browserify")
@@ -296,7 +296,7 @@ const lspServerNodeConfig = {
 	module: {
 		rules: [
 			{
-				test: /\.ts$/,
+				test: /\.(ts|tsx)$/,
 				exclude: /node_modules/,
 				use: [
 					{
@@ -331,7 +331,7 @@ const lspServerWebConfig = {
 	},
 	resolve: {
 		mainFields: ['module', 'main'],
-		extensions: ['.ts', '.js', ".json"], // support ts-files and js-files
+		extensions: ['.ts', '.js', ".tsx", ".jsx", ".json"], // support ts-files and js-files
 		alias: {},
 		fallback: {
 			//path: require.resolve("path-browserify")
@@ -343,7 +343,7 @@ const lspServerWebConfig = {
 	module: {
 		rules: [
 			{
-				test: /\.ts$/,
+				test: /\.(ts|tsx)$/,
 				exclude: /node_modules/,
 				use: [
 					{
