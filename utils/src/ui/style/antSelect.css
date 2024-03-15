@@ -1,0 +1,68 @@
+/* Override Ant Design's Select styles */
+
+.ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
+    background-color: var(--vscode-input-background);
+    border-color: var(--vscode-checkbox-border);
+}
+
+.ant-select.ant-select-single .ant-select-selector {
+    color: var(--vscode-input-foreground);
+    border-radius: 0;
+}
+
+.ant-select-outlined:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer):hover .ant-select-selector {
+    /* hover color border */
+    border-color: var(--vscode-input-foreground);
+}
+
+.ant-select .ant-select-selector:active,
+.ant-select-focused.ant-select-outlined:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer) .ant-select-selector {
+    /* active / focus border color */
+    border-color: var(--vscode-focusBorder);
+}
+
+.ant-select.ant-select-single.ant-select-open .ant-select-selection-item {
+    color: var(--vscode-input-placeholderForeground);
+}
+
+/* suffix icons */
+
+.ant-select .ant-select-arrow {
+    /* suffix icon "down arrow" / "search" color */
+    color: var(--vscode-input-placeholderForeground);
+}
+
+.ant-select .ant-select-clear {
+    /* "clear" button color */
+    color: var(--vscode-input-placeholderForeground);
+}
+
+.ant-select .ant-select-clear:hover {
+    /* "clear" button color when hover */
+    color: var(--vscode-input-foreground);
+}
+
+/* drop-down box */
+
+.ant-select-dropdown {
+    /* background color of drop-down box */
+    background-color: var(--vscode-input-background);
+    border-radius: 0;
+}
+
+.ant-select-dropdown .ant-select-item {
+    color: var(--vscode-input-foreground);
+}
+
+.ant-select-dropdown .ant-select-item:hover {
+    /* background color of hover item */
+    background-color: var(--vscode-list-hoverBackground);
+}
+
+.ant-select-dropdown .ant-select-item:active,
+.ant-select-dropdown .ant-select-item.ant-select-item-option-selected {
+    /* text color of selected item */
+    color: var(--vscode-input-foreground);
+    /* background color of active item = optionSelectedBg */
+    background-color: var(--vscode-list-activeSelectionBackground);
+}

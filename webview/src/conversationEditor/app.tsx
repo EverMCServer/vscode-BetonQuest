@@ -10,6 +10,8 @@ import ConversationEditor from "./components/ConversationEditor";
 import YamlErrorPage from "../components/YamlErrorPage";
 import { YamlPathPointer } from "betonquest-utils/yaml/yamlPathPointer";
 
+import 'betonquest-utils/ui/style/ant';
+
 // Global variables from vscode
 declare global {
     namespace conversationEditor {

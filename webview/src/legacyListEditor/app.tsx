@@ -135,46 +135,50 @@ export default function app<T extends ListElement>(props: ListEditorProps<T>) {
                         },
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         Select: {
-                            // selectorBg: 'var(--vscode-input-background)', // = colorBgContainer
-                            // optionSelectedBg: 'var(--vscode-list-activeSelectionBackground)', // = controlItemBgActive
-                            optionSelectedColor: 'var(--vscode-list-activeSelectionForeground)', // text color of selected item
-                            // optionActiveBg: 'var(--vscode-list-hoverBackground)', // = controlItemBgHover
-                            multipleItemBg: 'var(--vscode-badge-background)', // multiple selected item's background
+                            // See "utils/ui/style/antSelect.css"
 
-                            // global
-                            colorBgContainer: 'var(--vscode-input-background)', // background color of input box
-                            colorBgContainerDisabled: 'var(--vscode-input-background)', // background color of input box when disabled
-                            colorBgElevated: 'var(--vscode-input-background)', // background color of drop-down box
-                            controlItemBgActive: 'var(--vscode-list-activeSelectionBackground)', // background color of active item = optionSelectedBg
-                            controlItemBgHover: 'var(--vscode-list-hoverBackground)', // background color of hover item
-                            colorText: 'var(--vscode-input-foreground)',
-                            colorTextPlaceholder: 'var(--vscode-input-placeholderForeground)',
-                            colorTextQuaternary: 'var(--vscode-input-placeholderForeground)', // suffix icon "down arrow" color
-                            colorIcon: 'var(--vscode-input-placeholderForeground)', // "clear" button color
-                            colorIconHover: 'var(--vscode-list-hoverForeground)', // "clear" button color when hover
-                            colorBorder: 'var(--vscode-checkbox-border)', // border color
-                            colorPrimary: 'var(--vscode-focusBorder)', // active / focus border color
-                            colorPrimaryHover: 'var(--vscode-input-foreground)', // hover color border
-                            borderRadius: 0,
-                            borderRadiusLG: 0,
-                            borderRadiusSM: 0,
-                            borderRadiusXS: 0,
+                            // // selectorBg: 'var(--vscode-input-background)', // = colorBgContainer
+                            // // optionSelectedBg: 'var(--vscode-list-activeSelectionBackground)', // = controlItemBgActive
+                            // optionSelectedColor: 'var(--vscode-list-activeSelectionForeground)', // text color of selected item
+                            // // optionActiveBg: 'var(--vscode-list-hoverBackground)', // = controlItemBgHover
+                            // multipleItemBg: 'var(--vscode-badge-background)', // multiple selected item's background
+
+                            // // global
+                            // colorBgContainer: 'var(--vscode-input-background)', // background color of input box
+                            // colorBgContainerDisabled: 'var(--vscode-input-background)', // background color of input box when disabled
+                            // colorBgElevated: 'var(--vscode-input-background)', // background color of drop-down box
+                            // controlItemBgActive: 'var(--vscode-list-activeSelectionBackground)', // background color of active item = optionSelectedBg
+                            // controlItemBgHover: 'var(--vscode-list-hoverBackground)', // background color of hover item
+                            // colorText: 'var(--vscode-input-foreground)',
+                            // colorTextPlaceholder: 'var(--vscode-input-placeholderForeground)',
+                            // colorTextQuaternary: 'var(--vscode-input-placeholderForeground)', // suffix icon "down arrow" color
+                            // colorIcon: 'var(--vscode-input-placeholderForeground)', // "clear" button color
+                            // colorIconHover: 'var(--vscode-list-hoverForeground)', // "clear" button color when hover
+                            // colorBorder: 'var(--vscode-checkbox-border)', // border color
+                            // colorPrimary: 'var(--vscode-focusBorder)', // active / focus border color
+                            // colorPrimaryHover: 'var(--vscode-input-foreground)', // hover color border
+                            // borderRadius: 0,
+                            // borderRadiusLG: 0,
+                            // borderRadiusSM: 0,
+                            // borderRadiusXS: 0,
                         },
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         Input: {
-                            activeBorderColor: 'var(--vscode-focusBorder)',
-                            hoverBorderColor: 'var(--vscode-input-foreground)',
+                            // See "utils/ui/style/antButton.css"
 
-                            // global
-                            colorText: 'var(--vscode-input-foreground)',
-                            colorTextPlaceholder: 'var(--vscode-input-placeholderForeground)',
-                            colorTextQuaternary: 'var(--vscode-input-placeholderForeground)', // suffix icon color
-                            colorTextTertiary: 'var(--vscode-input-foreground)', // suffix icon color when hover
-                            colorBgContainer: 'var(--vscode-input-background)',
-                            colorBorder: 'var(--vscode-checkbox-border)',
-                            borderRadius: 0,
-                            borderRadiusLG: 0,
-                            borderRadiusSM: 0,
+                            // activeBorderColor: 'var(--vscode-focusBorder)',
+                            // hoverBorderColor: 'var(--vscode-input-foreground)',
+
+                            // // global
+                            // colorText: 'var(--vscode-input-foreground)',
+                            // colorTextPlaceholder: 'var(--vscode-input-placeholderForeground)',
+                            // colorTextQuaternary: 'var(--vscode-input-placeholderForeground)', // suffix icon color
+                            // colorTextTertiary: 'var(--vscode-input-foreground)', // suffix icon color when hover
+                            // colorBgContainer: 'var(--vscode-input-background)',
+                            // colorBorder: 'var(--vscode-checkbox-border)',
+                            // borderRadius: 0,
+                            // borderRadiusLG: 0,
+                            // borderRadiusSM: 0,
                         },
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         Button: {

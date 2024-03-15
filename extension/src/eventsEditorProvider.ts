@@ -47,15 +47,19 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
             [
                 "lib/react",
                 "lib/react-dom",
-                "lib/vendor", // all other node_modules
-                "lib/betonquest",
-                "lib/bukkit",
-                "lib/i18n",
-                "lib/yaml",
-                // "view/components",
-                "view/style",
-
-                "view/legacyListEditor",
+                "lib/vendor", // All other node_modules
+                "utils/betonquest", // BQ YAML models
+                "utils/betonquest_v1", // Element Lists for BQ v1
+                // "utils/betonquest_v2", // Element Lists for BQ v2
+                "utils/bukkit", // Bukkit API, Entity list etc
+                "utils/i18n", // Translations
+                "utils/ui_input", // UI components for Element List editing
+                "utils/ui_style", // Style overrides for Ant Design components
+                "utils/yaml", // YAML utilities
+                // "view/components", // Layout components for conversation eiting, includes Drawer, Sider etc
+                "view/legacyListEditor", // Legacy Element List editor
+                // "view/conversationEditor", // Conversation editor
+                // "view/packageEditor", // Package editor
             ],
         );
 

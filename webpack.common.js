@@ -144,41 +144,79 @@ const webviewConfig = {
         //     return false;
         //   },
         // },
-        betonquest: {
-          test: /[\\/]utils[\\/]src[\\/]betonquest[\\/]/,
-          name: "lib/betonquest",
+        // All other BQ YAML models
+        utilsBetonquest: {
+          test: /[\\/]utils[\\/]src[\\/]betonquest[\\/](?!v\d)/,
+          name: "utils/betonquest",
           chunks: "all",
         },
-        bukkit: {
+        // Element Lists for BQ v1
+        utilsBetonquest_v1: {
+          test: /[\\/]utils[\\/]src[\\/]betonquest[\\/]v1[\\/]/,
+          name: "utils/betonquest_v1",
+          chunks: "all",
+        },
+        // Element Lists for BQ v2
+        utilsBetonquest_v2: {
+          test: /[\\/]utils[\\/]src[\\/]betonquest[\\/]v2[\\/]/,
+          name: "utils/betonquest_v2",
+          chunks: "all",
+        },
+        // Bukkit API, Entity list etc
+        utilsBukkit: {
           test: /[\\/]utils[\\/]src[\\/]bukkit[\\/]/,
-          name: "lib/bukkit",
+          name: "utils/bukkit",
           chunks: "all",
         },
-        i18n: {
+        // Translations
+        utilsI18n: {
           test: /[\\/]utils[\\/]src[\\/]i18n[\\/]/,
-          name: "lib/i18n",
+          name: "utils/i18n",
           chunks: "all",
         },
-        yaml: {
+        // UI components for Element List editing
+        utilsUiInput: {
+          test: /[\\/]utils[\\/]src[\\/]ui[\\/]Input[\\/]/,
+          name: "utils/ui_input",
+          chunks: "all",
+        },
+        // Style overrides for Ant Design components
+        utilsUiStyle: {
+          test: /[\\/]utils[\\/]src[\\/]ui[\\/]style[\\/]/,
+          name: "utils/ui_style",
+          chunks: "all",
+        },
+        // YAML utilities
+        utilsYaml: {
           test: /[\\/]utils[\\/]src[\\/]yaml[\\/]/,
-          name: "lib/yaml",
+          name: "utils/yaml",
           chunks: "all",
         },
+        // Layout components for conversation eiting, includes Drawer, Sider etc
         viewComponents: {
           test: /[\\/]webview[\\/]src[\\/]components[\\/]/,
           name: "view/components",
           chunks: "all",
         },
-        viewStyle: {
-          test: /[\\/]webview[\\/]src[\\/]style[\\/]/,
-          name: "view/style",
-          chunks: "all",
-        },
+        // Legacy Element List editor
         viewLegacyListEditor: {
-          test: /[\\/]webview[\\/]src[\\/]legacyListEditor[\\/]/,
+          test: /[\\/]webview[\\/]src[\\/](?:legacyList|conditions|events|objectives)Editor[\\/]/,
           name: "view/legacyListEditor",
           chunks: "all",
         },
+        // Conversation editor
+        viewConversationEditor: {
+          test: /[\\/]webview[\\/]src[\\/]conversationEditor[\\/]/,
+          name: "view/conversationEditor",
+          chunks: "all",
+        },
+        // Package editor
+        viewPackageEditor: {
+          test: /[\\/]webview[\\/]src[\\/]packageEditor[\\/]/,
+          name: "view/packageEditor",
+          chunks: "all",
+        },
+        // all other node_modules
         vendor: {
           test: /[\\/]node_modules[\\/]/,
           name: "lib/vendor",
@@ -269,99 +307,99 @@ const webviewConfig = {
 
 /** @type WebpackConfig */
 const lspServerNodeConfig = {
-	context: path.join(__dirname, 'server'),
-	mode: 'none',
-	target: 'node', // VS Code extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
-	entry: './src/server.node.ts',
-	output: {
-		filename: 'server.node.js',
-		path: path.join(__dirname, "server", "dist"),
-		library: {
+  context: path.join(__dirname, 'server'),
+  mode: 'none',
+  target: 'node', // VS Code extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
+  entry: './src/server.node.ts',
+  output: {
+    filename: 'server.node.js',
+    path: path.join(__dirname, "server", "dist"),
+    library: {
       name: 'betonquest_server',
       type: "var"
       // type: "commonjs2"
     },
-	},
-	resolve: {
-		mainFields: ['module', 'main'],
-		extensions: ['.ts', '.js', ".tsx", ".jsx", ".json"], // support ts-files and js-files
-		alias: {},
-		fallback: {
-			//path: require.resolve("path-browserify")
-		},
+  },
+  resolve: {
+    mainFields: ['module', 'main'],
+    extensions: ['.ts', '.js', ".tsx", ".jsx", ".json"], // support ts-files and js-files
+    alias: {},
+    fallback: {
+      //path: require.resolve("path-browserify")
+    },
     plugins: [new TsconfigPathsPlugin({
       configFile: path.join(__dirname, "server", "tsconfig.json"),
     })]
-	},
-	module: {
-		rules: [
-			{
-				test: /\.(ts|tsx)$/,
-				exclude: /node_modules/,
-				use: [
-					{
-						loader: 'ts-loader',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(ts|tsx)$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'ts-loader',
             options: {
               projectReferences: true
             }
-					},
-				],
-			},
-		],
-	},
-	externals: {
-		vscode: 'commonjs vscode', // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
+          },
+        ],
+      },
+    ],
+  },
+  externals: {
+    vscode: 'commonjs vscode', // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
     // modules added here also need to be added in the .vscodeignore file
-	},
+  },
 };
 
 /** @type WebpackConfig */
 const lspServerWebConfig = {
-	context: path.join(__dirname, 'server'),
-	mode: 'none',
-	target: 'webworker', // web extensions run in a webworker context
-	entry: './src/server.web.ts',
-	output: {
-		filename: 'server.web.js',
-		path: path.join(__dirname, "server", "dist"),
-		library: {
+  context: path.join(__dirname, 'server'),
+  mode: 'none',
+  target: 'webworker', // web extensions run in a webworker context
+  entry: './src/server.web.ts',
+  output: {
+    filename: 'server.web.js',
+    path: path.join(__dirname, "server", "dist"),
+    library: {
       name: 'betonquest_server',
       type: 'var'
     },
-	},
-	resolve: {
-		mainFields: ['module', 'main'],
-		extensions: ['.ts', '.js', ".tsx", ".jsx", ".json"], // support ts-files and js-files
-		alias: {},
-		fallback: {
-			//path: require.resolve("path-browserify")
-		},
+  },
+  resolve: {
+    mainFields: ['module', 'main'],
+    extensions: ['.ts', '.js', ".tsx", ".jsx", ".json"], // support ts-files and js-files
+    alias: {},
+    fallback: {
+      //path: require.resolve("path-browserify")
+    },
     plugins: [new TsconfigPathsPlugin({
       configFile: path.join(__dirname, "server", "tsconfig.json"),
     })]
-	},
-	module: {
-		rules: [
-			{
-				test: /\.(ts|tsx)$/,
-				exclude: /node_modules/,
-				use: [
-					{
-						loader: 'ts-loader',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(ts|tsx)$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'ts-loader',
             options: {
               projectReferences: true
             }
-					},
-				],
-			},
-		],
-	},
-	externals: {
-		vscode: 'commonjs vscode', // ignored because it doesn't exist
-	},
-	performance: {
-		hints: false,
-	},
+          },
+        ],
+      },
+    ],
+  },
+  externals: {
+    vscode: 'commonjs vscode', // ignored because it doesn't exist
+  },
+  performance: {
+    hints: false,
+  },
 };
 
 module.exports = [extensionConfig, webExtensionConfig, webviewConfig, lspServerNodeConfig, lspServerWebConfig];

@@ -84,7 +84,7 @@ export default function (props: InputProps) {
 
     return (
         <>
-            <span>{L("betonquest.*.input.blockSelector.namespace")}</span>
+            <div>{L("betonquest.*.input.blockSelector.namespace")}</div>
             <Input
                 value={namespace}
                 defaultValue={"minecraft"}
@@ -100,8 +100,7 @@ export default function (props: InputProps) {
                 }}
                 size="small"
             />
-            <Divider />
-            <span>{L("betonquest.*.input.blockSelector.tag")}</span>
+            <div style={{marginTop: 8}}>{L("betonquest.*.input.blockSelector.tag")}</div>
             <Input
                 value={tag}
                 defaultValue={""}
@@ -117,8 +116,7 @@ export default function (props: InputProps) {
                 }}
                 size="small"
             />
-            <Divider />
-            <span><sup>*</sup>{L("betonquest.*.input.blockSelector.id")}</span>
+            <div style={{marginTop: 8}}><sup>*</sup>{L("betonquest.*.input.blockSelector.id")}</div>
             <Select
                 value={blockId}
                 // defaultValue={props.value}
@@ -169,8 +167,7 @@ export default function (props: InputProps) {
                 size="small"
                 style={{ width: '100%' }}
             />
-            <Divider />
-            <div>{L("betonquest.*.input.blockSelector.states")}</div>
+            <div style={{marginTop: 8}}>{L("betonquest.*.input.blockSelector.states")}</div>
             {/* <Space direction="vertical"> */}
             {state.map(([key, value], index) =>
                 <Space.Compact block key={index} style={{ width: '100%' }}>
