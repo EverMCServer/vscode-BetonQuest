@@ -1,4 +1,4 @@
-import { Connection, DidChangeConfigurationNotification, InitializeParams, InitializeResult, ResponseError, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
+import { CodeAction, CodeActionKind, Command, Connection, DidChangeConfigurationNotification, HandlerResult, InitializeParams, InitializeResult, ResponseError, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { syncWorkspaces } from './init/workspace';
 
@@ -38,6 +38,8 @@ export function server(connection: Connection): void {
         // completionProvider: {
         //   resolveProvider: true
         // }
+        // Tell the client that this server supports code actions.
+        codeActionProvider: true
       }
     };
     if (hasWorkspaceFolderCapability) {
@@ -96,6 +98,40 @@ export function server(connection: Connection): void {
     // TODO: update the AST
 
     connection.sendNotification("custom/filetree", e.document.uri);
+  });
+
+  // Listen to actions, e.g. quick fixes
+  connection.onCodeAction(params => {
+    const diagnostic = params.context.diagnostics[0];
+    let a: HandlerResult<(Command | CodeAction)[] | null | undefined, void> = [];
+    if (diagnostic.code === "BQ-001") {
+      a.push(
+        {
+          title: "My Quick Fix",
+          kind: CodeActionKind.QuickFix,
+          diagnostics: [diagnostic],
+          // The edits this action performs.
+          edit: {
+            documentChanges: [
+              {
+                textDocument: {
+                  ...params.textDocument,
+                  version: 1
+                },
+                // The range this change applies to.
+                edits: [
+                  {
+                    range: diagnostic.range,
+                    newText: "aaa"
+                  }
+                ]
+              }
+            ]
+          },
+        }
+      );
+    }
+    return a;
   });
 
   // Make the text document manager listen on the connection

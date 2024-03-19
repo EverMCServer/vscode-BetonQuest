@@ -1,5 +1,8 @@
-import { Connection, ResponseError, WorkspaceFolder } from "vscode-languageserver";
+import { Connection, DiagnosticSeverity, ResponseError, WorkspaceFolder } from "vscode-languageserver";
+import { TextDocument } from "vscode-languageserver-textdocument";
+
 import { FileTreeParams, FilesResponse } from "betonquest-utils/lsp/file";
+
 import { AST } from "../ast/ast";
 
 export function syncWorkspaces(connection: Connection, workspaceFolders: WorkspaceFolder[] | null | undefined) {
@@ -21,6 +24,22 @@ export function syncWorkspaces(connection: Connection, workspaceFolders: Workspa
       // });
       const ast = new AST(files);
       console.log("AST created:", ast);
+
+      // DEBUG: Test diagnostics
+      const doc = TextDocument.create(files[0][0], 'yaml', 1, files[0][1]);
+      connection.sendDiagnostics({
+        uri: files[0][0],
+        diagnostics: [{
+          code: "BQ-001",
+          severity: DiagnosticSeverity.Error,
+          range: {
+            start: doc.positionAt(1),
+            end: doc.positionAt(2)
+          },
+          message: `Dummy error.`,
+          source: 'BetonQuest'
+        }]
+      });
 
       // connection.sendRequest<string>('custom/file', workspaceFolders![0].uri + "/config.yml").then(
       //   content => {
