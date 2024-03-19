@@ -1,4 +1,5 @@
 import { Pair, Scalar } from "yaml";
+
 import { EventEntryType, Node } from "../../node";
 import { EventKind } from "./EventKind";
 import { EventKey } from "./EventKey";
@@ -29,18 +30,21 @@ export class EventEntry implements Node<EventEntryType> {
     this.eventKey = new EventKey(pair.key, this);
 
     // Parse value
-    const argStrs = pair.value?.value.split(" ", 2);
-    if (argStrs && argStrs.length > 0) {
+    const pos = pair.value?.value.indexOf(" ") ?? -1;
+    const kindStr = pair.value?.value.slice(0, pos);
+    const optionsStr = pair.value?.value.slice(pos + 1, pair.value?.value.length);
+    if (kindStr) {
+
       // Parse Kind
       const offsetKindStart = pair.value?.range?.[0];
-      const offsetKindEnd = offsetKindStart ? offsetKindStart + argStrs[0].length : undefined;
-      this.eventKind = new EventKind(argStrs[0], [offsetKindStart, offsetKindEnd], this);
-
+      const offsetKindEnd = offsetKindStart ? offsetKindStart + kindStr.length : undefined;
+      this.eventKind = new EventKind(kindStr, [offsetKindStart, offsetKindEnd], this);
+    
       // Parse Options
-      if (argStrs.length > 1) {
+      if (optionsStr) {
         const offsetOptionsStart = offsetKindEnd ? offsetKindEnd + 1 : undefined;
         const offsetOptionsEnd = this.offsetEnd;
-        this.eventOptions = new EventOptions(argStrs[1], [offsetOptionsStart, offsetOptionsEnd], this);
+        this.eventOptions = new EventOptions(optionsStr, [offsetOptionsStart, offsetOptionsEnd], kindStr, this);
       }
     }
 
