@@ -32,7 +32,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
     // }, [props.listElement]);
 
     // Arguments should be parsed everytime. Do NOT cache it.
-    const args = props.listElement.getArguments(props.argumentsPattern);
+    const args = props.listElement.getArguments(props.argumentsPatterns);
 
     // Auto re-arange cells
     const parentRef = useRef<HTMLDivElement>(null);
@@ -63,12 +63,12 @@ export default function (props: ListElementEditorBodyProps<Event>) {
     const [variableEnabled, setVariableEnabled] = useState<Map<number | string, boolean>>(new Map());
     useEffect(() => {
         const map = new Map<number | string, boolean>();
-        for (let i = 0; i < props.argumentsPattern.mandatory.length; i++) {
+        for (let i = 0; i < props.argumentsPatterns.mandatory.length; i++) {
             map.set(i, args.getMandatoryArgument(i).getType() === 'variable');
         }
-        if (props.argumentsPattern.optional) {
-            for (let i = 0; i < props.argumentsPattern.optional.length; i++) {
-                const key = props.argumentsPattern.optional[i].key;
+        if (props.argumentsPatterns.optional) {
+            for (let i = 0; i < props.argumentsPatterns.optional.length; i++) {
+                const key = props.argumentsPatterns.optional[i].key;
                 map.set(key, args.getOptionalArgument(key)?.getType() === 'variable');
             }
         }
@@ -77,12 +77,12 @@ export default function (props: ListElementEditorBodyProps<Event>) {
 
     return (
         <div ref={parentRef}>
-            {(props.argumentsPattern.mandatory.length > 0 && props.argumentsPattern.optional) &&
+            {(props.argumentsPatterns.mandatory.length > 0 && props.argumentsPatterns.optional) &&
                 <Divider orientation="center" plain>
                     <u>{L("*.commonList.editor.default.mandatoryArguments")}</u>
                 </Divider>
             }
-            {props.argumentsPattern.mandatory.map((pat, index) => {
+            {props.argumentsPatterns.mandatory.map((pat, index) => {
                 const arg = args.getMandatoryArgument(index);
                 const argValue = arg.getValue();
                 return (
@@ -103,7 +103,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                     onClick={() => {
                                         if (variableEnabled.get(index)) {
                                             variableEnabled.set(index, false);
-                                            args.setMandatoryArgument(index, props.argumentsPattern.mandatory[index].defaultValue);
+                                            args.setMandatoryArgument(index, props.argumentsPatterns.mandatory[index].defaultValue);
                                         } else {
                                             variableEnabled.set(index, true);
                                             args.setMandatoryArgument(index, "%%");
@@ -145,12 +145,12 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                     </Row>
                 );
             })}
-            {props.argumentsPattern.optional &&
+            {props.argumentsPatterns.optional &&
                 <>
                     <Divider orientation="center" plain>
                         <u>{L("*.commonList.editor.default.optionalArguments")}</u>
                     </Divider>
-                    {props.argumentsPattern.optional?.map((pat, index) => {
+                    {props.argumentsPatterns.optional?.map((pat, index) => {
                         const arg = args.getOptionalArgument(pat.key);
                         const argValue = arg?.getValue();
                         return (

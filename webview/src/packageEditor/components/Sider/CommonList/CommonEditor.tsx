@@ -15,7 +15,7 @@ export interface ListElementEditorProps<T extends ListElement> extends BaseListP
 }
 
 export interface ListElementEditorBodyProps<T extends ListElement> extends ListElementEditorProps<T> {
-    argumentsPattern: ArgumentsPatterns,
+    argumentsPatterns: ArgumentsPatterns,
 }
 
 export type Kind<T extends ListElement> = ElementKind<T> & {
@@ -90,9 +90,9 @@ export default function <T extends ListElement>(props: CommonEditorProps<T>) {
         return (<>
             {k?.description && <div style={{ padding: "0 8px 8px 8px" }} dangerouslySetInnerHTML={{ __html: k.description}} />}
             {k && (k.editorBody &&
-                <k.editorBody {...props} argumentsPattern={k.argumentsPattern} />
+                <k.editorBody {...props} argumentsPatterns={k.argumentsPatterns} />
                 ||
-                <props.defaultEditorBody {...props} argumentsPattern={k.argumentsPattern}></props.defaultEditorBody>)
+                <props.defaultEditorBody {...props} argumentsPatterns={k.argumentsPatterns}></props.defaultEditorBody>)
             }
         </>);
     };

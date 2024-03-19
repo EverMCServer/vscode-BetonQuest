@@ -29,7 +29,7 @@ export const kinds: ElementKind<Event>[] = [
         value: '*',
         display: L("betonquest.v1.event.*.display"),
         description: undefined,
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: TextArea, name: L("betonquest.v1.event.*.mandatory.value.name"), type: '*', defaultValue: '' },
             ],
@@ -41,7 +41,7 @@ export const kinds: ElementKind<Event>[] = [
         value: 'cancel',
         display: L("betonquest.v1.event.cancel.display"),
         description: L("betonquest.v1.event.cancel.description"),
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: Input, name: L("betonquest.v1.event.cancel.mandatory.canceler.name"), type: 'string', defaultValue: 'a_canceler_name_1', tooltip: L("betonquest.v1.event.cancel.mandatory.canceler.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
@@ -52,7 +52,7 @@ export const kinds: ElementKind<Event>[] = [
         value: 'chat',
         display: L("betonquest.v1.event.chat.display"),
         description: L("betonquest.v1.event.chat.description"),
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: TextAreaList, name: L("betonquest.v1.event.chat.mandatory.messages.name"), type: 'string[|]', defaultValue: [''] },
             ],
@@ -65,7 +65,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.chestclear.display"),
         description: L("betonquest.v1.event.chestclear.description"),
         // e.g. chestclear 100;200;300;world
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: BaseLocation, name: L("betonquest.v1.event.chestclear.mandatory.location.name"), type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
             ]
@@ -77,7 +77,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.chestgive.display"),
         description: L("betonquest.v1.event.chestgive.description"),
         // e.g. chestgive 100;200;300;world emerald:5,sword
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: BaseLocation, name: L("betonquest.v1.event.chestgive.mandatory.location.name"), type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
                 { jsx: ItemList, name: L("betonquest.v1.event.chestgive.mandatory.itemList.name"), type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
@@ -90,7 +90,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.chesttake.display"),
         description: L("betonquest.v1.event.chesttake.description"),
         // e.g. chesttake 100;200;300;world emerald:5,sword
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: BaseLocation, name: L("betonquest.v1.event.chesttake.mandatory.location.name"), type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
                 { jsx: ItemList, name: L("betonquest.v1.event.chesttake.mandatory.itemList.name"), type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
@@ -103,7 +103,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.clear.display"),
         description: L("betonquest.v1.event.clear.description"),
         // e.g. clear ZOMBIE,CREEPER 100;200;300;world 10 name:Monster
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: EntityTypeList, name: L("betonquest.v1.event.clear.mandatory.entityType.name"), type: 'string[,]', defaultValue: ['ZOMBIE'], placeholder: 'e.g. ZOMBIE' },
                 { jsx: BaseLocation, name: L("betonquest.v1.event.clear.mandatory.location.name"), type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
@@ -122,7 +122,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.compass.display"),
         description: L("betonquest.v1.event.compass.description"),
         // e.g. compass add beton
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 {
                     jsx: Select, name: L("betonquest.v1.event.compass.mandatory.action.name"), type: 'string', defaultValue: 'add', placeholder: 'e.g. add', config: {
@@ -152,7 +152,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.command.display"),
         description: L("betonquest.v1.event.command.description"),
         // e.g. command kill %player%|ban %player%
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: TextAreaList, name: L("betonquest.v1.event.command.mandatory.commands.name"), type: 'string[|]', defaultValue: [''], placeholder: 'e.g. kill %player%', tooltip: L("betonquest.v1.event.command.mandatory.commands.tooltip") },
             ],
@@ -165,7 +165,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.conversation.display"),
         description: L("betonquest.v1.event.conversation.description"),
         // e.g. conversation village_smith
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: Input, name: L("betonquest.v1.event.conversation.mandatory.conversationName.name"), type: 'string', defaultValue: 'a_conversation_id_1', placeholder: 'e.g. village_smith', tooltip: L("betonquest.v1.event.conversation.mandatory.conversationName.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
@@ -177,7 +177,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.damage.display"),
         description: L("betonquest.v1.event.damage.description"),
         // e.g. damage 20
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: Number, name: L("betonquest.v1.event.damage.mandatory.amount.name"), type: 'float', defaultValue: 0, tooltip: L("betonquest.v1.event.damage.mandatory.amount.tooltip"), allowVariable: true },
             ]
@@ -189,7 +189,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.deletepoint.display"),
         description: L("betonquest.v1.event.deletepoint.description"),
         // e.g. deletepoint npc_attitude
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: Input, name: L("betonquest.v1.event.deletepoint.mandatory.pointCategory.name"), type: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. npc_attitude', tooltip: L("betonquest.v1.event.deletepoint.mandatory.pointCategory.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
@@ -201,7 +201,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.door.display"),
         description: L("betonquest.v1.event.door.description"),
         // e.g. door 100;200;300;world off
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: BaseLocation, name: L("betonquest.v1.event.door.mandatory.location.name"), type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
                 {
@@ -231,7 +231,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.deleffect.display"),
         description: L("betonquest.v1.event.deleffect.description"),
         // e.g. deleffect ABSORPTION,BLINDNESS
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: PotionEffectTypeList, name: L("betonquest.v1.event.deleffect.mandatory.effects.name"), type: 'string[,]', placeholder: 'any', defaultValue: ['any'], tooltip: L("betonquest.v1.event.deleffect.mandatory.effects.tooltip") },
             ]
@@ -243,7 +243,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.effect.display"),
         description: L("betonquest.v1.event.effect.description"),
         // e.g. effect BLINDNESS 30 1 ambient icon
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: PotionEffectType, name: L("betonquest.v1.event.effect.mandatory.effect.name"), type: 'string[,]', defaultValue: ['SPEED'], tooltip: L("betonquest.v1.event.effect.mandatory.effect.tooltip") },
                 { jsx: Number, name: L("betonquest.v1.event.effect.mandatory.duration.name"), type: 'float', defaultValue: 0.0, tooltip: L("betonquest.v1.event.effect.mandatory.duration.tooltip"), config: { min: 0 }, allowVariable: true },
@@ -262,7 +262,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.explosion.display"),
         description: L("betonquest.v1.event.explosion.description"),
         // e.g. explosion 0 1 4 100;64;-100;survival
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 {
                     jsx: Select, name: L("betonquest.v1.event.explosion.mandatory.withFire.name"), type: 'string', defaultValue: '0', placeholder: 'e.g. 0', config: {
@@ -305,7 +305,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.folder.display"),
         description: L("betonquest.v1.event.folder.description"),
         // e.g. folder event1,event2,event3 delay:5 period:1
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: InputList, name: L("betonquest.v1.event.folder.mandatory.eventNames.name"), type: 'string[,]', defaultValue: ['an_event_1'], placeholder: 'e.g. event1', tooltip: L("betonquest.v1.event.folder.mandatory.eventNames.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ],
@@ -340,7 +340,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.give.display"),
         description: L("betonquest.v1.event.give.description"),
         // e.g. emerald:5,emerald_block:9,important_sign notify
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: ItemList, name: L("betonquest.v1.event.give.mandatory.itemList.name"), type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
             ],
@@ -355,7 +355,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.givejournal.display"),
         description: L("betonquest.v1.event.givejournal.description"),
         // e.g. givejournal
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: []
         }
     },
@@ -365,7 +365,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.globalpoint.display"),
         description: L("betonquest.v1.event.globalpoint.description"),
         // e.g. global_knownusers 1
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: Input, name: L("betonquest.v1.event.globalpoint.mandatory.pointCategory.name"), type: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. bonus', tooltip: L("betonquest.v1.event.globalpoint.mandatory.pointCategory.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                 // TODO: custom standalone editor
@@ -382,7 +382,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.globaltag.display"),
         description: L("betonquest.v1.event.globaltag.description"),
         // e.g. globaltag add global_areNPCsAgressive
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 {
                     jsx: Select, name: L("betonquest.v1.event.globaltag.mandatory.action.name"), type: 'string', defaultValue: 'add', placeholder: 'e.g. add', config: {
@@ -408,7 +408,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.if.display"),
         description: L("betonquest.v1.event.if.description"),
         // e.g. if sun rain else sun
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: Input, name: L("betonquest.v1.event.if.mandatory.conditionName.name"), type: 'string', defaultValue: 'a_positve_condition_1', config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Input, name: L("betonquest.v1.event.if.mandatory.positiveEventName.name"), type: 'string', defaultValue: 'a_positive_event_1', config: { allowedPatterns: [/^\S*$/] } },
@@ -423,7 +423,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.journal.display"),
         description: L("betonquest.v1.event.journal.description"),
         // e.g. journal delete quest_available
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 {
                     jsx: Select, name: L("betonquest.v1.event.journal.mandatory.action.name"), type: 'string', defaultValue: 'add', placeholder: 'e.g. add', config: {
@@ -454,7 +454,7 @@ export const kinds: ElementKind<Event>[] = [
         value: 'kill',
         display: L("betonquest.v1.event.kill.display"),
         description: L("betonquest.v1.event.kill.description"),
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: []
         }
     },
@@ -465,7 +465,7 @@ export const kinds: ElementKind<Event>[] = [
         description: L("betonquest.v1.event.killmob.description"),
         // editorBody: KillMob,
         // e.g. killmob ZOMBIE 100;200;300;world 40 name:Bolec marked:quest_mob
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: EntityType, name: L("betonquest.v1.event.killmob.mandatory.entityType.name"), type: 'string', defaultValue: 'ZOMBIE', placeholder: 'e.g. ZOMBIE' },
                 { jsx: BaseLocation, name: L("betonquest.v1.event.killmob.mandatory.location.name"), type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
@@ -483,7 +483,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.language.display"),
         description: L("betonquest.v1.event.language.description"),
         // e.g. language en
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: Input, name: L("betonquest.v1.event.language.mandatory.languageID.name"), type: 'string', defaultValue: 'en', placeholder: 'e.g. en', config: { allowedPatterns: [/^[a-zA-Z_-]*$/] } },
             ]
@@ -495,7 +495,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.lever.display"),
         description: L("betonquest.v1.event.lever.description"),
         // e.g. lever 100;200;300;world toggle
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: BaseLocation, name: L("betonquest.v1.event.lever.mandatory.location.name"), type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
                 {
@@ -525,7 +525,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.lightning.display"),
         description: L("betonquest.v1.event.lightning.description"),
         // e.g. lightning 200;65;100;survival
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: BaseLocation, name: L("betonquest.v1.event.lightning.mandatory.location.name"), type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
             ]
@@ -536,7 +536,7 @@ export const kinds: ElementKind<Event>[] = [
         value: 'notify',
         display: L("betonquest.v1.event.notify.display"),
         description: L("betonquest.v1.event.notify.description"),
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: TextArea, name: L("betonquest.v1.event.notify.mandatory.message.name"), type: '*', defaultValue: '', escapeCharacters: [':', '\n'] },
             ],
@@ -553,7 +553,7 @@ export const kinds: ElementKind<Event>[] = [
         value: 'notifyall',
         display: L("betonquest.v1.event.notifyall.display"),
         description: L("betonquest.v1.event.notifyall.description"),
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: TextArea, name: L("betonquest.v1.event.notifyall.mandatory.message.name"), type: '*', defaultValue: '', escapeCharacters: [':', '\n'] },
             ],
@@ -571,7 +571,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.objective.display"),
         description: L("betonquest.v1.event.objective.description"),
         // e.g. objective complete killTheDragon
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 {
                     jsx: Select, name: L("betonquest.v1.event.objective.mandatory.action.name"), type: 'string', defaultValue: 'add', placeholder: 'e.g. add', config: {
@@ -601,7 +601,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.opsudo.display"),
         description: L("betonquest.v1.event.opsudo.description"),
         // e.g. opsudo spawn
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: TextAreaList, name: L("betonquest.v1.event.opsudo.mandatory.commands.name"), type: 'string[|]', defaultValue: [''] },
             ],
@@ -614,7 +614,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.party.display"),
         description: L("betonquest.v1.event.party.description"),
         // e.g. party 10 has_tag1,!has_tag2 give_special_reward
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: Number, name: L("betonquest.v1.event.party.mandatory.distance.name"), type: 'float', defaultValue: 0.0, tooltip: L("betonquest.v1.event.party.mandatory.distance.tooltip"), config: { min: 0 }, allowVariable: true },
                 { jsx: InputList, name: L("betonquest.v1.event.party.mandatory.conditionNames.name"), type: 'string[,]', placeholder: L("(none)"), defaultValue: ['a_condition_1'], tooltip: L("betonquest.v1.event.party.mandatory.conditionNames.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
@@ -630,7 +630,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.pickrandom.display"),
         description: L("betonquest.v1.event.pickrandom.description"),
         // e.g. pickrandom %point.factionXP.amount%%event1,0.5%event2,79%event3,1%event4 amount:3
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: InputList, name: L("betonquest.v1.event.pickrandom.mandatory.conditions.name"), type: 'string[,]', placeholder: 'e.g. 12.3%event1', defaultValue: ['a_condition_1'], tooltip: L("betonquest.v1.event.pickrandom.mandatory.conditions.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ],
@@ -645,7 +645,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.point.display"),
         description: L("betonquest.v1.event.point.description"),
         // e.g. point points 1.25 notify
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: Input, name: L("betonquest.v1.event.point.mandatory.pointCategory.name"), type: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. bonus', tooltip: L("betonquest.v1.event.point.mandatory.pointCategory.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                 // TODO: custom standalone editor
@@ -662,7 +662,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.run.display"),
         description: L("betonquest.v1.event.run.description"),
         // e.g. run ^tag add beton ^give emerald:5 ^entry add beton ^kill
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: TextAreaList, name: L("betonquest.v1.event.run.mandatory.eventInstruction.name"), type: 'string[^]', defaultValue: [''], placeholder: 'e.g. give item:1', tooltip: L("betonquest.v1.event.run.mandatory.eventInstruction.tooltip") },
             ],
@@ -675,7 +675,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.score.display"),
         description: L("betonquest.v1.event.score.description"),
         // e.g. score kill 1.2
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: Input, name: L("betonquest.v1.event.score.mandatory.name.name"), type: 'string', defaultValue: '*', placeholder: 'e.g. Quest_Points', tooltip: L("betonquest.v1.event.score.mandatory.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                 // TODO: custom standalone editor
@@ -689,7 +689,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.setblock.display"),
         description: L("betonquest.v1.event.setblock.description"),
         // e.g. setblock SAND 100;200;300;world ignorePhysics
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: BlockSelector, name: L("betonquest.v1.event.setblock.mandatory.blockSelector.name"), type: 'string', defaultValue: 'AIR', placeholder: 'e.g. AIR', tooltip: L("betonquest.v1.event.setblock.mandatory.blockSelector.tooltip") },
                 { jsx: BaseLocation, name: L("betonquest.v1.event.setblock.mandatory.location.name"), type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
@@ -705,7 +705,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.spawn.display"),
         description: L("betonquest.v1.event.spawn.description"),
         // e.g. spawn 100;200;300;world ZOMBIE name:Bolec 1 h:blue_hat c:red_vest drops:emerald:10,bread:2
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: BaseLocation, name: L("betonquest.v1.event.spawn.mandatory.location.name"), type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
                 { jsx: EntityType, name: L("betonquest.v1.event.spawn.mandatory.entityType.name"), type: 'string', defaultValue: 'ZOMBIE', placeholder: 'e.g. ZOMBIE' },
@@ -730,7 +730,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.sudo.display"),
         description: L("betonquest.v1.event.sudo.description"),
         // e.g. sudo spawn
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: TextAreaList, name: L("betonquest.v1.event.sudo.mandatory.commands.name"), type: 'string[|]', defaultValue: [''] },
             ],
@@ -743,7 +743,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.tag.display"),
         description: L("betonquest.v1.event.tag.description"),
         // e.g. tag add quest_started,new_entry
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 {
                     jsx: Select, name: L("betonquest.v1.event.tag.mandatory.action.name"), type: 'string', defaultValue: 'add', placeholder: 'e.g. add', config: {
@@ -769,7 +769,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.take.display"),
         description: L("betonquest.v1.event.take.description"),
         // e.g. take emerald:120,sword invOrder:Armor,Offhand,Inventory,Backpack
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: ItemList, name: L("betonquest.v1.event.take.mandatory.itemList.name"), type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', 'all'] },
             ],
@@ -788,7 +788,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.time.display"),
         description: L("betonquest.v1.event.time.description"),
         // e.g. time -12 world:rpgworld
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 // {
                 //     jsx: Select, name: 'Action', type: 'string', defaultValue: 'add', placeholder: 'e.g. add', config: {
@@ -818,7 +818,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.teleport.display"),
         description: L("betonquest.v1.event.teleport.description"),
         // e.g. teleport 123;32;-789;world_the_nether;180;45
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: BaseLocation, name: L("betonquest.v1.event.teleport.mandatory.location.name"), type: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
             ]
@@ -830,7 +830,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.variable.display"),
         description: L("betonquest.v1.event.variable.description"),
         // e.g. variable CustomVariable MyFirstVariable Goodbye!
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: Input, name: L("betonquest.v1.event.variable.mandatory.variableObjectiveName.name"), type: 'string', defaultValue: 'a_variable_objective_1', tooltip: L("betonquest.v1.event.variable.mandatory.variableObjectiveName.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                 { jsx: Input, name: L("betonquest.v1.event.variable.mandatory.variableName.name"), type: 'string', defaultValue: 'a_variable_name_1', tooltip: '', config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
@@ -845,7 +845,7 @@ export const kinds: ElementKind<Event>[] = [
         description: L("betonquest.v1.event.weather.description"),
         // e.g. weather rain
         // e.g. weather storm
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 {
                     jsx: Select, name: L("betonquest.v1.event.weather.mandatory.type.name"), type: 'string', defaultValue: 'sun', placeholder: 'e.g. sun', config: {
@@ -874,7 +874,7 @@ export const kinds: ElementKind<Event>[] = [
         display: L("betonquest.v1.event.experience.display"),
         description: L("betonquest.v1.event.experience.description"),
         // e.g. experience -2 action:addLevel
-        argumentsPattern: {
+        argumentsPatterns: {
             mandatory: [
                 { jsx: Number, name: L("betonquest.v1.event.experience.mandatory.amount.name"), type: 'float', defaultValue: 0, tooltip: L("betonquest.v1.event.experience.mandatory.amount.tooltip"), allowVariable: true },
             ],

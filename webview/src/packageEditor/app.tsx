@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useEffect, useState } from "react";
 import { ConfigProvider, Layout } from "antd";
 import { YAMLError } from "yaml";

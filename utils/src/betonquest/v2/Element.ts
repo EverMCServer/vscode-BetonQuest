@@ -6,5 +6,5 @@ export type ElementKind<T extends ListElement> = {
   value: string,
   display: string,
   description: React.ReactNode,
-  argumentsPattern: ArgumentsPatterns
+  argumentsPatterns: ArgumentsPatterns
 };
