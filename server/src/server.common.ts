@@ -39,7 +39,7 @@ export function server(connection: Connection): void {
         //   resolveProvider: true
         // }
         // Tell the client that this server supports code actions.
-        codeActionProvider: true
+        // codeActionProvider: true
       }
     };
     if (hasWorkspaceFolderCapability) {

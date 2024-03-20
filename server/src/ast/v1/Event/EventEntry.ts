@@ -1,3 +1,4 @@
+import { Diagnostic } from "vscode-languageserver";
 import { Pair, Scalar } from "yaml";
 
 import { EventEntryType, Node } from "../../node";
@@ -39,7 +40,7 @@ export class EventEntry implements Node<EventEntryType> {
       const offsetKindStart = pair.value?.range?.[0];
       const offsetKindEnd = offsetKindStart ? offsetKindStart + kindStr.length : undefined;
       this.eventKind = new EventKind(kindStr, [offsetKindStart, offsetKindEnd], this);
-    
+
       // Parse Options
       if (optionsStr) {
         const offsetOptionsStart = offsetKindEnd ? offsetKindEnd + 1 : undefined;
@@ -48,5 +49,19 @@ export class EventEntry implements Node<EventEntryType> {
       }
     }
 
+  }
+
+  getRangeByOffset(offsetStart: number, offsetEnd: number) {
+    return this.parent!.getRangeByOffset(offsetStart, offsetEnd);
+  }
+
+  getDiagnostics() {
+    const diagnostics: Diagnostic[] = [];
+    // TODO: this.key
+    // TODO: this.kind
+    if (this.eventOptions) {
+      diagnostics.push(...this.eventOptions.getDiagnostics());
+    }
+    return diagnostics;
   }
 }

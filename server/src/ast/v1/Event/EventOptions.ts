@@ -1,5 +1,4 @@
-import { DiagnosticSeverity } from "vscode-languageserver";
-import { TextDocument } from "vscode-languageserver-textdocument";
+import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
 import { kinds } from "betonquest-utils/betonquest/v1/Events";
@@ -7,6 +6,9 @@ import { kinds } from "betonquest-utils/betonquest/v1/Events";
 import { EventOptionsType, Node } from "../../node";
 import { EventEntry } from "./EventEntry";
 import { EventOption } from "./EventOption";
+import { EventOptionMandatory } from "./EventOptionMandatory";
+import { EventOptionOptional } from "./EventOptionOptional";
+import { DiagnosticCode } from "../../../utils/diagnostics";
 
 export class EventOptions implements Node<EventOptionsType> {
   type: "EventOptions" = "EventOptions";
@@ -14,6 +16,8 @@ export class EventOptions implements Node<EventOptionsType> {
   offsetStart?: number;
   offsetEnd?: number;
   parent?: EventEntry;
+
+  diagnostics: Diagnostic[] = [];
 
   optionsStrs: string[] = [];
   options: EventOption[] = [];
@@ -201,25 +205,46 @@ export class EventOptions implements Node<EventOptionsType> {
           // }]));
         } else {
           // Append to options
-          this.options.push(new EventOption(optionStr, [offsetStart, offsetEnd], false, pattern, this));
+          this.options.push(new EventOptionMandatory(optionStr, [offsetStart, offsetEnd], pattern, this));
         }
       });
       // Parse mandatory options
       argumentsPatterns.mandatory.forEach((pattern, i) => {
+        // Calculate offset
+        const offsetStart = this.offsetStart ? this.offsetStart + optionStrOffsetCursor : this.offsetStart;
+        optionStrOffsetCursor += mandatoryStrs[i].length;
+        const offsetEnd = this.offsetStart ? this.offsetStart + optionStrOffsetCursor : this.offsetStart;
         if (mandatoryStrs[i]) {
-          // Calculate offset
-          const offsetStart = this.offsetStart ? this.offsetStart + optionStrOffsetCursor : this.offsetStart;
-          optionStrOffsetCursor += mandatoryStrs[i].length;
-          const offsetEnd = this.offsetStart ? this.offsetStart + optionStrOffsetCursor : this.offsetStart;
           // Append to options
-          this.options.push(new EventOption(mandatoryStrs[i], [offsetStart, offsetEnd], true, pattern, this));
+          this.options.push(new EventOptionOptional(mandatoryStrs[i], [offsetStart, offsetEnd], pattern, this));
         } else {
-          // // Missing mandatory options
-          // this.options.push(new EventOption(mandatoryStrs[i], [optionStrOffsetCursor, optionStrOffsetCursor], true, pattern, this));
-          // TODO: add Diagnotistics
-          // ...
+          // Missing mandatory options
+          // Add Diagnotistics
+          const _offsetStart = this.offsetStart ?? 0;
+          const _offsetEnd = this.offsetEnd ?? 0;
+          const diag: Diagnostic = {
+            severity: DiagnosticSeverity.Error,
+            code: DiagnosticCode.MandatoryOptionMissing,
+            message: `Missing mandatory option: ${pattern.name}`,
+            range: this.parent!.getRangeByOffset(_offsetStart, _offsetEnd)
+          };
+          // Create dummy Option
+          this.options.push(new EventOptionOptional(
+            mandatoryStrs[i],
+            [optionStrOffsetCursor,
+              optionStrOffsetCursor],
+            pattern,
+            this,
+            [
+              diag
+            ]
+          ));
         }
       });
     }
+  }
+
+  getDiagnostics(): Diagnostic[] {
+    return this.diagnostics;
   }
 }

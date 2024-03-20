@@ -16,7 +16,7 @@ export class EventOption implements Node<EventOptionType> {
 
   constructor(optionStr: string,
     range: [number?, number?],
-    isMandatory: boolean,
+    // isMandatory: boolean,
     pattern: ArgumentsPatternMandatory | ArgumentsPatternOptional,
     parent?: EventOptions,
     diagnostics?: Diagnostic[]

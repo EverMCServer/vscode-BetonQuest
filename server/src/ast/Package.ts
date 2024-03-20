@@ -1,3 +1,5 @@
+import { PublishDiagnosticsParams } from "vscode-languageserver";
+
 import { ConditionListType, ConversationListType, EventListType, Node, ObjectiveListType, PackageTypes, PackageV1Type, PackageV2Type } from "./node";
 import { EventList } from "./v1/Event/EventList";
 import { TextDocumentsArray } from "../utils/types";
@@ -17,6 +19,8 @@ export abstract class Package<T extends PackageTypes> implements Node<T> {
     this.type = type;
     this.uri = packageUri;
   }
+
+  abstract getPublishDiagnosticsParams(): PublishDiagnosticsParams[];
 }
 
 export class PackageV1 extends Package<PackageV1Type> {
@@ -24,7 +28,7 @@ export class PackageV1 extends Package<PackageV1Type> {
   offsetEnd?: number;
 
   conversationList?: Node<ConversationListType>; // TODO: Conversations[]
-  eventList?: Node<EventListType>;
+  eventList?: EventList;
   conditionList?: Node<ConditionListType>;
   objectiveList?: Node<ObjectiveListType>;
 
@@ -57,6 +61,14 @@ export class PackageV1 extends Package<PackageV1Type> {
       }
     });
   }
+
+  getPublishDiagnosticsParams(): PublishDiagnosticsParams[] {
+    const diagnostics: PublishDiagnosticsParams[] = [];
+    if (this.eventList) {
+      diagnostics.push(this.eventList.getPublishDiagnosticsParams());
+    }
+    return diagnostics;
+  }
 }
 
 export class PackageV2 extends Package<PackageV2Type> {
@@ -72,5 +84,11 @@ export class PackageV2 extends Package<PackageV2Type> {
     super("PackageV2", packageUri);
 
     // ...
+  }
+
+  getPublishDiagnosticsParams(): PublishDiagnosticsParams[] {
+    const diagnostics: PublishDiagnosticsParams[] = [];
+    // TODO ...
+    return diagnostics;
   }
 }

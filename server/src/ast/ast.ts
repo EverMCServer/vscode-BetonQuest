@@ -129,6 +129,14 @@ export class AST {
     });
   }
 
+  // Get all diagnostics from parser
+  getDiagnostics() {
+    return [
+      ...this.packagesV1.flatMap(p => p.getPublishDiagnosticsParams()),
+      ...this.packagesV2.flatMap(p => p.getPublishDiagnosticsParams())
+    ];
+  }
+
   // getPos(sourcePath: string, address: string) {
 
   // }

@@ -31,21 +31,25 @@ export function syncWorkspaces(connection: Connection, workspaceFolders: Workspa
       const ast = new AST(documents);
       console.log("AST created:", ast);
 
-      // DEBUG: Test diagnostics
-      const doc = TextDocument.create(files[0][0], 'yaml', 1, files[0][1]);
-      connection.sendDiagnostics({
-        uri: files[0][0],
-        diagnostics: [{
-          code: "BQ-001",
-          severity: DiagnosticSeverity.Error,
-          range: {
-            start: doc.positionAt(1),
-            end: doc.positionAt(2)
-          },
-          message: `Dummy error.`,
-          source: 'BetonQuest'
-        }]
+      // Send Diagnostics
+      ast.getDiagnostics().forEach(d => {
+        connection.sendDiagnostics(d);
       });
+      // // DEBUG: Test diagnostics
+      // const doc = TextDocument.create(files[0][0], 'yaml', 1, files[0][1]);
+      // connection.sendDiagnostics({
+      //   uri: files[0][0],
+      //   diagnostics: [{
+      //     code: "BQ-001",
+      //     severity: DiagnosticSeverity.Error,
+      //     range: {
+      //       start: doc.positionAt(1),
+      //       end: doc.positionAt(2)
+      //     },
+      //     message: `Dummy error.`,
+      //     source: 'BetonQuest'
+      //   }]
+      // });
 
       // connection.sendRequest<string>('custom/file', workspaceFolders![0].uri + "/config.yml").then(
       //   content => {

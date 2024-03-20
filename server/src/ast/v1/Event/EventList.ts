@@ -1,3 +1,4 @@
+import { PublishDiagnosticsParams, Range } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { Scalar, YAMLMap, parseDocument } from "yaml";
@@ -46,5 +47,19 @@ export class EventList implements Node<EventListType> {
     this.yml.items.forEach(pair => {
       this.entries.push(new EventEntry(pair, this));
     });
+  }
+
+  getRangeByOffset(offsetStart: number, offsetEnd: number) {
+    return {
+      start: this.document.positionAt(offsetStart),
+      end: this.document.positionAt(offsetEnd)
+    } as Range;
+  }
+
+  getPublishDiagnosticsParams() {
+    return {
+      uri: this.document.uri,
+      diagnostics: this.entries.flatMap(e => e.getDiagnostics())
+    } as PublishDiagnosticsParams;
   }
 }
