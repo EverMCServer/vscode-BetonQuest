@@ -4,6 +4,7 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { FileTreeParams, FilesResponse } from "betonquest-utils/lsp/file";
 
 import { AST } from "../ast/ast";
+import { TextDocumentsArray } from "../utils/types";
 
 export function syncWorkspaces(connection: Connection, workspaceFolders: WorkspaceFolder[] | null | undefined) {
   // 1. get folders
@@ -19,10 +20,15 @@ export function syncWorkspaces(connection: Connection, workspaceFolders: Workspa
 
       // Get files
       let files = await connection.sendRequest<FilesResponse>('custom/files', a);
-      // files.forEach(([uri, content]) => {
-      //   connection.console.log("file: " + uri + " size: " + content.length + " content: " + content);
-      // });
-      const ast = new AST(files);
+
+      // Convert files into documents
+      const documents: TextDocumentsArray = files.map(([uri, content]) => {
+        // connection.console.log("file: " + uri + " size: " + content.length + " content: " + content);
+        return [uri, TextDocument.create(uri, 'yaml', 0, content)];
+      });
+
+      // Parse AST
+      const ast = new AST(documents);
       console.log("AST created:", ast);
 
       // DEBUG: Test diagnostics

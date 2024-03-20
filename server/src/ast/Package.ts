@@ -1,6 +1,6 @@
-import { FilesResponse } from "betonquest-utils/lsp/file";
 import { ConditionListType, ConversationListType, EventListType, Node, ObjectiveListType, PackageTypes, PackageV1Type, PackageV2Type } from "./node";
 import { EventList } from "./v1/Event/EventList";
+import { TextDocumentsArray } from "../utils/types";
 
 export abstract class Package<T extends PackageTypes> implements Node<T> {
   type: T;
@@ -28,18 +28,18 @@ export class PackageV1 extends Package<PackageV1Type> {
   conditionList?: Node<ConditionListType>;
   objectiveList?: Node<ObjectiveListType>;
 
-  constructor(packageUri: string, filesResponse: FilesResponse) {
+  constructor(packageUri: string, documents: TextDocumentsArray) {
     super("PackageV1", packageUri);
 
     // Parse sub Nodes by types
-    filesResponse.forEach(([fileUri, fileContent]) => {
+    documents.forEach(([fileUri, document]) => {
       const u = new URL(fileUri);
       const p = u.pathname.split('/');
       switch (p[p.length - 1]) {
         case 'main.yml':
           break;
         case 'events.yml':
-          this.eventList = new EventList(fileUri, fileContent, this);
+          this.eventList = new EventList(fileUri, document, this);
           break;
         case 'conditions.yml':
           break;
@@ -68,7 +68,7 @@ export class PackageV2 extends Package<PackageV2Type> {
   conditionList?: Node<ConditionListType>;
   objectiveList?: Node<ObjectiveListType>;
 
-  constructor(packageUri: string, filesResponse: FilesResponse) {
+  constructor(packageUri: string, documents: TextDocumentsArray) {
     super("PackageV2", packageUri);
 
     // ...

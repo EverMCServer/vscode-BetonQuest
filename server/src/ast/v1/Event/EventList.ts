@@ -1,3 +1,5 @@
+import { TextDocument } from "vscode-languageserver-textdocument";
+
 import { Scalar, YAMLMap, parseDocument } from "yaml";
 import { EventListType, Node } from "../../node";
 import { EventEntry } from "./EventEntry";
@@ -11,17 +13,21 @@ export class EventList implements Node<EventListType> {
   offsetEnd?: number;
   parent?: PackageV1;
 
+  // VSCode Document, for diagnostics / quick actions / goto definition, etc
+  document: TextDocument;
+
   // Cache the parsed yaml document
   yml?: YAMLMap<Scalar<string>, Scalar<string>>;
   entries: EventEntry[] = [];
 
-  constructor(uri: string, fileContent: string, parent?: PackageV1) {
+  constructor(uri: string, document: TextDocument, parent?: PackageV1) {
     this.uri = uri;
     this.parent = parent;
+    this.document = document;
 
     // Parse yaml
     const yml = parseDocument<YAMLMap<Scalar<string>, Scalar<string>>, false>(
-      fileContent,
+      document.getText(),
       {
         keepSourceTokens: true,
         strict: false

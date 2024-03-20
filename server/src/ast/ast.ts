@@ -1,30 +1,30 @@
 import { Pair, Scalar } from "yaml";
 
 import { PackageV1, PackageV2 } from "./Package";
-import { FilesResponse } from "betonquest-utils/lsp/file";
+import { TextDocumentsArray } from "../utils/types";
 
 // AST structure for BetonQuest V1
 export class AST {
   packagesV1: PackageV1[] = [];
   packagesV2: PackageV2[] = [];
 
-  constructor(allFiles: FilesResponse) {
-    const [filesV1, filesV2] = this.classifyAllFiles(allFiles);
+  constructor(allDocuments: TextDocumentsArray) {
+    const [filesV1, filesV2] = this.classifyAllDocuments(allDocuments);
 
     // Create AST by versions and packages
-    this.parseAllFilesV1(filesV1);
+    this.parseAllDocumentsV1(filesV1);
   }
 
   // Classify files by versions and packages
-  classifyAllFiles(allFiles: FilesResponse) {
+  classifyAllDocuments(allDocuments: TextDocumentsArray) {
     // Rules:
     // - V2: package.yml https://betonquest.org/2.0/Documentation/Scripting/Packages-%26-Templates/#structure
     // - V1: main.yml https://betonquest.org/1.12/User-Documentation/Reference/#packages
-    const filesV2 = new Map<string, FilesResponse>();
-    const filesV1 = new Map<string, FilesResponse>();
+    const filesV2 = new Map<string, TextDocumentsArray>();
+    const filesV1 = new Map<string, TextDocumentsArray>();
 
     // Find all V2 packages
-    allFiles.forEach(([uri, content]) => {
+    allDocuments.forEach(([uri, content]) => {
       const u = new URL(uri);
       const p = u.pathname.split('/');
       if (p[p.length - 1].match(/^package\.ya?ml$/i)) {
@@ -37,7 +37,7 @@ export class AST {
       }
     });
     // Find all V1 packages
-    allFiles.forEach(([uri, content]) => {
+    allDocuments.forEach(([uri, content]) => {
       const u = new URL(uri);
       const p = u.pathname.split('/');
       if (p[p.length - 1].match(/^main\.ya?ml$/i)) {
@@ -72,7 +72,7 @@ export class AST {
     // V2
     filesV2.forEach((files, packageUri) => {
       const baseEntryFileRegex = new RegExp(`^${packageUri}/package\.ya?ml$`);
-      allFiles.filter(([uri, _]) => {
+      allDocuments.filter(([uri, _]) => {
         if (!uri.startsWith(packageUri) || uri.match(baseEntryFileRegex)) {
           return false;
         }
@@ -99,7 +99,7 @@ export class AST {
     });
     // V1
     filesV1.forEach((files, packageUri) => {
-      allFiles.filter(([uri, _]) => uri.startsWith(packageUri)).forEach(([uri, content]) => {
+      allDocuments.filter(([uri, _]) => uri.startsWith(packageUri)).forEach(([uri, content]) => {
         files.push([uri, content]);
       });
     });
@@ -112,18 +112,18 @@ export class AST {
   };
 
   // Parse all files by packages, v1
-  parseAllFilesV1(allFiles: Map<string, FilesResponse>) {
+  parseAllDocumentsV1(allDocuments: Map<string, TextDocumentsArray>) {
     this.packagesV1 = []; // Purge all cached files
-    allFiles.forEach((filesResp, packageUri) => {
+    allDocuments.forEach((filesResp, packageUri) => {
       // Create Package
       this.packagesV1.push(new PackageV1(packageUri, filesResp));
     });
   }
 
   // Parse all files by packages, v2
-  parseAllFilesV2(allFiles: Map<string, FilesResponse>) {
+  parseAllDocumentsV2(allDocuments: Map<string, TextDocumentsArray>) {
     this.packagesV2 = []; // Purge all cached files
-    allFiles.forEach((filesResp, packageUri) => {
+    allDocuments.forEach((filesResp, packageUri) => {
       // Create Package
       this.packagesV2.push(new PackageV2(packageUri, filesResp));
     });
