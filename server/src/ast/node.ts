@@ -1,3 +1,4 @@
+import { Diagnostic } from "vscode-languageserver";
 
 export type PackageV1Type = 'PackageV1';
 export type PackageV2Type = 'PackageV2';
@@ -74,6 +75,7 @@ export interface Node<T extends NodeType> {
   offsetStart?: number;
   offsetEnd?: number;
   parent?: Node<NodeType>,
+  diagnostics?: Diagnostic[];
   // children?: Node<NodeType>[],
 
   // name?: string,

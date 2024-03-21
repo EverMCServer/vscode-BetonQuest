@@ -22,7 +22,7 @@ export class EventOptions implements Node<EventOptionsType> {
   optionsStrs: string[] = [];
   options: EventOption[] = [];
 
-  constructor(optionsStr: string, range: [number?, number?], kindStr: string, parent?: EventEntry) {
+  constructor(kindStr: string, optionsStr: string, range: [number?, number?], parent?: EventEntry) {
     this.uri = parent?.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
@@ -224,7 +224,7 @@ export class EventOptions implements Node<EventOptionsType> {
           const _offsetEnd = this.offsetEnd ?? 0;
           const diag: Diagnostic = {
             severity: DiagnosticSeverity.Error,
-            code: DiagnosticCode.MandatoryOptionMissing,
+            code: DiagnosticCode.ArgumentMandatoryMissing,
             message: `Missing mandatory option: ${pattern.name}`,
             range: this.parent!.getRangeByOffset(_offsetStart, _offsetEnd)
           };

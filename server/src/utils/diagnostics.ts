@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 export enum DiagnosticCode {
-  MandatoryOptionMissing = "BQ-001",
-  OptionalOptionMissing = "BQ-002"
+  ElementInstructionMissing = "BQ-1001",
+  ElementArgumentsMissing = "BQ-1002",
+  ArgumentMandatoryMissing = "BQ-2001",
+  ArgumentOptionalMissing = "BQ-2002"
 }
