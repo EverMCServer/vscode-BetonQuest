@@ -6,6 +6,12 @@ import { EventListType, Node } from "../../node";
 import { EventEntry } from "./EventEntry";
 import { PackageV1 } from "../../Package";
 
+// const toStringOptions: ToStringOptions = {
+//   doubleQuotedMinMultiLineLength: 0,
+//   // indent: 2,
+//   lineWidth: 0,
+//   minContentWidth: 0
+// };
 
 export class EventList implements Node<EventListType> {
   type: "EventList" = "EventList";

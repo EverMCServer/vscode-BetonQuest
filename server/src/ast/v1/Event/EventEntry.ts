@@ -1,13 +1,15 @@
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 import { Pair, Scalar } from "yaml";
 
+import { kinds } from "betonquest-utils/betonquest/v1/Events";
+
 import { EventEntryType, Node } from "../../node";
 import { EventKind } from "./EventKind";
 import { EventKey } from "./EventKey";
 import { EventOptions } from "./EventOptions";
 import { EventList } from "./EventList";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { kinds } from "betonquest-utils/betonquest/v1/Events";
+import { getScalarRangeByValue } from "../../../utils/yaml";
 
 export class EventEntry implements Node<EventEntryType> {
   type: EventEntryType = "EventEntry";
@@ -37,8 +39,7 @@ export class EventEntry implements Node<EventEntryType> {
     const contentStr = pair.value?.value;
     if (!contentStr || typeof contentStr !== 'string') {
       // Missing or incorrect instructions
-      const _offsetEnd = pair.value?.range?.[1] ?? 0;
-      const _offsetStart = pair.value?.value.length ? _offsetEnd - pair.value.value.length : _offsetEnd;
+      const [_offsetStart, _offsetEnd] = getScalarRangeByValue(pair.value);
       this.diagnostics?.push({
         severity: DiagnosticSeverity.Error,
         code: DiagnosticCode.ElementInstructionMissing,
@@ -53,8 +54,7 @@ export class EventEntry implements Node<EventEntryType> {
     // Parse kind
     if (!matched || matched.length < 2) {
       // Missing kind
-      const _offsetEnd = pair.value?.range?.[1] ?? 0;
-      const _offsetStart = pair.value?.value.length ? _offsetEnd - pair.value.value.length : _offsetEnd;
+      const [_offsetStart, _offsetEnd] = getScalarRangeByValue(pair.value);
       this.diagnostics?.push({
         severity: DiagnosticSeverity.Error,
         code: DiagnosticCode.ElementInstructionMissing,
@@ -64,15 +64,15 @@ export class EventEntry implements Node<EventEntryType> {
       return;
     }
     const kindStr = matched[1];
-    const offsetKindStart = pair.value?.range?.[1] ? pair.value?.range?.[1] - matched[0].length + matched.index : 0;
-    const offsetKindEnd = offsetKindStart + kindStr.length;
+    const [offsetKindStart] = getScalarRangeByValue(pair.value);
+    const offsetKindEnd = offsetKindStart + kindStr.length + (pair.value?.srcToken?.type === 'block-scalar' ? 0 : matched.index);
     this.eventKind = new EventKind(kindStr, [offsetKindStart, offsetKindEnd], this);
 
     // Parse Arguments
     const argumentsStr = matched[3];
     if (!argumentsStr) {
-      // TODO: Check if kind do not need any arguments by kinds list,
-      // If so, throw diagnostic
+      // Check if kind do not need any arguments by kinds list,
+      // If not, throw diagnostic
       const kind = kinds.find(k => k.value === kindStr);
       if (kind && kind.argumentsPatterns.mandatory.length > 0) {
         const _offsetStart = offsetKindEnd;
