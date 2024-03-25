@@ -6,7 +6,7 @@ import { EventListType, Node } from "../../node";
 import { EventEntry } from "./EventEntry";
 import { PackageV1 } from "../../Package";
 
-// const toStringOptions: ToStringOptions = {
+// const toStringArguments: ToStringArguments = {
 //   doubleQuotedMinMultiLineLength: 0,
 //   // indent: 2,
 //   lineWidth: 0,

@@ -2,23 +2,23 @@ import { Diagnostic } from "vscode-languageserver";
 
 import { ArgumentsPatternMandatory, ArgumentsPatternOptional } from "betonquest-utils/betonquest/Arguments";
 
-import { EventOptionType, Node } from "../../node";
-import { EventOptions } from "./EventOptions";
+import { EventArgumentType, Node } from "../../node";
+import { EventArguments } from "./EventArguments";
 
-export class EventOption implements Node<EventOptionType> {
-  type: "EventOption" = "EventOption";
+export class EventArgument implements Node<EventArgumentType> {
+  type: "EventArgument" = "EventArgument";
   uri?: string;
   offsetStart?: number;
   offsetEnd?: number;
-  parent?: EventOptions;
+  parent?: EventArguments;
 
-  optionStr: string;
+  argumentStr: string;
 
-  constructor(optionStr: string,
+  constructor(argumentStr: string,
     range: [number?, number?],
     // isMandatory: boolean,
     pattern: ArgumentsPatternMandatory | ArgumentsPatternOptional,
-    parent?: EventOptions,
+    parent?: EventArguments,
     diagnostics?: Diagnostic[]
   ) {
 
@@ -31,7 +31,7 @@ export class EventOption implements Node<EventOptionType> {
     this.offsetEnd = range[1];
     this.parent = parent;
 
-    // Parse optionStr
-    this.optionStr = optionStr;
+    // Parse argumentStr
+    this.argumentStr = argumentStr;
   }
 }

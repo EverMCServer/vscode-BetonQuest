@@ -6,7 +6,7 @@ import { kinds } from "betonquest-utils/betonquest/v1/Events";
 import { EventEntryType, Node } from "../../node";
 import { EventKind } from "./EventKind";
 import { EventKey } from "./EventKey";
-import { EventOptions } from "./EventOptions";
+import { EventArguments } from "./EventArguments";
 import { EventList } from "./EventList";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getScalarRangeByValue, getScalarSourceAndRange } from "../../../utils/yaml";
@@ -23,7 +23,7 @@ export class EventEntry implements Node<EventEntryType> {
 
   eventKey: EventKey;
   eventKind?: EventKind;
-  eventOptions?: EventOptions;
+  eventArguments?: EventArguments;
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: EventList) {
     this.uri = parent.uri;
@@ -85,7 +85,7 @@ export class EventEntry implements Node<EventEntryType> {
     }
     const offsetArgumentsStart = offsetKindEnd ? offsetKindEnd + matched[2].length : undefined;
     // Parse each individual arguments
-    this.eventOptions = new EventOptions(kindStr, argumentsSourceStr, [offsetArgumentsStart, offsetEnd], indent, this);
+    this.eventArguments = new EventArguments(kindStr, argumentsSourceStr, [offsetArgumentsStart, offsetEnd], indent, this);
   }
 
   getRangeByOffset(offsetStart: number, offsetEnd: number) {
@@ -98,9 +98,9 @@ export class EventEntry implements Node<EventEntryType> {
     if (this.diagnostics) {
       diagnostics.push(...this.diagnostics);
     }
-    // From Child options
-    if (this.eventOptions) {
-      diagnostics.push(...this.eventOptions.getDiagnostics());
+    // From Child arguments
+    if (this.eventArguments) {
+      diagnostics.push(...this.eventArguments.getDiagnostics());
     }
     return diagnostics;
   }
