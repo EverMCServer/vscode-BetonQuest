@@ -19,14 +19,16 @@ export class EventOptions implements Node<EventOptionsType> {
 
   diagnostics: Diagnostic[] = [];
 
+  indent: number;
   optionsStrs: string[] = [];
   options: EventOption[] = [];
 
-  constructor(kindStr: string, optionsStr: string, range: [number?, number?], parent?: EventEntry) {
+  constructor(kindStr: string, optionsSourceStr: string, range: [number?, number?], indent: number, parent?: EventEntry) {
     this.uri = parent?.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
     this.parent = parent;
+    this.indent = indent;
 
     // Search ArgumentsPatterns from V1 Event List
     const kindConfig = kinds.find(k => k.value === kindStr) ?? kinds.find(k => k.value === "*");
@@ -38,7 +40,7 @@ export class EventOptions implements Node<EventOptionsType> {
     // const regex = /(?:\"([^\"]*?)\"|\'([^\']*?)\')|(\S+)/g; // without quotes or whitespaces
     let array1: RegExpExecArray | null;
     let posInit: number | undefined;
-    while ((array1 = regex.exec(optionsStr)) !== null) {
+    while ((array1 = regex.exec(optionsSourceStr)) !== null) {
       posInit = posInit ?? array1.index;
       let matched = array1[0];
       this.optionsStrs.push(matched);
@@ -46,7 +48,7 @@ export class EventOptions implements Node<EventOptionsType> {
 
     // Keep whitespaces only for the mandatory part. e.g. "notify", "log"
     if (argumentsPatterns.keepWhitespaces) {
-      let newArgStrs = [optionsStr];
+      let newArgStrs = [optionsSourceStr];
       if (argumentsPatterns.optional && argumentsPatterns.optional.length) {
         // With optional args
         if (argumentsPatterns.optionalAtFirst) {
