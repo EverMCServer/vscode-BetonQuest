@@ -13,18 +13,14 @@ export class EventArgument implements Node<EventArgumentType> {
   parent?: EventArguments;
 
   argumentStr: string;
+  diagnostics: Diagnostic[] = [];
 
   constructor(argumentStr: string,
     range: [number?, number?],
     // isMandatory: boolean,
     pattern: ArgumentsPatternMandatory | ArgumentsPatternOptional,
     parent?: EventArguments,
-    diagnostics?: Diagnostic[]
   ) {
-
-    // if (diagnostics && diagnostics.length > 0) {
-      
-    // }
 
     this.uri = parent?.uri;
     this.offsetStart = range[0];
@@ -33,5 +29,11 @@ export class EventArgument implements Node<EventArgumentType> {
 
     // Parse argumentStr
     this.argumentStr = argumentStr;
+
+    // Check format
+  }
+
+  getDiagnostics() {
+    return this.diagnostics;
   }
 }

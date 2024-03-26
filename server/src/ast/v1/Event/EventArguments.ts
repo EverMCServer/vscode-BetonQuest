@@ -1,6 +1,6 @@
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
-import { ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
+import { ArgumentsPatternMandatory, ArgumentsPatternOptional, ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
 import { kinds } from "betonquest-utils/betonquest/v1/Events";
 
 import { EventArgumentsType, Node } from "../../node";
@@ -20,8 +20,9 @@ export class EventArguments implements Node<EventArgumentsType> {
   diagnostics: Diagnostic[] = [];
 
   indent: number;
-  argumentsStrs: string[] = [];
-  arguments: EventArgument[] = [];
+  // argumentsStrs: string[] = [];
+  argumentsMandatory: EventArgument[] = [];
+  argumentsOptional: EventArgument[] = [];
 
   constructor(kindStr: string, argumentsSourceStr: string, range: [number?, number?], indent: number, parent?: EventEntry) {
     this.uri = parent?.uri;
@@ -30,223 +31,171 @@ export class EventArguments implements Node<EventArgumentsType> {
     this.parent = parent;
     this.indent = indent;
 
+    // Split argumentsStr by whitespaces, with respect to quotes ("")
+    let argumentsStrs: string[] = [];
+    const regex = /(?:\"[^\"]*?\"|\'[^\']*?\')\s*|\S+\s*/g; // keep quotes and tailing whitespaces
+    // const regex = /((?:\"[^\"]*?\"|\'[^\']*?\'))|(\S+)/g; // keep quotes
+    // const regex = /(?:\"([^\"]*?)\"|\'([^\']*?)\')|(\S+)/g; // without quotes or whitespaces
+    let matched: RegExpExecArray | null;
+    let posInit: number | undefined;
+    while ((matched = regex.exec(argumentsSourceStr)) !== null) {
+      posInit = posInit ?? matched.index;
+      argumentsStrs.push(matched[0]);
+    }
+
     // Search ArgumentsPatterns from V1 Event List
     const kindConfig = kinds.find(k => k.value === kindStr) ?? kinds.find(k => k.value === "*");
     const argumentsPatterns: ArgumentsPatterns = kindConfig?.argumentsPatterns ?? { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] };
 
-    // Split argumentsStr by whitespaces, with respect to quotes ("")
-    const regex = /(?:\"[^\"]*?\"|\'[^\']*?\')\s*|\S+\s*/g; // keep quotes and whitespaces
-    // const regex = /((?:\"[^\"]*?\"|\'[^\']*?\'))|(\S+)/g; // keep quotes
-    // const regex = /(?:\"([^\"]*?)\"|\'([^\']*?)\')|(\S+)/g; // without quotes or whitespaces
-    let array1: RegExpExecArray | null;
-    let posInit: number | undefined;
-    while ((array1 = regex.exec(argumentsSourceStr)) !== null) {
-      posInit = posInit ?? array1.index;
-      let matched = array1[0];
-      this.argumentsStrs.push(matched);
-    }
+    // Cache arguments
+    let argumentOptionalStrs: string[] = [];
+    let argumentMandatoryStrs: string[] = [];
 
-    // Keep whitespaces only for the mandatory part. e.g. "notify", "log"
-    if (argumentsPatterns.keepWhitespaces) {
-      let newArgStrs = [argumentsSourceStr];
-      if (argumentsPatterns.optional && argumentsPatterns.optional.length) {
-        // With optional args
-        if (argumentsPatterns.optionalAtFirst) {
-          this.argumentsStrs.every((v, i) => {
-            if (/(?<!\\):/g.test(v)) {
-              newArgStrs = [
-                ...this.argumentsStrs.slice(0, i + argumentsPatterns.mandatory.length).map(value => value.replace(/\s$/, "")),
-                this.argumentsStrs.slice(i + argumentsPatterns.mandatory.length).join('')
-              ];
-              return true;
+    if (argumentsPatterns.optional && argumentsPatterns.optional.length > 0) {
+      // With optional args
+      if (argumentsPatterns.optionalAtFirst) {
+        // Optional at begining
+        for (let pos = 0; pos < argumentsStrs.length && pos < argumentsPatterns.optional.length; pos++) {
+          // Check if this is an existing optional arg. If so, append it.
+          const found = argumentsPatterns.optional?.find(p => argumentsStrs[pos].startsWith(p.key + ":"));
+          if (found) {
+            argumentOptionalStrs.push(argumentsStrs[pos]);
+            continue;
+          }
+          // If there are no more optional args, append the rest as mandatory args.
+          if (argumentsPatterns.keepWhitespaces) {
+            // Keep whitespaces only for the mandatory part. e.g. "notify", "log"
+            if (argumentsPatterns.mandatory.length > 1) {
+              const nonWhitespaceArgsPos = pos + argumentsPatterns.mandatory.length - 1;
+              argumentMandatoryStrs.push(argumentsStrs.slice(pos, nonWhitespaceArgsPos).join()); // Normal mandatory args
+              argumentMandatoryStrs.push(argumentsStrs.slice(nonWhitespaceArgsPos).join()); // Whitespace args
+            } else {
+              argumentMandatoryStrs.push(argumentsStrs.slice(pos).join());
             }
-            return false;
-          });
-        } else {
-          this.argumentsStrs.some((v, i) => {
-            if (/(?<!\\):/g.test(v)) {
-              newArgStrs = [
-                ...this.argumentsStrs.slice(0, argumentsPatterns.mandatory.length - 1).map(value => value.replace(/\s$/, "")),
-                this.argumentsStrs.slice(argumentsPatterns.mandatory.length - 1, i).join('').replace(/\s$/, ""),
-                ...this.argumentsStrs.slice(i).map(value => value.replace(/\s$/, ""))
-              ];
-              return true;
-            }
-            return false;
-          });
+          } else {
+            // No need to keep whitespaces
+            argumentMandatoryStrs = argumentsStrs.slice(pos);
+          }
+          break;
         }
-      } else if (argumentsPatterns.mandatory.length > 1) {
-        // No optional arg, only mandatory
-        newArgStrs = [
-          ...this.argumentsStrs.slice(0, argumentsPatterns.mandatory.length - 1).map(value => value.replace(/\s$/, "")),
-          this.argumentsStrs.slice(argumentsPatterns.mandatory.length - 1).join('')
-        ];
+        // this.argumentsStrs = [...argumentOptionalStrs, ...argumentMandatoryStrs];
+      } else {
+        // Optional at end
+        for (let pos = argumentsStrs.length - 1; pos > -1; pos--) {
+          // Check if this is an existing optional arg. If so, append it.
+          const found = argumentsPatterns.optional.find(p => argumentsStrs[pos].startsWith(p.key + ":"));
+          if (found) {
+            argumentOptionalStrs.unshift(argumentsStrs[pos]);
+            continue;
+          }
+          // If there are no more optional args, append the rest as mandatory args.
+          if (argumentsPatterns.keepWhitespaces) {
+            // Keep whitespaces only for the mandatory part. e.g. "notify", "log"
+            if (argumentsPatterns.mandatory.length > 1 && argumentsStrs.length > 1) {
+              const nonWhitespaceArgsPos = pos - 1;
+              argumentMandatoryStrs.push(argumentsStrs.slice(0, nonWhitespaceArgsPos).join()); // Normal mandatory args
+              argumentMandatoryStrs.push(argumentsStrs.slice(nonWhitespaceArgsPos, pos).join()); // Whitespaceargs
+            } else if (argumentsStrs.length > 0) {
+              argumentMandatoryStrs.push(argumentsStrs.slice(0, pos).join());
+            }
+          } else {
+            // No need to keep whitespaces
+            argumentMandatoryStrs = argumentsStrs.slice(0, pos);
+          }
+          break;
+        }
+        // this.argumentsStrs = [...argumentOptionalStrs, ...argumentMandatoryStrs];
       }
-      this.argumentsStrs = newArgStrs;
-    }
-
-    // // Cache parsed Arguments, for tracking
-    // const parsedArguments: Map<number, boolean> = new Map();
-    // this.argumentsStrs.forEach((_, i) => {
-    //   parsedArguments.set(i, false);
-    // });
-
-    // // Create Arguments
-    // if (argumentsPatterns.optionalAtFirst) {
-    //   // Mode: optionals + mandatory
-
-    //   let argumentStrOffsetCursor = 0; // Cache offset
-    //   this.argumentsStrs.forEach((argumentStr, i) => {
-    //     // Calculate offset
-    //     const offsetStart = this.offsetStart ? this.offsetStart + argumentStrOffsetCursor : this.offsetStart;
-    //     argumentStrOffsetCursor += argumentStr.length;
-    //     const offsetEnd = this.offsetStart ? this.offsetStart + argumentStrOffsetCursor : this.offsetStart;
-    //     // Parse mandatory arguments
-    //     if (i === this.argumentsStrs.length - 1) {
-    //       this.arguments.push(new EventArgument(argumentStr, [offsetStart, offsetEnd], argumentsPatterns.mandatory[0], this));
-    //       return;
-    //     }
-    //     // Parse optional arguments
-    //     // Find pattern from optional args
-    //     const pattern = argumentsPatterns.optional?.find(pattern => {
-    //       if (argumentStr.startsWith(pattern.key)) {
-    //         return true;
-    //       }
-    //       return false;
-    //     });
-    //     if (pattern) {
-    //       // Append to arguments
-    //       this.arguments.push(new EventArgument(argumentStr, [offsetStart, offsetEnd], pattern, this));
-    //       // Mark parsed key
-    //       // parsedArguments.set(i, true);
-    //     }
-    //   });
-
-    //   // // #2
-    //   // // Parse mandatory arguments
-    //   // // ...
-    //   // // Parse optional arguments
-    //   // argumentsPatterns.optional?.forEach(pattern => {
-    //   //   // Find the first matched arguments by key
-    //   //   const argumentStrIndex = this.argumentsStrs.findIndex((s, i) => {
-    //   //     if (s.startsWith(pattern.key)) {
-    //   //       return true;
-    //   //     }
-    //   //     return false;
-    //   //   });
-    //   //   // Parse it
-    //   //   if (argumentStrIndex > -1) {
-    //   //     const argumentStr = this.argumentsStrs[argumentStrIndex];
-    //   //     // Calculate offset
-    //   //     const offsetStart = this.offsetStart ? this.offsetStart + this.argumentsStrs.filter((_, i) => i < argumentStrIndex).concat().length : this.offsetStart;
-    //   //     const offsetEnd = offsetStart ? offsetStart + argumentStr.length : offsetStart;
-    //   //     // Append to arguments
-    //   //     this.arguments.push(new EventArgument(argumentStr, [offsetStart, offsetEnd], pattern, this));
-    //   //     // Mark parsed key
-    //   //     parsedArguments.set(argumentStrIndex, true);
-    //   //   }
-    //   // });
-    //   // // Parse mandatory arguments
-    //   // argumentsPatterns.mandatory?.forEach(pattern => {
-    //   //   if (pattern.key) {
-    //   //     // Find the first 
-    //   //   }
-    //   // });
-    // } else {
-    //   // Mode: mandatories + optionals
-
-    //   let argumentStrOffsetCursor = 0; // Cache offset
-
-    //   this.argumentsStrs.forEach((argumentStr, i) => {
-    //     // Calculate offset
-    //     const offsetStart = this.offsetStart ? this.offsetStart + argumentStrOffsetCursor : this.offsetStart;
-    //     argumentStrOffsetCursor += argumentStr.length;
-    //     const offsetEnd = this.offsetStart ? this.offsetStart + argumentStrOffsetCursor : this.offsetStart;
-
-    //     // Parse mandatory arguments
-    //     if (i < argumentsPatterns.mandatory.length) {
-    //       //
-    //     }
-    //     // Parse optional arguments
-    //   });
-    // }
-
-    // Split mandatory and optional arguments
-    let mandatoryStrs: string[] = [];
-    let optionalStrs: string[] = [];
-    if (argumentsPatterns.optionalAtFirst) {
-      mandatoryStrs = this.argumentsStrs.filter((_, i) => i >= argumentsPatterns.mandatory.length);
-      optionalStrs = this.argumentsStrs.filter((_, i) => i < argumentsPatterns.mandatory.length);
     } else {
-      mandatoryStrs = this.argumentsStrs.filter((_, i) => i < argumentsPatterns.mandatory.length);
-      optionalStrs = this.argumentsStrs.filter((_, i) => i >= argumentsPatterns.mandatory.length);
+      // No optional arg, only mandatory
+      if (argumentsPatterns.keepWhitespaces) {
+        // Keep whitespaces only for the mandatory part. e.g. "notify", "log"
+        if (argumentsPatterns.mandatory.length > 1 && argumentsStrs.length > 1) {
+          const nonWhitespaceArgsPos = argumentsPatterns.mandatory.length - 1;
+          argumentMandatoryStrs.push(argumentsStrs.slice(0, nonWhitespaceArgsPos).join()); // Normal mandatory args
+          argumentMandatoryStrs.push(argumentsStrs.slice(nonWhitespaceArgsPos).join()); // Whitespaceargs
+        } else if (argumentsStrs.length > 0) {
+          argumentMandatoryStrs = [argumentsStrs.join()];
+        }
+      } else {
+        // No need to keep whitespaces
+        argumentMandatoryStrs = argumentsStrs;
+      }
+      // this.argumentsStrs = argumentMandatoryStrs;
     }
 
-    let argumentStrOffsetCursor = 0; // Cache offset
-
+    // Calculate arguments range and parse them
+    let offsetStart = this.offsetStart ?? 0;
     if (argumentsPatterns.optionalAtFirst) {
       // Parse optional arguments
-      let parsedOptional = new Map<number, boolean>();
-      optionalStrs.forEach(argumentStr => {
-        // Calculate offset
-        const offsetStart = this.offsetStart ? this.offsetStart + argumentStrOffsetCursor : this.offsetStart;
-        argumentStrOffsetCursor += argumentStr.length;
-        const offsetEnd = this.offsetStart ? this.offsetStart + argumentStrOffsetCursor : this.offsetStart;
-        const i = argumentsPatterns.optional!.findIndex(pattern => argumentStr.startsWith(pattern.key));
-        const pattern = argumentsPatterns.optional![i];
-        if (parsedOptional.has(i)) {
-          // Duplicated argument
-          // const document = TextDocument.create(this.uri, 'yaml', 1, this.parent.content); // TODO: document version, document content
-          // this.arguments.push(new EventArgument(argumentStr, [offsetStart, offsetEnd], pattern, this, [{
-          //   message: `Duplicated argument "${pattern.key}"`,
-          //   severity: DiagnosticSeverity.Error,
-          //   range: {
-          //     start: offsetStart,
-          //     end: offsetEnd
-          //   }
-          // }]));
-        } else {
-          // Append to arguments
-          this.arguments.push(new EventArgumentMandatory(argumentStr, [offsetStart, offsetEnd], pattern, this));
-        }
-      });
+      offsetStart = this.assignArgumentsOptional(argumentOptionalStrs, offsetStart, argumentsPatterns.optional);
       // Parse mandatory arguments
-      argumentsPatterns.mandatory.forEach((pattern, i) => {
-        // Calculate offset
-        const offsetStart = this.offsetStart ? this.offsetStart + argumentStrOffsetCursor : this.offsetStart;
-        argumentStrOffsetCursor += mandatoryStrs[i].length;
-        const offsetEnd = this.offsetStart ? this.offsetStart + argumentStrOffsetCursor : this.offsetStart;
-        if (mandatoryStrs[i]) {
-          // Append to arguments
-          this.arguments.push(new EventArgumentOptional(mandatoryStrs[i], [offsetStart, offsetEnd], pattern, this));
-        } else {
-          // Missing mandatory arguments
-          // Add Diagnotistics
-          const _offsetStart = this.offsetStart ?? 0;
-          const _offsetEnd = this.offsetEnd ?? 0;
-          const diag: Diagnostic = {
-            severity: DiagnosticSeverity.Error,
-            code: DiagnosticCode.ArgumentMandatoryMissing,
-            message: `Missing mandatory argument: ${pattern.name}`,
-            range: this.parent!.getRangeByOffset(_offsetStart, _offsetEnd)
-          };
-          // Create dummy Argument
-          this.arguments.push(new EventArgumentOptional(
-            mandatoryStrs[i],
-            [argumentStrOffsetCursor,
-              argumentStrOffsetCursor],
-            pattern,
-            this,
-            [
-              diag
-            ]
-          ));
-        }
-      });
+      this.assignArgumentsMandatory(argumentMandatoryStrs, offsetStart, argumentsPatterns.mandatory);
+    } else {
+      // Parse mandatory arguments
+      offsetStart = this.assignArgumentsMandatory(argumentMandatoryStrs, offsetStart, argumentsPatterns.mandatory);
+      // Parse optional arguments
+      this.assignArgumentsOptional(argumentOptionalStrs, offsetStart, argumentsPatterns.optional);
     }
   }
 
+  private assignArgumentsMandatory(argumentMandatoryStrs: string[], offsetStart: number, patterns: ArgumentsPatternMandatory[]) {
+    patterns.forEach((pattern, i) => {
+      const argStr = argumentMandatoryStrs[i];
+      if (argStr) {
+        const str = argStr.trimEnd();
+        this.argumentsMandatory.push(new EventArgumentMandatory(
+          str,
+          [offsetStart, offsetStart + str.length],
+          pattern,
+          this
+        ));
+        offsetStart += argStr.length;
+      } else {
+        // Missing mandatory Arugment.
+        // Add Diagnotistics
+        this.diagnostics.push({
+          severity: DiagnosticSeverity.Error,
+          code: DiagnosticCode.ArgumentMandatoryMissing,
+          message: `Missing mandatory argument: ${pattern.name}.\nExample value: ${pattern.defaultValue}`,
+          range: this.parent!.getRangeByOffset(offsetStart, offsetStart)
+        });
+        // Create dummy Argument
+        this.argumentsMandatory.push(new EventArgumentMandatory(
+          "",
+          [offsetStart, offsetStart],
+          pattern,
+          this
+        ));
+      }
+    });
+    return offsetStart;
+  }
+
+  private assignArgumentsOptional(argumentOptionalStrs: string[], offsetStart: number, patterns?: ArgumentsPatternOptional[]) {
+    argumentOptionalStrs.forEach(argStr => {
+      const str = argStr.trimEnd();
+      const pattern = patterns?.find(p => argStr.startsWith(p.key + ":"))!;
+      this.argumentsOptional.push(new EventArgumentOptional(
+        str,
+        [offsetStart, offsetStart + str.length],
+        pattern,
+        this
+      ));
+      offsetStart += argStr.length;
+    });
+    return offsetStart;
+  }
+
   getDiagnostics(): Diagnostic[] {
-    return this.diagnostics;
+    const diagnostics: Diagnostic[] = this.diagnostics;
+    // From Child arguments
+    if (this.argumentsMandatory) {
+      diagnostics.push(...this.argumentsMandatory.flatMap(a => a.getDiagnostics()));
+    }
+    if (this.argumentsOptional) {
+      diagnostics.push(...this.argumentsOptional.flatMap(a => a.getDiagnostics()));
+    }
+    return diagnostics;
   }
 }

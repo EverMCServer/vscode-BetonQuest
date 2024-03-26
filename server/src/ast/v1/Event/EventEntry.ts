@@ -9,7 +9,7 @@ import { EventKey } from "./EventKey";
 import { EventArguments } from "./EventArguments";
 import { EventList } from "./EventList";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { getScalarRangeByValue, getScalarSourceAndRange } from "../../../utils/yaml";
+import { getScalarSourceAndRange } from "../../../utils/yaml";
 
 export class EventEntry implements Node<EventEntryType> {
   type: EventEntryType = "EventEntry";
