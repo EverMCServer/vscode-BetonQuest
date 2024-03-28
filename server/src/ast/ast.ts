@@ -2,6 +2,7 @@ import { Pair, Scalar } from "yaml";
 
 import { PackageV1, PackageV2 } from "./Package";
 import { TextDocumentsArray } from "../utils/types";
+import { Connection } from "vscode-languageserver";
 
 // AST structure for BetonQuest V1
 export class AST {
@@ -105,8 +106,8 @@ export class AST {
     });
 
     // DEBUG print packages' file lists
-    console.log("V1:", [...filesV1.entries()].map(([k, v]) => [k, v.map(([k, _]) => k)]));
-    console.log("V2:", [...filesV2.entries()].map(([k, v]) => [k, v.map(([k, _]) => k)]));
+    // console.log("V1:", [...filesV1.entries()].map(([k, v]) => [k, v.map(([k, _]) => k)]));
+    // console.log("V2:", [...filesV2.entries()].map(([k, v]) => [k, v.map(([k, _]) => k)]));
 
     return [filesV1, filesV2];
   };
