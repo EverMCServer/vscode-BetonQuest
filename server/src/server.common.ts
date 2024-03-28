@@ -1,5 +1,6 @@
-import { CodeAction, CodeActionKind, Command, Connection, DidChangeConfigurationNotification, FileChangeType, HandlerResult, InitializeParams, InitializeResult, ResponseError, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
+import { CodeAction, CodeActionKind, Command, Connection, DidChangeConfigurationNotification, FileChangeType, FileEvent, HandlerResult, InitializeParams, InitializeResult, ResponseError, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
+import { FilesResponse } from 'betonquest-utils/lsp/file';
 import { getAllDocuments } from './utils/document';
 import { TextDocumentsArray } from './utils/types';
 import { AST } from './ast/ast';
@@ -93,8 +94,64 @@ export function server(connection: Connection): void {
   // Listen to file changed event outside VSCode.
   // Right now it only works on node environment (not browser).
   // It requires `synchronize.fileEvents: vscode.workspace.createFileSystemWatcher('glob pattern')` registration in the client.
-  connection.onDidChangeWatchedFiles((params) => {
+  connection.onDidChangeWatchedFiles(async (params) => {
     connection.console.log("connection.onDidChangeWatchedFiles: " + params.changes.map(e => e.type + ":" + e.uri).join(" "));
+
+    // const changes = await Promise.all(params.changes.map<Promise<[FileEvent, string]>>(async change => {
+    //   // Get files uri
+    //   // return [change, (await connection.sendRequest<FilesResponse>('custom/files', [change.uri]))[0][1]];
+    // }));
+
+    // Update allDocuments file tree
+    // Get changed files content
+    const fileResponse = await connection.sendRequest<FilesResponse>('custom/files', params.changes.map(change => change.uri));
+    params.changes.forEach(change => {
+      // Update allDocuments file tree
+      if (change.type === FileChangeType.Created || change.type === FileChangeType.Changed) {
+        const content = fileResponse.find(([uri]) => uri === change.uri)?.[1];
+        if (content) {
+          if (change.type === FileChangeType.Created) {
+            // Create document content
+            allDocuments.forEach(([wsFolderUri, documents]) => {
+              if (change.uri.startsWith(wsFolderUri)) {
+                const entry: [string, TextDocument] = [change.uri, TextDocument.create(change.uri, 'yaml', 0, content!)];
+                const i = documents?.findIndex(([uri]) => uri === change.uri);
+                if (i && i > -1) {
+                  documents![i] = entry;
+                  return;
+                }
+                documents?.push(entry);
+              }
+            });
+          } else if (change.type === FileChangeType.Changed) {
+            // Search and replace document's content
+            allDocuments.forEach(([wsFolderUri, documents]) => {
+              if (change.uri.startsWith(wsFolderUri)) {
+                documents?.forEach(([uri, document], i) => {
+                  if (uri === change.uri) {
+                    documents[i] = [change.uri, TextDocument.create(change.uri, 'yaml', document.version, content!)];
+                  }
+                });
+              }
+            });
+          }
+        }
+      } else if (change.type === FileChangeType.Deleted) {
+        // Remove document from allDocuments file tree
+        allDocuments = allDocuments.map(([wsFolderUri, documents]) => {
+          if (!change.uri.startsWith(wsFolderUri)) {
+            return [wsFolderUri, documents];
+          }
+          return [wsFolderUri, documents?.filter(([uri]) => uri !== change.uri)];
+        });
+      }
+    });
+
+    // Update AST
+    asts = allDocuments.map<[string, AST?]>(([wsFolderUri, documents]) => [wsFolderUri, documents ? new AST(documents) : undefined]);
+    // Send Diagnostics
+    asts.forEach(([_, ast]) => ast?.getDiagnostics().forEach(diag => connection.sendDiagnostics(diag)));
+
   });
 
   // connection.onDidChangeTextDocument((params) => {
