@@ -44,8 +44,12 @@ export function server(connection: Connection): void {
         // completionProvider: {
         //   resolveProvider: true
         // }
+
         // Tell the client that this server supports code actions.
         // codeActionProvider: true
+
+        // Tell the client that this server support hover.
+        hoverProvider: true
       }
     };
     if (hasWorkspaceFolderCapability) {

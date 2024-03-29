@@ -1,4 +1,4 @@
-import { TextDocument } from "vscode-languageserver-textdocument";
+import { Position, TextDocument } from "vscode-languageserver-textdocument";
 
 import { PackageV1, PackageV2 } from "./Package";
 import { AllDocuments } from "../utils/document";
@@ -15,20 +15,20 @@ export class ASTs {
     this.asts = allDocuments.getAllDocuments().map<[string, AST?]>(([wsFolderUri, documents]) => [wsFolderUri, documents ? new AST(documents) : undefined]);
   }
 
-  getASTByPackageUri(packageUri: string): AST | undefined {
+  getAstByPackageUri(packageUri: string) {
     return this.asts.find(([uri]) => uri === packageUri)?.[1];
   }
 
-  getASTsByPackageUri(packageUri: string) {
-    return this.asts.filter(([uri]) => uri === packageUri);
+  getAllAstByPackageUri(packageUri: string) {
+    return this.asts.flatMap(([uri, ast]) => uri === packageUri && ast ? ast : []);
   }
 
-  getASTByDocumentUri(documentUri: string) {
+  getAstByDocumentUri(documentUri: string) {
     return this.asts.find(([uri]) => documentUri.startsWith(uri))?.[1];
   }
 
-  getASTsByDocumentUri(documentUri: string) {
-    return this.asts.filter(([uri]) => documentUri.startsWith(uri));
+  getAllAstByDocumentUri(documentUri: string) {
+    return this.asts.flatMap(([uri, ast]) => documentUri.startsWith(uri) && ast ? ast : []);
   }
 
   getDiagnostics(documentUri?: string) {
@@ -170,6 +170,12 @@ export class AST {
       ...this.packagesV1.flatMap(p => p.getPublishDiagnosticsParams()),
       ...this.packagesV2.flatMap(p => p.getPublishDiagnosticsParams())
     ];
+  }
+
+  // Get all hover info
+  getHover(uri: string, position: Position): string[] {
+    // TODO: return text with range
+    return ["test hover info"];
   }
 
   // getPos(sourcePath: string, address: string) {
