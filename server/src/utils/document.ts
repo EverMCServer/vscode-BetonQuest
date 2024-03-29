@@ -3,13 +3,11 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { FileTreeParams, FilesResponse } from "betonquest-utils/lsp/file";
 
-import { TextDocumentsArray } from "./types";
-
 // All Documents by workspace
 export class AllDocuments {
-  private allDocuments: [string, TextDocumentsArray?][] = [];
+  private allDocuments: [string, TextDocument[]?][] = [];
 
-  constructor(allDocuments: [string, TextDocumentsArray?][]) {
+  constructor(allDocuments: [string, TextDocument[]?][]) {
     this.allDocuments = allDocuments;
   }
 
@@ -20,13 +18,13 @@ export class AllDocuments {
   insertDocument(uri: string, content: string) {
     this.allDocuments.forEach(([wsFolderUri, documents]) => {
       if (uri.startsWith(wsFolderUri)) {
-        const entry: [string, TextDocument] = [uri, TextDocument.create(uri, 'yaml', 0, content)];
-        const i = documents?.findIndex(([u]) => u === uri);
+        const doc: TextDocument = TextDocument.create(uri, 'yaml', 0, content);
+        const i = documents?.findIndex((d) => d.uri === uri);
         if (i && i > -1) {
-          documents![i] = entry;
+          documents![i] = doc;
           return;
         }
-        documents?.push(entry);
+        documents?.push(doc);
       }
     });
   }
@@ -35,13 +33,13 @@ export class AllDocuments {
     this.allDocuments
       .filter(([wsFolderUri, docs]) => document.uri.startsWith(wsFolderUri) && docs)
       .forEach(([_, docs]) => {
-        let doc: [string, TextDocument] | undefined;
-        if ((doc = docs!.find(([uri]) => uri === document.uri)) !== undefined) {
+        let i: number;
+        if ((i = docs!.findIndex((doc) => doc.uri === document.uri)) > -1) {
           // Update
-          doc[1] = document;
+          docs![i] = document;
         } else {
           // Create
-          docs!.push([document.uri, document]);
+          docs!.push(document);
         }
       });
   }
@@ -49,9 +47,9 @@ export class AllDocuments {
   updateDocumentContent(uri: string, content: string) {
     this.allDocuments.forEach(([wsFolderUri, documents]) => {
       if (uri.startsWith(wsFolderUri)) {
-        documents?.forEach(([u, document], i) => {
-          if (u === uri) {
-            documents[i] = [uri, TextDocument.create(uri, 'yaml', document.version, content)];
+        documents?.forEach((document, i) => {
+          if (document.uri === uri) {
+            documents[i] = TextDocument.create(uri, 'yaml', document.version, content);
           }
         });
       }
@@ -63,13 +61,13 @@ export class AllDocuments {
       if (!uri.startsWith(wsFolderUri)) {
         return [wsFolderUri, documents];
       }
-      return [wsFolderUri, documents?.filter(([u]) => u !== uri)];
+      return [wsFolderUri, documents?.filter((d) => d.uri !== uri)];
     });
   }
 }
 
 export async function getAllDocuments(connection: Connection, workspaceFolders: WorkspaceFolder[] | null | undefined) {
-  let allDocs: [string, TextDocumentsArray?][] = [];
+  let allDocs: [string, TextDocument[]?][] = [];
 
   // Obtain docuemtns from client
   allDocs = await Promise.all(workspaceFolders!.flatMap(async wsFolder => {
@@ -86,9 +84,9 @@ export async function getAllDocuments(connection: Connection, workspaceFolders: 
       let files = await connection.sendRequest<FilesResponse>('custom/files', a);
 
       // Convert files into documents
-      const documents: TextDocumentsArray = files.map(([uri, content]) => {
+      const documents: TextDocument[] = files.map(([uri, content]) => {
         // connection.console.log("file: " + uri + " size: " + content.length + " content: " + content);
-        return [uri, TextDocument.create(uri, 'yaml', 0, content)];
+        return TextDocument.create(uri, 'yaml', 0, content);
       });
 
       return [wsFolder.uri, documents];
