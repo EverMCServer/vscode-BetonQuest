@@ -1,9 +1,9 @@
-import { CodeAction, CodeActionKind, Command, Connection, DidChangeConfigurationNotification, FileChangeType, FileEvent, HandlerResult, InitializeParams, InitializeResult, ResponseError, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
+import { CodeAction, CodeActionKind, Command, Connection, DidChangeConfigurationNotification, FileChangeType, HandlerResult, InitializeParams, InitializeResult, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { FilesResponse } from 'betonquest-utils/lsp/file';
-import { getAllDocuments } from './utils/document';
-import { TextDocumentsArray } from './utils/types';
-import { AST } from './ast/ast';
+import { AllDocuments, getAllDocuments } from './utils/document';
+import { ASTs } from './ast/ast';
+import { hoverHandler } from './service/hover';
 
 // Create a simple text document manager.
 let documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
@@ -16,8 +16,8 @@ let workspaceFolders: WorkspaceFolder[] | null | undefined;
 
 export function server(connection: Connection): void {
 
-  let allDocuments: [string, TextDocumentsArray?][] = [];
-  let asts: [string, AST?][] = [];
+  let allDocuments: AllDocuments = new AllDocuments([]); // Document Tree
+  let asts: ASTs = new ASTs(allDocuments); // All AST by workspace folders
 
   connection.onInitialize((params: InitializeParams) => {
     workspaceFolders = params.workspaceFolders;
@@ -75,9 +75,9 @@ export function server(connection: Connection): void {
           workspaceFolders = folders;
           connection.console.log('WorkspaceFolders: ' + workspaceFolders?.map(e => e.name + ":" + e.uri).concat(" "));
           allDocuments = await getAllDocuments(connection, workspaceFolders);
-          asts = allDocuments.map<[string, AST?]>(([wsFolderUri, documents]) => [wsFolderUri, documents ? new AST(documents) : undefined]);
+          asts.updateDocuments(allDocuments);
           // Send Diagnostics
-          asts.forEach(([_, ast]) => ast?.getDiagnostics().forEach(diag => connection.sendDiagnostics(diag)));
+          asts.getDiagnostics().forEach(diag => connection.sendDiagnostics(diag));
         });
       });
     }
@@ -86,9 +86,9 @@ export function server(connection: Connection): void {
     // 2. request all files from client, through message channel
     // 3. construct the AST for each folder
     allDocuments = await getAllDocuments(connection, workspaceFolders);
-    asts = allDocuments.map<[string, AST?]>(([wsFolderUri, documents]) => [wsFolderUri, documents ? new AST(documents) : undefined]);
+    asts.updateDocuments(allDocuments);
     // Send Diagnostics
-    asts.forEach(([_, ast]) => ast?.getDiagnostics().forEach(diag => connection.sendDiagnostics(diag)));
+    asts.getDiagnostics().forEach(diag => connection.sendDiagnostics(diag));
   });
 
   // Listen to file changed event outside VSCode.
@@ -111,46 +111,23 @@ export function server(connection: Connection): void {
         const content = fileResponse.find(([uri]) => uri === change.uri)?.[1];
         if (content) {
           if (change.type === FileChangeType.Created) {
-            // Create document content
-            allDocuments.forEach(([wsFolderUri, documents]) => {
-              if (change.uri.startsWith(wsFolderUri)) {
-                const entry: [string, TextDocument] = [change.uri, TextDocument.create(change.uri, 'yaml', 0, content!)];
-                const i = documents?.findIndex(([uri]) => uri === change.uri);
-                if (i && i > -1) {
-                  documents![i] = entry;
-                  return;
-                }
-                documents?.push(entry);
-              }
-            });
+            // Create new document on the document list
+            allDocuments.insertDocument(change.uri, content);
           } else if (change.type === FileChangeType.Changed) {
             // Search and replace document's content
-            allDocuments.forEach(([wsFolderUri, documents]) => {
-              if (change.uri.startsWith(wsFolderUri)) {
-                documents?.forEach(([uri, document], i) => {
-                  if (uri === change.uri) {
-                    documents[i] = [change.uri, TextDocument.create(change.uri, 'yaml', document.version, content!)];
-                  }
-                });
-              }
-            });
+            allDocuments.updateDocumentContent(change.uri, content);
           }
         }
       } else if (change.type === FileChangeType.Deleted) {
         // Remove document from allDocuments file tree
-        allDocuments = allDocuments.map(([wsFolderUri, documents]) => {
-          if (!change.uri.startsWith(wsFolderUri)) {
-            return [wsFolderUri, documents];
-          }
-          return [wsFolderUri, documents?.filter(([uri]) => uri !== change.uri)];
-        });
+        allDocuments.removeDocument(change.uri);
       }
     });
 
     // Update AST
-    asts = allDocuments.map<[string, AST?]>(([wsFolderUri, documents]) => [wsFolderUri, documents ? new AST(documents) : undefined]);
+    asts.updateDocuments(allDocuments);
     // Send Diagnostics
-    asts.forEach(([_, ast]) => ast?.getDiagnostics().forEach(diag => connection.sendDiagnostics(diag)));
+    asts.getDiagnostics().forEach(diag => connection.sendDiagnostics(diag));
 
   });
 
@@ -163,20 +140,16 @@ export function server(connection: Connection): void {
     connection.console.log("document " + e.document.uri + " changed. version:" + e.document.version);
     // TODO: only update the changed file
     // 1. Update the changed document on allDocuments cache
-    allDocuments.filter(([wsFolderUri, docs]) => e.document.uri.startsWith(wsFolderUri) && docs).forEach(([_, docs]) => {
-      let doc: [string, TextDocument] | undefined;
-      if ((doc = docs!.find(([uri]) => uri === e.document.uri)) !== undefined) {
-        // Update
-        doc[1] = e.document;
-      } else {
-        // Create
-        docs!.push([e.document.uri, e.document]);
-      }
-    });
+    allDocuments.updateDocument(e.document);
     // 2. Update the AST
-    asts = allDocuments.map<[string, AST?]>(([wsFolderUri, documents]) => [wsFolderUri, documents ? new AST(documents) : undefined]);
+    asts.updateDocuments(allDocuments);
     // Send Diagnostics
-    asts.forEach(([_, ast]) => ast?.getDiagnostics().forEach(diag => connection.sendDiagnostics(diag)));
+    asts.getDiagnostics().forEach(diag => connection.sendDiagnostics(diag));
+  });
+
+  // Listen on Hover event
+  connection.onHover((params, token, workDoneProgress, resultProgress) => {
+    return hoverHandler(asts, params, token, workDoneProgress, resultProgress);
   });
 
   // Listen to actions, e.g. quick fixes

@@ -2,9 +2,44 @@ import { Pair, Scalar } from "yaml";
 
 import { PackageV1, PackageV2 } from "./Package";
 import { TextDocumentsArray } from "../utils/types";
-import { Connection } from "vscode-languageserver";
+import { AllDocuments } from "../utils/document";
 
-// AST structure for BetonQuest V1
+// AST by workspace folders
+export class ASTs {
+  asts: [string, (AST | undefined)?][] = [];
+
+  constructor(allDocuments: AllDocuments) {
+    this.updateDocuments(allDocuments);
+  }
+
+  updateDocuments(allDocuments: AllDocuments) {
+    this.asts = allDocuments.getAllDocuments().map<[string, AST?]>(([wsFolderUri, documents]) => [wsFolderUri, documents ? new AST(documents) : undefined]);
+  }
+
+  getASTByPackageUri(packageUri: string): AST | undefined {
+    return this.asts.find(([uri]) => uri === packageUri)?.[1];
+  }
+
+  getASTsByPackageUri(packageUri: string) {
+    return this.asts.filter(([uri]) => uri === packageUri);
+  }
+
+  getASTByDocumentUri(documentUri: string) {
+    return this.asts.find(([uri]) => documentUri.startsWith(uri))?.[1];
+  }
+
+  getASTsByDocumentUri(documentUri: string) {
+    return this.asts.filter(([uri]) => documentUri.startsWith(uri));
+  }
+
+  getDiagnostics(documentUri?: string) {
+    // TODO: filter by documentUri
+    return this.asts.map(([, ast]) => ast?.getDiagnostics() ?? []).flat();
+  }
+
+}
+
+// AST structure for BetonQuest V1 & V2
 export class AST {
   packagesV1: PackageV1[] = [];
   packagesV2: PackageV2[] = [];
