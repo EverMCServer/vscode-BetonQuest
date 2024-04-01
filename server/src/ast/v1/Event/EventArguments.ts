@@ -1,7 +1,8 @@
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ArgumentsPatternMandatory, ArgumentsPatternOptional, ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
-import { kinds } from "betonquest-utils/betonquest/v1/Events";
+import { ElementKind } from "betonquest-utils/betonquest/v1/Element";
+import Event from "betonquest-utils/betonquest/Event";
 
 import { EventArgumentsType, Node } from "../../node";
 import { EventEntry } from "./EventEntry";
@@ -24,7 +25,7 @@ export class EventArguments implements Node<EventArgumentsType> {
   argumentsMandatory: EventArgument[] = [];
   argumentsOptional: EventArgument[] = [];
 
-  constructor(kindStr: string, argumentsSourceStr: string, range: [number?, number?], indent: number, parent?: EventEntry) {
+  constructor(kindConfig: ElementKind<Event> | undefined, argumentsSourceStr: string, range: [number?, number?], indent: number, parent?: EventEntry) {
     this.uri = parent?.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
@@ -44,7 +45,6 @@ export class EventArguments implements Node<EventArgumentsType> {
     }
 
     // Search ArgumentsPatterns from V1 Event List
-    const kindConfig = kinds.find(k => k.value === kindStr) ?? kinds.find(k => k.value === "*");
     const argumentsPatterns: ArgumentsPatterns = kindConfig?.argumentsPatterns ?? { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] };
 
     // Cache arguments

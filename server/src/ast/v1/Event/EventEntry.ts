@@ -62,17 +62,17 @@ export class EventEntry implements Node<EventEntryType> {
       return;
     }
     const kindStr = matched[1];
+    const kind = kinds.find(k => k.value === kindStr.toLowerCase()) ?? kinds.find(k => k.value === "*");
     const offsetKindStart = offsetStart + (pair.value?.srcToken?.type === 'block-scalar' ? 0 : matched.index);
     const offsetKindEnd = offsetKindStart + kindStr.length;
-    this.eventKind = new EventKind(kindStr, [offsetStart, offsetKindEnd], this);
+    this.eventKind = new EventKind(kindStr, [offsetStart, offsetKindEnd], kind, this);
 
     // Parse Arguments
     const argumentsSourceStr = matched[3];
     if (!argumentsSourceStr) {
       // Check if kind do not need any arguments by kinds list,
       // If not, throw diagnostic
-      const kind = kinds.find(k => k.value === kindStr);
-      if (kind && kind.argumentsPatterns.mandatory.length > 0) {
+      if (kind && kind.value !== "*" && kind.argumentsPatterns.mandatory.length > 0) {
         const _offsetStart = offsetKindEnd;
         this.diagnostics?.push({
           severity: DiagnosticSeverity.Error,
@@ -85,7 +85,7 @@ export class EventEntry implements Node<EventEntryType> {
     }
     const offsetArgumentsStart = offsetKindEnd ? offsetKindEnd + matched[2].length : undefined;
     // Parse each individual arguments
-    this.eventArguments = new EventArguments(kindStr, argumentsSourceStr, [offsetArgumentsStart, offsetEnd], indent, this);
+    this.eventArguments = new EventArguments(argumentsSourceStr, [offsetArgumentsStart, offsetEnd], indent, kind, this);
   }
 
   getRangeByOffset(offsetStart: number, offsetEnd: number) {

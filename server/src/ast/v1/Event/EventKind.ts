@@ -1,3 +1,5 @@
+import { ElementKind } from "betonquest-utils/betonquest/v1/Element";
+import Event from "betonquest-utils/betonquest/Event";
 import { EventKindType, Node } from "../../node";
 import { EventEntry } from "./EventEntry";
 
@@ -9,13 +11,15 @@ export class EventKind implements Node<EventKindType> {
   parent?: EventEntry;
 
   value: string;
+  kindConfig?: ElementKind<Event>;
 
-  constructor(value: string, range: [number?, number?], parent?: EventEntry) {
+  constructor(value: string, range: [number?, number?], kindConfig?: ElementKind<Event>, parent?: EventEntry) {
     this.uri = parent?.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
     this.parent = parent;
 
     this.value = value;
+    this.kindConfig = kindConfig;
   }
 }
