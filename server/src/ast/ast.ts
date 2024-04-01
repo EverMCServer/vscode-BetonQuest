@@ -5,7 +5,7 @@ import { AllDocuments } from "../utils/document";
 
 // AST by workspace folders
 export class ASTs {
-  asts: [string, (AST | undefined)?][] = [];
+  asts: [uri: string, ast?: (AST | undefined)][] = [];
 
   constructor(allDocuments: AllDocuments) {
     this.updateDocuments(allDocuments);
@@ -173,9 +173,13 @@ export class AST {
   }
 
   // Get all hover info
-  getHover(uri: string, position: Position): string[] {
+  getHoverInfo(uri: string, offset: number): string[] {
     // TODO: return text with range
-    return ["test hover info"];
+    // return ["test `hover` info", "block 2"];
+    return [
+      ...this.packagesV1.flatMap(p => p.getHoverInfo(uri, offset)),
+      ...this.packagesV2.flatMap(p => p.getHoverInfo(uri, offset))
+    ];
   }
 
   // getPos(sourcePath: string, address: string) {

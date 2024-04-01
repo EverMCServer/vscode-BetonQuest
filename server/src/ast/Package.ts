@@ -69,6 +69,14 @@ export class PackageV1 extends Package<PackageV1Type> {
     }
     return diagnostics;
   }
+
+  getHoverInfo(uri: string, offset: number): string[] {
+    let result: string[] = [];
+    if (this.eventList) {
+      result.push(...this.eventList.getHoverInfo(uri, offset));
+    }
+    return result;
+  }
 }
 
 export class PackageV2 extends Package<PackageV2Type> {
@@ -90,5 +98,10 @@ export class PackageV2 extends Package<PackageV2Type> {
     const diagnostics: PublishDiagnosticsParams[] = [];
     // TODO ...
     return diagnostics;
+  }
+
+  getHoverInfo(uri: string, offset: number): string[] {
+    // TODO ...
+    return [];
   }
 }

@@ -153,7 +153,7 @@ export function server(connection: Connection): void {
 
   // Listen on Hover event
   connection.onHover((params, token, workDoneProgress, resultProgress) => {
-    return hoverHandler(asts, params, token, workDoneProgress, resultProgress);
+    return hoverHandler(allDocuments, asts, params, token, workDoneProgress, resultProgress);
   });
 
   // Listen to actions, e.g. quick fixes

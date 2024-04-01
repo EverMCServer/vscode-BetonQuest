@@ -25,7 +25,7 @@ export class EventArguments implements Node<EventArgumentsType> {
   argumentsMandatory: EventArgument[] = [];
   argumentsOptional: EventArgument[] = [];
 
-  constructor(kindConfig: ElementKind<Event> | undefined, argumentsSourceStr: string, range: [number?, number?], indent: number, parent?: EventEntry) {
+  constructor(argumentsSourceStr: string, range: [number?, number?], indent: number, kindConfig?: ElementKind<Event>, parent?: EventEntry) {
     this.uri = parent?.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
@@ -197,5 +197,12 @@ export class EventArguments implements Node<EventArgumentsType> {
       diagnostics.push(...this.argumentsOptional.flatMap(a => a.getDiagnostics()));
     }
     return diagnostics;
+  }
+
+  getHoverInfo(uri: string, offset: number): string[] {
+    if (this.offsetStart && this.offsetEnd && this.offsetStart <= offset && this.offsetEnd >= offset) {
+      return [];
+    }
+    return [];
   }
 }

@@ -22,4 +22,11 @@ export class EventKind implements Node<EventKindType> {
     this.value = value;
     this.kindConfig = kindConfig;
   }
+
+  getHoverInfo(uri: string, offset: number): string[] {
+    if (this.offsetStart && this.offsetEnd && this.offsetStart <= offset && this.offsetEnd >= offset) {
+      return ["(event) "+ this.kindConfig?.value];
+    }
+    return [];
+  }
 }

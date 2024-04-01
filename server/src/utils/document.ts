@@ -1,13 +1,13 @@
-import { Connection, ResponseError, WorkspaceFolder } from "vscode-languageserver";
+import { Connection, Position, Range, ResponseError, WorkspaceFolder } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { FileTreeParams, FilesResponse } from "betonquest-utils/lsp/file";
 
 // All Documents by workspace
 export class AllDocuments {
-  private allDocuments: [string, TextDocument[]?][] = [];
+  private allDocuments: [wsUri: string, documents?: TextDocument[]][] = [];
 
-  constructor(allDocuments: [string, TextDocument[]?][]) {
+  constructor(allDocuments: [wsUri: string, documents?: TextDocument[]][]) {
     this.allDocuments = allDocuments;
   }
 
@@ -63,6 +63,51 @@ export class AllDocuments {
       }
       return [wsFolderUri, documents?.filter((d) => d.uri !== uri)];
     });
+  }
+
+  getOffsetByPosition(uri: string, position: Position) {
+    return this.allDocuments.
+      find(([u]) => uri.startsWith(u))?.[1]?.
+      find((d) => d.uri === uri)?.
+      offsetAt(position) ?? 0;
+  }
+
+  getOffsetByRange(uri: string, range: Range) {
+    const doc = this.allDocuments.
+      find(([u]) => uri.startsWith(u))?.[1]?.
+      find((d) => d.uri === uri);
+
+    if (doc) {
+      const start = doc.offsetAt(range.start);
+      const end = doc.offsetAt(range.end);
+      return [start, end];
+    }
+    return [0, 0];
+  }
+
+  getPositionByOffset(uri: string, offset: number) {
+    const doc = this.allDocuments.
+      find(([u]) => uri.startsWith(u))?.[1]?.
+      find((d) => d.uri === uri);
+
+    if (doc) {
+      return doc.positionAt(offset);
+    }
+    return Position.create(0, 0);
+  }
+
+  getRangeByOffsets(uri: string, range: [start: number, end: number]) {
+    const [start, end] = range;
+    const doc = this.allDocuments.
+      find(([u]) => uri.startsWith(u))?.[1]?.
+      find((d) => d.uri === uri);
+
+    if (doc) {
+      const s = doc.positionAt(start);
+      const e = doc.positionAt(end);
+      return Range.create(s.line, s.character, e.line, e.character);
+    }
+    return Range.create(0, 0, 0, 0);
   }
 }
 

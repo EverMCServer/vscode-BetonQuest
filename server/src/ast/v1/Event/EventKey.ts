@@ -19,4 +19,11 @@ export class EventKey implements Node<EventKeyType> {
 
     this.value = key.value;
   }
+
+  getHoverInfo(uri: string, offset: number): string[] {
+    if (this.offsetStart && this.offsetEnd && this.offsetStart <= offset && this.offsetEnd >= offset) {
+      return ["(full path: " + this.value + ")"];
+    }
+    return [];
+  }
 }

@@ -104,4 +104,18 @@ export class EventEntry implements Node<EventEntryType> {
     }
     return diagnostics;
   }
+
+  getHoverInfo(uri: string, offset: number): string[] {
+    if (this.offsetStart && this.offsetEnd && this.offsetStart <= offset && this.offsetEnd >= offset) {
+      const hoverInfo: string[][] = [this.eventKey.getHoverInfo(uri, offset)];
+      if (this.eventKind) {
+        hoverInfo.push(this.eventKind.getHoverInfo(uri, offset));
+      }
+      if (this.eventArguments) {
+        hoverInfo.push(this.eventArguments.getHoverInfo(uri, offset));
+      }
+      return hoverInfo.flat();
+    }
+    return [];
+  }
 }

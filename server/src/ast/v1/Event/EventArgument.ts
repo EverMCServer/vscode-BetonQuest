@@ -36,4 +36,11 @@ export class EventArgument implements Node<EventArgumentType> {
   getDiagnostics() {
     return this.diagnostics;
   }
+
+  getHoverInfo(uri: string, offset: number): string[] {
+    if (this.offsetStart && this.offsetEnd && this.offsetStart <= offset && this.offsetEnd >= offset) {
+      return [];
+    }
+    return [];
+  }
 }
