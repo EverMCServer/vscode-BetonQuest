@@ -10,6 +10,7 @@ import { EventArgument } from "./EventArgument";
 import { EventArgumentMandatory } from "./EventArgumentMandatory";
 import { EventArgumentOptional } from "./EventArgumentOptional";
 import { DiagnosticCode } from "../../../utils/diagnostics";
+import { HoverInfo } from "../../../utils/hover";
 
 export class EventArguments implements Node<EventArgumentsType> {
   type: "EventArguments" = "EventArguments";
@@ -199,7 +200,7 @@ export class EventArguments implements Node<EventArgumentsType> {
     return diagnostics;
   }
 
-  getHoverInfo(uri: string, offset: number): string[] {
+  getHoverInfo(uri: string, offset: number): HoverInfo[] {
     if (this.offsetStart && this.offsetEnd && this.offsetStart <= offset && this.offsetEnd >= offset) {
       return [];
     }

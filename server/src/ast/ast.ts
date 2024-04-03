@@ -2,6 +2,7 @@ import { Position, TextDocument } from "vscode-languageserver-textdocument";
 
 import { PackageV1, PackageV2 } from "./Package";
 import { AllDocuments } from "../utils/document";
+import { HoverInfo } from "../utils/hover";
 
 // AST by workspace folders
 export class ASTs {
@@ -173,7 +174,7 @@ export class AST {
   }
 
   // Get all hover info
-  getHoverInfo(uri: string, offset: number): string[] {
+  getHoverInfo(uri: string, offset: number): HoverInfo[] {
     // TODO: return text with range
     // return ["test `hover` info", "block 2"];
     return [

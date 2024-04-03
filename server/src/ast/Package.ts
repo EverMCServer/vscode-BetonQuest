@@ -3,6 +3,7 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { ConditionListType, ConversationListType, EventListType, Node, ObjectiveListType, PackageTypes, PackageV1Type, PackageV2Type } from "./node";
 import { EventList } from "./v1/Event/EventList";
+import { HoverInfo } from "../utils/hover";
 
 export abstract class Package<T extends PackageTypes> implements Node<T> {
   type: T;
@@ -70,8 +71,8 @@ export class PackageV1 extends Package<PackageV1Type> {
     return diagnostics;
   }
 
-  getHoverInfo(uri: string, offset: number): string[] {
-    let result: string[] = [];
+  getHoverInfo(uri: string, offset: number) {
+    let result = [];
     if (this.eventList) {
       result.push(...this.eventList.getHoverInfo(uri, offset));
     }
@@ -100,7 +101,7 @@ export class PackageV2 extends Package<PackageV2Type> {
     return diagnostics;
   }
 
-  getHoverInfo(uri: string, offset: number): string[] {
+  getHoverInfo(uri: string, offset: number): HoverInfo[] {
     // TODO ...
     return [];
   }

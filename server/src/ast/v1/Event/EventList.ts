@@ -69,7 +69,7 @@ export class EventList implements Node<EventListType> {
     } as PublishDiagnosticsParams;
   }
 
-  getHoverInfo(uri: string, offset: number): string[] {
+  getHoverInfo(uri: string, offset: number) {
     if (this.offsetStart && this.offsetEnd && this.offsetStart <= offset && this.offsetEnd >= offset) {
       return this.entries.flatMap(e => e.getHoverInfo(uri, offset));
     }

@@ -1,6 +1,7 @@
 import { Scalar } from "yaml";
 import { EventKeyType, Node } from "../../node";
 import { EventEntry } from "./EventEntry";
+import { HoverInfo } from "../../../utils/hover";
 
 export class EventKey implements Node<EventKeyType> {
   type: "EventKey" = "EventKey";
@@ -20,9 +21,14 @@ export class EventKey implements Node<EventKeyType> {
     this.value = key.value;
   }
 
-  getHoverInfo(uri: string, offset: number): string[] {
+  getHoverInfo(uri: string, offset: number): HoverInfo[] {
     if (this.offsetStart && this.offsetEnd && this.offsetStart <= offset && this.offsetEnd >= offset) {
-      return ["(full path: " + this.value + ")"];
+      return [
+        {
+          content: "(full path: " + this.value + ")",
+          offset: [this.offsetStart, this.offsetEnd]
+        },
+      ];
     }
     return [];
   }

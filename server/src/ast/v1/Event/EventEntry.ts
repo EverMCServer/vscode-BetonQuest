@@ -65,7 +65,7 @@ export class EventEntry implements Node<EventEntryType> {
     const kind = kinds.find(k => k.value === kindStr.toLowerCase()) ?? kinds.find(k => k.value === "*");
     const offsetKindStart = offsetStart + (pair.value?.srcToken?.type === 'block-scalar' ? 0 : matched.index);
     const offsetKindEnd = offsetKindStart + kindStr.length;
-    this.eventKind = new EventKind(kindStr, [offsetStart, offsetKindEnd], kind, this);
+    this.eventKind = new EventKind(kindStr, [offsetKindStart, offsetKindEnd], kind, this);
 
     // Parse Arguments
     const argumentsSourceStr = matched[3];
@@ -105,9 +105,9 @@ export class EventEntry implements Node<EventEntryType> {
     return diagnostics;
   }
 
-  getHoverInfo(uri: string, offset: number): string[] {
+  getHoverInfo(uri: string, offset: number) {
     if (this.offsetStart && this.offsetEnd && this.offsetStart <= offset && this.offsetEnd >= offset) {
-      const hoverInfo: string[][] = [this.eventKey.getHoverInfo(uri, offset)];
+      const hoverInfo = [this.eventKey.getHoverInfo(uri, offset)];
       if (this.eventKind) {
         hoverInfo.push(this.eventKind.getHoverInfo(uri, offset));
       }
