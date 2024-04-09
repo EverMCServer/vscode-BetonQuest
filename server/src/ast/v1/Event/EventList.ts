@@ -5,6 +5,7 @@ import { Scalar, YAMLMap, parseDocument } from "yaml";
 import { EventListType, Node } from "../../node";
 import { EventEntry } from "./EventEntry";
 import { PackageV1 } from "../../Package";
+import { LocationsResponse } from "betonquest-utils/lsp/file";
 
 // const toStringArguments: ToStringArguments = {
 //   doubleQuotedMinMultiLineLength: 0,
@@ -75,4 +76,17 @@ export class EventList implements Node<EventListType> {
     }
     return [];
   }
+
+  getLocations(sourceUri: string, yamlPath: string[], packagePath?: string) {
+    const result: LocationsResponse = [];
+    const key = this.entries.find(e => e.eventKey.value === yamlPath[1])?.eventKey;
+    if (key) {
+      result.push({
+        uri: this.uri!,
+        offset: key.offsetStart,
+      });
+    }
+    return result;
+  }
+
 }

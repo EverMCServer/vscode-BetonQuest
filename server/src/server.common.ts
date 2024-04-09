@@ -1,9 +1,10 @@
 import { CodeAction, CodeActionKind, Command, Connection, DidChangeConfigurationNotification, FileChangeType, HandlerResult, InitializeParams, InitializeResult, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { FilesResponse } from 'betonquest-utils/lsp/file';
+import { FilesResponse, LocationsParams } from 'betonquest-utils/lsp/file';
 import { AllDocuments, getAllDocuments } from './utils/document';
 import { ASTs } from './ast/ast';
 import { hoverHandler } from './service/hover';
+import { locationsHandler } from './service/locations';
 
 // Create a simple text document manager.
 let documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
@@ -188,6 +189,11 @@ export function server(connection: Connection): void {
       );
     }
     return a;
+  });
+
+  // Register custom handlers
+  connection.onRequest("custom/locations", (params: LocationsParams) => {
+    return locationsHandler(allDocuments, asts, params);
   });
 
   // Make the text document manager listen on the connection

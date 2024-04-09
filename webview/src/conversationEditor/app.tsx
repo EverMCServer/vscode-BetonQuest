@@ -94,12 +94,11 @@ export default function app() {
     const [editorPathPointer, setEditorPathPointer] = useState<string[]>([]); // -> * editor *
     useEffect(() => {
         // Move the cursor on the YAML document
-        if (conversation.hasPath(documentPathPointer)) {
-            vscode.postMessage({
-                type: "cursor-yaml-path",
-                content: documentPathPointer,
-            });
-        }
+        vscode.postMessage({
+            type: "cursor-yaml-path",
+            content: documentPathPointer,
+            activateDocuemnt: true
+        });
     }, [documentPathPointer]);
 
     return (

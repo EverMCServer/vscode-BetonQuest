@@ -37,6 +37,16 @@ export class ASTs {
     return this.asts.map(([, ast]) => ast?.getDiagnostics() ?? []).flat();
   }
 
+  /**
+   * Get uri + offset / position by abstract YAML path.
+   * @param sourceUri The URI of the document to begin searching locations from. It is used to determine the package to search in.
+   * @param yamlPath The abstract YAML path to search for.
+   * @param packagePath The package path to search for.
+   */
+  getLocations(sourceUri: string, yamlPath: string[], packagePath?: string) {
+    return this.asts.flatMap(([, ast]) => ast?.getLocations(sourceUri, yamlPath, packagePath) ?? []);
+  }
+
 }
 
 // AST structure for BetonQuest V1 & V2
@@ -180,6 +190,13 @@ export class AST {
     return [
       ...this.packagesV1.flatMap(p => p.getHoverInfo(uri, offset)),
       ...this.packagesV2.flatMap(p => p.getHoverInfo(uri, offset))
+    ];
+  }
+
+  getLocations(sourceUri: string, yamlPath: string[], packagePath?: string) {
+    return [
+      ...this.packagesV1.flatMap(p => p.getLocations(sourceUri, yamlPath, packagePath)),
+      ...this.packagesV2.flatMap(p => p.getLocations(sourceUri, yamlPath, packagePath))
     ];
   }
 

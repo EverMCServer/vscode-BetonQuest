@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
+import { BaseLanguageClient } from 'vscode-languageclient/lib/common/client';
+
 import findYamlNodeByOffset from 'betonquest-utils/yaml/findYamlNodeByOffset';
 import findOffestByYamlNode from 'betonquest-utils/yaml/findOffestByYamlNode';
-import { BaseLanguageClient } from 'vscode-languageclient/lib/common/client';
+import { LocationsResponse, LocationsParams } from 'betonquest-utils/lsp/file';
 
 interface InitialConfig {
     // translationSelection?: string,
@@ -110,8 +112,9 @@ export class ExampleEditorProvider implements vscode.CustomTextEditorProvider {
         });
 
         // Receive message from the webview.
-        const onDidReceiveMessage = webviewPanel.webview.onDidReceiveMessage(e => {
+        const onDidReceiveMessage = webviewPanel.webview.onDidReceiveMessage(async e => {
             let offset: number | undefined;
+            let jumpToDoc = document;
             switch (e.type) {
                 case 'webview-lifecycle':
                     switch (e.content) {
@@ -147,25 +150,40 @@ export class ExampleEditorProvider implements vscode.CustomTextEditorProvider {
                 // Move cursor on text editor.
                 // @ts-ignore
                 case 'cursor-yaml-path':
-                    offset = findOffestByYamlNode(e.content, document.getText());
+                    if (e.content.constructor === Array && e.content.length > 0) {
+                        if (e.content[0] === '@conditions' || e.content[0] === '@events') {
+                            // Get document uri and position from lspClient
+                            offset = 0;
+                            const response = await this.lspClient.sendRequest<LocationsResponse>("custom/locations", { sourceUri: document.uri.toString(), yamlPath: e.content } as LocationsParams);
+                            if (response) {
+                                offset = response[0].offset;
+                                jumpToDoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(response[0].uri));
+                            }
+                        } else {
+                            offset = findOffestByYamlNode(e.content, jumpToDoc.getText());
+                        }
+                    } else {
+                        return;
+                    }
                 case 'cursor-position':
-                    let curPos = document.positionAt(offset || e.content);
+                    let curPos = jumpToDoc.positionAt(offset || e.content);
                     if (e.activateDocuemnt) {
                         // Switch to the document if requested
                         let viewColumn = webviewPanel.viewColumn;
                         viewColumn = vscode.window.tabGroups.
                             all.flatMap(group => group.tabs).
-                            find(tab => tab.group.viewColumn !== viewColumn && tab.label === document.fileName.split("/").slice(-1)[0])?.group.viewColumn
+                            find(tab => tab.group.viewColumn !== viewColumn && tab.label === jumpToDoc.fileName.split("/").slice(-1)[0])?.group.viewColumn
                             || vscode.window.tabGroups.all.map(group => group.viewColumn).find(v => v !== webviewPanel.viewColumn)
                             || webviewPanel.viewColumn;
-                        vscode.window.showTextDocument(document.uri, { preview: false, viewColumn: viewColumn }).then(editor => {
-                            // Set the cursor position.
+                        vscode.window.showTextDocument(jumpToDoc.uri, { preview: false, viewColumn: viewColumn }).then(editor => {
+                            // Set the cursor position and scroll to it.
                             editor.selections = [new vscode.Selection(curPos, curPos)];
+                            editor.revealRange(new vscode.Range(curPos, curPos));
                         });
                     } else {
                         // Iterate all opened documents, set the cursor position.
                         for (const editor of vscode.window.visibleTextEditors) {
-                            if (editor.document.uri.toString() === document.uri.toString()) {
+                            if (editor.document.uri.toString() === jumpToDoc.uri.toString()) {
                                 editor.selections = [new vscode.Selection(curPos, curPos)];
                             }
                         }

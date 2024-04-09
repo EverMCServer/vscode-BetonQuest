@@ -116,12 +116,11 @@ export default function app() {
     const [editorPathPointer, setEditorPathPointer] = useState<string[]>([]); // -> * editor *
     useEffect(() => {
         // Move the cursor on the YAML document
-        if (pkg.hasPath(documentPathPointer)) {
-            vscode.postMessage({
-                type: "cursor-yaml-path",
-                content: documentPathPointer,
-            });
-        }
+        vscode.postMessage({
+            type: "cursor-yaml-path",
+            content: documentPathPointer,
+            activateDocuemnt: true
+        });
     }, [documentPathPointer]);
     useEffect(() => {
         // Expand collapse if pointer refer to a event, condition, objective or item.

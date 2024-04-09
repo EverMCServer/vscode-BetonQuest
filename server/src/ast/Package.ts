@@ -4,10 +4,11 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { ConditionListType, ConversationListType, EventListType, Node, ObjectiveListType, PackageTypes, PackageV1Type, PackageV2Type } from "./node";
 import { EventList } from "./v1/Event/EventList";
 import { HoverInfo } from "../utils/hover";
+import { LocationsResponse } from "betonquest-utils/lsp/file";
 
 export abstract class Package<T extends PackageTypes> implements Node<T> {
   type: T;
-  uri?: string;
+  uri: string;
   abstract offsetStart?: number;
   abstract offsetEnd?: number;
 
@@ -16,7 +17,7 @@ export abstract class Package<T extends PackageTypes> implements Node<T> {
   abstract conditionList?: Node<ConditionListType>;
   abstract objectiveList?: Node<ObjectiveListType>;
 
-  constructor(type: T, packageUri?: string) {
+  constructor(type: T, packageUri: string) {
     this.type = type;
     this.uri = packageUri;
   }
@@ -78,6 +79,17 @@ export class PackageV1 extends Package<PackageV1Type> {
     }
     return result;
   }
+
+  getLocations(sourceUri: string, yamlPath: string[], packagePath?: string) {
+    const result: LocationsResponse = [];
+    if (!sourceUri.startsWith(this.uri)) {
+      return result;
+    }
+    if (yamlPath[0] === '@events' && this.eventList) {
+      result.push(...this.eventList.getLocations(sourceUri, yamlPath, packagePath));
+    }
+    return result;
+  }
 }
 
 export class PackageV2 extends Package<PackageV2Type> {
@@ -102,6 +114,11 @@ export class PackageV2 extends Package<PackageV2Type> {
   }
 
   getHoverInfo(uri: string, offset: number): HoverInfo[] {
+    // TODO ...
+    return [];
+  }
+
+  getLocations(sourceUri: string, yamlPath: string[], packagePath?: string) {
     // TODO ...
     return [];
   }

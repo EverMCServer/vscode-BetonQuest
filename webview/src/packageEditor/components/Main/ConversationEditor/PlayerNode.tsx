@@ -103,12 +103,12 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
 
   // Handle Conditions and Events' click
   const { setDocumentPathPointer, setEditorPathPointer } = useContext(YamlPathPointer);
-  const onConditionClick = (item: string, pos: number) => {
+  const onConditionDefinitionClick = (item: string, pos: number) => {
     // Broadcast Yaml Pointer
     setDocumentPathPointer(["conditions", item]);
     setEditorPathPointer(["conditions", item]);
   };
-  const onEventClick = (item: string, pos: number) => {
+  const onEventDefinitionClick = (item: string, pos: number) => {
     // Broadcast Yaml Pointer
     setDocumentPathPointer(["events", item]);
     setEditorPathPointer(["events", item]);
@@ -132,7 +132,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
           onRemove={(_, i) => conditionDel(i)}
           onSort={e => conditionsSet(e)}
           onChange={(_, __, e) => conditionsSet(e)}
-          onGotoClick={onConditionClick}
+          onGotoClick={onConditionDefinitionClick}
           onGotoClickTooltip={L("*.conversation.*.gotoConditionTooltip")}
           newTagText={<>+ {L("*.conversation.*.addCondition")}</>}
           tagTextPattern={/^[\S]+$/}
@@ -157,7 +157,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
           onRemove={(_, i) => eventDel(i)}
           onSort={e => eventsSet(e)}
           onChange={(_, __, e) => eventsSet(e)}
-          onGotoClick={onEventClick}
+          onGotoClick={onEventDefinitionClick}
           onGotoClickTooltip={L("*.conversation.*.gotoEventTooltip")}
           newTagText={<>+ {L("*.conversation.*.addEvent")}</>}
           tagTextPattern={/^[\S]+$/}
