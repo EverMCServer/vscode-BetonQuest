@@ -1,31 +1,31 @@
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 import { Pair, Scalar } from "yaml";
 
-import { kinds } from "betonquest-utils/betonquest/v1/Events";
+import { kinds } from "betonquest-utils/betonquest/v1/Conditions";
 
-import { EventEntryType, Node } from "../../node";
-import { EventKind } from "./EventKind";
-import { EventKey } from "./EventKey";
-import { EventArguments } from "./EventArguments";
-import { EventList } from "./EventList";
+import { ConditionEntryType, Node } from "../../node";
+import { ConditionKind } from "./ConditionKind";
+import { ConditionKey } from "./ConditionKey";
+import { ConditionArguments } from "./ConditionArguments";
+import { ConditionList } from "./ConditionList";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getScalarSourceAndRange } from "../../../utils/yaml";
 
-export class EventEntry implements Node<EventEntryType> {
-  type: EventEntryType = "EventEntry";
+export class ConditionEntry implements Node<ConditionEntryType> {
+  type: ConditionEntryType = "ConditionEntry";
   uri?: string;
   offsetStart?: number;
   offsetEnd?: number;
-  parent?: EventList;
+  parent?: ConditionList;
   diagnostics?: Diagnostic[] = [];
 
   yaml: Pair<Scalar<string>, Scalar<string>>;
 
-  eventKey: EventKey;
-  eventKind?: EventKind;
-  eventArguments?: EventArguments;
+  conditionKey: ConditionKey;
+  conditionKind?: ConditionKind;
+  conditionArguments?: ConditionArguments;
 
-  constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: EventList) {
+  constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: ConditionList) {
     this.uri = parent.uri;
     this.offsetStart = pair.key?.range?.[0];
     this.offsetEnd = pair.value?.range?.[1];
@@ -33,7 +33,7 @@ export class EventEntry implements Node<EventEntryType> {
     this.yaml = pair;
 
     // Parse YAML key
-    this.eventKey = new EventKey(pair.key, this);
+    this.conditionKey = new ConditionKey(pair.key, this);
 
     // Parse kind and arguments
     const [source, [offsetStart, offsetEnd, indent]] = getScalarSourceAndRange(pair.value);
@@ -65,7 +65,7 @@ export class EventEntry implements Node<EventEntryType> {
     const kind = kinds.find(k => k.value === kindStr.toLowerCase()) ?? kinds.find(k => k.value === "*");
     const offsetKindStart = offsetStart + (pair.value?.srcToken?.type === 'block-scalar' ? 0 : matched.index);
     const offsetKindEnd = offsetKindStart + kindStr.length;
-    this.eventKind = new EventKind(kindStr, [offsetKindStart, offsetKindEnd], kind, this);
+    this.conditionKind = new ConditionKind(kindStr, [offsetKindStart, offsetKindEnd], kind, this);
 
     // Parse Arguments
     const argumentsSourceStr = matched[3];
@@ -85,7 +85,7 @@ export class EventEntry implements Node<EventEntryType> {
     }
     const offsetArgumentsStart = offsetKindEnd ? offsetKindEnd + matched[2].length : undefined;
     // Parse each individual arguments
-    this.eventArguments = new EventArguments(argumentsSourceStr, [offsetArgumentsStart, offsetEnd], indent, kind, this);
+    this.conditionArguments = new ConditionArguments(argumentsSourceStr, [offsetArgumentsStart, offsetEnd], indent, kind, this);
   }
 
   getRangeByOffset(offsetStart: number, offsetEnd: number) {
@@ -99,20 +99,20 @@ export class EventEntry implements Node<EventEntryType> {
       diagnostics.push(...this.diagnostics);
     }
     // From Child arguments
-    if (this.eventArguments) {
-      diagnostics.push(...this.eventArguments.getDiagnostics());
+    if (this.conditionArguments) {
+      diagnostics.push(...this.conditionArguments.getDiagnostics());
     }
     return diagnostics;
   }
 
   getHoverInfo(uri: string, offset: number) {
     if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
-      const hoverInfo = [this.eventKey.getHoverInfo(uri, offset)];
-      if (this.eventKind) {
-        hoverInfo.push(this.eventKind.getHoverInfo(uri, offset));
+      const hoverInfo = [this.conditionKey.getHoverInfo(uri, offset)];
+      if (this.conditionKind) {
+        hoverInfo.push(this.conditionKind.getHoverInfo(uri, offset));
       }
-      if (this.eventArguments) {
-        hoverInfo.push(this.eventArguments.getHoverInfo(uri, offset));
+      if (this.conditionArguments) {
+        hoverInfo.push(this.conditionArguments.getHoverInfo(uri, offset));
       }
       return hoverInfo.flat();
     }

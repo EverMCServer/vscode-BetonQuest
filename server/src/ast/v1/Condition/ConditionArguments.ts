@@ -2,31 +2,31 @@ import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ArgumentsPatternMandatory, ArgumentsPatternOptional, ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
 import { ElementKind } from "betonquest-utils/betonquest/v1/Element";
-import Event from "betonquest-utils/betonquest/Event";
+import Condition from "betonquest-utils/betonquest/Condition";
 
-import { EventArgumentsType, Node } from "../../node";
-import { EventEntry } from "./EventEntry";
-import { EventArgument } from "./EventArgument";
-import { EventArgumentMandatory } from "./EventArgumentMandatory";
-import { EventArgumentOptional } from "./EventArgumentOptional";
+import { ConditionArgumentsType, Node } from "../../node";
+import { ConditionEntry } from "./ConditionEntry";
+import { ConditionArgument } from "./ConditionArgument";
+import { ConditionArgumentMandatory } from "./ConditionArgumentMandatory";
+import { ConditionArgumentOptional } from "./ConditionArgumentOptional";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { HoverInfo } from "../../../utils/hover";
 
-export class EventArguments implements Node<EventArgumentsType> {
-  type: EventArgumentsType = "EventArguments";
+export class ConditionArguments implements Node<ConditionArgumentsType> {
+  type: ConditionArgumentsType = "ConditionArguments";
   uri?: string;
   offsetStart?: number;
   offsetEnd?: number;
-  parent?: EventEntry;
+  parent?: ConditionEntry;
 
   diagnostics: Diagnostic[] = [];
 
   indent: number;
   // argumentsStrs: string[] = [];
-  argumentsMandatory: EventArgument[] = [];
-  argumentsOptional: EventArgument[] = [];
+  argumentsMandatory: ConditionArgument[] = [];
+  argumentsOptional: ConditionArgument[] = [];
 
-  constructor(argumentsSourceStr: string, range: [number?, number?], indent: number, kindConfig?: ElementKind<Event>, parent?: EventEntry) {
+  constructor(argumentsSourceStr: string, range: [number?, number?], indent: number, kindConfig?: ElementKind<Condition>, parent?: ConditionEntry) {
     this.uri = parent?.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
@@ -45,7 +45,7 @@ export class EventArguments implements Node<EventArgumentsType> {
       argumentsStrs.push(matched[0]);
     }
 
-    // Search ArgumentsPatterns from V1 Event List
+    // Search ArgumentsPatterns from V1 Condition List
     const argumentsPatterns: ArgumentsPatterns = kindConfig?.argumentsPatterns ?? { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] };
 
     // Cache arguments
@@ -145,7 +145,7 @@ export class EventArguments implements Node<EventArgumentsType> {
       const argStr = argumentMandatoryStrs[i];
       if (argStr) {
         const str = argStr.trimEnd();
-        this.argumentsMandatory.push(new EventArgumentMandatory(
+        this.argumentsMandatory.push(new ConditionArgumentMandatory(
           str,
           [offsetStart, offsetStart + str.length],
           pattern,
@@ -162,7 +162,7 @@ export class EventArguments implements Node<EventArgumentsType> {
           range: this.parent!.getRangeByOffset(offsetStart, offsetStart)
         });
         // Create dummy Argument
-        this.argumentsMandatory.push(new EventArgumentMandatory(
+        this.argumentsMandatory.push(new ConditionArgumentMandatory(
           "",
           [offsetStart, offsetStart],
           pattern,
@@ -177,7 +177,7 @@ export class EventArguments implements Node<EventArgumentsType> {
     argumentOptionalStrs.forEach(argStr => {
       const str = argStr.trimEnd();
       const pattern = patterns?.find(p => argStr.startsWith(p.key + ":"))!;
-      this.argumentsOptional.push(new EventArgumentOptional(
+      this.argumentsOptional.push(new ConditionArgumentOptional(
         str,
         [offsetStart, offsetStart + str.length],
         pattern,

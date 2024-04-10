@@ -2,8 +2,8 @@ import { PublishDiagnosticsParams, Range } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { Scalar, YAMLMap, parseDocument } from "yaml";
-import { EventListType, Node } from "../../node";
-import { EventEntry } from "./EventEntry";
+import { ConditionListType, Node } from "../../node";
+import { ConditionEntry } from "./ConditionEntry";
 import { PackageV1 } from "../../Package";
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
@@ -14,8 +14,8 @@ import { LocationsResponse } from "betonquest-utils/lsp/file";
 //   minContentWidth: 0
 // };
 
-export class EventList implements Node<EventListType> {
-  type: EventListType = "EventList";
+export class ConditionList implements Node<ConditionListType> {
+  type: ConditionListType = "ConditionList";
   uri?: string;
   offsetStart?: number;
   offsetEnd?: number;
@@ -26,7 +26,7 @@ export class EventList implements Node<EventListType> {
 
   // Cache the parsed yaml document
   yml?: YAMLMap<Scalar<string>, Scalar<string>>;
-  entries: EventEntry[] = [];
+  entries: ConditionEntry[] = [];
 
   constructor(uri: string, document: TextDocument, parent?: PackageV1) {
     this.uri = uri;
@@ -52,7 +52,7 @@ export class EventList implements Node<EventListType> {
 
     // Parse Elements
     this.yml.items.forEach(pair => {
-      this.entries.push(new EventEntry(pair, this));
+      this.entries.push(new ConditionEntry(pair, this));
     });
   }
 
@@ -79,7 +79,7 @@ export class EventList implements Node<EventListType> {
 
   getLocations(sourceUri: string, yamlPath: string[], packagePath?: string) {
     const result: LocationsResponse = [];
-    const key = this.entries.find(e => e.eventKey.value === yamlPath[1])?.eventKey;
+    const key = this.entries.find(e => e.conditionKey.value === yamlPath[1])?.conditionKey;
     if (key) {
       result.push({
         uri: this.uri!,

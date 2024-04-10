@@ -1,18 +1,18 @@
 import { Scalar } from "yaml";
-import { EventKeyType, Node } from "../../node";
-import { EventEntry } from "./EventEntry";
+import { ObjectiveKeyType, Node } from "../../node";
+import { ObjectiveEntry } from "./ObjectiveEntry";
 import { HoverInfo } from "../../../utils/hover";
 
-export class EventKey implements Node<EventKeyType> {
-  type: EventKeyType = "EventKey";
+export class ObjectiveKey implements Node<ObjectiveKeyType> {
+  type: ObjectiveKeyType = "ObjectiveKey";
   uri?: string | undefined;
   offsetStart?: number | undefined;
   offsetEnd?: number | undefined;
-  parent?: EventEntry | undefined;
+  parent?: ObjectiveEntry | undefined;
 
   value: string;
 
-  constructor(key: Scalar<string>, parent: EventEntry) {
+  constructor(key: Scalar<string>, parent: ObjectiveEntry) {
     this.uri = parent.uri;
     this.offsetStart = key.range?.[0];
     this.offsetEnd = key.range?.[1];

@@ -1,20 +1,20 @@
 import { ElementKind } from "betonquest-utils/betonquest/v1/Element";
-import Event from "betonquest-utils/betonquest/Event";
-import { EventKindType, Node } from "../../node";
-import { EventEntry } from "./EventEntry";
+import Objective from "betonquest-utils/betonquest/Objective";
+import { ObjectiveKindType, Node } from "../../node";
+import { ObjectiveEntry } from "./ObjectiveEntry";
 import { HoverInfo } from "../../../utils/hover";
 
-export class EventKind implements Node<EventKindType> {
-  type: EventKindType = "EventKind";
+export class ObjectiveKind implements Node<ObjectiveKindType> {
+  type: ObjectiveKindType = "ObjectiveKind";
   uri?: string;
   offsetStart?: number;
   offsetEnd?: number;
-  parent?: EventEntry;
+  parent?: ObjectiveEntry;
 
   value: string;
-  kindConfig?: ElementKind<Event>;
+  kindConfig?: ElementKind<Objective>;
 
-  constructor(value: string, range: [number?, number?], kindConfig?: ElementKind<Event>, parent?: EventEntry) {
+  constructor(value: string, range: [number?, number?], kindConfig?: ElementKind<Objective>, parent?: ObjectiveEntry) {
     this.uri = parent?.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
@@ -32,7 +32,7 @@ export class EventKind implements Node<EventKindType> {
         offset: [this.offsetStart, this.offsetEnd]
       };
       if (this.kindConfig) {
-        info.content = "(event) " + this.kindConfig?.value;
+        info.content = "(objective) " + this.kindConfig?.value;
         if (this.kindConfig.description) {
           info.content += "\n\n---\n\n" + this.kindConfig.display.toString() + "\n\n" + this.kindConfig.description;
         }

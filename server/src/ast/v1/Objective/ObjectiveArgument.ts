@@ -2,15 +2,15 @@ import { Diagnostic } from "vscode-languageserver";
 
 import { ArgumentsPatternMandatory, ArgumentsPatternOptional } from "betonquest-utils/betonquest/Arguments";
 
-import { EventArgumentType, Node } from "../../node";
-import { EventArguments } from "./EventArguments";
+import { ObjectiveArgumentType, Node } from "../../node";
+import { ObjectiveArguments } from "./ObjectiveArguments";
 
-export class EventArgument implements Node<EventArgumentType> {
-  type: EventArgumentType = "EventArgument";
+export class ObjectiveArgument implements Node<ObjectiveArgumentType> {
+  type: ObjectiveArgumentType = "ObjectiveArgument";
   uri?: string;
   offsetStart?: number;
   offsetEnd?: number;
-  parent?: EventArguments;
+  parent?: ObjectiveArguments;
 
   argumentStr: string;
   diagnostics: Diagnostic[] = [];
@@ -19,7 +19,7 @@ export class EventArgument implements Node<EventArgumentType> {
     range: [number?, number?],
     // isMandatory: boolean,
     pattern: ArgumentsPatternMandatory | ArgumentsPatternOptional,
-    parent?: EventArguments,
+    parent?: ObjectiveArguments,
   ) {
 
     this.uri = parent?.uri;
