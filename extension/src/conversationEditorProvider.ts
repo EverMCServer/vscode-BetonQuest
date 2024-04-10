@@ -177,15 +177,21 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                 // @ts-ignore
                 case 'cursor-yaml-path':
                     if (e.content.constructor === Array && e.content.length > 0) {
-                        if (e.content[0] === '@conditions' || e.content[0] === '@events') {
+                        if (e.content[0].startsWith('@')) {
                             // Get document uri and position from lspClient
                             offset = 0;
                             const response = await this.lspClient.sendRequest<LocationsResponse>("custom/locations", { sourceUri: document.uri.toString(), yamlPath: e.content } as LocationsParams);
-                            if (response) {
+                            // TODO: handle multiple locations, e.g. prompt to select where to go
+                            // if (response.length > 1) {
+                            // } else
+                            if (response.length > 0) {
                                 offset = response[0].offset;
                                 jumpToDoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(response[0].uri));
+                            } else {
+                                return;
                             }
                         } else {
+                            // TOOD: Remove this. Get offset from lsp instead.
                             offset = findOffestByYamlNode(e.content, jumpToDoc.getText());
                         }
                     } else {
