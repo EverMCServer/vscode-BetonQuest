@@ -105,13 +105,11 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const { setDocumentPathPointer, setEditorPathPointer } = useContext(YamlPathPointer);
   const onConditionDefinitionClick = (item: string, pos: number) => {
     // Broadcast Yaml Pointer
-    setDocumentPathPointer(["@conditions", item]);
-    // setEditorPathPointer(["@conditions", item]);
+    setDocumentPathPointer(["@conditions", item.replace(/^!/, "")]);
   };
   const onEventDefinitionClick = (item: string, pos: number) => {
     // Broadcast Yaml Pointer
-    setDocumentPathPointer(["@events", item]);
-    // setEditorPathPointer(["@events", item]);
+    setDocumentPathPointer(["@events", item.replace(/^!/, "")]);
   };
 
   return (

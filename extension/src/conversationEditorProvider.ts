@@ -198,7 +198,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                         return;
                     }
                 case 'cursor-position':
-                    let curPos = jumpToDoc.positionAt(offset || e.content);
+                    let curPos = jumpToDoc.positionAt(offset !== undefined ? offset : e.content);
                     if (e.activateDocuemnt) {
                         // Switch to the document if requested
                         let viewColumn = webviewPanel.viewColumn;

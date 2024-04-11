@@ -90,7 +90,7 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
   const { setDocumentPathPointer, setEditorPathPointer } = useContext(YamlPathPointer);
   const onFinalEventClick = (item: string, pos: number) => {
     // Broadcast Yaml Pointer
-    setDocumentPathPointer(["@events", item]);
+    setDocumentPathPointer(["@events", item.replace(/^!/, "")]);
   };
 
   return (
@@ -133,8 +133,8 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
             onRemove={(_, __, e) => setFinalEvents(e)}
             onSort={e => setFinalEvents(e)}
             onChange={(_, __, e) => setFinalEvents(e)}
-            // onGotoClick={onFinalEventClick}
-            // onGotoClickTooltip={L("*.conversation.*.gotoEventTooltip")}
+            onGotoClick={onFinalEventClick}
+            onGotoClickTooltip={L("*.conversation.*.gotoEventTooltip")}
             newTagText={<>+ {L("*.conversation.*.addEvent")}</>}
           />
         </div>
