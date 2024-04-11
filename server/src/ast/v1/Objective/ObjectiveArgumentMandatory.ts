@@ -1,4 +1,8 @@
-import { ObjectiveArgument } from "./ObjectiveArgument";
+import Objective from "betonquest-utils/betonquest/Objective";
 
-export class ObjectiveArgumentMandatory extends ObjectiveArgument {
+import { ObjectiveArgumentType } from "../../node";
+import { ElementArgumentMandatory } from "../Element/ElementArgumentMandatory";
+
+export class ObjectiveArgumentMandatory extends ElementArgumentMandatory<Objective> {
+  type: ObjectiveArgumentType = 'ObjectiveArgument';
 }

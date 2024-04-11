@@ -2,7 +2,9 @@ import { PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { ConditionListType, ConversationListType, EventListType, Node, ObjectiveListType, PackageTypes, PackageV1Type, PackageV2Type } from "./node";
+import { ConditionList } from "./v1/Condition/ConditionList";
 import { EventList } from "./v1/Event/EventList";
+import { ObjectiveList } from "./v1/Objective/ObjectiveList";
 import { HoverInfo } from "../utils/hover";
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
@@ -31,8 +33,8 @@ export class PackageV1 extends Package<PackageV1Type> {
 
   conversationList?: Node<ConversationListType>; // TODO: Conversations[]
   eventList?: EventList;
-  conditionList?: Node<ConditionListType>;
-  objectiveList?: Node<ObjectiveListType>;
+  conditionList?: ConditionList;
+  objectiveList?: ObjectiveList;
 
   constructor(packageUri: string, documents: TextDocument[]) {
     super("PackageV1", packageUri);
@@ -44,12 +46,14 @@ export class PackageV1 extends Package<PackageV1Type> {
       switch (p[p.length - 1]) {
         case 'main.yml':
           break;
+        case 'conditions.yml':
+          this.conditionList = new ConditionList(document.uri, document, this);
+          break;
         case 'events.yml':
           this.eventList = new EventList(document.uri, document, this);
           break;
-        case 'conditions.yml':
-          break;
         case 'objectives.yml':
+          this.objectiveList = new ObjectiveList(document.uri, document, this);
           break;
         case 'journal.yml':
           break;
@@ -74,8 +78,14 @@ export class PackageV1 extends Package<PackageV1Type> {
 
   getHoverInfo(uri: string, offset: number) {
     let result = [];
+    if (this.conditionList) {
+      result.push(...this.conditionList.getHoverInfo(uri, offset));
+    }
     if (this.eventList) {
       result.push(...this.eventList.getHoverInfo(uri, offset));
+    }
+    if (this.objectiveList) {
+      result.push(...this.objectiveList.getHoverInfo(uri, offset));
     }
     return result;
   }
@@ -85,8 +95,14 @@ export class PackageV1 extends Package<PackageV1Type> {
     if (!sourceUri.startsWith(this.uri)) {
       return result;
     }
+    if (yamlPath[0] === '@conditions' && this.conditionList) {
+      result.push(...this.conditionList.getLocations(sourceUri, yamlPath, packagePath));
+    }
     if (yamlPath[0] === '@events' && this.eventList) {
       result.push(...this.eventList.getLocations(sourceUri, yamlPath, packagePath));
+    }
+    if (yamlPath[0] === '@objectives' && this.objectiveList) {
+      result.push(...this.objectiveList.getLocations(sourceUri, yamlPath, packagePath));
     }
     return result;
   }

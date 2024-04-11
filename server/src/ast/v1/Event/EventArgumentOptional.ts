@@ -1,4 +1,10 @@
-import { EventArgument } from "./EventArgument";
+import Event from "betonquest-utils/betonquest/Event";
 
-export class EventArgumentOptional extends EventArgument {
+import { EventArgumentType } from "../../node";
+import { ElementArgumentOptional } from "../Element/ElementArgumentOptional";
+
+export class EventArgumentOptional extends ElementArgumentOptional<Event> {
+  type: EventArgumentType = 'EventArgument';
 }
+
+// new EventArgumentOptional().parent;

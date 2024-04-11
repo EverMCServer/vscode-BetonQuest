@@ -57,7 +57,7 @@ export type ObjectiveArgumentValueType = 'ObjectiveArgumentValue';
 export type ObjectiveTypes = ObjectiveListType | ObjectiveEntryType | ObjectiveKeyType | ObjectiveKindType | ObjectiveArgumentsType | ObjectiveArgumentType | ObjectiveArgumentKeyType | ObjectiveArgumentValueArrayType | ObjectiveArgumentValueType;
 
 export type ElementListType = EventListType | ConditionListType | ObjectiveListType;
-export type ElementEntryType = EventEntryType | ConditionEntryType | ObjectiveListType;
+export type ElementEntryType = EventEntryType | ConditionEntryType | ObjectiveEntryType;
 export type ElementKeyType = EventKeyType | ConditionKeyType | ObjectiveKeyType;
 export type ElementKindType = EventKindType | ConditionKindType | ObjectiveKindType;
 export type ElementArgumentsType = EventArgumentsType | ConditionArgumentsType | ObjectiveArgumentsType;

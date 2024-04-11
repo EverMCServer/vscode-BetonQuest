@@ -1,4 +1,8 @@
-import { ConditionArgument } from "./ConditionArgument";
+import Condition from "betonquest-utils/betonquest/Condition";
 
-export class ConditionArgumentMandatory extends ConditionArgument {
+import { ConditionArgumentType } from "../../node";
+import { ElementArgumentMandatory } from "../Element/ElementArgumentMandatory";
+
+export class ConditionArgumentMandatory extends ElementArgumentMandatory<Condition> {
+  type: ConditionArgumentType = 'ConditionArgument';
 }
