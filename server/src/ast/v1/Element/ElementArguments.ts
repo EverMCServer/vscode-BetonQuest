@@ -93,15 +93,15 @@ export abstract class ElementArguments<LE extends ListElement> implements Node<E
           if (argumentsPatterns.keepWhitespaces) {
             // Keep whitespaces only for the mandatory part. e.g. "notify", "log"
             if (argumentsPatterns.mandatory.length > 1 && argumentsStrs.length > 1) {
-              const nonWhitespaceArgsPos = pos - 1;
+              const nonWhitespaceArgsPos = argumentsPatterns.mandatory.length - 1;
               argumentMandatoryStrs.push(argumentsStrs.slice(0, nonWhitespaceArgsPos).join()); // Normal mandatory args
-              argumentMandatoryStrs.push(argumentsStrs.slice(nonWhitespaceArgsPos, pos).join()); // Whitespaceargs
+              argumentMandatoryStrs.push(argumentsStrs.slice(nonWhitespaceArgsPos, pos + 1).join()); // Whitespaceargs
             } else if (argumentsStrs.length > 0) {
-              argumentMandatoryStrs.push(argumentsStrs.slice(0, pos).join());
+              argumentMandatoryStrs.push(argumentsStrs.slice(0, pos + 1).join());
             }
           } else {
             // No need to keep whitespaces
-            argumentMandatoryStrs = argumentsStrs.slice(0, pos);
+            argumentMandatoryStrs = argumentsStrs.slice(0, pos + 1);
           }
           break;
         }

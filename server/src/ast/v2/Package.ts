@@ -59,9 +59,9 @@ export class PackageV2 extends Package<PackageV2Type> {
 
   getPublishDiagnosticsParams(): PublishDiagnosticsParams[] {
     const diagnostics: PublishDiagnosticsParams[] = [];
-    if (this.eventLists) {
-      diagnostics.push(...this.eventLists.map(l => l.getPublishDiagnosticsParams()));
-    }
+    diagnostics.push(...this.conditionLists.map(l => l.getPublishDiagnosticsParams()));
+    diagnostics.push(...this.eventLists.map(l => l.getPublishDiagnosticsParams()));
+    diagnostics.push(...this.objectiveLists.map(l => l.getPublishDiagnosticsParams()));
     return diagnostics;
   }
 

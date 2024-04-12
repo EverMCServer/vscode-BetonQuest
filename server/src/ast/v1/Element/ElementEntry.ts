@@ -71,8 +71,8 @@ export abstract class ElementEntry<LE extends ListElement> implements Node<Eleme
     // Parse Arguments
     const argumentsSourceStr = matched[3];
     if (!argumentsSourceStr) {
-      // Check if kind do not need any arguments by kinds list,
-      // If not, throw diagnostic
+      // Check if the arguments missing any arguments by kinds list,
+      // If so, throw diagnostic
       if (kind && kind.value !== "*" && kind.argumentsPatterns.mandatory.length > 0) {
         const _offsetStart = offsetKindEnd;
         this.diagnostics?.push({
