@@ -1,4 +1,4 @@
-import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v1/Element";
+import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v2/Element";
 import ListElement from "betonquest-utils/betonquest/ListElement";
 
 import { ElementKindType, Node } from "../../node";
@@ -35,6 +35,7 @@ export abstract class ElementKind<LE extends ListElement> implements Node<Elemen
       if (this.kindConfig) {
         info.content = `(${this.type}) ${this.kindConfig?.value}`;
         if (this.kindConfig.description) {
+          // TODO: Remove html tag from this.kindConfig.description
           info.content += "\n\n---\n\n" + this.kindConfig.display.toString() + "\n\n" + this.kindConfig.description;
         }
       }

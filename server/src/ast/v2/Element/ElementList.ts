@@ -1,4 +1,4 @@
-import { Pair, Scalar, YAMLMap, parseDocument } from "yaml";
+import { Pair, Scalar, YAMLMap } from "yaml";
 import { PublishDiagnosticsParams, Range } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
@@ -6,7 +6,7 @@ import { LocationsResponse } from "betonquest-utils/lsp/file";
 import ListElement from "betonquest-utils/betonquest/ListElement";
 
 import { ElementListType, Node } from "../../node";
-import { PackageV1 } from "../Package";
+import { PackageV2 } from "../Package";
 import { ElementEntry } from "./ElementEntry";
 
 export abstract class ElementList<LE extends ListElement> implements Node<ElementListType> {
@@ -14,7 +14,7 @@ export abstract class ElementList<LE extends ListElement> implements Node<Elemen
   uri: string;
   offsetStart?: number;
   offsetEnd?: number;
-  parent: PackageV1;
+  parent: PackageV2;
 
   // VSCode Document, for diagnostics / quick actions / goto definition, etc
   document: TextDocument;
@@ -27,23 +27,16 @@ export abstract class ElementList<LE extends ListElement> implements Node<Elemen
     return this.entries;
   }
 
-  constructor(uri: string, document: TextDocument, parent: PackageV1) {
+  constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>, Scalar<string>>, parent: PackageV2) {
     this.uri = uri;
     this.parent = parent;
     this.document = document;
 
     // Parse yaml
-    const yml = parseDocument<YAMLMap<Scalar<string>, Scalar<string>>, false>(
-      document.getText(),
-      {
-        keepSourceTokens: true,
-        strict: false
-      }
-    );
-    if (!(yml.contents instanceof YAMLMap)) {
+    if (!(yml instanceof YAMLMap)) {
       return;
     }
-    this.yml = yml.contents;
+    this.yml = yml;
 
     // Extract offsets
     this.offsetStart = this.yml.range?.[0];

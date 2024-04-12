@@ -108,10 +108,10 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
             if (e.uri.toString() === document.uri.toString()) {
                 setTimeout(() => {
                     if (document.isDirty) {
-                        console.log("dirty");
+                        // console.log("dirty");
                         e.save();
                     } else {
-                        console.log("non-dirty");
+                        // console.log("non-dirty");
                     }
                 }, 2000);
             }
@@ -180,17 +180,22 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
                 // @ts-ignore
                 case 'cursor-yaml-path':
                     if (e.content.constructor === Array && e.content.length > 0) {
-                        // Get document uri and position from lspClient
-                        offset = 0;
-                        const response = await this.lspClient.sendRequest<LocationsResponse>("custom/locations", { sourceUri: document.uri.toString(), yamlPath: e.content } as LocationsParams);
-                        // TODO: handle multiple locations, e.g. prompt to select where to go
-                        // if (response.length > 1) {
-                        // } else
-                        if (response.length > 0) {
-                            offset = response[0].offset;
-                            jumpToDoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(response[0].uri));
+                        if (e.content[0].startsWith('event') || e.content[0].startsWith('condition')) {
+                            // Get document uri and position from lspClient
+                            offset = 0;
+                            const response = await this.lspClient.sendRequest<LocationsResponse>("custom/locations", { yamlPath: e.content, sourceUri: document.uri.toString() } as LocationsParams);
+                            // TODO: handle multiple locations, e.g. prompt to select where to go
+                            // if (response.length > 1) {
+                            // } else
+                            if (response.length > 0) {
+                                offset = response[0].offset;
+                                jumpToDoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(response[0].uri));
+                            } else {
+                                return;
+                            }
                         } else {
-                            return;
+                            // TOOD: Remove this. Get offset from lsp instead.
+                            offset = findOffestByYamlNode(e.content, jumpToDoc.getText());
                         }
                     } else {
                         return;

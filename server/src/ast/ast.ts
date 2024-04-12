@@ -1,6 +1,7 @@
 import { Position, TextDocument } from "vscode-languageserver-textdocument";
 
-import { PackageV1, PackageV2 } from "./Package";
+import { PackageV1 } from "./v1/Package";
+import { PackageV2 } from "./v2/Package";
 import { AllDocuments } from "../utils/document";
 import { HoverInfo } from "../utils/hover";
 
@@ -39,12 +40,11 @@ export class ASTs {
 
   /**
    * Get uri + offset / position by abstract YAML path.
-   * @param sourceUri The URI of the document to begin searching locations from. It is used to determine the package to search in.
    * @param yamlPath The abstract YAML path to search for.
-   * @param packagePath The package path to search for.
+   * @param sourceUri The URI of the document to begin searching locations from. It is used to determine which package to search on.
    */
-  getLocations(sourceUri: string, yamlPath: string[], packagePath?: string) {
-    return this.asts.flatMap(([, ast]) => ast?.getLocations(sourceUri, yamlPath, packagePath) ?? []);
+  getLocations(yamlPath: string[], sourceUri: string) {
+    return this.asts.flatMap(([, ast]) => ast?.getLocations(yamlPath, sourceUri) ?? []);
   }
 
 }
@@ -59,6 +59,7 @@ export class AST {
 
     // Create AST by versions and packages
     this.parseAllDocumentsV1(filesV1);
+    this.parseAllDocumentsV2(filesV2);
   }
 
   // Classify files by versions and packages
@@ -193,10 +194,10 @@ export class AST {
     ];
   }
 
-  getLocations(sourceUri: string, yamlPath: string[], packagePath?: string) {
+  getLocations(yamlPath: string[], sourceUri: string) {
     return [
-      ...this.packagesV1.flatMap(p => p.getLocations(sourceUri, yamlPath, packagePath)),
-      ...this.packagesV2.flatMap(p => p.getLocations(sourceUri, yamlPath, packagePath))
+      ...this.packagesV1.flatMap(p => p.getLocations(yamlPath, sourceUri)),
+      ...this.packagesV2.flatMap(p => p.getLocations(yamlPath, sourceUri))
     ];
   }
 

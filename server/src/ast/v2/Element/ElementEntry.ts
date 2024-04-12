@@ -2,7 +2,7 @@ import { Pair, Scalar } from "yaml";
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import ListElement from "betonquest-utils/betonquest/ListElement";
-import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v1/Element";
+import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v2/Element";
 
 import { ElementEntryType, Node } from "../../node";
 import { ElementKind } from "./ElementKind";

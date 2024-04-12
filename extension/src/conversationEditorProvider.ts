@@ -105,10 +105,10 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
             if (e.uri.toString() === document.uri.toString()) {
                 setTimeout(() => {
                     if (document.isDirty) {
-                        console.log("dirty");
+                        // console.log("dirty");
                         e.save();
                     } else {
-                        console.log("non-dirty");
+                        // console.log("non-dirty");
                     }
                 }, 2000);
             }
@@ -180,7 +180,7 @@ export class ConversationEditorProvider implements vscode.CustomTextEditorProvid
                         if (e.content[0].startsWith('@')) {
                             // Get document uri and position from lspClient
                             offset = 0;
-                            const response = await this.lspClient.sendRequest<LocationsResponse>("custom/locations", { sourceUri: document.uri.toString(), yamlPath: e.content } as LocationsParams);
+                            const response = await this.lspClient.sendRequest<LocationsResponse>("custom/locations", { yamlPath: e.content, sourceUri: document.uri.toString() } as LocationsParams);
                             // TODO: handle multiple locations, e.g. prompt to select where to go
                             // if (response.length > 1) {
                             // } else

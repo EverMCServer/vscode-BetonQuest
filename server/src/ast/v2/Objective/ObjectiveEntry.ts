@@ -1,7 +1,7 @@
 import { Pair, Scalar } from "yaml";
 
-import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v1/Element";
-import { kinds } from "betonquest-utils/betonquest/v1/Objectives";
+import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v2/Element";
+import { kinds } from "betonquest-utils/betonquest/v2/Objectives";
 import Objective from "betonquest-utils/betonquest/Objective";
 
 import { ObjectiveEntryType } from "../../node";

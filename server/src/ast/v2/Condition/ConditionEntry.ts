@@ -1,7 +1,7 @@
 import { Pair, Scalar } from "yaml";
 
-import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v1/Element";
-import { kinds } from "betonquest-utils/betonquest/v1/Conditions";
+import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v2/Element";
+import { kinds } from "betonquest-utils/betonquest/v2/Conditions";
 import Condition from "betonquest-utils/betonquest/Condition";
 
 import { ConditionEntryType } from "../../node";

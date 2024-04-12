@@ -37,6 +37,45 @@ export const kinds: ElementKind<Event>[] = [
         }
     },
     {
+        // DEBUG kind
+        value: 'log',
+        display: L("betonquest.v2.event.log.display"),
+        description: L("betonquest.v2.event.log.description"),
+        // e.g. log level:DEBUG daily quests have been reset
+        argumentsPatterns: {
+            mandatory: [
+                { jsx: TextArea, name: L("betonquest.v2.event.log.mandatory.message.name"), type: '*', defaultValue: '', escapeCharacters: [':'] },
+            ],
+            optional: [
+                {
+                    jsx: Select, name: L("betonquest.v2.event.log.optional.level.name"), key: 'level', type: 'string', placeholder: 'info', config: {
+                        options: [
+                            {
+                                label: L("betonquest.v2.event.log.optional.level.option.debug"),
+                                value: 'debug'
+                            },
+                            {
+                                label: L("betonquest.v2.event.log.optional.level.option.info"),
+                                value: 'info'
+                            },
+                            {
+                                label: L("betonquest.v2.event.log.optional.level.option.warning"),
+                                value: 'warning'
+                            },
+                            {
+                                label: L("betonquest.v2.event.log.optional.level.option.error"),
+                                value: 'error'
+                            },
+                        ] as DefaultOptionType[],
+                        allowClear: true
+                    }
+                },
+            ],
+            keepWhitespaces: true,
+            optionalAtFirst: true
+        }
+    },
+    {
         // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/events/CancelEvent.java
         value: 'cancel',
         display: L("betonquest.v1.event.cancel.display"),

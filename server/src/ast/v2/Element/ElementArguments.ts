@@ -1,7 +1,7 @@
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ArgumentsPatternMandatory, ArgumentsPatternOptional, ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
-import { ElementKind } from "betonquest-utils/betonquest/v1/Element";
+import { ElementKind } from "betonquest-utils/betonquest/v2/Element";
 import ListElement from "betonquest-utils/betonquest/ListElement";
 
 import { ElementArgumentsType, Node } from "../../node";

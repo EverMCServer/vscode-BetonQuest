@@ -5,7 +5,7 @@ import { AllDocuments } from "../utils/document";
 
 
 export const locationsHandler = (allDocuments: AllDocuments, asts: ASTs, params: LocationsParams): HandlerResult<LocationsResponse, void> => {
-  const locations = asts.getLocations(params.sourceUri, params.yamlPath, params.packagePath);
+  const locations = asts.getLocations(params.yamlPath, params.sourceUri);
 
   return locations;
 };

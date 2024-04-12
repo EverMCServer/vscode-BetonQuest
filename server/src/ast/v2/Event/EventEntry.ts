@@ -1,7 +1,7 @@
 import { Pair, Scalar } from "yaml";
 
-import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v1/Element";
-import { kinds } from "betonquest-utils/betonquest/v1/Events";
+import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v2/Element";
+import { kinds } from "betonquest-utils/betonquest/v2/Events";
 import Event from "betonquest-utils/betonquest/Event";
 
 import { EventEntryType } from "../../node";
