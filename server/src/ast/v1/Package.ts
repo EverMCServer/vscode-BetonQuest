@@ -4,19 +4,19 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
 import { Package } from "../Package";
-import { ConditionListType, ConversationListType, EventListType, Node, ObjectiveListType, PackageTypes, PackageV1Type, PackageV2Type } from "../node";
-import { HoverInfo } from "../../utils/hover";
+import { ConversationListType, Node, PackageV1Type } from "../node";
 import { ConditionList } from "./Condition/ConditionList";
 import { EventList } from "./Event/EventList";
 import { ObjectiveList } from "./Objective/ObjectiveList";
+import { HoverInfo } from "../../utils/hover";
 
 export class PackageV1 extends Package<PackageV1Type> {
   offsetStart?: number;
   offsetEnd?: number;
 
   conversationList?: Node<ConversationListType>; // TODO: Conversations[]
-  eventList?: EventList;
   conditionList?: ConditionList;
+  eventList?: EventList;
   objectiveList?: ObjectiveList;
 
   constructor(packageUri: string, documents: TextDocument[]) {
@@ -53,14 +53,23 @@ export class PackageV1 extends Package<PackageV1Type> {
 
   getPublishDiagnosticsParams(): PublishDiagnosticsParams[] {
     const diagnostics: PublishDiagnosticsParams[] = [];
+    if (this.conditionList) {
+      diagnostics.push(this.conditionList.getPublishDiagnosticsParams());
+    }
     if (this.eventList) {
       diagnostics.push(this.eventList.getPublishDiagnosticsParams());
+    }
+    if (this.objectiveList) {
+      diagnostics.push(this.objectiveList.getPublishDiagnosticsParams());
     }
     return diagnostics;
   }
 
   getHoverInfo(uri: string, offset: number) {
-    let result = [];
+    const result: HoverInfo[] = [];
+    if (!uri.startsWith(this.uri)) {
+      return result;
+    }
     if (this.conditionList) {
       result.push(...this.conditionList.getHoverInfo(uri, offset));
     }
