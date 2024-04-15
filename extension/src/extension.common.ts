@@ -212,6 +212,7 @@ export async function _activate(context: vscode.ExtensionContext, lspClient: Bas
 
 async function checkIfFileExists(filePath: vscode.Uri): Promise<boolean> {
   try {
+    // filePath = filePath.with({ scheme: 'vscode-test-web', authority: 'mount', path: `/${filePath.authority}` }); // DEBUG ONLY: Use vscode-test-web fs-provider https://github.com/microsoft/vscode-test-web/issues/22#issuecomment-1059773531
     await vscode.workspace.fs.stat(filePath);
     return true;
   } catch (error) {

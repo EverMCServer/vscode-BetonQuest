@@ -192,7 +192,7 @@
     "webpack:compile": "webpack --config webpack.prod.js",
     "watch:all": "tsc -b -watch ./extension/ ./webview/ ./server/",
     "webpack:watch": "webpack --watch --config webpack.dev.js",
-    "open-in-browser": "vscode-test-web --extensionDevelopmentPath=. --browserOption=--remote-debugging-port=9221"
+    "open-in-browser": "vscode-test-web --browserOption=--remote-debugging-port=9221 --extensionDevelopmentPath=."
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
