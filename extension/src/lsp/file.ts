@@ -4,9 +4,10 @@ import { ResponseError } from "vscode-languageclient";
 
 const textDecoder = new TextDecoder();
 
-export const fileTreeHandler =  async({ uriString, recursive = false, pattern }: FileTreeParams) => {
+export const fileTreeHandler = async ({ uriString, recursive = false, pattern }: FileTreeParams) => {
   try {
     let files = await vscode.workspace.fs.readDirectory(vscode.Uri.parse(uriString));
+    uriString = uriString.replace(/[\/\\]+$/, ''); // Remove excessive tailing slashes
     let result = files.filter(path => path[1] === vscode.FileType.File).map(path => uriString + encodeURI('/' + path[0])).filter(path => pattern ? path.match(pattern) : true);
     // read from subfolders
     if (recursive) {

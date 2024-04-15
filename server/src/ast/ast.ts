@@ -4,6 +4,7 @@ import { PackageV1 } from "./v1/Package";
 import { PackageV2 } from "./v2/Package";
 import { AllDocuments } from "../utils/document";
 import { HoverInfo } from "../utils/hover";
+import { getParentUrl } from "../utils/url";
 
 // AST by workspace folders
 export class ASTs {
@@ -76,10 +77,8 @@ export class AST {
       const p = u.pathname.split('/');
       if (p[p.length - 1].match(/^package\.yml$/i)) {
         // Create package's base path
-        const b = new URL(document.uri);
-        b.pathname = p.slice(0, p.length - 1).join('/');
-        const packageUri = b.toString();
-        // Cache the package's path with a entry file.
+        const packageUri = getParentUrl(document.uri);
+        // Cache the package's with base path.
         filesV2.set(packageUri, [document]);
       }
     });
@@ -87,11 +86,9 @@ export class AST {
     documents.forEach((document) => {
       const u = new URL(document.uri);
       const p = u.pathname.split('/');
-      if (p[p.length - 1].match(/^main\.ya?ml$/i)) {
+      if (p[p.length - 1].match(/^main\.yml$/i)) {
         // Create package's base path
-        const b = new URL(document.uri);
-        b.pathname = p.slice(0, p.length - 1).join('/');
-        const packageUri = b.toString();
+        const packageUri = getParentUrl(document.uri);
         // Skip if conflict.
         // 1. Avoid conflict with V2. Skip if this main.yml is nested in V2 package
         for (const path of filesV2.keys()) {
@@ -110,7 +107,7 @@ export class AST {
             filesV1.delete(path);
           }
         }
-        // Cache the package's path with a entry file.
+        // Cache the package's with base path.
         filesV1.set(packageUri, [document]);
       }
     });
