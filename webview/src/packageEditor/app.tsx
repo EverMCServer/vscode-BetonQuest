@@ -124,6 +124,10 @@ export default function app() {
     }, [documentPathPointer]);
     useEffect(() => {
         // Expand collapse if pointer refer to a event, condition, objective or item.
+        if (!pkg.isYamlPathExists(editorPathPointer)) {
+            // Skip if the path is not exists on this file
+            return;
+        }
         if (editorPathPointer.length > 1) {
             switch (editorPathPointer[0]) {
                 case "events":

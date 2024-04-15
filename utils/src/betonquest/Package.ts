@@ -46,6 +46,10 @@ export default class Package {
         });
     }
 
+    isYamlPathExists(yamlPath: string[]) {
+        return this.yaml.hasIn(yamlPath);
+    }
+
     // Check if yaml path exists
     hasPath(path: string[]) {
         return this.yaml.hasIn(path);
