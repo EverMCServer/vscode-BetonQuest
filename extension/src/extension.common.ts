@@ -17,6 +17,12 @@ const textDecoder = new TextDecoder();
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export async function _activate(context: vscode.ExtensionContext, lspClient: BaseLanguageClient) {
+  // Use the console to output diagnostic information (console.log) and errors (console.error)
+  // This line of code will only be executed once when your extension is activated
+  // console.log(
+  //   'Congratulations, your extension "betonquest" is now active!'
+  // );
+
   // Register Language Client and methods
   await lspClient.start().then(() => {
 
@@ -39,12 +45,6 @@ export async function _activate(context: vscode.ExtensionContext, lspClient: Bas
     }
   });
 
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
-  // This line of code will only be executed once when your extension is activated
-  // console.log(
-  //   'Congratulations, your extension "betonquest" is now active!'
-  // );
-
   // Check if the custom editor's buttons should be shown.
   function checkCanActivateEditor(editor: vscode.TextEditor) {
     // Set default value
@@ -55,7 +55,7 @@ export async function _activate(context: vscode.ExtensionContext, lspClient: Bas
     vscode.commands.executeCommand('setContext', 'canActivatePackageEditor', false);
 
     // Show Conversation Editor activation button only when it is appropriate
-    if (editor.document.fileName.match(/[\/\\]conversations[\/\\].+\.ya?ml$/gi)) {
+    if (editor.document.fileName.match(/[\/\\]conversations[\/\\].+\.yml$/gi)) {
       const dir = path.resolve(path.dirname(editor.document.fileName), "..");
 
       // Check for main.yml
@@ -70,10 +70,10 @@ export async function _activate(context: vscode.ExtensionContext, lspClient: Bas
 
     // Show Events, Conditions, Objectives, Items Editor activation button only when it is appropriate
     if (
-      editor.document.fileName.match(/[\/\\]events\.ya?ml$/) ||
-      editor.document.fileName.match(/[\/\\]conditions\.ya?ml$/) ||
-      editor.document.fileName.match(/[\/\\]objectives\.ya?ml$/) ||
-      editor.document.fileName.match(/[\/\\]items\.ya?ml$/)
+      editor.document.fileName.match(/[\/\\]events\.yml$/) ||
+      editor.document.fileName.match(/[\/\\]conditions\.yml$/) ||
+      editor.document.fileName.match(/[\/\\]objectives\.yml$/) ||
+      editor.document.fileName.match(/[\/\\]items\.yml$/)
     ) {
       const dir = path.dirname(editor.document.fileName);
 
@@ -90,7 +90,7 @@ export async function _activate(context: vscode.ExtensionContext, lspClient: Bas
     }
 
     // Show Package Editor activation button only when it is appropriate
-    if (editor.document.fileName.match(/[^\/\\]+\.ya?ml$/gi)) {
+    if (editor.document.fileName.match(/[^\/\\]+\.yml$/gi)) {
       // Iterate all parents dir to find "package.yml"
       checkIfFileExistsInAllParents(path.dirname(editor.document.fileName), 'package.yml').then(packageExists => {
         // Set the context variable based on the result

@@ -115,7 +115,7 @@ export class AST {
     // Find all files by package
     // V2
     filesV2.forEach((files, packageUri) => {
-      const baseEntryFileRegex = new RegExp(`^${packageUri}/package\.ya?ml$`);
+      const baseEntryFileRegex = new RegExp(`^${packageUri}/package\.yml$`);
       documents.filter((document) => {
         if (!document.uri.startsWith(packageUri) || document.uri.match(baseEntryFileRegex)) {
           return false;

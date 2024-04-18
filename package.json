@@ -73,22 +73,22 @@
     "menus": {
       "editor/title": [
         {
-          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /conversations[\\/\\\\].+\\.ya?ml$/i && canActivateConversationEditor",
+          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /conversations[\\/\\\\].+\\.yml$/i && canActivateConversationEditor",
           "command": "betonquest.openConversationEditor",
           "group": "navigation"
         },
         {
-          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /events\\.ya?ml$/i && canActivateEventsEditor",
+          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /events\\.yml$/i && canActivateEventsEditor",
           "command": "betonquest.openEventsEditor",
           "group": "navigation"
         },
         {
-          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /conditions\\.ya?ml$/i && canActivateConditionsEditor",
+          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /conditions\\.yml$/i && canActivateConditionsEditor",
           "command": "betonquest.openConditionsEditor",
           "group": "navigation"
         },
         {
-          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /objectives\\.ya?ml$/i && canActivateObjectivesEditor",
+          "when": "resourceLangId == yaml && !activeCustomEditorId && resourcePath =~ /objectives\\.yml$/i && canActivateObjectivesEditor",
           "command": "betonquest.openObjectivesEditor",
           "group": "navigation"
         },
