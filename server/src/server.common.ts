@@ -1,8 +1,10 @@
-import { CodeAction, CodeActionKind, Command, Connection, DidChangeConfigurationNotification, FileChangeType, HandlerResult, InitializeParams, InitializeResult, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
+import { CodeAction, CodeActionKind, Command, Connection, DidChangeConfigurationNotification, FileChangeType, HandlerResult, InitializeParams, InitializeResult, SemanticTokensParams, SemanticTokensRequest, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { FilesResponse, LocationsParams } from 'betonquest-utils/lsp/file';
 import { AllDocuments, getAllDocuments } from './utils/document';
 import { ASTs } from './ast/ast';
+import { legend } from './semantics/legend';
+import { semanticTokensHandler } from './service/semanticTokens';
 import { hoverHandler } from './service/hover';
 import { locationsHandler } from './service/locations';
 
@@ -51,6 +53,12 @@ export function server(connection: Connection): void {
 
         // Tell the client that this server support hover.
         hoverProvider: true,
+
+        // Tell the client that this server provides semantic tokens
+        semanticTokensProvider: {
+          full: true,
+          legend: legend
+        }
       }
     };
     if (hasWorkspaceFolderCapability) {
@@ -150,6 +158,12 @@ export function server(connection: Connection): void {
     asts.updateDocuments(allDocuments);
     // Send Diagnostics
     asts.getDiagnostics().forEach(diag => connection.sendDiagnostics(diag));
+  });
+
+  // Listen on semantic tokens requests
+  // Provide semantic tokens dynamically
+  connection.onRequest(SemanticTokensRequest.type, (params: SemanticTokensParams) => {
+    return semanticTokensHandler(allDocuments, asts, params);
   });
 
   // Listen on Hover event
