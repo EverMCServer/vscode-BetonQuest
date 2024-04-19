@@ -1,10 +1,11 @@
 import { Diagnostic } from "vscode-languageserver";
 
 import { ArgumentsPatternMandatory, ArgumentsPatternOptional } from "betonquest-utils/betonquest/Arguments";
+import ListElement from "betonquest-utils/betonquest/ListElement";
 
 import { ElementArgumentType, Node } from "../../node";
 import { ElementArguments } from "./ElementArguments";
-import ListElement from "betonquest-utils/betonquest/ListElement";
+import { SemanticToken } from "../../../service/semanticTokens";
 
 export abstract class ElementArgument<LE extends ListElement> implements Node<ElementArgumentType> {
   abstract type: ElementArgumentType;
@@ -37,6 +38,8 @@ export abstract class ElementArgument<LE extends ListElement> implements Node<El
   getDiagnostics() {
     return this.diagnostics;
   }
+
+  abstract getSemanticTokens(): SemanticToken[];
 
   getHoverInfo(uri: string, offset: number): string[] {
     if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {

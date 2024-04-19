@@ -65,6 +65,15 @@ export abstract class ElementList<LE extends ListElement> implements Node<Elemen
     } as PublishDiagnosticsParams;
   }
 
+  getSemanticTokens(uri: string) {
+    if (this.uri !== uri) {
+      return [];
+    }
+    return this.entries.flatMap(e => {
+      return e.getSemanticTokens();
+    });
+  }
+
   getHoverInfo(uri: string, offset: number) {
     if (this.uri === uri && this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
       return this.entries.flatMap(e => e.getHoverInfo(uri, offset));

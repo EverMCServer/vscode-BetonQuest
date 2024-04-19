@@ -181,6 +181,14 @@ export class AST {
     ];
   }
 
+  // Get semantic tokens for embeded betonquest's instructions
+  getSemanticTokens(uri: string) {
+    return [
+      ...this.packagesV1.flatMap(p => p.getSemanticTokens(uri)),
+      ...this.packagesV2.flatMap(p => p.getSemanticTokens(uri))
+    ];
+  }
+
   // Get all hover info
   getHoverInfo(uri: string, offset: number): HoverInfo[] {
     // TODO: return text with range

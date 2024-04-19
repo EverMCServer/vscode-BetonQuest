@@ -1,10 +1,11 @@
 import { Diagnostic } from "vscode-languageserver";
 
 import { ArgumentsPatternMandatory, ArgumentsPatternOptional } from "betonquest-utils/betonquest/Arguments";
+import ListElement from "betonquest-utils/betonquest/ListElement";
 
 import { ElementArgumentType, Node } from "../../node";
 import { ElementArguments } from "./ElementArguments";
-import ListElement from "betonquest-utils/betonquest/ListElement";
+import { SemanticToken } from "../../../service/semanticTokens";
 
 export abstract class ElementArgument<LE extends ListElement> implements Node<ElementArgumentType> {
   abstract type: ElementArgumentType;
@@ -33,6 +34,8 @@ export abstract class ElementArgument<LE extends ListElement> implements Node<El
 
     // Check format
   }
+
+  abstract getSemanticTokens(): SemanticToken[];
 
   getDiagnostics() {
     return this.diagnostics;

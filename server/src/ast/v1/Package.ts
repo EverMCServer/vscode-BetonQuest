@@ -9,6 +9,7 @@ import { ConditionList } from "./Condition/ConditionList";
 import { EventList } from "./Event/EventList";
 import { ObjectiveList } from "./Objective/ObjectiveList";
 import { HoverInfo } from "../../utils/hover";
+import { SemanticToken } from "../../service/semanticTokens";
 
 export class PackageV1 extends Package<PackageV1Type> {
   offsetStart?: number;
@@ -65,37 +66,54 @@ export class PackageV1 extends Package<PackageV1Type> {
     return diagnostics;
   }
 
-  getHoverInfo(uri: string, offset: number) {
-    const result: HoverInfo[] = [];
+  getSemanticTokens(uri: string) {
+    const semanticTokens: SemanticToken[] = [];
     if (!uri.startsWith(this.uri)) {
-      return result;
+      return semanticTokens;
     }
     if (this.conditionList) {
-      result.push(...this.conditionList.getHoverInfo(uri, offset));
+      semanticTokens.push(...this.conditionList.getSemanticTokens(uri));
     }
     if (this.eventList) {
-      result.push(...this.eventList.getHoverInfo(uri, offset));
+      semanticTokens.push(...this.eventList.getSemanticTokens(uri));
     }
     if (this.objectiveList) {
-      result.push(...this.objectiveList.getHoverInfo(uri, offset));
+      semanticTokens.push(...this.objectiveList.getSemanticTokens(uri));
     }
-    return result;
+    return semanticTokens;
+  }
+
+  getHoverInfo(uri: string, offset: number) {
+    const hoverInfo: HoverInfo[] = [];
+    if (!uri.startsWith(this.uri)) {
+      return hoverInfo;
+    }
+    if (this.conditionList) {
+      hoverInfo.push(...this.conditionList.getHoverInfo(uri, offset));
+    }
+    if (this.eventList) {
+      hoverInfo.push(...this.eventList.getHoverInfo(uri, offset));
+    }
+    if (this.objectiveList) {
+      hoverInfo.push(...this.objectiveList.getHoverInfo(uri, offset));
+    }
+    return hoverInfo;
   }
 
   getLocations(yamlPath: string[], sourceUri: string) {
-    const result: LocationsResponse = [];
+    const locations: LocationsResponse = [];
     if (!sourceUri.startsWith(this.uri)) {
-      return result;
+      return locations;
     }
     if (yamlPath[0] === '@conditions' && this.conditionList) {
-      result.push(...this.conditionList.getLocations(yamlPath, sourceUri));
+      locations.push(...this.conditionList.getLocations(yamlPath, sourceUri));
     }
     if (yamlPath[0] === '@events' && this.eventList) {
-      result.push(...this.eventList.getLocations(yamlPath, sourceUri));
+      locations.push(...this.eventList.getLocations(yamlPath, sourceUri));
     }
     if (yamlPath[0] === '@objectives' && this.objectiveList) {
-      result.push(...this.objectiveList.getLocations(yamlPath, sourceUri));
+      locations.push(...this.objectiveList.getLocations(yamlPath, sourceUri));
     }
-    return result;
+    return locations;
   }
 }

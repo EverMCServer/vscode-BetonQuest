@@ -11,6 +11,7 @@ import { ElementArgumentMandatory } from "./ElementArgumentMandatory";
 import { ElementArgumentOptional } from "./ElementArgumentOptional";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { HoverInfo } from "../../../utils/hover";
+import { SemanticToken } from "../../../service/semanticTokens";
 
 export abstract class ElementArguments<LE extends ListElement> implements Node<ElementArgumentsType> {
   abstract type: ElementArgumentsType;
@@ -23,8 +24,8 @@ export abstract class ElementArguments<LE extends ListElement> implements Node<E
 
   indent: number;
   // argumentsStrs: string[] = [];
-  argumentsMandatory: ElementArgument<LE>[] = [];
-  argumentsOptional: ElementArgument<LE>[] = [];
+  argumentsMandatory: ElementArgumentMandatory<LE>[] = [];
+  argumentsOptional: ElementArgumentOptional<LE>[] = [];
 
   constructor(argumentsSourceStr: string, range: [number?, number?], indent: number, kindConfig: ElementKind<LE>, parent: ElementEntry<LE>) {
     this.uri = parent.uri;
@@ -198,6 +199,20 @@ export abstract class ElementArguments<LE extends ListElement> implements Node<E
       diagnostics.push(...this.argumentsOptional.flatMap(a => a.getDiagnostics()));
     }
     return diagnostics;
+  }
+
+  getSemanticTokens(): SemanticToken[] {
+    if (this.offsetStart === undefined || this.offsetEnd === undefined) {
+      return [];
+    }
+    const semanticTokens: SemanticToken[] = [{
+      offsetStart: this.offsetStart,
+      offsetEnd: this.offsetEnd,
+      tokenType: "string"
+    }];
+    semanticTokens.push(...this.argumentsMandatory.flatMap(a => a.getSemanticTokens()));
+    semanticTokens.push(...this.argumentsOptional.flatMap(a => a.getSemanticTokens()));
+    return semanticTokens;
   }
 
   getHoverInfo(uri: string, offset: number): HoverInfo[] {

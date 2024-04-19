@@ -10,6 +10,7 @@ import { HoverInfo } from "../../utils/hover";
 import { ConditionList } from "./Condition/ConditionList";
 import { EventList } from "./Event/EventList";
 import { ObjectiveList } from "./Objective/ObjectiveList";
+import { SemanticToken } from "../../service/semanticTokens";
 
 export class PackageV2 extends Package<PackageV2Type> {
   offsetStart?: number;
@@ -65,31 +66,42 @@ export class PackageV2 extends Package<PackageV2Type> {
     return diagnostics;
   }
 
-  getHoverInfo(uri: string, offset: number): HoverInfo[] {
-    const result: HoverInfo[] = [];
+  getSemanticTokens(uri: string) {
+    const semanticTokens: SemanticToken[] = [];
     if (!uri.startsWith(this.uri)) {
-      return result;
+      return semanticTokens;
     }
-    result.push(...this.conditionLists.flatMap(l => l.getHoverInfo(uri, offset)));
-    result.push(...this.eventLists.flatMap(l => l.getHoverInfo(uri, offset)));
-    result.push(...this.objectiveLists.flatMap(l => l.getHoverInfo(uri, offset)));
-    return result;
+    semanticTokens.push(...this.conditionLists.flatMap(l => l.getSemanticTokens(uri)));
+    semanticTokens.push(...this.eventLists.flatMap(l => l.getSemanticTokens(uri)));
+    semanticTokens.push(...this.objectiveLists.flatMap(l => l.getSemanticTokens(uri)));
+    return semanticTokens;
+  }
+
+  getHoverInfo(uri: string, offset: number): HoverInfo[] {
+    const hoverInfo: HoverInfo[] = [];
+    if (!uri.startsWith(this.uri)) {
+      return hoverInfo;
+    }
+    hoverInfo.push(...this.conditionLists.flatMap(l => l.getHoverInfo(uri, offset)));
+    hoverInfo.push(...this.eventLists.flatMap(l => l.getHoverInfo(uri, offset)));
+    hoverInfo.push(...this.objectiveLists.flatMap(l => l.getHoverInfo(uri, offset)));
+    return hoverInfo;
   }
 
   getLocations(yamlPath: string[], sourceUri: string) {
-    const result: LocationsResponse = [];
+    const locations: LocationsResponse = [];
     if (!sourceUri.startsWith(this.uri)) {
-      return result;
+      return locations;
     }
     if (yamlPath[0] === 'conditions') {
-      result.push(...this.conditionLists.flatMap(l => l.getLocations(yamlPath, sourceUri)));
+      locations.push(...this.conditionLists.flatMap(l => l.getLocations(yamlPath, sourceUri)));
     }
     if (yamlPath[0] === 'events') {
-      result.push(...this.eventLists.flatMap(l => l.getLocations(yamlPath, sourceUri)));
+      locations.push(...this.eventLists.flatMap(l => l.getLocations(yamlPath, sourceUri)));
     }
     if (yamlPath[0] === 'objectives') {
-      result.push(...this.objectiveLists.flatMap(l => l.getLocations(yamlPath, sourceUri)));
+      locations.push(...this.objectiveLists.flatMap(l => l.getLocations(yamlPath, sourceUri)));
     }
-    return result;
+    return locations;
   }
 }

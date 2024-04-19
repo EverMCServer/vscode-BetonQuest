@@ -4,6 +4,7 @@ import { LocationsResponse } from "betonquest-utils/lsp/file";
 
 import { Node, PackageTypes } from "./node";
 import { HoverInfo } from "../utils/hover";
+import { SemanticToken } from "../service/semanticTokens";
 
 export abstract class Package<T extends PackageTypes> implements Node<T> {
   type: T;
@@ -15,6 +16,11 @@ export abstract class Package<T extends PackageTypes> implements Node<T> {
     this.type = type;
     this.uri = packageUri;
   }
+
+  /**
+   * Get semantic tokens for a given file.
+   */
+  abstract getSemanticTokens(uri: string): SemanticToken[];
 
   /**
    * Get diagnostics info, e.g. gramatical errors.

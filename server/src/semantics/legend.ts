@@ -20,28 +20,28 @@ const tokenTypes = [
   // tokenTypeEnum,
 
   'namespace',
-  'class',
+  'class', // conditions / player_options
   'enum',
   'interface',
   'struct',
   'typeParameter',
   'type',
   'parameter',
-  'variable',
+  'variable', // %variables%
   'property',
-  'enumMember',
+  'enumMember', // items
   'decorator',
-  'event',
-  'function',
+  'event', // objectives
+  'function', // events / journals
   'method',
-  'macro',
-  'label',
+  'macro', // boolean / npc_options / condition/event/objective's kind
+  'label', // minecraft / optional_key
   'comment',
-  'string',
-  'keyword',
-  'number',
+  'string', // default
+  'keyword', // tag / point
+  'number', // number
   'regexp',
-  'operator',
+  'operator', // seprator,:^!
 ];
 
 const tokenModifiers = [

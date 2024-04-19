@@ -5,6 +5,7 @@ import ListElement from "betonquest-utils/betonquest/ListElement";
 import { ElementKeyType, Node } from "../../node";
 import { ElementEntry } from "./ElementEntry";
 import { HoverInfo } from "../../../utils/hover";
+import { SemanticToken } from "../../../service/semanticTokens";
 
 export abstract class ElementKey<LE extends ListElement> implements Node<ElementKeyType> {
   abstract type: ElementKeyType;
@@ -23,6 +24,8 @@ export abstract class ElementKey<LE extends ListElement> implements Node<Element
 
     this.value = key.value;
   }
+
+  abstract getSemanticTokens(): SemanticToken[];
 
   getHoverInfo(uri: string, offset: number): HoverInfo[] {
     if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {

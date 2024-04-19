@@ -11,6 +11,7 @@ import { ElementArguments } from "./ElementArguments";
 import { ElementList } from "./ElementList";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getScalarSourceAndRange } from "../../../utils/yaml";
+import { SemanticToken } from "../../../service/semanticTokens";
 
 export abstract class ElementEntry<LE extends ListElement> implements Node<ElementEntryType> {
   abstract type: ElementEntryType;
@@ -108,6 +109,18 @@ export abstract class ElementEntry<LE extends ListElement> implements Node<Eleme
       diagnostics.push(...this.elementArguments.getDiagnostics());
     }
     return diagnostics;
+  }
+
+  getSemanticTokens(): SemanticToken[] {
+    const tokens: SemanticToken[] = [];
+    tokens.push(...this.elementKey.getSemanticTokens());
+    if (this.elementKind) {
+      tokens.push(...this.elementKind.getSemanticTokens());
+    }
+    if (this.elementArguments) {
+      tokens.push(...this.elementArguments.getSemanticTokens());
+    }
+    return tokens;
   }
 
   getHoverInfo(uri: string, offset: number) {
