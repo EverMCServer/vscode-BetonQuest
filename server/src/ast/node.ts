@@ -1,26 +1,28 @@
 import { Diagnostic } from "vscode-languageserver";
+import { ConversationQuester } from "./v1/Conversation/ConversationQuester";
 
 export type PackageV1Type = 'PackageV1';
 export type PackageV2Type = 'PackageV2';
 export type PackageTypes = PackageV1Type | PackageV2Type;
 
 export type ConversationListType = 'ConversationList';
-export type ConversationEntryType = 'ConversationEntry';
+export type ConversationType = 'Conversation';
 export type ConversationKeyType = 'ConversationKey';
 export type ConversationQuesterType = 'ConversationQuester';
+export type ConversationQuesterTranslationsType = 'ConversationQuesterTranslations';
 export type ConversationFirstType = 'ConversationFirst';
 export type ConversationStopType = 'ConversationStop';
 export type ConversationFinalEventsType = 'ConversationFinalEvents';
 export type ConversationInterceptorType = 'ConversationInterceptor';
-export type ConversationNpcArgumentsType = 'ConversationNpcArguments';
-export type ConversationPlayerArgumentsType = 'ConversationPlayerArguments';
-export type ConversationArgumentType = 'ConversationArgument';
+export type ConversationOptionsType = 'ConversationNpcOptions';
+export type ConversationNpcOptionsType = 'ConversationNpcOptions';
+export type ConversationPlayerOptionsType = 'ConversationPlayerOptions';
 export type ConversationTextType = 'ConversationText';
 export type ConversationConditionsType = 'ConversationConditions';
-export type ConversationArgumentEventsType = 'ConversationArgumentEvents';
+export type ConversationEventsType = 'ConversationEvents';
 export type ConversationPointersType = 'ConversationPointers';
 export type ConversationTextTranslationsType = 'ConversationTextTranslations';
-export type ConversationTypes = ConversationListType | ConversationEntryType | ConversationKeyType | ConversationQuesterType | ConversationFirstType | ConversationStopType | ConversationFinalEventsType | ConversationInterceptorType | ConversationNpcArgumentsType | ConversationPlayerArgumentsType | ConversationArgumentType | ConversationTextType | ConversationConditionsType | ConversationArgumentEventsType | ConversationPointersType | ConversationTextTranslationsType;
+export type ConversationTypes = ConversationListType | ConversationType | ConversationKeyType | ConversationQuesterType | ConversationQuesterTranslationsType | ConversationFirstType | ConversationStopType | ConversationFinalEventsType | ConversationInterceptorType | ConversationOptionsType | ConversationNpcOptionsType | ConversationPlayerOptionsType | ConversationTextType | ConversationConditionsType | ConversationEventsType | ConversationPointersType | ConversationTextTranslationsType;
 
 export type EventListType = 'EventList';
 export type EventEntryType = 'EventEntry';

@@ -10,6 +10,7 @@ import { EventList } from "./Event/EventList";
 import { ObjectiveList } from "./Objective/ObjectiveList";
 import { HoverInfo } from "../../utils/hover";
 import { SemanticToken } from "../../service/semanticTokens";
+import { Conversation } from "./Conversation/Conversation";
 
 export class PackageV1 extends Package<PackageV1Type> {
   offsetStart?: number;
@@ -19,6 +20,7 @@ export class PackageV1 extends Package<PackageV1Type> {
   conditionList?: ConditionList;
   eventList?: EventList;
   objectiveList?: ObjectiveList;
+  conversations?: Conversation[] = [];
 
   constructor(packageUri: string, documents: TextDocument[]) {
     super("PackageV1", packageUri);
@@ -46,7 +48,9 @@ export class PackageV1 extends Package<PackageV1Type> {
         case 'custom.yml':
           break;
         default:
-          if (p[p.length - 2] === 'conversations') { }
+          if (p[p.length - 2] === 'conversations') {
+            this.conversations?.push(new Conversation(document.uri, document, this));
+          }
           break;
       }
     });
