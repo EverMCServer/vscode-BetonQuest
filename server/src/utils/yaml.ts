@@ -1,5 +1,4 @@
-import { Scalar } from "yaml";
-import { Token } from "yaml/dist/parse/cst";
+import { Pair, Scalar, YAMLMap } from "yaml";
 
 export function getScalarSourceAndRange (value: Scalar<string> | null) {
   return [getSourceByValue(value), getScalarRangeByValue(value)] as [string | undefined, [number, number, number]];
@@ -123,4 +122,17 @@ export function getScalarRangeByValue(value: Scalar<string> | null) {
   }
 
   return range;
+}
+
+// Type guard function to check if the value is a Scalar<string>
+export function isStringScalar(value: any): value is Scalar<string> {
+  return value instanceof Scalar && typeof value.value === 'string';
+}
+
+export function isStringScalarPair(value: any): value is Pair<Scalar<string>, Scalar<string>> {
+  return value instanceof Pair && value.value instanceof Scalar && typeof value.value.value === 'string';
+}
+
+export function isYamlmapPair(value: any): value is Pair<Scalar<string>, YAMLMap<Scalar<string>>> {
+  return value instanceof Pair && value.value instanceof YAMLMap;
 }

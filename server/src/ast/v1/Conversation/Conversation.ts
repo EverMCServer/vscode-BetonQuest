@@ -11,6 +11,7 @@ import { ConversationFinalEvents } from "./ConversationFinalEvents";
 import { ConversationInterceptor } from "./ConversationInterceptor";
 import { NpcOptions } from "./Option/NpcOptions";
 import { PlayerOptions } from "./Option/PlayerOptions";
+import { isStringScalarPair, isYamlmapPair } from "../../../utils/yaml";
 
 export class Conversation implements Node<ConversationType> {
   type: ConversationType = 'Conversation';
@@ -64,22 +65,46 @@ export class Conversation implements Node<ConversationType> {
           this.quester = new ConversationQuester(this.uri, pair, this);
           break;
         case "first":
-          this.first = new ConversationFirst(this.uri, pair, this);
+          if (isStringScalarPair(pair)) {
+            this.first = new ConversationFirst(this.uri, pair, this);
+          } else {
+            // TODO: throw error diagnostics
+          }
           break;
         case "stop":
-          this.stop = new ConversationStop(this.uri, pair, this);
+          if (isStringScalarPair(pair)) {
+            this.stop = new ConversationStop(this.uri, pair, this);
+          } else {
+            // TODO: throw error diagnostics
+          }
           break;
         case "final_events":
-          this.finalEvent = new ConversationFinalEvents(this.uri, pair, this);
+          if (isStringScalarPair(pair)) {
+            this.finalEvent = new ConversationFinalEvents(this.uri, pair, this);
+          } else {
+            // TODO: throw error diagnostics
+          }
           break;
         case "interceptor":
-          this.interceptor = new ConversationInterceptor(this.uri, pair, this);
+          if (isStringScalarPair(pair)) {
+            this.interceptor = new ConversationInterceptor(this.uri, pair, this);
+          } else {
+            // TODO: throw error diagnostics
+          }
           break;
         case "NPC_options":
-          this.npcOptions = new NpcOptions(this.uri, pair, this);
+          if (isYamlmapPair(pair)) {
+            this.npcOptions = new NpcOptions(this.uri, pair, this);
+          } else {
+            // TODO: throw error diagnostics
+          }
           break;
         case "player_options":
-          this.playerOptions = new PlayerOptions(this.uri, pair, this);
+          if (isYamlmapPair(pair)) {
+            this.playerOptions = new PlayerOptions(this.uri, pair, this);
+          } else {
+            // TODO: throw error diagnostics
+          }
           break;
       }
     });

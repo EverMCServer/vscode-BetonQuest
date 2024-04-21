@@ -13,20 +13,15 @@ export class NpcOptions implements Node<ConversationNpcOptionsType> {
   diagnostics?: Diagnostic[];
 
   // Cache the parsed yaml document
-  yml?: Pair<Scalar<string>>;
-  ymlValue?: YAMLMap<Scalar<string>>; // TODO
+  yml?: Pair<Scalar<string>, YAMLMap<Scalar<string>>>;
+  options?: YAMLMap<Scalar<string>>; // TODO
 
-  constructor(uri: string, yml: Pair<Scalar<string>>, parent: Conversation) {
+  constructor(uri: string, yml: Pair<Scalar<string>, YAMLMap<Scalar<string>>>, parent: Conversation) {
     this.uri = uri;
     this.parent = parent;
-
-    // Check YAML value type
     this.yml = yml;
-    if (yml.value instanceof YAMLMap) {
-      this.ymlValue = yml.value;
-    } else {
-      // TODO: throw diagnostics
-    }
+
+    // TODO
 
     // ...
   }
