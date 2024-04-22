@@ -173,35 +173,38 @@ export function server(connection: Connection): void {
 
   // Listen to actions, e.g. quick fixes
   connection.onCodeAction(params => {
-    const diagnostic = params.context.diagnostics[0];
-    let a: HandlerResult<(Command | CodeAction)[] | null | undefined, void> = [];
-    if (diagnostic.code === "BQ-001") {
-      a.push(
-        {
-          title: "My Quick Fix",
-          kind: CodeActionKind.QuickFix,
-          diagnostics: [diagnostic],
-          // The edits this action performs.
-          edit: {
-            documentChanges: [
-              {
-                textDocument: {
-                  ...params.textDocument,
-                  version: 1
-                },
-                // The range this change applies to.
-                edits: [
-                  {
-                    range: diagnostic.range,
-                    newText: "aaa"
-                  }
-                ]
-              }
-            ]
-          },
-        }
-      );
-    }
+    const a: HandlerResult<(Command | CodeAction)[] | null | undefined, void> = [];
+    params.context.diagnostics.forEach(d => {
+      // TODO
+    });
+    // const diagnostic = params.context.diagnostics[0];
+    // if (diagnostic.code === "BQ-001") {
+    //   a.push(
+    //     {
+    //       title: "My Quick Fix",
+    //       kind: CodeActionKind.QuickFix,
+    //       diagnostics: [diagnostic],
+    //       // The edits this action performs.
+    //       edit: {
+    //         documentChanges: [
+    //           {
+    //             textDocument: {
+    //               ...params.textDocument,
+    //               version: 1
+    //             },
+    //             // The range this change applies to.
+    //             edits: [
+    //               {
+    //                 range: diagnostic.range,
+    //                 newText: "aaa"
+    //               }
+    //             ]
+    //           }
+    //         ]
+    //       },
+    //     }
+    //   );
+    // }
     return a;
   });
 

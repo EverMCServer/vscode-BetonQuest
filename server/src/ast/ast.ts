@@ -39,6 +39,11 @@ export class ASTs {
     return this.asts.map(([, ast]) => ast?.getDiagnostics() ?? []).flat();
   }
 
+  getAllCodeActions(documentUri?: string) {
+    // TODO: filter by documentUri
+    return this.asts.map(([, ast]) => ast?.getCodeActions() ?? []).flat();
+  }
+
   /**
    * Get uri + offset / position by abstract YAML path.
    * @param yamlPath The abstract YAML path to search for.
@@ -178,6 +183,14 @@ export class AST {
     return [
       ...this.packagesV1.flatMap(p => p.getPublishDiagnosticsParams()),
       ...this.packagesV2.flatMap(p => p.getPublishDiagnosticsParams())
+    ];
+  }
+
+  // Get all CodeActions
+  getCodeActions() {
+    return [
+      ...this.packagesV1.flatMap(p => p.getCodeActions()),
+      // ...this.packagesV2.flatMap(p => p.getCodeActions())
     ];
   }
 

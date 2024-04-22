@@ -1,5 +1,4 @@
-import { Diagnostic } from "vscode-languageserver";
-import { ConversationQuester } from "./v1/Conversation/ConversationQuester";
+import { AnnotatedTextEdit, CodeAction, Diagnostic, TextEdit } from "vscode-languageserver";
 
 export type PackageV1Type = 'PackageV1';
 export type PackageV2Type = 'PackageV2';
@@ -19,10 +18,13 @@ export type ConversationNpcOptionsType = 'ConversationNpcOptions';
 export type ConversationPlayerOptionsType = 'ConversationPlayerOptions';
 export type ConversationTextType = 'ConversationText';
 export type ConversationConditionsType = 'ConversationConditions';
+export type ConversationConditionType = 'ConversationCondition';
 export type ConversationEventsType = 'ConversationEvents';
+export type ConversationEventType = 'ConversationEvent';
 export type ConversationPointersType = 'ConversationPointers';
+export type ConversationPointerType = 'ConversationPointer';
 export type ConversationTextTranslationsType = 'ConversationTextTranslations';
-export type ConversationTypes = ConversationListType | ConversationType | ConversationKeyType | ConversationQuesterType | ConversationQuesterTranslationsType | ConversationFirstType | ConversationStopType | ConversationFinalEventsType | ConversationInterceptorType | ConversationOptionsType | ConversationNpcOptionsType | ConversationPlayerOptionsType | ConversationTextType | ConversationConditionsType | ConversationEventsType | ConversationPointersType | ConversationTextTranslationsType;
+export type ConversationTypes = ConversationListType | ConversationType | ConversationKeyType | ConversationQuesterType | ConversationQuesterTranslationsType | ConversationFirstType | ConversationStopType | ConversationFinalEventsType | ConversationInterceptorType | ConversationOptionsType | ConversationNpcOptionsType | ConversationPlayerOptionsType | ConversationTextType | ConversationConditionsType | ConversationConditionType | ConversationEventsType | ConversationEventType | ConversationPointersType | ConversationPointerType | ConversationTextTranslationsType;
 
 export type EventListType = 'EventList';
 export type EventEntryType = 'EventEntry';
@@ -78,6 +80,7 @@ export interface Node<T extends NodeType> {
   offsetEnd?: number;
   parent?: Node<NodeType>,
   diagnostics?: Diagnostic[];
+  // edits?: CodeAction[];
   // children?: Node<NodeType>[],
 
   // name?: string,

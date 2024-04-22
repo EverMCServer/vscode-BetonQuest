@@ -1,9 +1,9 @@
 import { Scalar, YAMLMap, parseDocument } from "yaml";
+import { CodeAction, Diagnostic, PublishDiagnosticsParams, Range } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { PackageV1 } from "../Package";
 import { ConversationType, Node } from "../../node";
-import { Diagnostic } from "vscode-languageserver";
 import { ConversationQuester } from "./ConversationQuester";
 import { ConversationFirst } from "./ConversationFirst";
 import { ConversationStop } from "./ConversationStop";
@@ -19,10 +19,11 @@ export class Conversation implements Node<ConversationType> {
   offsetStart?: number;
   offsetEnd?: number;
   parent?: PackageV1;
-  diagnostics?: Diagnostic[];
+  diagnostics: Diagnostic[] = [];
+  codeActions: CodeAction[] = [];
 
   // VSCode Document, for diagnostics / quick actions / goto definition, etc
-  document: TextDocument;
+  readonly document: TextDocument;
 
   // Cache the parsed yaml document
   yml?: YAMLMap<Scalar<string>>;
@@ -109,5 +110,56 @@ export class Conversation implements Node<ConversationType> {
       }
     });
     // ...
+  }
+
+  getRangeByOffset(offsetStart: number, offsetEnd: number) {
+    return {
+      start: this.document.positionAt(offsetStart),
+      end: this.document.positionAt(offsetEnd)
+    } as Range;
+  }
+
+  getPublishDiagnosticsParams() {
+    return {
+      uri: this.uri,
+      diagnostics: [
+        ...(this.finalEvent?.getDiagnostics() ?? [])
+      ]
+    } as PublishDiagnosticsParams;
+  }
+
+  // Get all CodeActions, quick fixes etc
+  getCodeActions() {
+    const codeActions = this.codeActions;
+
+    // Get and merge CodeActions from children
+
+    // final_event
+    this.finalEvent?.getCodeActions().forEach(codeAction => {
+      codeActions.push(codeAction);
+    });
+    // this.finalEvent?.getReducedCodeActions().forEach(reducedAction => {
+    //   codeActions.push({
+    //     title: reducedAction.title,
+    //     kind: reducedAction.kind,
+    //     diagnostics: reducedAction.diagnostics,
+    //     edit: {
+    //       documentChanges: [{
+    //         textDocument: {
+    //           uri: this.uri,
+    //           version: null
+    //         },
+    //         edits: reducedAction.edits.map(edit => ({
+    //           range: this.getRangeByOffset(edit.offsetStart, edit.offsetEnd),
+    //           newText: edit.newText
+    //         }))
+    //       }]
+    //     }
+    //   });
+    // });
+
+    // ...
+
+    return codeActions;
   }
 }

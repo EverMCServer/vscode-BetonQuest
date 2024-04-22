@@ -70,6 +70,13 @@ export class PackageV1 extends Package<PackageV1Type> {
     return diagnostics;
   }
 
+  getCodeActions() {
+    return [
+      // TODO ...
+      ...(this.conversations?.flatMap(c => c.getCodeActions()) ?? []),
+    ];
+  }
+
   getSemanticTokens(uri: string) {
     const semanticTokens: SemanticToken[] = [];
     if (!uri.startsWith(this.uri)) {
