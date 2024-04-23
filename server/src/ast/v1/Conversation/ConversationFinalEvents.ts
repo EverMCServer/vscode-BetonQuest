@@ -23,7 +23,7 @@ export class ConversationFinalEvents implements Node<ConversationFinalEventsType
     this.uri = uri;
     this.parent = parent;
     this.yml = yml;
-    this.offsetStart = this.yml.key.range?.[0] ?? 0;
+    this.offsetStart = this.yml.value?.range?.[0] ?? 0;
     this.offsetEnd = this.yml.value?.range?.[1] ?? this.yml.key.range?.[1] ?? this.offsetStart;
 
     // Parse Events with RegEx

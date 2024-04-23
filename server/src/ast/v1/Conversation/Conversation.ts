@@ -130,7 +130,8 @@ export class Conversation implements Node<ConversationType> {
 
   // Get all CodeActions, quick fixes etc
   getCodeActions() {
-    const codeActions = this.codeActions;
+    const codeActions: CodeAction[] = [];
+    codeActions.push(...this.codeActions);
 
     // Get and merge CodeActions from children
 

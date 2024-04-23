@@ -8,7 +8,7 @@ import { getParentUrl } from "../utils/url";
 
 // AST by workspace folders
 export class ASTs {
-  asts: [uri: string, ast?: (AST | undefined)][] = [];
+  asts: [uri: string, ast?: AST][] = [];
 
   constructor(allDocuments: AllDocuments) {
     this.updateDocuments(allDocuments);
@@ -35,13 +35,11 @@ export class ASTs {
   }
 
   getDiagnostics(documentUri?: string) {
-    // TODO: filter by documentUri
-    return this.asts.map(([, ast]) => ast?.getDiagnostics() ?? []).flat();
+    return this.asts.filter(([uri]) => documentUri ? documentUri.startsWith(uri) : true).flatMap(([, ast]) => ast?.getDiagnostics(documentUri) ?? []);
   }
 
   getAllCodeActions(documentUri?: string) {
-    // TODO: filter by documentUri
-    return this.asts.map(([, ast]) => ast?.getCodeActions() ?? []).flat();
+    return this.asts.filter(([uri]) => documentUri ? documentUri.startsWith(uri) : true).flatMap(([, ast]) => ast?.getCodeActions(documentUri) ?? []);
   }
 
   /**
@@ -179,18 +177,18 @@ export class AST {
   }
 
   // Get all diagnostics from parser
-  getDiagnostics() {
+  getDiagnostics(documentUri?: string) {
     return [
-      ...this.packagesV1.flatMap(p => p.getPublishDiagnosticsParams()),
-      ...this.packagesV2.flatMap(p => p.getPublishDiagnosticsParams())
+      ...this.packagesV1.filter(p => documentUri ? documentUri.startsWith(p.uri) : true).flatMap(p => p.getPublishDiagnosticsParams(documentUri)),
+      ...this.packagesV2.filter(p => documentUri ? documentUri.startsWith(p.uri) : true).flatMap(p => p.getPublishDiagnosticsParams(documentUri))
     ];
   }
 
   // Get all CodeActions
-  getCodeActions() {
+  getCodeActions(documentUri?: string) {
     return [
-      ...this.packagesV1.flatMap(p => p.getCodeActions()),
-      // ...this.packagesV2.flatMap(p => p.getCodeActions())
+      ...this.packagesV1.filter(p => documentUri ? documentUri.startsWith(p.uri) : true).flatMap(p => p.getCodeActions(documentUri)),
+      // ...this.packagesV2.filter(p => documentUri ? documentUri.startsWith(p.uri) : true).flatMap(p => p.getCodeActions(documentUri))
     ];
   }
 

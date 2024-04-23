@@ -1,4 +1,4 @@
-import { PublishDiagnosticsParams } from "vscode-languageserver";
+import { CodeAction, PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
@@ -16,7 +16,6 @@ export class PackageV1 extends Package<PackageV1Type> {
   offsetStart?: number;
   offsetEnd?: number;
 
-  conversationList?: Node<ConversationListType>; // TODO: Conversations[]
   conditionList?: ConditionList;
   eventList?: EventList;
   objectiveList?: ObjectiveList;
@@ -56,25 +55,34 @@ export class PackageV1 extends Package<PackageV1Type> {
     });
   }
 
-  getPublishDiagnosticsParams(): PublishDiagnosticsParams[] {
+  getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
     const diagnostics: PublishDiagnosticsParams[] = [];
-    if (this.conditionList) {
+    if (this.conditionList && (!documentUri || this.conditionList.uri === documentUri)) {
       diagnostics.push(this.conditionList.getPublishDiagnosticsParams());
     }
-    if (this.eventList) {
+    if (this.eventList && (!documentUri || this.eventList.uri === documentUri)) {
       diagnostics.push(this.eventList.getPublishDiagnosticsParams());
     }
-    if (this.objectiveList) {
+    if (this.objectiveList && (!documentUri || this.objectiveList.uri === documentUri)) {
       diagnostics.push(this.objectiveList.getPublishDiagnosticsParams());
     }
+    this.conversations?.forEach(conversation => {
+      if (!documentUri || conversation.uri === documentUri) {
+        diagnostics.push(conversation.getPublishDiagnosticsParams());
+      }
+    });
     return diagnostics;
   }
 
-  getCodeActions() {
-    return [
-      // TODO ...
-      ...(this.conversations?.flatMap(c => c.getCodeActions()) ?? []),
-    ];
+  getCodeActions(documentUri?: string) {
+    const codeActions: CodeAction[] = [];
+    // Get Conversations' code actions
+    this.conversations?.forEach(c => {
+      if (!documentUri || c.uri === documentUri) {
+        codeActions.push(...c.getCodeActions());
+      }
+    });
+    return codeActions;
   }
 
   getSemanticTokens(uri: string) {

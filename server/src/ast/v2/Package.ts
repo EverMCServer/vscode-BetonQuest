@@ -58,11 +58,28 @@ export class PackageV2 extends Package<PackageV2Type> {
     });
   }
 
-  getPublishDiagnosticsParams(): PublishDiagnosticsParams[] {
+  getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
     const diagnostics: PublishDiagnosticsParams[] = [];
-    diagnostics.push(...this.conditionLists.map(l => l.getPublishDiagnosticsParams()));
-    diagnostics.push(...this.eventLists.map(l => l.getPublishDiagnosticsParams()));
-    diagnostics.push(...this.objectiveLists.map(l => l.getPublishDiagnosticsParams()));
+    this.conditionLists.forEach(l => {
+      if (!documentUri || l.uri === documentUri) {
+        diagnostics.push(l.getPublishDiagnosticsParams());
+      }
+    });
+    this.eventLists.forEach(l => {
+      if (!documentUri || l.uri === documentUri) {
+        diagnostics.push(l.getPublishDiagnosticsParams());
+      }
+    });
+    this.objectiveLists.forEach(l => {
+      if (!documentUri || l.uri === documentUri) {
+        diagnostics.push(l.getPublishDiagnosticsParams());
+      }
+    });
+    // this.conversations?.forEach(conversation => {
+    //   if (!documentUri || conversation.uri === documentUri) {
+    //     diagnostics.push(conversation.getPublishDiagnosticsParams());
+    //   }
+    // });
     return diagnostics;
   }
 

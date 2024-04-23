@@ -49,7 +49,7 @@ export function server(connection: Connection): void {
         // }
 
         // Tell the client that this server supports code actions.
-        // codeActionProvider: true,
+        codeActionProvider: true,
 
         // Tell the client that this server support hover.
         hoverProvider: true,
@@ -157,7 +157,7 @@ export function server(connection: Connection): void {
     // 2. Update the AST
     asts.updateDocuments(allDocuments);
     // Send Diagnostics
-    asts.getDiagnostics().forEach(diag => connection.sendDiagnostics(diag));
+    asts.getDiagnostics(e.document.uri).forEach(diag => connection.sendDiagnostics(diag));
   });
 
   // Listen on semantic tokens requests
@@ -175,7 +175,18 @@ export function server(connection: Connection): void {
   connection.onCodeAction(params => {
     const a: HandlerResult<(Command | CodeAction)[] | null | undefined, void> = [];
     params.context.diagnostics.forEach(d => {
-      // TODO
+      a.push(
+        ...asts.getAllCodeActions(params.textDocument.uri) // TODO: + fileter by diagnostics
+          .filter(c =>
+            c.diagnostics?.some(d2 => 
+              d2.code === d.code
+              && d2.range.start.line === d.range.start.line
+              && d2.range.start.character === d.range.start.character
+              && d2.range.end.line === d.range.end.line
+              && d2.range.end.character === d.range.end.character
+            )
+          )
+      );
     });
     // const diagnostic = params.context.diagnostics[0];
     // if (diagnostic.code === "BQ-001") {
