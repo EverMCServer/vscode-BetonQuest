@@ -1,21 +1,45 @@
-import { Scalar, YAMLMap } from "yaml";
-import { Diagnostic } from "vscode-languageserver";
+import { Scalar, YAMLMap, isMap, isPair, isScalar } from "yaml";
+import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationTypes, Node } from "../../node";
+import { AbstractText } from "./AbstractText";
+import { DiagnosticCode } from "../../../utils/diagnostics";
 
 export abstract class AbstractTextTranslations<N extends ConversationTypes> implements Node<N> {
   abstract type: N;
   uri: string;
   offsetStart?: number;
   offsetEnd?: number;
-  parent?: Node<ConversationTypes>;
-  diagnostics?: Diagnostic[];
+  parent: AbstractText<ConversationTypes, AbstractTextTranslations<N>>;
+  diagnostics: Diagnostic[] = [];
 
-  yml: YAMLMap<Scalar<string>, Scalar<string>>;
+  yml: YAMLMap<Scalar<string>>;
 
-  constructor(uri: string, yml: YAMLMap<Scalar<string>, Scalar<string>>, parent: Node<ConversationTypes>) {
+  constructor(uri: string, yml: YAMLMap<Scalar<string>>, parent: AbstractText<ConversationTypes, AbstractTextTranslations<N>>) {
     this.uri = uri;
     this.parent = parent;
     this.yml = yml;
+
+    // Check YAML type
+    yml.items.forEach(pair => {
+      if (!isScalar<string>(pair.value)) {
+        // Throw incorrect value diagnostics
+        const offsetStart = (pair.value as Scalar)?.range?.[0];
+        const offsetEnd = (pair.value as Scalar)?.range?.[1];
+        if (offsetStart && offsetEnd) {
+          this.diagnostics.push({
+            range: this.parent.parent!.getRangeByOffset(offsetStart, offsetEnd),
+            message: `Incorrect value. It should be a string or a translation list.`,
+            severity: DiagnosticSeverity.Error,
+            source: 'BetonQuest',
+            code: DiagnosticCode.IncorrectYamlType
+          });
+        }
+      }
+    });
+  }
+
+  getDiagnostics() {
+    return this.diagnostics;
   }
 }

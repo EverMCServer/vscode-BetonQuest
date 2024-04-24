@@ -1,5 +1,5 @@
 import { Pair, Scalar } from "yaml";
-import { AnnotatedTextEdit, CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity, TextEdit } from "vscode-languageserver";
+import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationFinalEventsType, Node } from "../../node";
 import { Conversation } from "./Conversation";
@@ -34,34 +34,59 @@ export class ConversationFinalEvents implements Node<ConversationFinalEventsType
         const str = matched[1];
         const offsetStart = this.offsetStart + matched.index;
         const offsetEnd = offsetStart + str.length;
+        const range = this.parent.getRangeByOffset(offsetStart, offsetEnd);
 
         // Check leading & tailing empty spaces
         if (str.trim() !== str) {
           // Throw diagnostics & quick fix
-          const range = this.parent.getRangeByOffset(offsetStart, offsetEnd);
           const diagnostic = {
             range: range,
-            message: `Event name cannot contain leading or trailing empty spaces.`,
+            message: `Final Events name cannot contain leading or trailing empty spaces.`,
             severity: DiagnosticSeverity.Error,
             source: 'BetonQuest',
-            code: DiagnosticCode.EventNameEmptySpaces
+            code: DiagnosticCode.ConversationEventNameEmptySpaces
           };
-          this.diagnostics?.push(diagnostic);
-          this.codeActions?.push({
+          this.diagnostics.push(diagnostic);
+          this.codeActions.push({
             title: 'Remove leading and trailing empty spaces',
             kind: CodeActionKind.QuickFix,
+            isPreferred: true,
             diagnostics: [diagnostic],
             edit: {
-              documentChanges: [{
-                textDocument: {
-                  uri: this.uri,
-                  version: this.parent.document.version,
-                },
-                edits: [{
+              changes: {
+                [this.uri]: [{
                   range: range,
                   newText: str.trim(),
                 }]
-              }]
+              }
+            }
+          });
+        }
+
+        // Check if any spaces in the middle
+        if (str.trim().match(/\s+/)) {
+          const correctStr = str.trim().replace(/\s+/g, "_");
+          const diagnostic: Diagnostic = {
+            range: range,
+            message: `Event name cannot contain empty spaces. Do you mean "${correctStr}"?.`,
+            severity: DiagnosticSeverity.Error,
+            source: 'BetonQuest',
+            code: DiagnosticCode.ConversationEventNameEmptySpaces
+          };
+          this.diagnostics.push(diagnostic);
+          this.codeActions.push({
+            title: `Change to "${correctStr}"`,
+            kind: CodeActionKind.QuickFix,
+            diagnostics: [diagnostic],
+            edit: {
+              changes: {
+                [this.uri]: [
+                  {
+                    range: range,
+                    newText: correctStr
+                  }
+                ]
+              }
             }
           });
         }

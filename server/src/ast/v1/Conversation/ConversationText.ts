@@ -8,6 +8,6 @@ export class ConversationText extends AbstractText<ConversationTextType, Convers
   type: ConversationTextType = 'ConversationText';
 
   newTranslations(uri: string, pair: YAMLMap<Scalar<string>, Scalar<string>>): ConversationTextTranslations {
-      return new ConversationTextTranslations(uri, pair, this);
+    return new ConversationTextTranslations(uri, pair, this);
   }
 }

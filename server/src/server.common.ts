@@ -1,4 +1,4 @@
-import { CodeAction, CodeActionKind, Command, Connection, DidChangeConfigurationNotification, FileChangeType, HandlerResult, InitializeParams, InitializeResult, SemanticTokensParams, SemanticTokensRequest, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
+import { CodeAction, Command, Connection, DidChangeConfigurationNotification, FileChangeType, HandlerResult, InitializeParams, InitializeResult, SemanticTokensParams, SemanticTokensRequest, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { FilesResponse, LocationsParams } from 'betonquest-utils/lsp/file';
 import { AllDocuments, getAllDocuments } from './utils/document';
@@ -176,10 +176,11 @@ export function server(connection: Connection): void {
     const a: HandlerResult<(Command | CodeAction)[] | null | undefined, void> = [];
     params.context.diagnostics.forEach(d => {
       a.push(
-        ...asts.getAllCodeActions(params.textDocument.uri) // TODO: + fileter by diagnostics
+        ...asts.getAllCodeActions(params.textDocument.uri)
           .filter(c =>
-            c.diagnostics?.some(d2 => 
+            c.diagnostics?.some(d2 =>
               d2.code === d.code
+              && d2.message === d.message
               && d2.range.start.line === d.range.start.line
               && d2.range.start.character === d.range.start.character
               && d2.range.end.line === d.range.end.line
@@ -188,34 +189,6 @@ export function server(connection: Connection): void {
           )
       );
     });
-    // const diagnostic = params.context.diagnostics[0];
-    // if (diagnostic.code === "BQ-001") {
-    //   a.push(
-    //     {
-    //       title: "My Quick Fix",
-    //       kind: CodeActionKind.QuickFix,
-    //       diagnostics: [diagnostic],
-    //       // The edits this action performs.
-    //       edit: {
-    //         documentChanges: [
-    //           {
-    //             textDocument: {
-    //               ...params.textDocument,
-    //               version: 1
-    //             },
-    //             // The range this change applies to.
-    //             edits: [
-    //               {
-    //                 range: diagnostic.range,
-    //                 newText: "aaa"
-    //               }
-    //             ]
-    //           }
-    //         ]
-    //       },
-    //     }
-    //   );
-    // }
     return a;
   });
 

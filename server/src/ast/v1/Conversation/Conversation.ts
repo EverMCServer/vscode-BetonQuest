@@ -1,5 +1,5 @@
-import { Scalar, YAMLMap, parseDocument } from "yaml";
-import { CodeAction, Diagnostic, PublishDiagnosticsParams, Range } from "vscode-languageserver";
+import { Scalar, YAMLMap, isMap, isScalar, parseDocument } from "yaml";
+import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity, PublishDiagnosticsParams, Range } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { PackageV1 } from "../Package";
@@ -12,6 +12,7 @@ import { ConversationInterceptor } from "./ConversationInterceptor";
 import { NpcOptions } from "./Option/NpcOptions";
 import { PlayerOptions } from "./Option/PlayerOptions";
 import { isStringScalarPair, isYamlmapPair } from "../../../utils/yaml";
+import { DiagnosticCode } from "../../../utils/diagnostics";
 
 export class Conversation implements Node<ConversationType> {
   type: ConversationType = 'Conversation';
@@ -26,7 +27,7 @@ export class Conversation implements Node<ConversationType> {
   readonly document: TextDocument;
 
   // Cache the parsed yaml document
-  yml?: YAMLMap<Scalar<string>>;
+  yml?: YAMLMap<Scalar<string>, Scalar | YAMLMap>;
 
   // Contents
   quester?: ConversationQuester;
@@ -43,7 +44,7 @@ export class Conversation implements Node<ConversationType> {
     this.parent = parent;
 
     // Parse yaml
-    const yml = parseDocument<YAMLMap<Scalar<string>>, false>(
+    const yml = parseDocument<YAMLMap<Scalar<string>, Scalar | YAMLMap>, false>(
       document.getText(),
       {
         keepSourceTokens: true,
@@ -61,9 +62,27 @@ export class Conversation implements Node<ConversationType> {
 
     // Parse Elements
     this.yml.items.forEach(pair => {
-      switch (pair.key.value.toLowerCase()) {
+      const offsetStart = pair.key.range?.[0] ?? 0;
+      const offsetEnd = pair.value?.range?.[1] ?? offsetStart;
+      const range = this.getRangeByOffset(offsetStart, offsetEnd);
+      switch (pair.key.value) {
         case "quester":
-          this.quester = new ConversationQuester(this.uri, pair, this);
+          if (isScalar<string>(pair.value) || isMap<Scalar<string>>(pair.value)) {
+            this.quester = new ConversationQuester(this.uri, pair.value, this);
+          } else {
+            // Throw incorrect value diagnostics
+            const offsetStart = (pair.value as any).range?.[0] as number ?? pair.key.range?.[0];
+            const offsetEnd = offsetStart ? (pair.value as any).range?.[1] as number : pair.key.range?.[1];
+            if (offsetStart && offsetEnd) {
+              this.diagnostics.push({
+                range: this.getRangeByOffset(offsetStart, offsetEnd),
+                message: `Incorrect value. It should be a string or a translation list.`,
+                severity: DiagnosticSeverity.Error,
+                source: 'BetonQuest',
+                code: DiagnosticCode.IncorrectYamlType
+              });
+            }
+          }
           break;
         case "first":
           if (isStringScalarPair(pair)) {
@@ -107,8 +126,87 @@ export class Conversation implements Node<ConversationType> {
             // TODO: throw error diagnostics
           }
           break;
+        default:
+          const diagnostic: Diagnostic = {
+            range: range,
+            message: `Unknown key "${pair.key.value}"`,
+            severity: DiagnosticSeverity.Warning,
+            source: 'BetonQuest',
+            code: DiagnosticCode.UnknownKey
+          };
+          let correctKeyStr = pair.key.value.toLowerCase();
+          switch (correctKeyStr) {
+            case "npc_options":
+              correctKeyStr = "NPC_options";
+            case "quester":
+            case "first":
+            case "stop":
+            case "final_events":
+            case "interceptor":
+            case "player_options":
+              // Throw error diagnostics for incorrect keys
+              diagnostic.message = `Incorrect key "${pair.key.value}". Do you mean "${correctKeyStr}"?`;
+              this.diagnostics.push(diagnostic);
+              this.codeActions.push({
+                title: `Rename key to "${correctKeyStr}"`,
+                kind: CodeActionKind.QuickFix,
+                diagnostics: [diagnostic],
+                edit: {
+                  changes: {
+                    [this.uri]: [
+                      {
+                        range: this.getRangeByOffset(pair.key.range![0], pair.key.range![1]),
+                        newText: correctKeyStr
+                      }
+                    ]
+                  }
+                }
+              });
+              break;
+            default:
+              // Throw warning diagnostics for unknown keys
+              this.diagnostics.push(diagnostic);
+              this.codeActions.push({
+                title: `Remove "${pair.key.value}"`,
+                kind: CodeActionKind.QuickFix,
+                diagnostics: [diagnostic],
+                edit: {
+                  changes: {
+                    [this.uri]: [
+                      {
+                        range: range,
+                        newText: ""
+                      }
+                    ]
+                  }
+                }
+              });
+              break;
+          }
+          break;
       }
     });
+
+    // Check missing elements
+    if (!this.quester) {
+      this.diagnostics.push({
+        range: {
+          start: {
+            line: 0,
+            character: 0
+          },
+          end: {
+            line: 0,
+            character: 0
+          }
+        },
+        message: `Missing element "quester".`,
+        severity: DiagnosticSeverity.Error,
+        source: 'BetonQuest',
+        code: DiagnosticCode.ConversationMissingQuester
+      });
+    }
+
     // ...
   }
 
@@ -123,6 +221,8 @@ export class Conversation implements Node<ConversationType> {
     return {
       uri: this.uri,
       diagnostics: [
+        ...this.diagnostics,
+        ...(this.quester?.getDiagnostics() ?? []), // quester
         ...(this.finalEvent?.getDiagnostics() ?? [])
       ]
     } as PublishDiagnosticsParams;
@@ -130,37 +230,15 @@ export class Conversation implements Node<ConversationType> {
 
   // Get all CodeActions, quick fixes etc
   getCodeActions() {
-    const codeActions: CodeAction[] = [];
-    codeActions.push(...this.codeActions);
+    return [
+      ...this.codeActions,
 
-    // Get and merge CodeActions from children
+      // Get and merge CodeActions from children
 
-    // final_event
-    this.finalEvent?.getCodeActions().forEach(codeAction => {
-      codeActions.push(codeAction);
-    });
-    // this.finalEvent?.getReducedCodeActions().forEach(reducedAction => {
-    //   codeActions.push({
-    //     title: reducedAction.title,
-    //     kind: reducedAction.kind,
-    //     diagnostics: reducedAction.diagnostics,
-    //     edit: {
-    //       documentChanges: [{
-    //         textDocument: {
-    //           uri: this.uri,
-    //           version: null
-    //         },
-    //         edits: reducedAction.edits.map(edit => ({
-    //           range: this.getRangeByOffset(edit.offsetStart, edit.offsetEnd),
-    //           newText: edit.newText
-    //         }))
-    //       }]
-    //     }
-    //   });
-    // });
+      // final_event
+      ...this.finalEvent?.getCodeActions() ?? []
 
-    // ...
-
-    return codeActions;
+      // ...
+    ];
   }
 }
