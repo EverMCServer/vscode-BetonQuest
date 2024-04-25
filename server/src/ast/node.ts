@@ -74,12 +74,12 @@ export type ElementTypes = ElementListType | ElementEntryType | ElementKeyType |
 export type NodeType = PackageTypes | ConversationTypes | EventTypes | ConditionTypes | ObjectiveTypes;
 
 export interface Node<T extends NodeType> {
-  type: T,
-  uri: string,
+  type: T;
+  uri: string;
   offsetStart?: number;
   offsetEnd?: number;
-  parent?: Node<NodeType>,
-  diagnostics?: Diagnostic[];
+  parent?: Node<NodeType>;
+  diagnostics: Diagnostic[];
   // edits?: CodeAction[];
   // children?: Node<NodeType>[],
 

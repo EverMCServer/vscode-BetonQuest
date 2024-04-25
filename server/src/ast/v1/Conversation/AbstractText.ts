@@ -1,10 +1,9 @@
-import { Pair, Scalar, YAMLMap, isMap, isScalar } from "yaml";
-import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { Scalar, YAMLMap, isMap, isScalar } from "yaml";
+import { Diagnostic } from "vscode-languageserver";
 
 import { ConversationTypes, Node } from "../../node";
 import { Conversation } from "./Conversation";
 import { AbstractTextTranslations } from "./AbstractTextTranslations";
-import { DiagnosticCode } from "../../../utils/diagnostics";
 
 export abstract class AbstractText<NT extends ConversationTypes, TT extends AbstractTextTranslations<ConversationTypes>> implements Node<NT> {
   abstract type: NT;

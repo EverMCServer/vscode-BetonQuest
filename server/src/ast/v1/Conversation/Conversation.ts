@@ -1,4 +1,4 @@
-import { Scalar, YAMLMap, isMap, isScalar, parseDocument } from "yaml";
+import { Pair, Scalar, YAMLMap, isMap, isScalar, parseDocument } from "yaml";
 import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity, PublishDiagnosticsParams, Range } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
@@ -71,59 +71,55 @@ export class Conversation implements Node<ConversationType> {
             this.quester = new ConversationQuester(this.uri, pair.value, this);
           } else {
             // Throw incorrect value diagnostics
-            const offsetStart = (pair.value as any).range?.[0] as number ?? pair.key.range?.[0];
-            const offsetEnd = offsetStart ? (pair.value as any).range?.[1] as number : pair.key.range?.[1];
-            if (offsetStart && offsetEnd) {
-              this.diagnostics.push({
-                range: this.getRangeByOffset(offsetStart, offsetEnd),
-                message: `Incorrect value. It should be a string or a translation list.`,
-                severity: DiagnosticSeverity.Error,
-                source: 'BetonQuest',
-                code: DiagnosticCode.IncorrectYamlType
-              });
-            }
+            this._addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string or a translation list.`);
           }
           break;
         case "first":
-          if (isStringScalarPair(pair)) {
-            this.first = new ConversationFirst(this.uri, pair, this);
+          if (isScalar<string>(pair.value)) {
+            this.first = new ConversationFirst(this.uri, pair.value, this);
           } else {
-            // TODO: throw error diagnostics
+            // Throw incorrect value diagnostics
+            this._addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
           }
           break;
         case "stop":
-          if (isStringScalarPair(pair)) {
-            this.stop = new ConversationStop(this.uri, pair, this);
+          if (isScalar<string>(pair.value)) {
+            this.stop = new ConversationStop(this.uri, pair.value, this);
           } else {
-            // TODO: throw error diagnostics
+            // Throw incorrect value diagnostics
+            this._addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
           }
           break;
         case "final_events":
-          if (isStringScalarPair(pair)) {
-            this.finalEvent = new ConversationFinalEvents(this.uri, pair, this);
+          if (isScalar<string>(pair.value)) {
+            this.finalEvent = new ConversationFinalEvents(this.uri, pair.value, this);
           } else {
-            // TODO: throw error diagnostics
+            // Throw incorrect value diagnostics
+            this._addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
           }
           break;
         case "interceptor":
-          if (isStringScalarPair(pair)) {
-            this.interceptor = new ConversationInterceptor(this.uri, pair, this);
+          if (isScalar<string>(pair.value)) {
+            this.interceptor = new ConversationInterceptor(this.uri, pair.value, this);
           } else {
-            // TODO: throw error diagnostics
+            // Throw incorrect value diagnostics
+            this._addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
           }
           break;
         case "NPC_options":
           if (isYamlmapPair(pair)) {
             this.npcOptions = new NpcOptions(this.uri, pair, this);
           } else {
-            // TODO: throw error diagnostics
+            // Throw incorrect value diagnostics
+            this._addDiagnosticValueTypeIncorrect(pair, `Incorrect value type.`);
           }
           break;
         case "player_options":
           if (isYamlmapPair(pair)) {
             this.playerOptions = new PlayerOptions(this.uri, pair, this);
           } else {
-            // TODO: throw error diagnostics
+            // Throw incorrect value diagnostics
+            this._addDiagnosticValueTypeIncorrect(pair, `Incorrect value type.`);
           }
           break;
         default:
@@ -132,7 +128,7 @@ export class Conversation implements Node<ConversationType> {
             message: `Unknown key "${pair.key.value}"`,
             severity: DiagnosticSeverity.Warning,
             source: 'BetonQuest',
-            code: DiagnosticCode.UnknownKey
+            code: DiagnosticCode.YamlKeyUnknown
           };
           let correctKeyStr = pair.key.value.toLowerCase();
           switch (correctKeyStr) {
@@ -208,6 +204,43 @@ export class Conversation implements Node<ConversationType> {
     }
 
     // ...
+  }
+
+  private addDiagnostic(offset: [start?: number, end?: number], message: string, severity: DiagnosticSeverity, code: string, codeActions?: { title: string, text: string }[]) {
+    if (offset[0] === undefined || offset[1] === undefined) {
+      return;
+    }
+    const range = this.getRangeByOffset(offset[0], offset[1]);
+    const diagnostic: Diagnostic = {
+      range: range,
+      message: message,
+      severity: severity,
+      source: 'BetonQuest',
+      code: code
+    };
+    this.diagnostics.push(diagnostic);
+    codeActions?.forEach(({ title, text }) => {
+      this.codeActions.push({
+        title: title,
+        kind: CodeActionKind.QuickFix,
+        isPreferred: true,
+        diagnostics: [diagnostic],
+        edit: {
+          changes: {
+            [this.uri]: [{
+              range: range,
+              newText: text
+            }]
+          }
+        }
+      });
+    });
+  }
+
+  private _addDiagnosticValueTypeIncorrect(pair: Pair<Scalar<string>>, message: string) {
+    const offsetStart = (pair.value as any).range?.[0] as number | undefined ?? pair.key.range?.[0];
+    const offsetEnd = offsetStart ? (pair.value as any).range?.[1] as number : pair.key.range?.[1];
+    this.addDiagnostic([offsetStart, offsetEnd], message, DiagnosticSeverity.Error, DiagnosticCode.ValueTypeIncorrect);
   }
 
   getRangeByOffset(offsetStart: number, offsetEnd: number) {

@@ -1,4 +1,4 @@
-import { Scalar, YAMLMap, isMap, isPair, isScalar } from "yaml";
+import { Scalar, YAMLMap, isScalar } from "yaml";
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationTypes, Node } from "../../node";
@@ -29,10 +29,10 @@ export abstract class AbstractTextTranslations<N extends ConversationTypes> impl
         if (offsetStart && offsetEnd) {
           this.diagnostics.push({
             range: this.parent.parent!.getRangeByOffset(offsetStart, offsetEnd),
-            message: `Incorrect value. It should be a string or a translation list.`,
+            message: `Incorrect value. It should be a string.`,
             severity: DiagnosticSeverity.Error,
             source: 'BetonQuest',
-            code: DiagnosticCode.IncorrectYamlType
+            code: DiagnosticCode.ValueTypeIncorrect
           });
         }
       }

@@ -1,12 +1,78 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 export enum DiagnosticCode {
-  UnknownKey = "BQ-0001",
-  IncorrectYamlType = "BQ-0002",
+  /**
+   * The yaml key is unknown.
+   */
+  YamlKeyUnknown = "BQ-0001",
+
+  // /**
+  //  * The yaml key syntax is incorrect, e.g. contains invalid characters.
+  //  */
+  // YamlKeySyntax = "BQ-0002",
+
+  /**
+   * The yaml value is incorrect.
+   */
+  ValueTypeIncorrect = "BQ-0101",
+
+  /**
+   * The content of value is incorrect.
+   */
+  ValueContentIncorrect = "BQ-0102",
+
+  // /**
+  //  * The yaml value is incorrect. Value should be a string.
+  //  */
+  // ValueStringIncorrect = "BQ-0111",
+
+  // /**
+  //  * The yaml value is incorrect. Value should be a text translation.
+  //  */
+  // ValueTranslationIncorrect = "BQ-0112",
+
+  /**
+   * The yaml value is incorrect. Value should be a true / false boolean string.
+   */
+  ValueBooleanIncorrect = "BQ-0113",
+
+  // /**
+  //  * The translation key is duplicated with others.
+  //  */
+  // TranslationDuplicated = "BQ-0201",
+
+  /**
+   * The instruction is missing.
+   */
   ElementInstructionMissing = "BQ-1001",
+
+  /**
+   * The arguments is missing.
+   */
   ElementArgumentsMissing = "BQ-1002",
+
+  /**
+   * The Condition / Event / Objective / Item ID syntax is incorrect.
+   */
+  ElementIdSyntax = "BQ-1101",
+
+  /**
+   * A mandatory argument is missing.
+   */
   ArgumentMandatoryMissing = "BQ-2001",
+
+  /**
+   * A optional argument is missing.
+   */
   ArgumentOptionalMissing = "BQ-2002",
-  ConversationMissingQuester = "BQ-3001",
-  ConversationEventNameEmptySpaces = "BQ-3002"
+
+  /**
+   * The "quester" section is missing.
+   */
+  ConversationMissingQuester = "BQ-3011",
+
+  /**
+   * The value of "first" section is incorrect.
+   */
+  ConversationFirstIncorrect = "3012",
 }

@@ -13,10 +13,10 @@ export class ConversationInterceptor implements Node<ConversationInterceptorType
   diagnostics?: Diagnostic[];
 
   // Cache the parsed yaml document
-  yml: Pair<Scalar<string>, Scalar<string>>;
+  yml: Scalar<string>;
   interceptors: string[] = [];
 
-  constructor(uri: string, yml: Pair<Scalar<string>, Scalar<string>>, parent: Conversation) {
+  constructor(uri: string, yml: Scalar<string>, parent: Conversation) {
     this.uri = uri;
     this.parent = parent;
     this.yml = yml;

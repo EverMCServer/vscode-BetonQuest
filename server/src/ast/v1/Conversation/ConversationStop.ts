@@ -13,21 +13,21 @@ export class ConversationStop implements Node<ConversationStopType> {
   diagnostics?: Diagnostic[];
 
   // Cache the parsed yaml document
-  yml?: Pair<Scalar<string>, Scalar<string>>;
+  yml?: Scalar<string>;
   value?: boolean;
 
-  constructor(uri: string, yml: Pair<Scalar<string>, Scalar<string>>, parent: Conversation) {
+  constructor(uri: string, yml: Scalar<string>, parent: Conversation) {
     this.uri = uri;
     this.parent = parent;
 
-    this.offsetStart = yml.value?.range?.[0];
-    this.offsetEnd = yml.value?.range?.[1];
+    this.offsetStart = yml.range?.[0];
+    this.offsetEnd = yml.range?.[1];
 
     // Check YAML value type
     this.yml = yml;
 
     // Parse value
-    switch (this.yml.value!.value.trim().toLowerCase()) {
+    switch (this.yml.value.trim().toLowerCase()) {
       case 'true':
         this.value = true;
         break;
