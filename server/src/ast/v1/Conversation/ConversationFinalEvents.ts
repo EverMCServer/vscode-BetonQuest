@@ -1,4 +1,4 @@
-import { Pair, Scalar } from "yaml";
+import { Scalar } from "yaml";
 import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationFinalEventsType, Node } from "../../node";
@@ -6,7 +6,7 @@ import { Conversation } from "./Conversation";
 import { AbstractEvent } from "./AbstractEvent";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 
-export class ConversationFinalEvents implements Node<ConversationFinalEventsType> {
+export class ConversationFinalEvents extends Node<ConversationFinalEventsType> {
   type: ConversationFinalEventsType = 'ConversationFinalEvents';
   uri: string;
   offsetStart?: number;
@@ -20,6 +20,7 @@ export class ConversationFinalEvents implements Node<ConversationFinalEventsType
   events: ConversationFinalEvent[] = [];
 
   constructor(uri: string, yml: Scalar<string>, parent: Conversation) {
+    super();
     this.uri = uri;
     this.parent = parent;
     this.yml = yml;

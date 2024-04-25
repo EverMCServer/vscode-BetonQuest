@@ -4,7 +4,7 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
 import { Package } from "../Package";
-import { ConversationListType, Node, PackageV1Type } from "../node";
+import { PackageV1Type } from "../node";
 import { ConditionList } from "./Condition/ConditionList";
 import { EventList } from "./Event/EventList";
 import { ObjectiveList } from "./Objective/ObjectiveList";
@@ -13,9 +13,6 @@ import { SemanticToken } from "../../service/semanticTokens";
 import { Conversation } from "./Conversation/Conversation";
 
 export class PackageV1 extends Package<PackageV1Type> {
-  offsetStart?: number;
-  offsetEnd?: number;
-
   conditionList?: ConditionList;
   eventList?: EventList;
   objectiveList?: ObjectiveList;

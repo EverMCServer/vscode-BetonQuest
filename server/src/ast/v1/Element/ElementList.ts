@@ -1,69 +1,38 @@
-import { Pair, Scalar, YAMLMap, parseDocument } from "yaml";
-import { PublishDiagnosticsParams, Range } from "vscode-languageserver";
+import { Pair, Scalar, YAMLMap, isPair, isScalar, parseDocument } from "yaml";
+import { CodeAction, Diagnostic, PublishDiagnosticsParams, Range } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 import ListElement from "betonquest-utils/betonquest/ListElement";
 
-import { ElementListType, Node } from "../../node";
+import { Document } from "../document";
+import { ElementListType } from "../../node";
 import { PackageV1 } from "../Package";
 import { ElementEntry } from "./ElementEntry";
 
-export abstract class ElementList<LE extends ListElement> implements Node<ElementListType> {
+export abstract class ElementList<LE extends ListElement> extends Document<ElementListType> {
   abstract type: ElementListType;
-  uri: string;
   offsetStart?: number;
   offsetEnd?: number;
-  parent: PackageV1;
+  diagnostics: Diagnostic[] = [];
+  codeActions: CodeAction[] = [];
 
-  // VSCode Document, for diagnostics / quick actions / goto definition, etc
-  document: TextDocument;
-
-  // Cache the parsed yaml document
-  yml?: YAMLMap<Scalar<string>, Scalar<string>>;
   entries: ElementEntry<LE>[] = [];
 
-  getEntries() {
-    return this.entries;
-  }
-
   constructor(uri: string, document: TextDocument, parent: PackageV1) {
-    this.uri = uri;
-    this.parent = parent;
-    this.document = document;
-
-    // Parse yaml
-    const yml = parseDocument<YAMLMap<Scalar<string>, Scalar<string>>, false>(
-      document.getText(),
-      {
-        keepSourceTokens: true,
-        strict: false
-      }
-    );
-    if (!(yml.contents instanceof YAMLMap)) {
-      return;
-    }
-    this.yml = yml.contents;
-
-    // Extract offsets
-    this.offsetStart = this.yml.range?.[0];
-    this.offsetEnd = this.yml.range?.[1];
+    super(uri, document, parent);
 
     // Parse Elements
     this.yml.items.forEach(pair => {
-      // this.entries.push(new ElementEntry<U>(pair, this));
-      this.entries.push(this.newEntry(pair));
+      if (isScalar<string>(pair.value) && isPair<Scalar<string>, Scalar<string>>(pair)) {
+        this.entries.push(this.newEntry(pair));
+      } else {
+        // TODO: Add diagnostic
+      }
     });
   }
 
   abstract newEntry(pair: Pair<Scalar<string>, Scalar<string>>): ElementEntry<LE>;
-
-  getRangeByOffset(offsetStart: number, offsetEnd: number) {
-    return {
-      start: this.document.positionAt(offsetStart),
-      end: this.document.positionAt(offsetEnd)
-    } as Range;
-  }
 
   getPublishDiagnosticsParams() {
     return {

@@ -1,5 +1,5 @@
 import { Pair, Scalar } from "yaml";
-import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import ListElement from "betonquest-utils/betonquest/ListElement";
 import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v1/Element";
@@ -13,13 +13,14 @@ import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getScalarSourceAndRange } from "../../../utils/yaml";
 import { SemanticToken } from "../../../service/semanticTokens";
 
-export abstract class ElementEntry<LE extends ListElement> implements Node<ElementEntryType> {
+export abstract class ElementEntry<LE extends ListElement> extends Node<ElementEntryType> {
   abstract type: ElementEntryType;
   uri: string;
   offsetStart?: number;
   offsetEnd?: number;
   parent: ElementList<LE>;
-  diagnostics?: Diagnostic[] = [];
+  diagnostics: Diagnostic[] = [];
+  codeActions: CodeAction[] = [];
 
   yaml: Pair<Scalar<string>, Scalar<string>>;
 
@@ -28,6 +29,7 @@ export abstract class ElementEntry<LE extends ListElement> implements Node<Eleme
   elementArguments?: ElementArguments<LE>;
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, kinds: _ElementKind<LE>[], parent: ElementList<LE>) {
+    super();
     this.uri = parent.uri;
     this.offsetStart = pair.key?.range?.[0];
     this.offsetEnd = pair.value?.range?.[1];

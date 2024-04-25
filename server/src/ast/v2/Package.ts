@@ -13,9 +13,6 @@ import { ObjectiveList } from "./Objective/ObjectiveList";
 import { SemanticToken } from "../../service/semanticTokens";
 
 export class PackageV2 extends Package<PackageV2Type> {
-  offsetStart?: number;
-  offsetEnd?: number;
-
   conversationList: Node<ConversationListType>[] = []; // TODO: Conversations[]
   conditionLists: ConditionList[] = [];
   eventLists: EventList[] = [];

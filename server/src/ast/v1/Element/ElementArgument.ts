@@ -1,4 +1,4 @@
-import { Diagnostic } from "vscode-languageserver";
+import { CodeAction, Diagnostic } from "vscode-languageserver";
 
 import { ArgumentsPatternMandatory, ArgumentsPatternOptional } from "betonquest-utils/betonquest/Arguments";
 import ListElement from "betonquest-utils/betonquest/ListElement";
@@ -7,7 +7,7 @@ import { ElementArgumentType, Node } from "../../node";
 import { ElementArguments } from "./ElementArguments";
 import { SemanticToken } from "../../../service/semanticTokens";
 
-export abstract class ElementArgument<LE extends ListElement> implements Node<ElementArgumentType> {
+export abstract class ElementArgument<LE extends ListElement> extends Node<ElementArgumentType> {
   abstract type: ElementArgumentType;
   uri: string;
   offsetStart?: number;
@@ -16,6 +16,7 @@ export abstract class ElementArgument<LE extends ListElement> implements Node<El
 
   argumentStr: string;
   diagnostics: Diagnostic[] = [];
+  codeActions: CodeAction[] = [];
 
   constructor(argumentStr: string,
     range: [number?, number?],
@@ -23,6 +24,7 @@ export abstract class ElementArgument<LE extends ListElement> implements Node<El
     pattern: ArgumentsPatternMandatory | ArgumentsPatternOptional,
     parent: ElementArguments<LE>,
   ) {
+    super();
 
     this.uri = parent.uri;
     this.offsetStart = range[0];

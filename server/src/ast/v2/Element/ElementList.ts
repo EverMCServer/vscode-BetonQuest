@@ -1,5 +1,5 @@
 import { Pair, Scalar, YAMLMap } from "yaml";
-import { PublishDiagnosticsParams, Range } from "vscode-languageserver";
+import { CodeAction, Diagnostic, PublishDiagnosticsParams, Range } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
@@ -9,12 +9,14 @@ import { ElementListType, Node } from "../../node";
 import { PackageV2 } from "../Package";
 import { ElementEntry } from "./ElementEntry";
 
-export abstract class ElementList<LE extends ListElement> implements Node<ElementListType> {
+export abstract class ElementList<LE extends ListElement> extends Node<ElementListType> {
   abstract type: ElementListType;
   uri: string;
   offsetStart?: number;
   offsetEnd?: number;
   parent: PackageV2;
+  diagnostics: Diagnostic[] = [];
+  codeActions: CodeAction[] = [];
 
   // VSCode Document, for diagnostics / quick actions / goto definition, etc
   document: TextDocument;
@@ -28,6 +30,7 @@ export abstract class ElementList<LE extends ListElement> implements Node<Elemen
   }
 
   constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>, Scalar<string>>, parent: PackageV2) {
+    super();
     this.uri = uri;
     this.parent = parent;
     this.document = document;

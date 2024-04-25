@@ -1,4 +1,4 @@
-import { AnnotatedTextEdit, CodeAction, Diagnostic, TextEdit } from "vscode-languageserver";
+import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
 
 export type PackageV1Type = 'PackageV1';
 export type PackageV2Type = 'PackageV2';
@@ -73,14 +73,14 @@ export type ElementTypes = ElementListType | ElementEntryType | ElementKeyType |
 
 export type NodeType = PackageTypes | ConversationTypes | EventTypes | ConditionTypes | ObjectiveTypes;
 
-export interface Node<T extends NodeType> {
-  type: T;
-  uri: string;
-  offsetStart?: number;
-  offsetEnd?: number;
-  parent?: Node<NodeType>;
-  diagnostics: Diagnostic[];
-  // edits?: CodeAction[];
+export abstract class Node<T extends NodeType> {
+  protected abstract type: T;
+  protected abstract uri: string;
+  protected offsetStart?: number;
+  protected offsetEnd?: number;
+  protected parent?: Node<NodeType>;
+  protected diagnostics: Diagnostic[] = [];
+  protected codeActions: CodeAction[] = [];
   // children?: Node<NodeType>[],
 
   // name?: string,
@@ -89,4 +89,40 @@ export interface Node<T extends NodeType> {
 
   // findByOffset(uri: string, offset: number): Node<T>;
   // findByType(uri: string, type: T): Node<T>;
+
+  // getParent(): Node<NodeType>;
+
+  _addDiagnostic(range: Range, message: string, severity: DiagnosticSeverity, code: string, codeActions?: { title: string, text: string }[]) {
+    const diagnostic: Diagnostic = {
+      range: range,
+      message: message,
+      severity: severity,
+      source: 'BetonQuest',
+      code: code
+    };
+    this.diagnostics.push(diagnostic);
+    codeActions?.forEach(({ title, text }) => {
+      this.codeActions.push({
+        title: title,
+        kind: CodeActionKind.QuickFix,
+        diagnostics: [diagnostic],
+        edit: {
+          changes: {
+            [this.uri]: [{
+              range: range,
+              newText: text
+            }]
+          }
+        }
+      });
+    });
+  }
+
+  getDiagnostics() {
+    return this.diagnostics;
+  }
+
+  getCodeActions() {
+    return this.codeActions;
+  }
 };

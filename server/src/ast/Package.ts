@@ -6,13 +6,12 @@ import { Node, PackageTypes } from "./node";
 import { HoverInfo } from "../utils/hover";
 import { SemanticToken } from "../service/semanticTokens";
 
-export abstract class Package<T extends PackageTypes> implements Node<T> {
+export abstract class Package<T extends PackageTypes> extends Node<T> {
   type: T;
   uri: string;
-  abstract offsetStart?: number;
-  abstract offsetEnd?: number;
 
   constructor(type: T, packageUri: string) {
+    super();
     this.type = type;
     this.uri = packageUri;
   }

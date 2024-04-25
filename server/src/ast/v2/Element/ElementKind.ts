@@ -5,18 +5,22 @@ import { ElementKindType, Node } from "../../node";
 import { ElementEntry } from "./ElementEntry";
 import { HoverInfo } from "../../../utils/hover";
 import { SemanticToken } from "../../../service/semanticTokens";
+import { CodeAction, Diagnostic } from "vscode-languageserver";
 
-export abstract class ElementKind<LE extends ListElement> implements Node<ElementKindType> {
+export abstract class ElementKind<LE extends ListElement> extends Node<ElementKindType> {
   abstract type: ElementKindType;
   uri: string;
   offsetStart?: number;
   offsetEnd?: number;
   parent: ElementEntry<LE>;
+  diagnostics: Diagnostic[] = [];
+  codeActions: CodeAction[] = [];
 
   value: string;
   kindConfig?: _ElementKind<LE>;
 
   constructor(value: string, range: [number?, number?], kindConfig: _ElementKind<LE>, parent: ElementEntry<LE>) {
+    super();
     this.uri = parent.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];

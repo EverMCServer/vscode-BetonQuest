@@ -1,4 +1,5 @@
 import { Scalar } from "yaml";
+import { CodeAction, Diagnostic } from "vscode-languageserver";
 
 import ListElement from "betonquest-utils/betonquest/ListElement";
 
@@ -7,16 +8,19 @@ import { ElementEntry } from "./ElementEntry";
 import { HoverInfo } from "../../../utils/hover";
 import { SemanticToken } from "../../../service/semanticTokens";
 
-export abstract class ElementKey<LE extends ListElement> implements Node<ElementKeyType> {
+export abstract class ElementKey<LE extends ListElement> extends Node<ElementKeyType> {
   abstract type: ElementKeyType;
   uri: string;
   offsetStart?: number | undefined;
   offsetEnd?: number | undefined;
   parent: ElementEntry<LE> | undefined;
+  diagnostics: Diagnostic[] = [];
+  codeActions: CodeAction[] = [];
 
   value: string;
 
   constructor(key: Scalar<string>, parent: ElementEntry<LE>) {
+    super();
     this.uri = parent.uri;
     this.offsetStart = key.range?.[0];
     this.offsetEnd = key.range?.[1];

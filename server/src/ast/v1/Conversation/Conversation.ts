@@ -1,9 +1,9 @@
-import { Pair, Scalar, YAMLMap, isMap, isScalar, parseDocument } from "yaml";
-import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity, PublishDiagnosticsParams, Range } from "vscode-languageserver";
+import { Pair, Scalar, isMap, isScalar } from "yaml";
+import { CodeActionKind, Diagnostic, DiagnosticSeverity, PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { PackageV1 } from "../Package";
-import { ConversationType, Node } from "../../node";
+import { ConversationType } from "../../node";
 import { ConversationQuester } from "./ConversationQuester";
 import { ConversationFirst } from "./ConversationFirst";
 import { ConversationStop } from "./ConversationStop";
@@ -11,23 +11,12 @@ import { ConversationFinalEvents } from "./ConversationFinalEvents";
 import { ConversationInterceptor } from "./ConversationInterceptor";
 import { NpcOptions } from "./Option/NpcOptions";
 import { PlayerOptions } from "./Option/PlayerOptions";
-import { isStringScalarPair, isYamlmapPair } from "../../../utils/yaml";
+import { isYamlmapPair } from "../../../utils/yaml";
 import { DiagnosticCode } from "../../../utils/diagnostics";
+import { Document } from "../document";
 
-export class Conversation implements Node<ConversationType> {
+export class Conversation extends Document<ConversationType> {
   type: ConversationType = 'Conversation';
-  uri: string;
-  offsetStart?: number;
-  offsetEnd?: number;
-  parent?: PackageV1;
-  diagnostics: Diagnostic[] = [];
-  codeActions: CodeAction[] = [];
-
-  // VSCode Document, for diagnostics / quick actions / goto definition, etc
-  readonly document: TextDocument;
-
-  // Cache the parsed yaml document
-  yml?: YAMLMap<Scalar<string>, Scalar | YAMLMap>;
 
   // Contents
   quester?: ConversationQuester;
@@ -39,31 +28,12 @@ export class Conversation implements Node<ConversationType> {
   playerOptions?: PlayerOptions;
 
   constructor(uri: string, document: TextDocument, parent: PackageV1) {
-    this.uri = uri;
-    this.document = document;
-    this.parent = parent;
-
-    // Parse yaml
-    const yml = parseDocument<YAMLMap<Scalar<string>, Scalar | YAMLMap>, false>(
-      document.getText(),
-      {
-        keepSourceTokens: true,
-        strict: false
-      }
-    );
-    if (!(yml.contents instanceof YAMLMap)) {
-      return;
-    }
-    this.yml = yml.contents;
-
-    // Extract offsets
-    this.offsetStart = this.yml.range?.[0];
-    this.offsetEnd = this.yml.range?.[1];
+    super(uri, document, parent);
 
     // Parse Elements
     this.yml.items.forEach(pair => {
       const offsetStart = pair.key.range?.[0] ?? 0;
-      const offsetEnd = pair.value?.range?.[1] ?? offsetStart;
+      const offsetEnd = (pair.value as Scalar)?.range?.[1] ?? offsetStart;
       const range = this.getRangeByOffset(offsetStart, offsetEnd);
       switch (pair.key.value) {
         case "quester":
@@ -71,7 +41,7 @@ export class Conversation implements Node<ConversationType> {
             this.quester = new ConversationQuester(this.uri, pair.value, this);
           } else {
             // Throw incorrect value diagnostics
-            this._addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string or a translation list.`);
+            this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string or a translation list.`);
           }
           break;
         case "first":
@@ -79,15 +49,15 @@ export class Conversation implements Node<ConversationType> {
             this.first = new ConversationFirst(this.uri, pair.value, this);
           } else {
             // Throw incorrect value diagnostics
-            this._addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
+            this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
           }
           break;
         case "stop":
-          if (isScalar<string>(pair.value)) {
+          if (isScalar(pair.value)) {
             this.stop = new ConversationStop(this.uri, pair.value, this);
           } else {
             // Throw incorrect value diagnostics
-            this._addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
+            this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
           }
           break;
         case "final_events":
@@ -95,7 +65,7 @@ export class Conversation implements Node<ConversationType> {
             this.finalEvent = new ConversationFinalEvents(this.uri, pair.value, this);
           } else {
             // Throw incorrect value diagnostics
-            this._addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
+            this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
           }
           break;
         case "interceptor":
@@ -103,7 +73,7 @@ export class Conversation implements Node<ConversationType> {
             this.interceptor = new ConversationInterceptor(this.uri, pair.value, this);
           } else {
             // Throw incorrect value diagnostics
-            this._addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
+            this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
           }
           break;
         case "NPC_options":
@@ -111,7 +81,7 @@ export class Conversation implements Node<ConversationType> {
             this.npcOptions = new NpcOptions(this.uri, pair, this);
           } else {
             // Throw incorrect value diagnostics
-            this._addDiagnosticValueTypeIncorrect(pair, `Incorrect value type.`);
+            this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type.`);
           }
           break;
         case "player_options":
@@ -119,7 +89,7 @@ export class Conversation implements Node<ConversationType> {
             this.playerOptions = new PlayerOptions(this.uri, pair, this);
           } else {
             // Throw incorrect value diagnostics
-            this._addDiagnosticValueTypeIncorrect(pair, `Incorrect value type.`);
+            this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type.`);
           }
           break;
         default:
@@ -206,48 +176,10 @@ export class Conversation implements Node<ConversationType> {
     // ...
   }
 
-  private addDiagnostic(offset: [start?: number, end?: number], message: string, severity: DiagnosticSeverity, code: string, codeActions?: { title: string, text: string }[]) {
-    if (offset[0] === undefined || offset[1] === undefined) {
-      return;
-    }
-    const range = this.getRangeByOffset(offset[0], offset[1]);
-    const diagnostic: Diagnostic = {
-      range: range,
-      message: message,
-      severity: severity,
-      source: 'BetonQuest',
-      code: code
-    };
-    this.diagnostics.push(diagnostic);
-    codeActions?.forEach(({ title, text }) => {
-      this.codeActions.push({
-        title: title,
-        kind: CodeActionKind.QuickFix,
-        isPreferred: true,
-        diagnostics: [diagnostic],
-        edit: {
-          changes: {
-            [this.uri]: [{
-              range: range,
-              newText: text
-            }]
-          }
-        }
-      });
-    });
-  }
-
-  private _addDiagnosticValueTypeIncorrect(pair: Pair<Scalar<string>>, message: string) {
+  private addDiagnosticValueTypeIncorrect(pair: Pair<Scalar<string>>, message: string) {
     const offsetStart = (pair.value as any).range?.[0] as number | undefined ?? pair.key.range?.[0];
     const offsetEnd = offsetStart ? (pair.value as any).range?.[1] as number : pair.key.range?.[1];
     this.addDiagnostic([offsetStart, offsetEnd], message, DiagnosticSeverity.Error, DiagnosticCode.ValueTypeIncorrect);
-  }
-
-  getRangeByOffset(offsetStart: number, offsetEnd: number) {
-    return {
-      start: this.document.positionAt(offsetStart),
-      end: this.document.positionAt(offsetEnd)
-    } as Range;
   }
 
   getPublishDiagnosticsParams() {
@@ -255,8 +187,13 @@ export class Conversation implements Node<ConversationType> {
       uri: this.uri,
       diagnostics: [
         ...this.diagnostics,
-        ...(this.quester?.getDiagnostics() ?? []), // quester
-        ...(this.finalEvent?.getDiagnostics() ?? [])
+        ...this.quester?.getDiagnostics() ?? [],
+        ...this.first?.getDiagnostics() ?? [],
+        ...this.stop?.getDiagnostics() ?? [],
+        ...this.finalEvent?.getDiagnostics() ?? [],
+        ...this.interceptor?.getDiagnostics() ?? [],
+        ...this.npcOptions?.getDiagnostics() ?? [],
+        ...this.playerOptions?.getDiagnostics() ?? [],
       ]
     } as PublishDiagnosticsParams;
   }
@@ -265,13 +202,13 @@ export class Conversation implements Node<ConversationType> {
   getCodeActions() {
     return [
       ...this.codeActions,
-
-      // Get and merge CodeActions from children
-
-      // final_event
-      ...this.finalEvent?.getCodeActions() ?? []
-
-      // ...
+      ...this.quester?.getCodeActions() ?? [],
+      ...this.first?.getCodeActions() ?? [],
+      ...this.stop?.getCodeActions() ?? [],
+      ...this.finalEvent?.getCodeActions() ?? [],
+      ...this.interceptor?.getCodeActions() ?? [],
+      ...this.npcOptions?.getCodeActions() ?? [],
+      ...this.playerOptions?.getCodeActions() ?? [],
     ];
   }
 }

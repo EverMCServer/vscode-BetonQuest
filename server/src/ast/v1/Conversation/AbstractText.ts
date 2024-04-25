@@ -1,17 +1,18 @@
 import { Scalar, YAMLMap, isMap, isScalar } from "yaml";
-import { Diagnostic } from "vscode-languageserver";
+import { CodeAction, Diagnostic } from "vscode-languageserver";
 
 import { ConversationTypes, Node } from "../../node";
 import { Conversation } from "./Conversation";
 import { AbstractTextTranslations } from "./AbstractTextTranslations";
 
-export abstract class AbstractText<NT extends ConversationTypes, TT extends AbstractTextTranslations<ConversationTypes>> implements Node<NT> {
+export abstract class AbstractText<NT extends ConversationTypes, TT extends AbstractTextTranslations<ConversationTypes>> extends Node<NT> {
   abstract type: NT;
   uri: string;
   offsetStart?: number;
   offsetEnd?: number;
   parent?: Conversation;
   diagnostics: Diagnostic[] = [];
+  codeActions: CodeAction[] = [];
 
   yml: Scalar<string> | YAMLMap<Scalar<string>>;
   contentType?: 'string' | 'translations';
@@ -19,6 +20,7 @@ export abstract class AbstractText<NT extends ConversationTypes, TT extends Abst
   contentTranslations?: TT;
 
   constructor(uri: string, yml: Scalar<string> | YAMLMap<Scalar<string>>, parent: Conversation) {
+    super();
     this.uri = uri;
     this.parent = parent;
 
