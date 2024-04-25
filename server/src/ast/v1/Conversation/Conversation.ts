@@ -37,7 +37,7 @@ export class Conversation extends Document<ConversationType> {
       const range = this.getRangeByOffset(offsetStart, offsetEnd);
       switch (pair.key.value) {
         case "quester":
-          if (isScalar<string>(pair.value) || isMap<Scalar<string>>(pair.value)) {
+          if (isScalar(pair.value) || isMap<Scalar<string>>(pair.value)) {
             this.quester = new ConversationQuester(this.uri, pair.value, this);
           } else {
             // Throw incorrect value diagnostics
@@ -45,7 +45,7 @@ export class Conversation extends Document<ConversationType> {
           }
           break;
         case "first":
-          if (isScalar<string>(pair.value)) {
+          if (isScalar(pair.value)) {
             this.first = new ConversationFirst(this.uri, pair.value, this);
           } else {
             // Throw incorrect value diagnostics
@@ -61,7 +61,7 @@ export class Conversation extends Document<ConversationType> {
           }
           break;
         case "final_events":
-          if (isScalar<string>(pair.value)) {
+          if (isScalar(pair.value)) {
             this.finalEvent = new ConversationFinalEvents(this.uri, pair.value, this);
           } else {
             // Throw incorrect value diagnostics
@@ -69,7 +69,7 @@ export class Conversation extends Document<ConversationType> {
           }
           break;
         case "interceptor":
-          if (isScalar<string>(pair.value)) {
+          if (isScalar(pair.value)) {
             this.interceptor = new ConversationInterceptor(this.uri, pair.value, this);
           } else {
             // Throw incorrect value diagnostics

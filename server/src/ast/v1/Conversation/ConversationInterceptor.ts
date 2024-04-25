@@ -14,10 +14,10 @@ export class ConversationInterceptor extends Node<ConversationInterceptorType> {
   codeActions: CodeAction[] = [];
 
   // Cache the parsed yaml document
-  yml: Scalar<string>;
+  yml: Scalar;
   interceptors: string[] = [];
 
-  constructor(uri: string, yml: Scalar<string>, parent: Conversation) {
+  constructor(uri: string, yml: Scalar, parent: Conversation) {
     super();
     this.uri = uri;
     this.parent = parent;

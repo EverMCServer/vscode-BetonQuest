@@ -14,10 +14,10 @@ export class ConversationFirst extends Node<ConversationFirstType> {
   codeActions: CodeAction[] = [];
 
   // Cache the parsed yaml document
-  yml: Scalar<string>;
+  yml: Scalar;
   npcOptions: string[] = []; // TODO
 
-  constructor(uri: string, yml: Scalar<string>, parent: Conversation) {
+  constructor(uri: string, yml: Scalar, parent: Conversation) {
     super();
     this.uri = uri;
     this.parent = parent;

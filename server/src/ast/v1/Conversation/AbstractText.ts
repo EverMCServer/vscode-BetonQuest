@@ -14,12 +14,12 @@ export abstract class AbstractText<NT extends ConversationTypes, TT extends Abst
   diagnostics: Diagnostic[] = [];
   codeActions: CodeAction[] = [];
 
-  yml: Scalar<string> | YAMLMap<Scalar<string>>;
+  yml: Scalar | YAMLMap<Scalar<string>>;
   contentType?: 'string' | 'translations';
   contentString?: string;
   contentTranslations?: TT;
 
-  constructor(uri: string, yml: Scalar<string> | YAMLMap<Scalar<string>>, parent: Conversation) {
+  constructor(uri: string, yml: Scalar | YAMLMap<Scalar<string>>, parent: Conversation) {
     super();
     this.uri = uri;
     this.parent = parent;
@@ -27,7 +27,7 @@ export abstract class AbstractText<NT extends ConversationTypes, TT extends Abst
     this.yml = yml;
 
     // Parse YAML
-    if (isScalar<string>(yml)) {
+    if (isScalar(yml) && typeof yml.value === 'string') {
       this.contentType = 'string';
       this.contentString = yml.value;
     } else if (isMap<Scalar<string>>(yml)) {
