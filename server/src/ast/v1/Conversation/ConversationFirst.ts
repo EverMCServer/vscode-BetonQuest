@@ -17,9 +17,9 @@ export class ConversationFirst extends Node<ConversationFirstType> {
   yml: Scalar;
   npcOptions: string[] = []; // TODO
 
-  constructor(uri: string, yml: Scalar, parent: Conversation) {
+  constructor(yml: Scalar, parent: Conversation) {
     super();
-    this.uri = uri;
+    this.uri = parent.uri;
     this.parent = parent;
     this.yml = yml;
 

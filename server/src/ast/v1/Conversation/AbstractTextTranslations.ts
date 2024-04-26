@@ -1,5 +1,5 @@
 import { Scalar, YAMLMap, isScalar } from "yaml";
-import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationTypes, Node } from "../../node";
 import { AbstractText } from "./AbstractText";
@@ -8,40 +8,37 @@ import { DiagnosticCode } from "../../../utils/diagnostics";
 export abstract class AbstractTextTranslations<N extends ConversationTypes> extends Node<N> {
   abstract type: N;
   uri: string;
-  offsetStart?: number;
-  offsetEnd?: number;
   parent: AbstractText<ConversationTypes, AbstractTextTranslations<N>>;
-  diagnostics: Diagnostic[] = [];
-  codeActions: CodeAction[] = [];
 
   yml: YAMLMap<Scalar<string>>;
 
-  constructor(uri: string, yml: YAMLMap<Scalar<string>>, parent: AbstractText<ConversationTypes, AbstractTextTranslations<N>>) {
+  contentStrings: [lang: string, text: Scalar<string>][] = [];
+
+  constructor(yml: YAMLMap<Scalar<string>>, parent: AbstractText<ConversationTypes, AbstractTextTranslations<N>>) {
     super();
-    this.uri = uri;
+    this.uri = parent.uri;
     this.parent = parent;
     this.yml = yml;
+    this.offsetStart = this.yml.range?.[0];
+    this.offsetEnd = this.yml.range?.[1];
 
     // Check YAML type
     yml.items.forEach(pair => {
-      if (!isScalar<string>(pair.value)) {
+      if (isScalar<string>(pair.value)) {
+        this.contentStrings.push([pair.key.value, pair.value]);
+      } else {
         // Throw incorrect value diagnostics
         const offsetStart = (pair.value as Scalar)?.range?.[0];
         const offsetEnd = (pair.value as Scalar)?.range?.[1];
         if (offsetStart && offsetEnd) {
-          this.diagnostics.push({
-            range: this.parent.parent!.getRangeByOffset(offsetStart, offsetEnd),
-            message: `Incorrect value. It should be a string.`,
-            severity: DiagnosticSeverity.Error,
-            source: 'BetonQuest',
-            code: DiagnosticCode.ValueTypeIncorrect
-          });
+          this._addDiagnostic(
+            this.parent.parent!.getRangeByOffset(offsetStart, offsetEnd),
+            `Incorrect value. It should be a string.`,
+            DiagnosticSeverity.Error,
+            DiagnosticCode.ValueTypeIncorrect
+          );
         }
       }
     });
-  }
-
-  getDiagnostics() {
-    return this.diagnostics;
   }
 }

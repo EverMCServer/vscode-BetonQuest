@@ -38,7 +38,7 @@ export class Conversation extends Document<ConversationType> {
       switch (pair.key.value) {
         case "quester":
           if (isScalar(pair.value) || isMap<Scalar<string>>(pair.value)) {
-            this.quester = new ConversationQuester(this.uri, pair.value, this);
+            this.quester = new ConversationQuester(pair.value, this);
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string or a translation list.`);
@@ -46,7 +46,7 @@ export class Conversation extends Document<ConversationType> {
           break;
         case "first":
           if (isScalar(pair.value)) {
-            this.first = new ConversationFirst(this.uri, pair.value, this);
+            this.first = new ConversationFirst(pair.value, this);
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
@@ -54,7 +54,7 @@ export class Conversation extends Document<ConversationType> {
           break;
         case "stop":
           if (isScalar(pair.value)) {
-            this.stop = new ConversationStop(this.uri, pair.value, this);
+            this.stop = new ConversationStop(pair.value, this);
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
@@ -62,7 +62,7 @@ export class Conversation extends Document<ConversationType> {
           break;
         case "final_events":
           if (isScalar(pair.value)) {
-            this.finalEvent = new ConversationFinalEvents(this.uri, pair.value, this);
+            this.finalEvent = new ConversationFinalEvents(pair.value, this);
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
@@ -70,7 +70,7 @@ export class Conversation extends Document<ConversationType> {
           break;
         case "interceptor":
           if (isScalar(pair.value)) {
-            this.interceptor = new ConversationInterceptor(this.uri, pair.value, this);
+            this.interceptor = new ConversationInterceptor(pair.value, this);
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
@@ -78,7 +78,7 @@ export class Conversation extends Document<ConversationType> {
           break;
         case "NPC_options":
           if (isYamlmapPair(pair)) {
-            this.npcOptions = new NpcOptions(this.uri, pair, this);
+            this.npcOptions = new NpcOptions(pair, this);
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type.`);
@@ -86,7 +86,7 @@ export class Conversation extends Document<ConversationType> {
           break;
         case "player_options":
           if (isYamlmapPair(pair)) {
-            this.playerOptions = new PlayerOptions(this.uri, pair, this);
+            this.playerOptions = new PlayerOptions(pair, this);
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type.`);

@@ -18,9 +18,9 @@ export class ConversationStop extends Node<ConversationStopType> {
   yml: Scalar;
   value?: boolean;
 
-  constructor(uri: string, yml: Scalar, parent: Conversation) {
+  constructor(yml: Scalar, parent: Conversation) {
     super();
-    this.uri = uri;
+    this.uri = parent.uri;
     this.parent = parent;
     this.yml = yml;
 

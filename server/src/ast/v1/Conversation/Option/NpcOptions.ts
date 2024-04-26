@@ -17,9 +17,9 @@ export class NpcOptions extends Node<ConversationNpcOptionsType> {
   yml?: Pair<Scalar<string>, YAMLMap<Scalar<string>>>;
   options?: YAMLMap<Scalar<string>>; // TODO
 
-  constructor(uri: string, yml: Pair<Scalar<string>, YAMLMap<Scalar<string>>>, parent: Conversation) {
+  constructor(yml: Pair<Scalar<string>, YAMLMap<Scalar<string>>>, parent: Conversation) {
     super();
-    this.uri = uri;
+    this.uri = parent.uri;
     this.parent = parent;
     this.yml = yml;
 

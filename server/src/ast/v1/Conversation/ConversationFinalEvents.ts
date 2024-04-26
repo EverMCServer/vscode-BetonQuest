@@ -19,13 +19,13 @@ export class ConversationFinalEvents extends Node<ConversationFinalEventsType> {
   yml: Scalar;
   events: ConversationFinalEvent[] = [];
 
-  constructor(uri: string, yml: Scalar, parent: Conversation) {
+  constructor(yml: Scalar, parent: Conversation) {
     super();
-    this.uri = uri;
+    this.uri = parent.uri;
     this.parent = parent;
     this.yml = yml;
-    this.offsetStart = this.yml.range?.[0] ?? 0;
-    this.offsetEnd = this.yml.range?.[1] ?? this.offsetStart;
+    this.offsetStart = yml.range?.[0];
+    this.offsetEnd = yml.range?.[1];
 
     // Check value type
     if (typeof this.yml.value === 'string') {
@@ -34,7 +34,7 @@ export class ConversationFinalEvents extends Node<ConversationFinalEventsType> {
       let matched: RegExpExecArray | null;
       while ((matched = regex.exec(this.yml.value)) !== null) {
         const str = matched[1];
-        const offsetStart = this.offsetStart + matched.index;
+        const offsetStart = this.offsetStart! + matched.index;
         const offsetEnd = offsetStart + str.length;
         const range = this.parent.getRangeByOffset(offsetStart, offsetEnd);
 

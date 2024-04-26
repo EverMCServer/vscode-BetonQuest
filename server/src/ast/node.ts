@@ -92,7 +92,7 @@ export abstract class Node<T extends NodeType> {
 
   // getParent(): Node<NodeType>;
 
-  _addDiagnostic(range: Range, message: string, severity: DiagnosticSeverity, code: string, codeActions?: { title: string, text: string }[]) {
+  _addDiagnostic(range: Range, message: string, severity: DiagnosticSeverity, code: string, codeActions?: { title: string, text: string, range?: Range }[]) {
     const diagnostic: Diagnostic = {
       range: range,
       message: message,
@@ -101,7 +101,7 @@ export abstract class Node<T extends NodeType> {
       code: code
     };
     this.diagnostics.push(diagnostic);
-    codeActions?.forEach(({ title, text }) => {
+    codeActions?.forEach(({ title, text, range: r }) => {
       this.codeActions.push({
         title: title,
         kind: CodeActionKind.QuickFix,
@@ -109,13 +109,25 @@ export abstract class Node<T extends NodeType> {
         edit: {
           changes: {
             [this.uri]: [{
-              range: range,
+              range: r ?? range,
               newText: text
             }]
           }
         }
       });
     });
+  }
+
+  getUri() {
+    return this.uri;
+  }
+
+  getOffsetStart() {
+    return this.offsetStart;
+  }
+
+  getOffsetEnd() {
+    return this.offsetEnd;
   }
 
   getDiagnostics() {
