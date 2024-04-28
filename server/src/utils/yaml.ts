@@ -1,10 +1,10 @@
 import { Pair, Scalar, YAMLMap } from "yaml";
 
-export function getScalarSourceAndRange (value: Scalar<string> | null) {
+export function getScalarSourceAndRange (value: Scalar | null) {
   return [getSourceByValue(value), getScalarRangeByValue(value)] as [string | undefined, [number, number, number]];
 }
 
-export function getSourceByValue(value: Scalar<string> | null) {
+export function getSourceByValue(value: Scalar | null) {
   switch (value?.srcToken?.type) {
     case 'byte-order-mark':
     case 'doc-mode':
@@ -48,7 +48,7 @@ export function getSourceByValue(value: Scalar<string> | null) {
 }
 
 // Return [offsetStart, offsetEnd, indent]
-export function getScalarRangeByValue(value: Scalar<string> | null) {
+export function getScalarRangeByValue(value: Scalar | null) {
   let range: [number, number, number] = value?.range ? [value.range[0], value.range[1], 0]: [0, 0, 0];
   switch (value?.srcToken?.type) {
     case 'scalar':

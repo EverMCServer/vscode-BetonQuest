@@ -4,13 +4,14 @@ import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserve
 import { ConversationInterceptorType, Node } from "../../node";
 import { Conversation } from "./Conversation";
 import { DiagnosticCode } from "../../../utils/diagnostics";
+import { getScalarRangeByValue, getScalarSourceAndRange, getSourceByValue } from "../../../utils/yaml";
 
 export class ConversationInterceptor extends Node<ConversationInterceptorType> {
   type: ConversationInterceptorType = 'ConversationInterceptor';
   uri: string;
-  offsetStart?: number;
-  offsetEnd?: number;
-  parent?: Conversation;
+  offsetStart: number;
+  offsetEnd: number;
+  parent: Conversation;
   diagnostics: Diagnostic[] = [];
   codeActions: CodeAction[] = [];
 
@@ -44,22 +45,22 @@ export class ConversationInterceptor extends Node<ConversationInterceptorType> {
     this.uri = parent.uri;
     this.parent = parent;
     this.yml = yml;
-    this.offsetStart = yml.range?.[0];
-    this.offsetEnd = yml.range?.[1];
+    [this.offsetStart, this.offsetEnd] = getScalarRangeByValue(this.yml);
 
-    if (typeof this.yml.value === "string") {
+    const str = getSourceByValue(this.yml);
+    if (typeof str === "string") {
       // Parse values
-      if (this.yml.value.trim() !== "") {
-        const regex = /([^,]*),?/g;  //  / *([^,]*),?/g = "spaces + ( matched & spaces ),"
+      if (str.trim() !== "") {
+        const regex = /(,?)([^,]*)/g;  //  / *([^,]*),?/g = "spaces + ( matched & spaces ),"
         let matched: RegExpExecArray | null;
-        while ((matched = regex.exec(this.yml.value)) !== null && matched[0].length > 0) {
+        while ((matched = regex.exec(str)) !== null && matched[0].length > 0) {
           const trimed = matched[1].trim();
           if (this.availableInterceptors.some(i => i === trimed)) {
             this.interceptors.push(trimed);
           } else {
             if (trimed.length > 0) { // Wrong value
-              const offsetStart = this.yml.range![0] + matched.index + (matched[1].length - matched[1].trimStart().length);
-              const offsetEnd = offsetStart + matched[1].length + (matched[1].length - matched[1].trimEnd().length);
+              const offsetStart = this.offsetStart + matched.index + matched[2].length;
+              const offsetEnd = offsetStart + matched[0].length;
               this._addDiagnostic(
                 this.parent.getRangeByOffset(offsetStart, offsetEnd),
                 `Interceptor "${trimed}" is not available.`,
@@ -69,13 +70,13 @@ export class ConversationInterceptor extends Node<ConversationInterceptorType> {
                   {
                     title: "Remove value",
                     text: "",
-                    range: this.parent.getRangeByOffset(this.yml.range![0] + matched.index, offsetStart + matched[0].length)
+                    range: this.parent.getRangeByOffset(this.offsetStart + matched.index, this.offsetStart + matched.index + matched[0].length)
                   },
                   ...this.defaultCodeActions
                 ]
               );
             } else { // Value is empty
-              const offsetStart = this.yml.range![0] + matched.index;
+              const offsetStart = this.offsetStart + matched.index;
               const offsetEnd = offsetStart + matched[0].length;
               const range = this.parent.getRangeByOffset(offsetStart, offsetEnd);
               this._addDiagnostic(
@@ -100,9 +101,9 @@ export class ConversationInterceptor extends Node<ConversationInterceptorType> {
           }
         }
       }
-    } else if (typeof this.yml.value !== "string" && this.yml.value !== null) {
+    } else if (typeof str !== "string" && str !== null) {
       this._addDiagnostic(
-        this.parent.getRangeByOffset(this.yml.range![0], this.yml.range![1]),
+        this.parent.getRangeByOffset(this.offsetStart, this.offsetEnd),
         `Incorrect value type. It should be a string.`,
         DiagnosticSeverity.Error,
         DiagnosticCode.ValueTypeIncorrect,
