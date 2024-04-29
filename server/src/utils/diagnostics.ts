@@ -12,6 +12,11 @@ export enum DiagnosticCode {
   // YamlKeySyntax = "BQ-0002",
 
   /**
+   * The format of value is incorrect.
+   */
+  ValueFormatIncorrect = "BQ-0100",
+
+  /**
    * The yaml value is incorrect.
    */
   ValueTypeIncorrect = "BQ-0101",
@@ -20,6 +25,11 @@ export enum DiagnosticCode {
    * The content of value is incorrect.
    */
   ValueContentIncorrect = "BQ-0102",
+
+  /**
+   * The content of value should not be empty.
+   */
+  ValueContentEmpty = "BQ-0103",
 
   // /**
   //  * The yaml value is incorrect. Value should be a string.

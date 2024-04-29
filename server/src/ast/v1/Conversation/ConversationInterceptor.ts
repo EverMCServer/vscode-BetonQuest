@@ -54,50 +54,38 @@ export class ConversationInterceptor extends Node<ConversationInterceptorType> {
         const regex = /(,?)([^,]*)/g;  //  / *([^,]*),?/g = "spaces + ( matched & spaces ),"
         let matched: RegExpExecArray | null;
         while ((matched = regex.exec(str)) !== null && matched[0].length > 0) {
-          const trimed = matched[1].trim();
+          const trimed = matched[2].trim();
           if (this.availableInterceptors.some(i => i === trimed)) {
             this.interceptors.push(trimed);
           } else {
+            let message: string;
+            let severity: DiagnosticSeverity;
+            let code: DiagnosticCode;
             if (trimed.length > 0) { // Wrong value
-              const offsetStart = this.offsetStart + matched.index + matched[2].length;
-              const offsetEnd = offsetStart + matched[0].length;
-              this._addDiagnostic(
-                this.parent.getRangeByOffset(offsetStart, offsetEnd),
-                `Interceptor "${trimed}" is not available.`,
-                DiagnosticSeverity.Error,
-                DiagnosticCode.ValueContentIncorrect,
-                [
-                  {
-                    title: "Remove value",
-                    text: "",
-                    range: this.parent.getRangeByOffset(this.offsetStart + matched.index, this.offsetStart + matched.index + matched[0].length)
-                  },
-                  ...this.defaultCodeActions
-                ]
-              );
+              message = `Interceptor "${trimed}" is not available.`;
+              severity = DiagnosticSeverity.Error;
+              code = DiagnosticCode.ValueContentIncorrect;
             } else { // Value is empty
-              const offsetStart = this.offsetStart + matched.index;
-              const offsetEnd = offsetStart + matched[0].length;
-              const range = this.parent.getRangeByOffset(offsetStart, offsetEnd);
-              this._addDiagnostic(
-                this.parent.getRangeByOffset(offsetStart, offsetEnd),
-                `Interceptor "${trimed}" is empty.`,
-                DiagnosticSeverity.Error,
-                DiagnosticCode.ValueContentIncorrect,
-                [
-                  {
-                    title: "Remove value",
-                    text: "",
-                    range: range
-                  },
-                  ...this.defaultCodeActions.map(a => ({
-                    title: a.title,
-                    text: a.text + ",",
-                    range: range
-                  }))
-                ]
-              );
+              message = `Interceptor is empty.`;
+              severity = DiagnosticSeverity.Warning;
+              code = DiagnosticCode.ValueContentEmpty;
             }
+            const offsetStart = this.offsetStart + matched.index + matched[1].length;
+            const offsetEnd = offsetStart + matched[2].length;
+            this._addDiagnostic(
+              this.parent.getRangeByOffset(offsetStart, offsetEnd),
+              message,
+              severity,
+              code,
+              [
+                {
+                  title: "Remove value",
+                  text: "",
+                  range: this.parent.getRangeByOffset(this.offsetStart + matched.index, offsetEnd)
+                },
+                ...this.defaultCodeActions
+              ]
+            );
           }
         }
       }

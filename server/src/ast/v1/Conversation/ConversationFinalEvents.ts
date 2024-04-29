@@ -5,6 +5,7 @@ import { ConversationFinalEventsType, Node } from "../../node";
 import { Conversation } from "./Conversation";
 import { AbstractEvent } from "./AbstractEvent";
 import { DiagnosticCode } from "../../../utils/diagnostics";
+import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
 
 export class ConversationFinalEvents extends Node<ConversationFinalEventsType> {
   type: ConversationFinalEventsType = 'ConversationFinalEvents';
@@ -24,73 +25,62 @@ export class ConversationFinalEvents extends Node<ConversationFinalEventsType> {
     this.uri = parent.uri;
     this.parent = parent;
     this.yml = yml;
-    this.offsetStart = yml.range?.[0];
-    this.offsetEnd = yml.range?.[1];
+    [this.offsetStart, this.offsetEnd] = getScalarRangeByValue(this.yml);
 
+    const str = getSourceByValue(this.yml);
     // Check value type
-    if (typeof this.yml.value === 'string') {
+    if (typeof str === 'string') {
       // Parse Events with RegEx
-      const regex = /([^,]+)/g; // /([^\s,]+)/gm;
+      const regex = /(,?)([^,]*)/g; // /([^\s,]+)/gm;
       let matched: RegExpExecArray | null;
-      while ((matched = regex.exec(this.yml.value)) !== null) {
-        const str = matched[1];
-        const offsetStart = this.offsetStart! + matched.index;
+      while ((matched = regex.exec(str)) !== null && matched[0].length > 0) {
+        const str = matched[2];
+        const strTrimed = str.trim();
+        const offsetStartWithComma = this.offsetStart + matched.index;
+        const offsetStart = offsetStartWithComma + matched[1].length;
         const offsetEnd = offsetStart + str.length;
+        const rangeWithComma = this.parent.getRangeByOffset(offsetStartWithComma, offsetEnd);
         const range = this.parent.getRangeByOffset(offsetStart, offsetEnd);
 
         // Check leading & tailing empty spaces
-        if (str.trim() !== str) {
+        if (strTrimed !== str) {
           // Throw diagnostics & quick fix
-          const diagnostic = {
-            range: range,
-            message: `Event IDs in "final_events" can not be separated with leading or tailing spaces.`,
-            severity: DiagnosticSeverity.Error,
-            source: 'BetonQuest',
-            code: DiagnosticCode.ValueContentIncorrect
-          };
-          this.diagnostics.push(diagnostic);
-          this.codeActions.push({
-            title: 'Remove leading and tailing empty spaces',
-            kind: CodeActionKind.QuickFix,
-            isPreferred: true,
-            diagnostics: [diagnostic],
-            edit: {
-              changes: {
-                [this.uri]: [{
-                  range: range,
-                  newText: str.trim(),
-                }]
+          this._addDiagnostic(
+            range,
+            `Event IDs in "final_events" can not be separated with leading or tailing spaces.`,
+            DiagnosticSeverity.Error,
+            DiagnosticCode.ValueFormatIncorrect,
+            [
+              {
+                title: "Remove leading & tailing empty spaces",
+                text: strTrimed,
+                range: range
               }
-            }
-          });
+            ]
+          );
         }
 
         // Check if any spaces in the middle
-        if (str.trim().match(/\s+/)) {
-          const correctStr = str.trim().replace(/\s+/g, "_");
-          const diagnostic: Diagnostic = {
-            range: range,
-            message: `Event ID cannot contains empty spaces. Do you mean "${correctStr}"?.`,
-            severity: DiagnosticSeverity.Error,
-            source: 'BetonQuest',
-            code: DiagnosticCode.ElementIdSyntax
-          };
-          this.diagnostics.push(diagnostic);
-          this.codeActions.push({
-            title: `Change to "${correctStr}"`,
-            kind: CodeActionKind.QuickFix,
-            diagnostics: [diagnostic],
-            edit: {
-              changes: {
-                [this.uri]: [
-                  {
-                    range: range,
-                    newText: correctStr
-                  }
-                ]
+        if (strTrimed.match(/\s+/)) {
+          const correctStr = strTrimed.replace(/\s+/g, "_");
+          this.parent._addDiagnostic(
+            range,
+            `Event ID cannot contains empty spaces. Do you mean "${correctStr}"?.`,
+            DiagnosticSeverity.Error,
+            DiagnosticCode.ElementIdSyntax,
+            [
+              {
+                title: `Change to "${correctStr}"`,
+                range: range,
+                text: correctStr
+              },
+              {
+                title: `Remove "${strTrimed}"`,
+                range: rangeWithComma,
+                text: ""
               }
-            }
-          });
+            ]
+          );
         }
 
         // Create Event
