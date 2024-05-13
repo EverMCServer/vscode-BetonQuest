@@ -12,8 +12,6 @@ export class ConversationInterceptor extends Node<ConversationInterceptorType> {
   offsetStart: number;
   offsetEnd: number;
   parent: Conversation;
-  diagnostics: Diagnostic[] = [];
-  codeActions: CodeAction[] = [];
 
   // Cache the parsed yaml document
   yml: Scalar;

@@ -12,6 +12,11 @@ export enum DiagnosticCode {
   // YamlKeySyntax = "BQ-0002",
 
   /**
+   * The yaml key should use alternative naming, e.g. condition -> conditions.
+   */
+  YamlKeyAlternativeNaming = "BQ-0003",
+
+  /**
    * The format of value is incorrect.
    */
   ValueFormatIncorrect = "BQ-0100",

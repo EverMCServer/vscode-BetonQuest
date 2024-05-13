@@ -6,9 +6,7 @@ export abstract class AbstractEvent<P extends Node<ConversationTypes>> extends N
   uri: string;
   offsetStart?: number;
   offsetEnd?: number;
-  parent?: P;
-  diagnostics: Diagnostic[] = [];
-  codeActions: CodeAction[] = [];
+  parent: P;
 
   event: string;
 

@@ -19,8 +19,6 @@ export abstract class ElementEntry<LE extends ListElement> extends Node<ElementE
   offsetStart?: number;
   offsetEnd?: number;
   parent: ElementList<LE>;
-  diagnostics: Diagnostic[] = [];
-  codeActions: CodeAction[] = [];
 
   yaml: Pair<Scalar<string>, Scalar<string>>;
 

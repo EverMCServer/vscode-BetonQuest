@@ -12,9 +12,7 @@ export class ConversationFinalEvents extends Node<ConversationFinalEventsType> {
   uri: string;
   offsetStart?: number;
   offsetEnd?: number;
-  parent?: Conversation;
-  diagnostics: Diagnostic[] = [];
-  codeActions: CodeAction[] = [];
+  parent: Conversation;
 
   // Cache the parsed yaml document
   yml: Scalar;

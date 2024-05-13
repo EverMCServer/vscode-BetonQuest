@@ -15,8 +15,6 @@ export abstract class ElementList<LE extends ListElement> extends Node<ElementLi
   offsetStart?: number;
   offsetEnd?: number;
   parent: PackageV2;
-  diagnostics: Diagnostic[] = [];
-  codeActions: CodeAction[] = [];
 
   // VSCode Document, for diagnostics / quick actions / goto definition, etc
   document: TextDocument;

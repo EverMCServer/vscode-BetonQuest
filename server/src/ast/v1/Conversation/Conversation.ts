@@ -11,7 +11,7 @@ import { ConversationFinalEvents } from "./ConversationFinalEvents";
 import { ConversationInterceptor } from "./ConversationInterceptor";
 import { NpcOptions } from "./Option/NpcOptions";
 import { PlayerOptions } from "./Option/PlayerOptions";
-import { isYamlmapPair } from "../../../utils/yaml";
+import { isYamlMapPair } from "../../../utils/yaml";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { Document } from "../document";
 
@@ -77,16 +77,16 @@ export class Conversation extends Document<ConversationType> {
           }
           break;
         case "NPC_options":
-          if (isYamlmapPair(pair)) {
-            this.npcOptions = new NpcOptions(pair, this);
+          if (isYamlMapPair(pair) && pair.value) {
+            this.npcOptions = new NpcOptions(pair.value, this);
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type.`);
           }
           break;
         case "player_options":
-          if (isYamlmapPair(pair)) {
-            this.playerOptions = new PlayerOptions(pair, this);
+          if (isYamlMapPair(pair) && pair.value) {
+            this.playerOptions = new PlayerOptions(pair.value, this);
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type.`);

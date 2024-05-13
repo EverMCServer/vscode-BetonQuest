@@ -1,30 +1,22 @@
 import { Pair, Scalar, YAMLMap } from "yaml";
-import { CodeAction, Diagnostic } from "vscode-languageserver";
 
-import { ConversationPlayerOptionsType, ConversationTypes, Node } from "../../../node";
+import { ConversationPlayerOptionType, ConversationPlayerOptionsType } from "../../../node";
 import { Conversation } from "./../Conversation";
+import { AbstractOptions } from "./AbstractOptions";
+import { PlayerOption } from "./PlayerOption";
 
-export class PlayerOptions extends Node<ConversationPlayerOptionsType> {
+export class PlayerOptions extends AbstractOptions<ConversationPlayerOptionType> {
   type: ConversationPlayerOptionsType = 'ConversationPlayerOptions';
-  uri: string;
-  offsetStart?: number;
-  offsetEnd?: number;
-  parent?: Conversation;
-  diagnostics: Diagnostic[] = [];
-  codeActions: CodeAction[] = [];
 
-  // Cache the parsed yaml document
-  yml?: Pair<Scalar<string>, YAMLMap<Scalar<string>>>;
-  options?: YAMLMap<Scalar<string>>; // TODO
-
-  constructor(yml: Pair<Scalar<string>, YAMLMap<Scalar<string>>>, parent: Conversation) {
-    super();
-    this.uri = parent.uri;
-    this.parent = parent;
-    this.yml = yml;
+  constructor(yml: YAMLMap, parent: Conversation) {
+    super(yml, parent);
 
     // TODO
 
     // ...
+  }
+
+  newAbstractOption(yml: Pair<Scalar<string>, YAMLMap>): PlayerOption {
+    return new PlayerOption(yml, this);
   }
 }

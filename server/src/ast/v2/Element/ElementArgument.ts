@@ -13,8 +13,6 @@ export abstract class ElementArgument<LE extends ListElement> extends Node<Eleme
   offsetStart?: number;
   offsetEnd?: number;
   parent: ElementArguments<LE>;
-  diagnostics: Diagnostic[] = [];
-  codeActions: CodeAction[] = [];
 
   argumentStr: string;
 

@@ -15,8 +15,6 @@ export abstract class ElementArgument<LE extends ListElement> extends Node<Eleme
   parent: ElementArguments<LE>;
 
   argumentStr: string;
-  diagnostics: Diagnostic[] = [];
-  codeActions: CodeAction[] = [];
 
   constructor(argumentStr: string,
     range: [number?, number?],

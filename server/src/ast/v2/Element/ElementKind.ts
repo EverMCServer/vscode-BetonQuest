@@ -13,8 +13,6 @@ export abstract class ElementKind<LE extends ListElement> extends Node<ElementKi
   offsetStart?: number;
   offsetEnd?: number;
   parent: ElementEntry<LE>;
-  diagnostics: Diagnostic[] = [];
-  codeActions: CodeAction[] = [];
 
   value: string;
   kindConfig?: _ElementKind<LE>;
@@ -51,6 +49,7 @@ export abstract class ElementKind<LE extends ListElement> extends Node<ElementKi
       if (this.kindConfig) {
         info.content = `(${this.type}) ${this.kindConfig?.value}`;
         if (this.kindConfig.description) {
+          // TODO: Remove html tag from this.kindConfig.description
           info.content += "\n\n---\n\n" + this.kindConfig.display.toString() + "\n\n" + this.kindConfig.description;
         }
       }

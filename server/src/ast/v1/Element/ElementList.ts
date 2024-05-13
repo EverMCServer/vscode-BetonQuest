@@ -14,8 +14,6 @@ export abstract class ElementList<LE extends ListElement> extends Document<Eleme
   abstract type: ElementListType;
   offsetStart?: number;
   offsetEnd?: number;
-  diagnostics: Diagnostic[] = [];
-  codeActions: CodeAction[] = [];
 
   entries: ElementEntry<LE>[] = [];
 

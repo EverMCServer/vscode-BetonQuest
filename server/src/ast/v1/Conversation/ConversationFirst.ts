@@ -9,9 +9,7 @@ export class ConversationFirst extends Node<ConversationFirstType> {
   uri: string;
   offsetStart?: number;
   offsetEnd?: number;
-  parent?: Conversation;
-  diagnostics: Diagnostic[] = [];
-  codeActions: CodeAction[] = [];
+  parent: Conversation;
 
   // Cache the parsed yaml document
   yml: Scalar;

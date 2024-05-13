@@ -1,6 +1,6 @@
 import { Pair, Scalar, YAMLMap } from "yaml";
 
-export function getScalarSourceAndRange (value: Scalar | null) {
+export function getScalarSourceAndRange(value: Scalar | null) {
   return [getSourceByValue(value), getScalarRangeByValue(value)] as [string | undefined, [number, number, number]];
 }
 
@@ -49,7 +49,7 @@ export function getSourceByValue(value: Scalar | null) {
 
 // Return [offsetStart, offsetEnd, indent]
 export function getScalarRangeByValue(value: Scalar | null) {
-  let range: [number, number, number] = value?.range ? [value.range[0], value.range[1], 0]: [0, 0, 0];
+  let range: [number, number, number] = value?.range ? [value.range[0], value.range[1], 0] : [0, 0, 0];
   switch (value?.srcToken?.type) {
     case 'scalar':
       break;
@@ -89,14 +89,14 @@ export function getScalarRangeByValue(value: Scalar | null) {
           case 'flow-error-end':
           case 'comma':
           case 'block-scalar-header':
-          // case 'error':
-          // case 'directive':
-          // case 'doc-end':
-          // case 'alias':
-          // case 'scalar':
-          // case 'single-quoted-scalar':
-          // case 'double-quoted-scalar':
-          // case 'block-scalar':
+            // case 'error':
+            // case 'directive':
+            // case 'doc-end':
+            // case 'alias':
+            // case 'scalar':
+            // case 'single-quoted-scalar':
+            // case 'double-quoted-scalar':
+            // case 'block-scalar':
             // Calculate initial offset from raw source
             let offset = lastProp.indent;
             const valueOffsetMatched = /[ \n\r]+(?=[^ \n\r])/s.exec(value.srcToken.source);
@@ -130,9 +130,13 @@ export function isStringScalar(value: any): value is Scalar<string> {
 }
 
 export function isStringScalarPair(value: any): value is Pair<Scalar<string>, Scalar<string>> {
-  return value instanceof Pair && value.value instanceof Scalar && typeof value.value.value === 'string';
+  return value instanceof Pair &&
+    value.key instanceof Scalar && typeof value.key.value === 'string' &&
+    value.value instanceof Scalar && typeof value.value.value === 'string';
 }
 
-export function isYamlmapPair(value: any): value is Pair<Scalar<string>, YAMLMap<Scalar<string>>> {
-  return value instanceof Pair && value.value instanceof YAMLMap;
+export function isYamlMapPair(value: any): value is Pair<Scalar<string>, YAMLMap> {
+  return value instanceof Pair &&
+    value.key instanceof Scalar && typeof value.key.value === 'string' &&
+    value.value instanceof YAMLMap;
 }

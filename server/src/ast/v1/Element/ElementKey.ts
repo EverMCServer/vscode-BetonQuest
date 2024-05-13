@@ -14,8 +14,6 @@ export abstract class ElementKey<LE extends ListElement> extends Node<ElementKey
   offsetStart?: number | undefined;
   offsetEnd?: number | undefined;
   parent: ElementEntry<LE> | undefined;
-  diagnostics: Diagnostic[] = [];
-  codeActions: CodeAction[] = [];
 
   value: string;
 
