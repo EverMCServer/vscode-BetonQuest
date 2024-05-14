@@ -1,4 +1,6 @@
 import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
+import { ConditionEntry as ConditionEntryV1 } from "./v1/Condition/ConditionEntry";
+import { ConditionEntry as ConditionEntryV2 } from "./v2/Condition/ConditionEntry";
 
 export type PackageV1Type = 'PackageV1';
 export type PackageV2Type = 'PackageV2';
@@ -81,7 +83,7 @@ export abstract class Node<T extends NodeType> {
   protected abstract uri: string;
   protected offsetStart?: number;
   protected offsetEnd?: number;
-  protected parent?: Node<NodeType>;
+  protected abstract parent: Node<NodeType>;
   protected diagnostics: Diagnostic[] = [];
   protected codeActions: CodeAction[] = [];
   // children?: Node<NodeType>[],
@@ -141,3 +143,19 @@ export abstract class Node<T extends NodeType> {
     return this.codeActions;
   }
 };
+
+export abstract class NodeV1<T extends NodeType> extends Node<T> {
+  protected abstract parent: NodeV1<NodeType>;
+
+  getConditionEntry(relativePath: string[], id: string): ConditionEntryV1 {
+    return this.parent.getConditionEntry(relativePath, id);
+  }
+}
+
+export abstract class NodeV2<T extends NodeType> extends Node<T> {
+  protected abstract parent: NodeV2<NodeType>;
+
+  getConditionEntry(relativePath: string[], id: string): ConditionEntryV2 {
+    return this.parent.getConditionEntry(relativePath, id);
+  }
+}

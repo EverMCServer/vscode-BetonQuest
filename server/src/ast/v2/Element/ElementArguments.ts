@@ -4,7 +4,7 @@ import { ArgumentsPatternMandatory, ArgumentsPatternOptional, ArgumentsPatterns 
 import { ElementKind } from "betonquest-utils/betonquest/v2/Element";
 import ListElement from "betonquest-utils/betonquest/ListElement";
 
-import { ElementArgumentsType, Node } from "../../node";
+import { ElementArgumentsType, NodeV2 } from "../../node";
 import { ElementEntry } from "./ElementEntry";
 import { ElementArgument } from "./ElementArgument";
 import { ElementArgumentMandatory } from "./ElementArgumentMandatory";
@@ -13,7 +13,7 @@ import { DiagnosticCode } from "../../../utils/diagnostics";
 import { HoverInfo } from "../../../utils/hover";
 import { SemanticToken } from "../../../service/semanticTokens";
 
-export abstract class ElementArguments<LE extends ListElement> extends Node<ElementArgumentsType> {
+export abstract class ElementArguments<LE extends ListElement> extends NodeV2<ElementArgumentsType> {
   abstract type: ElementArgumentsType;
   uri: string;
   offsetStart?: number;

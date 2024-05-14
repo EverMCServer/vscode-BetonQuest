@@ -9,11 +9,11 @@ import { ConversationFirst } from "./ConversationFirst";
 import { ConversationStop } from "./ConversationStop";
 import { ConversationFinalEvents } from "./ConversationFinalEvents";
 import { ConversationInterceptor } from "./ConversationInterceptor";
-import { NpcOptions } from "./Option/NpcOptions";
-import { PlayerOptions } from "./Option/PlayerOptions";
 import { isYamlMapPair } from "../../../utils/yaml";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { Document } from "../document";
+import { NpcOption } from "./Option/NpcOption";
+import { PlayerOption } from "./Option/PlayerOption";
 
 export class Conversation extends Document<ConversationType> {
   type: ConversationType = 'Conversation';
@@ -24,8 +24,8 @@ export class Conversation extends Document<ConversationType> {
   stop?: ConversationStop;
   finalEvent?: ConversationFinalEvents;
   interceptor?: ConversationInterceptor;
-  npcOptions?: NpcOptions;
-  playerOptions?: PlayerOptions;
+  npcOptions: NpcOption[] = [];
+  playerOptions: PlayerOption[] = [];
 
   constructor(uri: string, document: TextDocument, parent: PackageV1) {
     super(uri, document, parent);
@@ -78,7 +78,14 @@ export class Conversation extends Document<ConversationType> {
           break;
         case "NPC_options":
           if (isYamlMapPair(pair) && pair.value) {
-            this.npcOptions = new NpcOptions(pair.value, this);
+            pair.value.items.forEach(option => {
+              // Check YAML value type
+              if (isYamlMapPair(option) && option.value) {
+                this.npcOptions.push(new NpcOption(option, this));
+              } else {
+                // TODO: throw diagnostics error.
+              }
+            });
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type.`);
@@ -86,7 +93,14 @@ export class Conversation extends Document<ConversationType> {
           break;
         case "player_options":
           if (isYamlMapPair(pair) && pair.value) {
-            this.playerOptions = new PlayerOptions(pair.value, this);
+            pair.value.items.forEach(option => {
+              // Check YAML value type
+              if (isYamlMapPair(option) && option.value) {
+                this.playerOptions.push(new PlayerOption(option, this));
+              } else {
+                // TODO: throw diagnostics error.
+              }
+            });
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type.`);
@@ -192,8 +206,8 @@ export class Conversation extends Document<ConversationType> {
         ...this.stop?.getDiagnostics() ?? [],
         ...this.finalEvent?.getDiagnostics() ?? [],
         ...this.interceptor?.getDiagnostics() ?? [],
-        ...this.npcOptions?.getDiagnostics() ?? [],
-        ...this.playerOptions?.getDiagnostics() ?? [],
+        ...this.npcOptions?.flatMap(npc => npc.getDiagnostics()) ?? [],
+        ...this.playerOptions?.flatMap(player => player.getDiagnostics()) ?? [],
       ]
     } as PublishDiagnosticsParams;
   }
@@ -207,8 +221,8 @@ export class Conversation extends Document<ConversationType> {
       ...this.stop?.getCodeActions() ?? [],
       ...this.finalEvent?.getCodeActions() ?? [],
       ...this.interceptor?.getCodeActions() ?? [],
-      ...this.npcOptions?.getCodeActions() ?? [],
-      ...this.playerOptions?.getCodeActions() ?? [],
+      ...this.npcOptions?.flatMap(npc => npc.getCodeActions()) ?? [],
+      ...this.playerOptions?.flatMap(player => player.getCodeActions()) ?? [],
     ];
   }
 }

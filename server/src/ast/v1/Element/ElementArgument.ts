@@ -3,11 +3,11 @@ import { CodeAction, Diagnostic } from "vscode-languageserver";
 import { ArgumentsPatternMandatory, ArgumentsPatternOptional } from "betonquest-utils/betonquest/Arguments";
 import ListElement from "betonquest-utils/betonquest/ListElement";
 
-import { ElementArgumentType, Node } from "../../node";
+import { ElementArgumentType, NodeV1 } from "../../node";
 import { ElementArguments } from "./ElementArguments";
 import { SemanticToken } from "../../../service/semanticTokens";
 
-export abstract class ElementArgument<LE extends ListElement> extends Node<ElementArgumentType> {
+export abstract class ElementArgument<LE extends ListElement> extends NodeV1<ElementArgumentType> {
   abstract type: ElementArgumentType;
   uri: string;
   offsetStart?: number;

@@ -5,11 +5,11 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 import ListElement from "betonquest-utils/betonquest/ListElement";
 
-import { ElementListType, Node } from "../../node";
+import { ElementListType, NodeV2 } from "../../node";
 import { PackageV2 } from "../Package";
 import { ElementEntry } from "./ElementEntry";
 
-export abstract class ElementList<LE extends ListElement> extends Node<ElementListType> {
+export abstract class ElementList<LE extends ListElement> extends NodeV2<ElementListType> {
   abstract type: ElementListType;
   uri: string;
   offsetStart?: number;

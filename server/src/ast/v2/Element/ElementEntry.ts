@@ -4,7 +4,7 @@ import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserve
 import ListElement from "betonquest-utils/betonquest/ListElement";
 import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v2/Element";
 
-import { ElementEntryType, Node } from "../../node";
+import { ElementEntryType, NodeV2 } from "../../node";
 import { ElementKind } from "./ElementKind";
 import { ElementKey } from "./ElementKey";
 import { ElementArguments } from "./ElementArguments";
@@ -13,7 +13,7 @@ import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getScalarSourceAndRange } from "../../../utils/yaml";
 import { SemanticToken } from "../../../service/semanticTokens";
 
-export abstract class ElementEntry<LE extends ListElement> extends Node<ElementEntryType> {
+export abstract class ElementEntry<LE extends ListElement> extends NodeV2<ElementEntryType> {
   abstract type: ElementEntryType;
   uri: string;
   offsetStart?: number;

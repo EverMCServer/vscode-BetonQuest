@@ -179,16 +179,16 @@ export class AST {
   // Get all diagnostics from parser
   getDiagnostics(documentUri?: string) {
     return [
-      ...this.packagesV1.filter(p => documentUri ? documentUri.startsWith(p.uri) : true).flatMap(p => p.getPublishDiagnosticsParams(documentUri)),
-      ...this.packagesV2.filter(p => documentUri ? documentUri.startsWith(p.uri) : true).flatMap(p => p.getPublishDiagnosticsParams(documentUri))
+      ...this.packagesV1.filter(p => documentUri ? documentUri.startsWith(p.getUri()) : true).flatMap(p => p.getPublishDiagnosticsParams(documentUri)),
+      ...this.packagesV2.filter(p => documentUri ? documentUri.startsWith(p.getUri()) : true).flatMap(p => p.getPublishDiagnosticsParams(documentUri))
     ];
   }
 
   // Get all CodeActions
   getCodeActions(documentUri?: string) {
     return [
-      ...this.packagesV1.filter(p => documentUri ? documentUri.startsWith(p.uri) : true).flatMap(p => p.getCodeActions(documentUri)),
-      // ...this.packagesV2.filter(p => documentUri ? documentUri.startsWith(p.uri) : true).flatMap(p => p.getCodeActions(documentUri))
+      ...this.packagesV1.filter(p => documentUri ? documentUri.startsWith(p.getUri()) : true).flatMap(p => p.getCodeActions(documentUri)),
+      // ...this.packagesV2.filter(p => documentUri ? documentUri.startsWith(p.getUri()) : true).flatMap(p => p.getCodeActions(documentUri))
     ];
   }
 

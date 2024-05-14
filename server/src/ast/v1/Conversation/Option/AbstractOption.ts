@@ -1,26 +1,28 @@
 import { Pair, Scalar, YAMLMap } from "yaml";
-import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationOptionType, Node } from "../../../node";
-import { AbstractOptions } from "./AbstractOptions";
+import { ConversationOptionType, NodeV1 } from "../../../node";
 import { isStringScalar } from "../../../../utils/yaml";
 import { Text } from "./Text";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
+import { Conversation } from "../Conversation";
 
-export abstract class AbstractOption<T extends ConversationOptionType> extends Node<T> {
+export abstract class AbstractOption<T extends ConversationOptionType> extends NodeV1<T> {
   abstract type: T;
   uri: string;
-  offsetStart?: number;
-  offsetEnd?: number;
-  parent: AbstractOptions<T>;
+  offsetStart?: number; // TODO
+  offsetEnd?: number; // TODO
+  parent: Conversation;
 
   // Cache the parsed yaml document
   yml: Pair<Scalar<string>, YAMLMap>;
   text?: Text;
 
-  constructor(yml: Pair<Scalar<string>, YAMLMap>, parent: AbstractOptions<T>) {
+  constructor(yml: Pair<Scalar<string>, YAMLMap>, parent: Conversation) {
     super();
     this.uri = parent.uri;
+    this.offsetStart = yml.key.range![0];
+    this.offsetEnd = yml.value?.range![1];
     this.parent = parent;
     this.yml = yml;
 
@@ -47,6 +49,8 @@ export abstract class AbstractOption<T extends ConversationOptionType> extends N
               ]
             );
           case "pointers":
+            // TODO
+            
             break;
           case "condition":
             // Throw warning diagnostics, change to "*s"
@@ -63,6 +67,7 @@ export abstract class AbstractOption<T extends ConversationOptionType> extends N
               ]
             );
           case "conditions":
+            // TODO
             break;
           case "event":
             // Throw warning diagnostics, change to "*s"
@@ -79,6 +84,7 @@ export abstract class AbstractOption<T extends ConversationOptionType> extends N
               ]
             );
           case "events":
+            // TODO
             break;
           default:
             this._addDiagnostic(
@@ -99,6 +105,6 @@ export abstract class AbstractOption<T extends ConversationOptionType> extends N
   }
 
   getRangeByOffset(offsetStart: number, offsetEnd: number) {
-    return this.parent.parent.getRangeByOffset(offsetStart, offsetEnd);
+    return this.parent.getRangeByOffset(offsetStart, offsetEnd);
   }
 }

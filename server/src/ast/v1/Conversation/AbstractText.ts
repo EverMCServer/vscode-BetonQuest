@@ -1,11 +1,11 @@
 import { Scalar, YAMLMap, isMap, isScalar } from "yaml";
 
-import { ConversationOptionType, ConversationTypes, Node } from "../../node";
+import { ConversationOptionType, ConversationTypes, NodeV1 } from "../../node";
 import { Conversation } from "./Conversation";
 import { AbstractTextTranslations } from "./AbstractTextTranslations";
 import { AbstractOption } from "./Option/AbstractOption";
 
-export abstract class AbstractText<NT extends ConversationTypes, TT extends AbstractTextTranslations<ConversationTypes>> extends Node<NT> {
+export abstract class AbstractText<NT extends ConversationTypes, TT extends AbstractTextTranslations<ConversationTypes>> extends NodeV1<NT> {
   abstract type: NT;
   uri: string;
   parent: Conversation | AbstractOption<ConversationOptionType>;

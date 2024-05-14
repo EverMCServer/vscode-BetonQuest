@@ -5,21 +5,26 @@ import { Scalar, YAMLMap, parseDocument } from "yaml";
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
 import { Package } from "../Package";
-import { ConversationListType, Node, PackageV2Type } from "../node";
+import { ConversationListType, NodeV2, PackageV2Type } from "../node";
 import { HoverInfo } from "../../utils/hover";
 import { ConditionList } from "./Condition/ConditionList";
 import { EventList } from "./Event/EventList";
 import { ObjectiveList } from "./Objective/ObjectiveList";
 import { SemanticToken } from "../../service/semanticTokens";
 
-export class PackageV2 extends Package<PackageV2Type> {
-  conversationList: Node<ConversationListType>[] = []; // TODO: Conversations[]
+export class PackageV2 extends NodeV2<PackageV2Type> {
+  protected type: PackageV2Type = "PackageV2";
+  protected uri: string;
+  protected parent: PackageV2 = this;
+
+  conversationList: NodeV2<ConversationListType>[] = []; // TODO: Conversations[]
   conditionLists: ConditionList[] = [];
   eventLists: EventList[] = [];
   objectiveLists: ObjectiveList[] = [];
 
   constructor(packageUri: string, documents: TextDocument[]) {
-    super("PackageV2", packageUri);
+    super();
+    this.uri = packageUri;
 
     // Iterate all files and create nodes.
     documents.forEach((document) => {

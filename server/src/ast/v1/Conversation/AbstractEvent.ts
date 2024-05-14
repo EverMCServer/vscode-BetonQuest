@@ -1,7 +1,7 @@
 import { CodeAction, Diagnostic } from "vscode-languageserver";
-import { ConversationEventType, ConversationTypes, Node } from "../../node";
+import { ConversationEventType, ConversationTypes, NodeV1 } from "../../node";
 
-export abstract class AbstractEvent<P extends Node<ConversationTypes>> extends Node<ConversationEventType> {
+export abstract class AbstractEvent<P extends NodeV1<ConversationTypes>> extends NodeV1<ConversationEventType> {
   type: ConversationEventType = "ConversationEvent";
   uri: string;
   offsetStart?: number;

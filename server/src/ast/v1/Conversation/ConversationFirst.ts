@@ -1,10 +1,10 @@
 import { Scalar } from "yaml";
 import { CodeAction, Diagnostic } from "vscode-languageserver";
 
-import { ConversationFirstType, Node } from "../../node";
+import { ConversationFirstType, NodeV1 } from "../../node";
 import { Conversation } from "./Conversation";
 
-export class ConversationFirst extends Node<ConversationFirstType> {
+export class ConversationFirst extends NodeV1<ConversationFirstType> {
   type: ConversationFirstType = 'ConversationFirst';
   uri: string;
   offsetStart?: number;

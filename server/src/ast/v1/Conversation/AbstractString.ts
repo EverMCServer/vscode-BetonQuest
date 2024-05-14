@@ -1,8 +1,8 @@
 import { Scalar } from "yaml";
-import { Node, NodeType } from "../../node";
+import { NodeV1, NodeType } from "../../node";
 import { AbstractText } from "./AbstractText";
 
-export abstract class AbstractString<T extends NodeType> extends Node<T> {
+export abstract class AbstractString<T extends NodeType> extends NodeV1<T> {
 
   yml: Scalar;
 

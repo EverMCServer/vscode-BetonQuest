@@ -2,11 +2,12 @@ import { Scalar, YAMLMap, parseDocument } from "yaml";
 import { CodeActionKind, Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
-import { Node, NodeType } from "../node";
+import { NodeV1, NodeType } from "../node";
 import { PackageV1 } from "./Package";
 
-export abstract class Document<T extends NodeType> extends Node<T> {
+export abstract class Document<T extends NodeType> extends NodeV1<T> {
   uri: string;
+  protected parent: NodeV1<NodeType>;
 
   // VSCode Document, for diagnostics / quick actions / goto definition, etc
   document: TextDocument;

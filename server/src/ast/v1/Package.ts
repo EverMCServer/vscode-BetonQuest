@@ -4,22 +4,29 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
 import { Package } from "../Package";
-import { PackageV1Type } from "../node";
+import { NodeV1, PackageV1Type } from "../node";
 import { ConditionList } from "./Condition/ConditionList";
 import { EventList } from "./Event/EventList";
 import { ObjectiveList } from "./Objective/ObjectiveList";
 import { HoverInfo } from "../../utils/hover";
 import { SemanticToken } from "../../service/semanticTokens";
 import { Conversation } from "./Conversation/Conversation";
+import { ConditionEntry } from "./Condition/ConditionEntry";
+import { AST } from "../ast";
 
-export class PackageV1 extends Package<PackageV1Type> {
+export class PackageV1 extends NodeV1<PackageV1Type> {
+  protected type: PackageV1Type = "PackageV1";
+  protected uri: string;
+  protected parent: PackageV1 = this;
+
   conditionList?: ConditionList;
   eventList?: EventList;
   objectiveList?: ObjectiveList;
   conversations?: Conversation[] = [];
 
   constructor(packageUri: string, documents: TextDocument[]) {
-    super("PackageV1", packageUri);
+    super();
+    this.uri = packageUri;
 
     // Parse sub Nodes by types
     documents.forEach((document) => {

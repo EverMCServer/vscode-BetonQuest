@@ -1,13 +1,13 @@
 import { Scalar } from "yaml";
 import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationFinalEventsType, Node } from "../../node";
+import { ConversationFinalEventsType, NodeV1 } from "../../node";
 import { Conversation } from "./Conversation";
 import { AbstractEvent } from "./AbstractEvent";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
 
-export class ConversationFinalEvents extends Node<ConversationFinalEventsType> {
+export class ConversationFinalEvents extends NodeV1<ConversationFinalEventsType> {
   type: ConversationFinalEventsType = 'ConversationFinalEvents';
   uri: string;
   offsetStart?: number;
