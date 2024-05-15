@@ -3,7 +3,7 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
-import { Package } from "../Package";
+import { AST } from "../ast";
 import { NodeV1, PackageV1Type } from "../node";
 import { ConditionList } from "./Condition/ConditionList";
 import { EventList } from "./Event/EventList";
@@ -12,21 +12,22 @@ import { HoverInfo } from "../../utils/hover";
 import { SemanticToken } from "../../service/semanticTokens";
 import { Conversation } from "./Conversation/Conversation";
 import { ConditionEntry } from "./Condition/ConditionEntry";
-import { AST } from "../ast";
 
 export class PackageV1 extends NodeV1<PackageV1Type> {
   protected type: PackageV1Type = "PackageV1";
   protected uri: string;
   protected parent: PackageV1 = this;
+  private parentAst: AST;
 
   conditionList?: ConditionList;
   eventList?: EventList;
   objectiveList?: ObjectiveList;
   conversations?: Conversation[] = [];
 
-  constructor(packageUri: string, documents: TextDocument[]) {
+  constructor(packageUri: string, documents: TextDocument[], parent: AST) {
     super();
     this.uri = packageUri;
+    this.parentAst = parent;
 
     // Parse sub Nodes by types
     documents.forEach((document) => {
@@ -57,6 +58,21 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
           break;
       }
     });
+  }
+
+  // TODO
+  getConditionEntry(id: string, path: string[], sourcePath: string[]): ConditionEntry[] {
+    const entries: ConditionEntry[] = [];
+    // Check relative package path
+    // if (path[0] === "-") {
+    //   // //
+    // }
+    // if (this.conditionList?.getConditionEntry()) {
+    //   // 
+    // } else {
+    //   this.parentAst.getConditionEntry();
+    // }
+    return entries;
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {

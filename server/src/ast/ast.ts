@@ -163,7 +163,7 @@ export class AST {
     this.packagesV1 = []; // Purge all cached files
     allDocuments.forEach((documents, packageUri) => {
       // Create Package
-      this.packagesV1.push(new PackageV1(packageUri, documents));
+      this.packagesV1.push(new PackageV1(packageUri, documents, this));
     });
   }
 
@@ -172,7 +172,7 @@ export class AST {
     this.packagesV2 = []; // Purge all cached files
     allDocuments.forEach((documents, packageUri) => {
       // Create Package
-      this.packagesV2.push(new PackageV2(packageUri, documents));
+      this.packagesV2.push(new PackageV2(packageUri, documents, this));
     });
   }
 
@@ -215,6 +215,14 @@ export class AST {
       ...this.packagesV1.flatMap(p => p.getLocations(yamlPath, sourceUri)),
       ...this.packagesV2.flatMap(p => p.getLocations(yamlPath, sourceUri))
     ];
+  }
+
+  getV1ConditionEntry(id: string, path: string[], sourcePath: string[]) {
+    return this.packagesV1.flatMap(p => p.getConditionEntry(id, path, sourcePath));
+  }
+
+  getV2ConditionEntry(id: string, path: string[], sourcePath: string[]) {
+    return this.packagesV2.flatMap(p => p.getConditionEntry(id, path, sourcePath));
   }
 
   // getPos(sourcePath: string, address: string) {

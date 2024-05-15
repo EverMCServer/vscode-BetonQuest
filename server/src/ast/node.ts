@@ -147,15 +147,15 @@ export abstract class Node<T extends NodeType> {
 export abstract class NodeV1<T extends NodeType> extends Node<T> {
   protected abstract parent: NodeV1<NodeType>;
 
-  getConditionEntry(relativePath: string[], id: string): ConditionEntryV1 {
-    return this.parent.getConditionEntry(relativePath, id);
+  getConditionEntry(id: string, path: string[], sourcePath: string[]): ConditionEntryV1[] {
+    return this.parent.getConditionEntry(id, path, sourcePath);
   }
 }
 
 export abstract class NodeV2<T extends NodeType> extends Node<T> {
   protected abstract parent: NodeV2<NodeType>;
 
-  getConditionEntry(relativePath: string[], id: string): ConditionEntryV2 {
-    return this.parent.getConditionEntry(relativePath, id);
+  getConditionEntry(id: string, path: string[], sourcePath: string[]): ConditionEntryV2[] {
+    return this.parent.getConditionEntry(id, path, sourcePath);
   }
 }
