@@ -142,20 +142,26 @@ export abstract class Node<T extends NodeType> {
   getCodeActions() {
     return this.codeActions;
   }
+
+  // Get target package's uri by package path.
+  // This method must be overrided / hijacked by a Package{} class.
+  getPackageUri(targetPackagePath: string[]): string {
+    return this.parent.getPackageUri(targetPackagePath);
+  }
 };
 
 export abstract class NodeV1<T extends NodeType> extends Node<T> {
   protected abstract parent: NodeV1<NodeType>;
 
-  getConditionEntry(id: string, path: string[], sourcePath: string[]): ConditionEntryV1[] {
-    return this.parent.getConditionEntry(id, path, sourcePath);
+  getConditionEntries(id: string, packageUri: string): ConditionEntryV1[] {
+    return this.parent.getConditionEntries(id, packageUri);
   }
 }
 
 export abstract class NodeV2<T extends NodeType> extends Node<T> {
   protected abstract parent: NodeV2<NodeType>;
 
-  getConditionEntry(id: string, path: string[], sourcePath: string[]): ConditionEntryV2[] {
-    return this.parent.getConditionEntry(id, path, sourcePath);
+  getConditionEntry(id: string, packageUri: string): ConditionEntryV2[] {
+    return this.parent.getConditionEntry(id, packageUri);
   }
 }

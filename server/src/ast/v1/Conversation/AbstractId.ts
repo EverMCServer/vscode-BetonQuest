@@ -28,23 +28,17 @@ export abstract class AbstractID<T extends NodeType, PT extends NodeV1<NodeType>
     }
     // Parse package path
     if (str.includes(".")) {
-      const splited = str.split(".");
-      this.package = this.parsePackage(splited[0]);
+      const splited = str.split(".", 2);
+      this.package = splited[0].split("-");
       this.id = splited[1];
     } else {
       this.id = str;
     }
 
+    // TODO: it should not be gotten from here in constructor.
     this.targetNodes = this.getTargetNodes();
   }
 
   // Method to get the target nodes that this ID points to.
   abstract getTargetNodes(): CT[];
-
-  // Parse package path by string
-  parsePackage(str: string): string[] {
-    const splited = str.split("-");
-    // TODO: parse relative path: "_" one folder up.
-    return splited;
-  }
 }

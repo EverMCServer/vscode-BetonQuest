@@ -17,6 +17,7 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
   protected uri: string;
   protected parent: PackageV2 = this;
   private parentAst: AST;
+  readonly packagePath: string[];
 
   conversationList: NodeV2<ConversationListType>[] = []; // TODO: Conversations[]
   conditionLists: ConditionList[] = [];
@@ -27,6 +28,9 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
     super();
     this.uri = packageUri;
     this.parentAst = parent;
+
+    // Calculate package's path
+    this.packagePath = this.uri.slice(this.parentAst.wsFolderUri.length).replace(/^QuestPackages\//m, "").replace(/(?:\/)$/m, "").split('/');
 
     // Iterate all files and create nodes.
     documents.forEach((document) => {

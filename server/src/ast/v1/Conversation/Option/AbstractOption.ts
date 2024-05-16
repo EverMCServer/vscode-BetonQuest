@@ -6,6 +6,7 @@ import { isStringScalar } from "../../../../utils/yaml";
 import { Text } from "./Text";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
 import { Conversation } from "../Conversation";
+import { AbstractIdCondition } from "../AbstractIdCondition";
 
 export abstract class AbstractOption<T extends ConversationOptionType> extends NodeV1<T> {
   abstract type: T;
@@ -17,6 +18,7 @@ export abstract class AbstractOption<T extends ConversationOptionType> extends N
   // Cache the parsed yaml document
   yml: Pair<Scalar<string>, YAMLMap>;
   text?: Text;
+  conditions: AbstractIdCondition<this>[] = []; // TODO
 
   constructor(yml: Pair<Scalar<string>, YAMLMap>, parent: Conversation) {
     super();
@@ -68,6 +70,7 @@ export abstract class AbstractOption<T extends ConversationOptionType> extends N
             );
           case "conditions":
             // TODO
+
             break;
           case "event":
             // Throw warning diagnostics, change to "*s"

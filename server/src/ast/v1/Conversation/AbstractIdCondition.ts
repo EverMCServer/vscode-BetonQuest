@@ -12,7 +12,6 @@ export abstract class AbstractIdCondition<PT extends NodeV1<NodeType>> extends A
   }
 
   getTargetNodes(): ConditionEntry[] {
-    // TODO
-    return [];
+    return this.getConditionEntries(this.id, this.getPackageUri(this.package));
   }
 }

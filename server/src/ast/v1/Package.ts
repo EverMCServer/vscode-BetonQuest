@@ -12,12 +12,14 @@ import { HoverInfo } from "../../utils/hover";
 import { SemanticToken } from "../../service/semanticTokens";
 import { Conversation } from "./Conversation/Conversation";
 import { ConditionEntry } from "./Condition/ConditionEntry";
+import { getParentUrl } from "../../utils/url";
 
 export class PackageV1 extends NodeV1<PackageV1Type> {
   protected type: PackageV1Type = "PackageV1";
   protected uri: string;
   protected parent: PackageV1 = this;
   private parentAst: AST;
+  readonly packagePath: string[];
 
   conditionList?: ConditionList;
   eventList?: EventList;
@@ -28,6 +30,9 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
     super();
     this.uri = packageUri;
     this.parentAst = parent;
+
+    // Calculate package's path
+    this.packagePath = this.uri.slice(this.parentAst.wsFolderUri.length).replace(/(?:\/)$/m, "").split('/');
 
     // Parse sub Nodes by types
     documents.forEach((document) => {
@@ -60,8 +65,31 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
     });
   }
 
+  // Calculate the target package's uri by absolute / relative package path
+  getPackageUri(targetPackagePath: string[]) {
+    let packageUri = this.uri;
+    // Empty
+    if (targetPackagePath.length === 0) {
+      return packageUri;
+    }
+    // Handle relative path
+    if (targetPackagePath[0] === '-') {
+      targetPackagePath.forEach(p => {
+        if (p === '-') {
+          packageUri = getParentUrl(packageUri);
+        } else {
+          packageUri += '/' + p;
+        }
+      });
+      return packageUri;
+    }
+    // Handle absolute path
+    packageUri = this.parentAst.wsFolderUri + targetPackagePath.join('/') + '/';
+    return packageUri;
+  }
+
   // TODO
-  getConditionEntry(id: string, path: string[], sourcePath: string[]): ConditionEntry[] {
+  getConditionEntries(id: string, packageUri: string): ConditionEntry[] {
     const entries: ConditionEntry[] = [];
     // Check relative package path
     // if (path[0] === "-") {

@@ -15,7 +15,7 @@ export class ASTs {
   }
 
   updateDocuments(allDocuments: AllDocuments) {
-    this.asts = allDocuments.getAllDocuments().map<[string, AST?]>(([wsFolderUri, documents]) => [wsFolderUri, documents ? new AST(documents) : undefined]);
+    this.asts = allDocuments.getAllDocuments().map<[string, AST?]>(([wsFolderUri, documents]) => [wsFolderUri, documents ? new AST(wsFolderUri, documents) : undefined]);
   }
 
   getAstByPackageUri(packageUri: string) {
@@ -55,11 +55,19 @@ export class ASTs {
 
 // AST structure for BetonQuest V1 & V2
 export class AST {
-  packagesV1: PackageV1[] = [];
-  packagesV2: PackageV2[] = [];
+  readonly wsFolderUri: string; // The dir of the workspace folder
+  // private packageRootUriV1: string; // The base dir of the package root
+  // private packageRootUriV2: string; // The base dir of the package root
+  private packagesV1: PackageV1[] = [];
+  private packagesV2: PackageV2[] = [];
 
-  constructor(documents: TextDocument[]) {
+  constructor(wsFolderUri: string, documents: TextDocument[]) {
+    this.wsFolderUri = wsFolderUri;
     const [filesV1, filesV2] = this.classifyAllDocuments(documents);
+
+    // // Set the base dir of the package
+    // this.packageRootUriV1 = wsFolderUri;
+    // this.packageRootUriV2 = wsFolderUri + "QuestPackages/";
 
     // Create AST by versions and packages
     this.parseAllDocumentsV1(filesV1);
@@ -79,6 +87,18 @@ export class AST {
       const u = new URL(document.uri);
       const p = u.pathname.split('/');
       if (p[p.length - 1].match(/^package\.yml$/i)) {
+        // Check if the file within "QuestPackages",
+        // and the workspce opened the whole BetonQuest folder, not it's sub-folders
+        if (!document.uri.startsWith(this.wsFolderUri)) {
+          return;
+        } else {
+          const partialPath = document.uri.slice(this.wsFolderUri.length);
+          // if (!partialPath.startsWith('QuestPackages/') || !partialPath.startsWith('BetonQuest/QuestPackages/')) {
+          if (!partialPath.startsWith('QuestPackages/')) {
+            return;
+          }
+        }
+
         // Create package's base path
         const packageUri = getParentUrl(document.uri);
         // Cache the package's with base path.
@@ -217,12 +237,12 @@ export class AST {
     ];
   }
 
-  getV1ConditionEntry(id: string, path: string[], sourcePath: string[]) {
-    return this.packagesV1.flatMap(p => p.getConditionEntry(id, path, sourcePath));
+  getV1ConditionEntry(id: string, packageUri: string) {
+    return this.packagesV1.flatMap(p => p.getConditionEntries(id, packageUri));
   }
 
-  getV2ConditionEntry(id: string, path: string[], sourcePath: string[]) {
-    return this.packagesV2.flatMap(p => p.getConditionEntry(id, path, sourcePath));
+  getV2ConditionEntry(id: string, packageUri: string) {
+    return this.packagesV2.flatMap(p => p.getConditionEntry(id, packageUri));
   }
 
   // getPos(sourcePath: string, address: string) {
