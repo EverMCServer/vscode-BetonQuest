@@ -72,6 +72,11 @@ export enum DiagnosticCode {
   ElementIdSyntax = "BQ-1101",
 
   /**
+   * The Condition / Event / Objective / Item ID syntax is empty.
+   */
+  ElementIdEmpty = "BQ-1102",
+
+  /**
    * A mandatory argument is missing.
    */
   ArgumentMandatoryMissing = "BQ-2001",

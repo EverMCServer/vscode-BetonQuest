@@ -15,9 +15,6 @@ export type ConversationFirstType = 'ConversationFirst';
 export type ConversationStopType = 'ConversationStop';
 export type ConversationFinalEventsType = 'ConversationFinalEvents';
 export type ConversationInterceptorType = 'ConversationInterceptor';
-export type ConversationNpcOptionsType = 'ConversationNpcOptions';
-export type ConversationPlayerOptionsType = 'ConversationPlayerOptions';
-export type ConversationOptionsType = ConversationNpcOptionsType | ConversationPlayerOptionsType;
 export type ConversationNpcOptionType = 'ConversationNpcOption';
 export type ConversationPlayerOptionType = 'ConversationPlayerOption';
 export type ConversationOptionType = ConversationNpcOptionType | ConversationPlayerOptionType;
@@ -29,7 +26,7 @@ export type ConversationEventType = 'ConversationEvent';
 export type ConversationPointersType = 'ConversationPointers';
 export type ConversationPointerType = 'ConversationPointer';
 export type ConversationTextTranslationsType = 'ConversationTextTranslations';
-export type ConversationTypes = ConversationListType | ConversationType | ConversationKeyType | ConversationQuesterType | ConversationQuesterTranslationsType | ConversationFirstType | ConversationStopType | ConversationFinalEventsType | ConversationInterceptorType | ConversationOptionsType | ConversationOptionType | ConversationTextType | ConversationConditionsType | ConversationConditionType | ConversationEventsType | ConversationEventType | ConversationPointersType | ConversationPointerType | ConversationTextTranslationsType;
+export type ConversationTypes = ConversationListType | ConversationType | ConversationKeyType | ConversationQuesterType | ConversationQuesterTranslationsType | ConversationFirstType | ConversationStopType | ConversationFinalEventsType | ConversationInterceptorType | ConversationOptionType | ConversationTextType | ConversationConditionsType | ConversationConditionType | ConversationEventsType | ConversationEventType | ConversationPointersType | ConversationPointerType | ConversationTextTranslationsType;
 
 export type EventListType = 'EventList';
 export type EventEntryType = 'EventEntry';
@@ -144,8 +141,8 @@ export abstract class Node<T extends NodeType> {
   }
 
   // Get target package's uri by package path.
-  // This method must be overrided / hijacked by a Package{} class.
-  getPackageUri(targetPackagePath: string[]): string {
+  // This method must be overrided / hijacked by the top-level class.
+  getPackageUri(targetPackagePath: string): string {
     return this.parent.getPackageUri(targetPackagePath);
   }
 };
@@ -153,15 +150,26 @@ export abstract class Node<T extends NodeType> {
 export abstract class NodeV1<T extends NodeType> extends Node<T> {
   protected abstract parent: NodeV1<NodeType>;
 
+  // Calculate the range by offsets.
+  // This method must be overrided / hijacked by the "Document" class.
+  getRangeByOffset(offsetStart: number, offsetEnd: number): Range {
+    return this.parent.getRangeByOffset(offsetStart, offsetEnd);
+  }
+  
+  // Get all target package's condition entries.
+  // This method must be overrided / hijacked by the top-level class.
   getConditionEntries(id: string, packageUri: string): ConditionEntryV1[] {
     return this.parent.getConditionEntries(id, packageUri);
   }
+
 }
 
 export abstract class NodeV2<T extends NodeType> extends Node<T> {
   protected abstract parent: NodeV2<NodeType>;
 
-  getConditionEntry(id: string, packageUri: string): ConditionEntryV2[] {
-    return this.parent.getConditionEntry(id, packageUri);
+  // Get all target package's condition entries.
+  // This method must be overrided / hijacked by the top-level class.
+  getConditionEntries(id: string, packageUri: string): ConditionEntryV2[] {
+    return this.parent.getConditionEntries(id, packageUri);
   }
 }

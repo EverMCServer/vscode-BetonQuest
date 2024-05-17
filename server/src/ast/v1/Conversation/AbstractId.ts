@@ -8,10 +8,9 @@ export abstract class AbstractID<T extends NodeType, PT extends NodeV1<NodeType>
   protected parent: PT;
 
   // Cache content
-  protected withExclamationMark: boolean; // TODO
-  protected package: string[] = []; // TODO
+  protected withExclamationMark: boolean;
+  protected package: string = "";
   protected id: string;
-  protected targetNodes: CT[]; // The child nodes that this ID points to.
 
   constructor(idString: string, range: [number, number], parent: PT) {
     super();
@@ -29,14 +28,11 @@ export abstract class AbstractID<T extends NodeType, PT extends NodeV1<NodeType>
     // Parse package path
     if (str.includes(".")) {
       const splited = str.split(".", 2);
-      this.package = splited[0].split("-");
+      this.package = splited[0];
       this.id = splited[1];
     } else {
       this.id = str;
     }
-
-    // TODO: it should not be gotten from here in constructor.
-    this.targetNodes = this.getTargetNodes();
   }
 
   // Method to get the target nodes that this ID points to.

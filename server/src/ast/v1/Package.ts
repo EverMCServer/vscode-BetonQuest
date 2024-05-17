@@ -66,25 +66,26 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
   }
 
   // Calculate the target package's uri by absolute / relative package path
-  getPackageUri(targetPackagePath: string[]) {
+  getPackageUri(targetPackagePath: string) {
     let packageUri = this.uri;
     // Empty
     if (targetPackagePath.length === 0) {
       return packageUri;
     }
+    const packagePathArray = targetPackagePath.split("-");
     // Handle relative path
-    if (targetPackagePath[0] === '-') {
-      targetPackagePath.forEach(p => {
-        if (p === '-') {
+    if (packagePathArray[0] === '_') {
+      packagePathArray.forEach(p => {
+        if (p === '_') {
           packageUri = getParentUrl(packageUri);
         } else {
-          packageUri += '/' + p;
+          packageUri += p + '/';
         }
       });
       return packageUri;
     }
     // Handle absolute path
-    packageUri = this.parentAst.wsFolderUri + targetPackagePath.join('/') + '/';
+    packageUri = this.parentAst.wsFolderUri + packagePathArray.join('/') + '/';
     return packageUri;
   }
 

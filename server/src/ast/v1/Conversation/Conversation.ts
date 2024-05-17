@@ -3,7 +3,7 @@ import { CodeActionKind, Diagnostic, DiagnosticSeverity, PublishDiagnosticsParam
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { PackageV1 } from "../Package";
-import { ConversationType } from "../../node";
+import { ConversationNpcOptionType, ConversationPlayerOptionType, ConversationType } from "../../node";
 import { ConversationQuester } from "./ConversationQuester";
 import { ConversationFirst } from "./ConversationFirst";
 import { ConversationStop } from "./ConversationStop";
@@ -12,8 +12,7 @@ import { ConversationInterceptor } from "./ConversationInterceptor";
 import { isYamlMapPair } from "../../../utils/yaml";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { Document } from "../document";
-import { NpcOption } from "./Option/NpcOption";
-import { PlayerOption } from "./Option/PlayerOption";
+import { Option } from "./Option/Option";
 
 export class Conversation extends Document<ConversationType> {
   type: ConversationType = 'Conversation';
@@ -24,8 +23,8 @@ export class Conversation extends Document<ConversationType> {
   stop?: ConversationStop;
   finalEvent?: ConversationFinalEvents;
   interceptor?: ConversationInterceptor;
-  npcOptions: NpcOption[] = [];
-  playerOptions: PlayerOption[] = [];
+  npcOptions: Option<ConversationNpcOptionType>[] = [];
+  playerOptions: Option<ConversationPlayerOptionType>[] = [];
 
   constructor(uri: string, document: TextDocument, parent: PackageV1) {
     super(uri, document, parent);
@@ -81,7 +80,7 @@ export class Conversation extends Document<ConversationType> {
             pair.value.items.forEach(option => {
               // Check YAML value type
               if (isYamlMapPair(option) && option.value) {
-                this.npcOptions.push(new NpcOption(option, this));
+                this.npcOptions.push(new Option("ConversationNpcOption", option, this));
               } else {
                 // TODO: throw diagnostics error.
               }
@@ -96,7 +95,7 @@ export class Conversation extends Document<ConversationType> {
             pair.value.items.forEach(option => {
               // Check YAML value type
               if (isYamlMapPair(option) && option.value) {
-                this.playerOptions.push(new PlayerOption(option, this));
+                this.playerOptions.push(new Option("ConversationPlayerOption", option, this));
               } else {
                 // TODO: throw diagnostics error.
               }

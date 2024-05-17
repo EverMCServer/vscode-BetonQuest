@@ -242,7 +242,7 @@ export class AST {
   }
 
   getV2ConditionEntry(id: string, packageUri: string) {
-    return this.packagesV2.flatMap(p => p.getConditionEntry(id, packageUri));
+    return this.packagesV2.flatMap(p => p.getConditionEntries(id, packageUri));
   }
 
   // getPos(sourcePath: string, address: string) {

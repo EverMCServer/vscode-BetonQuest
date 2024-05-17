@@ -7,7 +7,7 @@ import { PackageV1 } from "./Package";
 
 export abstract class Document<T extends NodeType> extends NodeV1<T> {
   uri: string;
-  protected parent: NodeV1<NodeType>;
+  protected parent: PackageV1;
 
   // VSCode Document, for diagnostics / quick actions / goto definition, etc
   document: TextDocument;
@@ -48,6 +48,6 @@ export abstract class Document<T extends NodeType> extends NodeV1<T> {
       return;
     }
     const range = this.getRangeByOffset(offset[0], offset[1]);
-    this._addDiagnostic(range, message, severity, code, codeActions);
+    super._addDiagnostic(range, message, severity, code, codeActions);
   }
 }

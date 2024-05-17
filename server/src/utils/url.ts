@@ -2,7 +2,7 @@ import { format, parse } from "url";
 
 export function getParentUrl(url: string) {
   return formatUrl(url, {
-    removeFilename: true,
+    removeLast: true,
     removeQuery: true,
   });
 }
@@ -15,7 +15,7 @@ export function getBaseUrl(uri: string) {
 
 export function formatUrl(url: string, options?: {
   removeDoubleSlashes?: boolean;
-  removeFilename?: boolean;
+  removeLast?: boolean;
   removeQuery?: boolean;
 }) {
   const u = parse(url, true, true);
@@ -23,8 +23,8 @@ export function formatUrl(url: string, options?: {
     u.pathname = u.pathname?.replace("//", "/") ?? null; // Remove double slashes
     u.pathname = u.pathname?.replace("\\\\", "\\") ?? null; // Remove double slashes
   }
-  if (options?.removeFilename) {
-    u.pathname = u.pathname?.split('/').slice(0, -1).join('/') + '/'; // Remove filename
+  if (options?.removeLast) {
+    u.pathname = u.pathname?.replace(/\/$/m, "").split('/').slice(0, -1).join('/') + '/'; // Remove the last dir / file name
   }
   if (options?.removeQuery) {
     u.query = {}; // Remove query

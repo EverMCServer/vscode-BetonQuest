@@ -1,15 +1,15 @@
-import { Pair, Scalar, YAMLMap } from "yaml";
-import { DiagnosticSeverity } from "vscode-languageserver";
+import { Pair, Scalar, YAMLMap, isScalar } from "yaml";
+import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationOptionType, NodeV1 } from "../../../node";
 import { isStringScalar } from "../../../../utils/yaml";
 import { Text } from "./Text";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
 import { Conversation } from "../Conversation";
-import { AbstractIdCondition } from "../AbstractIdCondition";
+import { Conditions } from "./Conditions";
 
-export abstract class AbstractOption<T extends ConversationOptionType> extends NodeV1<T> {
-  abstract type: T;
+export class Option<T extends ConversationOptionType> extends NodeV1<T> {
+  type: T;
   uri: string;
   offsetStart?: number; // TODO
   offsetEnd?: number; // TODO
@@ -18,10 +18,11 @@ export abstract class AbstractOption<T extends ConversationOptionType> extends N
   // Cache the parsed yaml document
   yml: Pair<Scalar<string>, YAMLMap>;
   text?: Text;
-  conditions: AbstractIdCondition<this>[] = []; // TODO
+  conditions?: Conditions<this>; // TODO
 
-  constructor(yml: Pair<Scalar<string>, YAMLMap>, parent: Conversation) {
+  constructor(type: T, yml: Pair<Scalar<string>, YAMLMap>, parent: Conversation) {
     super();
+    this.type = type;
     this.uri = parent.uri;
     this.offsetStart = yml.key.range![0];
     this.offsetEnd = yml.value?.range![1];
@@ -52,7 +53,7 @@ export abstract class AbstractOption<T extends ConversationOptionType> extends N
             );
           case "pointers":
             // TODO
-            
+
             break;
           case "condition":
             // Throw warning diagnostics, change to "*s"
@@ -70,7 +71,11 @@ export abstract class AbstractOption<T extends ConversationOptionType> extends N
             );
           case "conditions":
             // TODO
-
+            if (isScalar<string>(pair.value) && typeof pair.value.value === 'string') {
+              this.conditions = new Conditions(pair.value, this);
+            } else {
+              // TODO
+            }
             break;
           case "event":
             // Throw warning diagnostics, change to "*s"
@@ -107,7 +112,17 @@ export abstract class AbstractOption<T extends ConversationOptionType> extends N
     // ...
   }
 
-  getRangeByOffset(offsetStart: number, offsetEnd: number) {
-    return this.parent.getRangeByOffset(offsetStart, offsetEnd);
+  getDiagnostics(): Diagnostic[] {
+    return [
+      ...this.diagnostics,
+      ...this.conditions?.getDiagnostics() ?? [],
+    ];
+  }
+
+  getCodeActions(): CodeAction[] {
+    return [
+      ...this.codeActions,
+      ...this.conditions?.getCodeActions() ?? [],
+    ];
   }
 }

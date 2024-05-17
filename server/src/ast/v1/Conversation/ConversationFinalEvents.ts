@@ -61,7 +61,7 @@ export class ConversationFinalEvents extends NodeV1<ConversationFinalEventsType>
         // Check if any spaces in the middle
         if (strTrimed.match(/\s+/)) {
           const correctStr = strTrimed.replace(/\s+/g, "_");
-          this.parent._addDiagnostic(
+          this._addDiagnostic(
             range,
             `Event ID cannot contains empty spaces. Do you mean "${correctStr}"?.`,
             DiagnosticSeverity.Error,
