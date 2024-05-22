@@ -1,4 +1,4 @@
-import { CodeAction, Command, Connection, DidChangeConfigurationNotification, FileChangeType, HandlerResult, InitializeParams, InitializeResult, SemanticTokensParams, SemanticTokensRequest, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
+import { CodeAction, Command, Connection, DidChangeConfigurationNotification, FileChangeType, HandlerResult, InitializeParams, InitializeResult, LocationLink, SemanticTokensParams, SemanticTokensRequest, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { FilesResponse, LocationsParams } from 'betonquest-utils/lsp/file';
 import { AllDocuments, getAllDocuments } from './utils/document';
@@ -54,11 +54,14 @@ export function server(connection: Connection): void {
         // Tell the client that this server support hover.
         hoverProvider: true,
 
-        // Tell the client that this server provides semantic tokens
+        // Tell the client that this server provides semantic tokens.
         semanticTokensProvider: {
           full: true,
           legend: legend
-        }
+        },
+
+        // Tell the client that this server provides definitions searching.
+        definitionProvider: true,
       }
     };
     if (hasWorkspaceFolderCapability) {
@@ -176,7 +179,7 @@ export function server(connection: Connection): void {
     const a: HandlerResult<(Command | CodeAction)[] | null | undefined, void> = [];
     params.context.diagnostics.forEach(d => {
       a.push(
-        ...asts.getAllCodeActions(params.textDocument.uri)
+        ...asts.getCodeActions(params.textDocument.uri)
           .filter(c =>
             c.diagnostics?.some(d2 =>
               d2.code === d.code
@@ -190,6 +193,14 @@ export function server(connection: Connection): void {
       );
     });
     return a;
+  });
+
+  // Listen on Definitions requests
+  connection.onDefinition((params, token, workDoneProgress, resultProgress) => {
+    // console.log(`onDefinition params:`, params);
+    
+    const position = allDocuments.getOffsetByPosition(params.textDocument.uri, params.position);
+    return asts.getDefinitions(params.textDocument.uri, position);
   });
 
   // Register custom handlers

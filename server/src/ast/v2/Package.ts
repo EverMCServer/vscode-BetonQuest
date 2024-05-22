@@ -11,6 +11,10 @@ import { ConditionList } from "./Condition/ConditionList";
 import { EventList } from "./Event/EventList";
 import { ObjectiveList } from "./Objective/ObjectiveList";
 import { SemanticToken } from "../../service/semanticTokens";
+import { getParentUrl } from "../../utils/url";
+import { ConditionEntry } from "./Condition/ConditionEntry";
+import { EventEntry } from "./Event/EventEntry";
+import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
 
 export class PackageV2 extends NodeV2<PackageV2Type> {
   protected type: PackageV2Type = "PackageV2";
@@ -64,6 +68,61 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
         }
       });
     });
+  }
+
+  // Calculate the target package's uri by absolute / relative package path
+  getPackageUri(targetPackagePath: string) {
+    let packageUri = this.uri;
+    // Empty
+    if (targetPackagePath.length === 0) {
+      return packageUri;
+    }
+    const packagePathArray = targetPackagePath.split("-");
+    // Handle relative path
+    if (packagePathArray[0] === '_') {
+      packagePathArray.forEach(p => {
+        if (p === '_') {
+          packageUri = getParentUrl(packageUri);
+        } else {
+          packageUri += p + '/';
+        }
+      });
+      return packageUri;
+    }
+    // Handle absolute path
+    packageUri = this.parentAst.wsFolderUri + packagePathArray.join('/') + '/';
+    return packageUri;
+  }
+
+  isPackageUri(packageUri: string) {
+    return this.uri === packageUri;
+  }
+
+  // Get Condition entries from child or parent
+  getConditionEntries(id: string, packageUri: string): ConditionEntry[] {
+    if (this.isPackageUri(packageUri)) {
+      return this.conditionLists?.flatMap(l => l.getConditionEntries(id, packageUri)) ?? [];
+    } else  {
+      return this.parentAst.getV2ConditionEntry(id, packageUri);
+    }
+  }
+
+  // Get Event entries from child or parent
+  getEventEntries(id: string, packageUri: string): EventEntry[] {
+    if (this.isPackageUri(packageUri)) {
+      return this.eventLists?.flatMap(l => l.getEventEntries(id, packageUri)) ?? [];
+    } else  {
+      return this.parentAst.getV2EventEntry(id, packageUri);
+    }
+  }
+
+  // Get Objective entries from child or parent
+  getObjectiveEntries(id: string, packageUri: string): ObjectiveEntry[] {
+    if (this.isPackageUri(packageUri)) {
+      return this.objectiveLists?.flatMap(l => l.getObjectiveEntries(id, packageUri)) ?? [];
+    } else  {
+      return this.parentAst.getV2ObjectiveEntry(id, packageUri);
+    }
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {

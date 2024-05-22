@@ -13,6 +13,8 @@ import { SemanticToken } from "../../service/semanticTokens";
 import { Conversation } from "./Conversation/Conversation";
 import { ConditionEntry } from "./Condition/ConditionEntry";
 import { getParentUrl } from "../../utils/url";
+import { EventEntry } from "./Event/EventEntry";
+import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
 
 export class PackageV1 extends NodeV1<PackageV1Type> {
   protected type: PackageV1Type = "PackageV1";
@@ -89,19 +91,35 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
     return packageUri;
   }
 
-  // TODO
+  isPackageUri(packageUri: string) {
+    return this.uri === packageUri;
+  }
+
+  // Get Condition entries from child or parent
   getConditionEntries(id: string, packageUri: string): ConditionEntry[] {
-    const entries: ConditionEntry[] = [];
-    // Check relative package path
-    // if (path[0] === "-") {
-    //   // //
-    // }
-    // if (this.conditionList?.getConditionEntry()) {
-    //   // 
-    // } else {
-    //   this.parentAst.getConditionEntry();
-    // }
-    return entries;
+    if (this.isPackageUri(packageUri)) {
+      return this.conditionList?.getConditionEntries(id, packageUri) ?? [];
+    } else  {
+      return this.parentAst.getV1ConditionEntry(id, packageUri);
+    }
+  }
+
+  // Get Event entries from child or parent
+  getEventEntries(id: string, packageUri: string): EventEntry[] {
+    if (this.isPackageUri(packageUri)) {
+      return this.eventList?.getEventEntries(id, packageUri) ?? [];
+    } else  {
+      return this.parentAst.getV1EventEntry(id, packageUri);
+    }
+  }
+
+  // Get Objective entries from child or parent
+  getObjectiveEntries(id: string, packageUri: string): ObjectiveEntry[] {
+    if (this.isPackageUri(packageUri)) {
+      return this.objectiveList?.getObjectiveEntries(id, packageUri) ?? [];
+    } else  {
+      return this.parentAst.getV1ObjectiveEntry(id, packageUri);
+    }
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {

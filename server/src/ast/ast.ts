@@ -1,3 +1,4 @@
+import { LocationLink } from "vscode-languageserver";
 import { Position, TextDocument } from "vscode-languageserver-textdocument";
 
 import { PackageV1 } from "./v1/Package";
@@ -18,28 +19,36 @@ export class ASTs {
     this.asts = allDocuments.getAllDocuments().map<[string, AST?]>(([wsFolderUri, documents]) => [wsFolderUri, documents ? new AST(wsFolderUri, documents) : undefined]);
   }
 
-  getAstByPackageUri(packageUri: string) {
-    return this.asts.find(([uri]) => uri === packageUri)?.[1];
-  }
+  // getAstByPackageUri(packageUri: string) {
+  //   return this.asts.find(([uri]) => uri === packageUri)?.[1];
+  // }
 
-  getAllAstByPackageUri(packageUri: string) {
-    return this.asts.flatMap(([uri, ast]) => uri === packageUri && ast ? ast : []);
-  }
+  // getAllAstByPackageUri(packageUri: string) {
+  //   return this.asts.flatMap(([uri, ast]) => uri === packageUri && ast ? ast : []);
+  // }
 
-  getAstByDocumentUri(documentUri: string) {
+  private getAstByDocumentUri(documentUri: string) {
     return this.asts.find(([uri]) => documentUri.startsWith(uri))?.[1];
   }
 
-  getAllAstByDocumentUri(documentUri: string) {
-    return this.asts.flatMap(([uri, ast]) => documentUri.startsWith(uri) && ast ? ast : []);
+  private getAllAstByDocumentUri(documentUri?: string) {
+    return this.asts.flatMap(([uri, ast]) => ast && (!documentUri || documentUri.startsWith(uri)) ? ast : []);
   }
 
   getDiagnostics(documentUri?: string) {
-    return this.asts.filter(([uri]) => documentUri ? documentUri.startsWith(uri) : true).flatMap(([, ast]) => ast?.getDiagnostics(documentUri) ?? []);
+    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getDiagnostics(documentUri));
   }
 
-  getAllCodeActions(documentUri?: string) {
-    return this.asts.filter(([uri]) => documentUri ? documentUri.startsWith(uri) : true).flatMap(([, ast]) => ast?.getCodeActions(documentUri) ?? []);
+  getCodeActions(documentUri?: string) {
+    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getCodeActions(documentUri));
+  }
+
+  getSemanticTokens(documentUri: string) {
+    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getSemanticTokens(documentUri));
+  }
+
+  getHoverInfos(documentUri: string, offset: number) {
+    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getHoverInfo(documentUri, offset));
   }
 
   /**
@@ -48,7 +57,11 @@ export class ASTs {
    * @param sourceUri The URI of the document to begin searching locations from. It is used to determine which package to search on.
    */
   getLocations(yamlPath: string[], sourceUri: string) {
-    return this.asts.flatMap(([, ast]) => ast?.getLocations(yamlPath, sourceUri) ?? []);
+    return this.getAllAstByDocumentUri(sourceUri).flatMap(ast => ast.getLocations(yamlPath, sourceUri));
+  }
+
+  getDefinitions(documentUri: string, offset: number) {
+    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getDefinitions(documentUri, offset));
   }
 
 }
@@ -238,17 +251,31 @@ export class AST {
   }
 
   getV1ConditionEntry(id: string, packageUri: string) {
-    return this.packagesV1.flatMap(p => p.getConditionEntries(id, packageUri));
+    return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getConditionEntries(id, packageUri));
+  }
+
+  getV1ObjectiveEntry(id: string, packageUri: string) {
+    return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getObjectiveEntries(id, packageUri));
+  }
+
+  getV1EventEntry(id: string, packageUri: string) {
+    return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getEventEntries(id, packageUri));
   }
 
   getV2ConditionEntry(id: string, packageUri: string) {
-    return this.packagesV2.flatMap(p => p.getConditionEntries(id, packageUri));
+    return this.packagesV2.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getConditionEntries(id, packageUri));
   }
 
-  // getPos(sourcePath: string, address: string) {
+  getV2EventEntry(id: string, packageUri: string) {
+    return this.packagesV2.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getEventEntries(id, packageUri));
+  }
 
-  // }
+  getV2ObjectiveEntry(id: string, packageUri: string) {
+    return this.packagesV2.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getObjectiveEntries(id, packageUri));
+  }
 
-  // // file path -> abstract address (version.package.category.key etc)
+  getDefinitions(uri: string, offset: number): LocationLink[] {
+    return [];
+  }
 
 }

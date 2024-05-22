@@ -10,12 +10,12 @@ import { ElementListType } from "../../node";
 import { PackageV1 } from "../Package";
 import { ElementEntry } from "./ElementEntry";
 
-export abstract class ElementList<LE extends ListElement> extends Document<ElementListType> {
+export abstract class ElementList<LE extends ListElement, Entry extends ElementEntry<LE>> extends Document<ElementListType> {
   abstract type: ElementListType;
   offsetStart?: number;
   offsetEnd?: number;
 
-  entries: ElementEntry<LE>[] = [];
+  entries: Entry[] = [];
 
   constructor(uri: string, document: TextDocument, parent: PackageV1) {
     super(uri, document, parent);
@@ -30,7 +30,7 @@ export abstract class ElementList<LE extends ListElement> extends Document<Eleme
     });
   }
 
-  abstract newEntry(pair: Pair<Scalar<string>, Scalar<string>>): ElementEntry<LE>;
+  abstract newEntry(pair: Pair<Scalar<string>, Scalar<string>>): Entry;
 
   getPublishDiagnosticsParams() {
     return {

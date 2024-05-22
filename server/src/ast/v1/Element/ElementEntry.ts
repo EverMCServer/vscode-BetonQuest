@@ -18,7 +18,7 @@ export abstract class ElementEntry<LE extends ListElement> extends NodeV1<Elemen
   uri: string;
   offsetStart?: number;
   offsetEnd?: number;
-  parent: ElementList<LE>;
+  parent: ElementList<LE, ElementEntry<LE>>;
 
   yaml: Pair<Scalar<string>, Scalar<string>>;
 
@@ -26,7 +26,7 @@ export abstract class ElementEntry<LE extends ListElement> extends NodeV1<Elemen
   elementKind?: ElementKind<LE>;
   elementArguments?: ElementArguments<LE>;
 
-  constructor(pair: Pair<Scalar<string>, Scalar<string>>, kinds: _ElementKind<LE>[], parent: ElementList<LE>) {
+  constructor(pair: Pair<Scalar<string>, Scalar<string>>, kinds: _ElementKind<LE>[], parent: ElementList<LE, ElementEntry<LE>>) {
     super();
     this.uri = parent.uri;
     this.offsetStart = pair.key?.range?.[0];

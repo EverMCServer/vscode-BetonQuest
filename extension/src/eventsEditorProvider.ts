@@ -139,7 +139,7 @@ export class EventsEditorProvider implements vscode.CustomTextEditorProvider {
                     if (e.content.constructor === Array && e.content.length > 0) {
                         // Get document uri and position from lspClient
                         offset = 0;
-                        const response = await this.lspClient.sendRequest<LocationsResponse>("custom/locations", { yamlPath: e.content, sourceUri: document.uri.toString() } as LocationsParams);
+                        const response = await this.lspClient.sendRequest<LocationsResponse>("custom/locations", { yamlPath: ["@events", ...e.content], sourceUri: document.uri.toString() } as LocationsParams);
                         // TODO: handle multiple locations, e.g. prompt to select where to go
                         // if (response.length > 1) {
                         // } else

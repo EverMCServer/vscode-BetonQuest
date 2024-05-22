@@ -1,6 +1,10 @@
 import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
 import { ConditionEntry as ConditionEntryV1 } from "./v1/Condition/ConditionEntry";
 import { ConditionEntry as ConditionEntryV2 } from "./v2/Condition/ConditionEntry";
+import { EventEntry as EventEntryV1 } from "./v1/Event/EventEntry";
+import { EventEntry as EventEntryV2 } from "./v2/Event/EventEntry";
+import { ObjectiveEntry as ObjectiveEntryV1 } from "./v1/Objective/ObjectiveEntry";
+import { ObjectiveEntry as ObjectiveEntryV2 } from "./v2/Objective/ObjectiveEntry";
 
 export type PackageV1Type = 'PackageV1';
 export type PackageV2Type = 'PackageV2';
@@ -156,10 +160,22 @@ export abstract class NodeV1<T extends NodeType> extends Node<T> {
     return this.parent.getRangeByOffset(offsetStart, offsetEnd);
   }
   
-  // Get all target package's condition entries.
+  // Get all target package's Condition entries.
   // This method must be overrided / hijacked by the top-level class.
   getConditionEntries(id: string, packageUri: string): ConditionEntryV1[] {
     return this.parent.getConditionEntries(id, packageUri);
+  }
+  
+  // Get all target package's Event entries.
+  // This method must be overrided / hijacked by the top-level class.
+  getEventEntries(id: string, packageUri: string): EventEntryV1[] {
+    return this.parent.getEventEntries(id, packageUri);
+  }
+  
+  // Get all target package's Objective entries.
+  // This method must be overrided / hijacked by the top-level class.
+  getObjectiveEntries(id: string, packageUri: string): ObjectiveEntryV1[] {
+    return this.parent.getObjectiveEntries(id, packageUri);
   }
 
 }
@@ -167,9 +183,21 @@ export abstract class NodeV1<T extends NodeType> extends Node<T> {
 export abstract class NodeV2<T extends NodeType> extends Node<T> {
   protected abstract parent: NodeV2<NodeType>;
 
-  // Get all target package's condition entries.
+  // Get all target package's Condition entries.
   // This method must be overrided / hijacked by the top-level class.
   getConditionEntries(id: string, packageUri: string): ConditionEntryV2[] {
     return this.parent.getConditionEntries(id, packageUri);
+  }
+  
+  // Get all target package's Event entries.
+  // This method must be overrided / hijacked by the top-level class.
+  getEventEntries(id: string, packageUri: string): EventEntryV2[] {
+    return this.parent.getEventEntries(id, packageUri);
+  }
+  
+  // Get all target package's Objective entries.
+  // This method must be overrided / hijacked by the top-level class.
+  getObjectiveEntries(id: string, packageUri: string): ObjectiveEntryV2[] {
+    return this.parent.getObjectiveEntries(id, packageUri);
   }
 }

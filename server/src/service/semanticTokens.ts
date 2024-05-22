@@ -11,13 +11,8 @@ export type SemanticToken = {
 };
 
 export const semanticTokensHandler = (allDocuments: AllDocuments, asts: ASTs, params: SemanticTokensParams): HandlerResult<SemanticTokens | null, void> => {
-  const ast = asts.getAstByDocumentUri(params.textDocument.uri);
-  if (!ast) {
-    return null;
-  }
-
   const builder = new SemanticTokensBuilder();
-  ast.getSemanticTokens(params.textDocument.uri).forEach(token => {
+  asts.getSemanticTokens(params.textDocument.uri).forEach(token => {
     const range = allDocuments.getRangeByOffsets(params.textDocument.uri, [token.offsetStart, token.offsetEnd]);
     const len = range.end.character - range.start.character;
 
