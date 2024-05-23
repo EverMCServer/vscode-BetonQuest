@@ -1,16 +1,17 @@
 import { Pair, Scalar } from "yaml";
-import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import ListElement from "betonquest-utils/betonquest/ListElement";
 import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v1/Element";
 
 import { ElementEntryType, NodeV1 } from "../../node";
+import { DiagnosticCode } from "../../../utils/diagnostics";
+import { LocationLinkOffset } from "../../../utils/location";
+import { getScalarSourceAndRange } from "../../../utils/yaml";
 import { ElementKind } from "./ElementKind";
 import { ElementKey } from "./ElementKey";
 import { ElementArguments } from "./ElementArguments";
 import { ElementList } from "./ElementList";
-import { DiagnosticCode } from "../../../utils/diagnostics";
-import { getScalarSourceAndRange } from "../../../utils/yaml";
 import { SemanticToken } from "../../../service/semanticTokens";
 
 export abstract class ElementEntry<LE extends ListElement> extends NodeV1<ElementEntryType> {
@@ -134,6 +135,11 @@ export abstract class ElementEntry<LE extends ListElement> extends NodeV1<Elemen
       }
       return hoverInfo.flat();
     }
+    return [];
+  }
+
+  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
+    // TODO
     return [];
   }
 }

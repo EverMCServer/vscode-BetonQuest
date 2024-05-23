@@ -4,13 +4,14 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { PackageV1 } from "../Package";
 import { ConversationNpcOptionType, ConversationPlayerOptionType, ConversationType } from "../../node";
+import { isYamlMapPair } from "../../../utils/yaml";
+import { DiagnosticCode } from "../../../utils/diagnostics";
+import { LocationLinkOffset } from "../../../utils/location";
 import { ConversationQuester } from "./ConversationQuester";
 import { ConversationFirst } from "./ConversationFirst";
 import { ConversationStop } from "./ConversationStop";
 import { ConversationFinalEvents } from "./ConversationFinalEvents";
 import { ConversationInterceptor } from "./ConversationInterceptor";
-import { isYamlMapPair } from "../../../utils/yaml";
-import { DiagnosticCode } from "../../../utils/diagnostics";
 import { Document } from "../document";
 import { Option } from "./Option/Option";
 
@@ -21,7 +22,7 @@ export class Conversation extends Document<ConversationType> {
   quester?: ConversationQuester;
   first?: ConversationFirst;
   stop?: ConversationStop;
-  finalEvent?: ConversationFinalEvents;
+  finalEvents?: ConversationFinalEvents;
   interceptor?: ConversationInterceptor;
   npcOptions: Option<ConversationNpcOptionType>[] = [];
   playerOptions: Option<ConversationPlayerOptionType>[] = [];
@@ -61,7 +62,7 @@ export class Conversation extends Document<ConversationType> {
           break;
         case "final_events":
           if (isScalar(pair.value)) {
-            this.finalEvent = new ConversationFinalEvents(pair.value, this);
+            this.finalEvents = new ConversationFinalEvents(pair.value, this);
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
@@ -203,7 +204,7 @@ export class Conversation extends Document<ConversationType> {
         ...this.quester?.getDiagnostics() ?? [],
         ...this.first?.getDiagnostics() ?? [],
         ...this.stop?.getDiagnostics() ?? [],
-        ...this.finalEvent?.getDiagnostics() ?? [],
+        ...this.finalEvents?.getDiagnostics() ?? [],
         ...this.interceptor?.getDiagnostics() ?? [],
         ...this.npcOptions?.flatMap(npc => npc.getDiagnostics()) ?? [],
         ...this.playerOptions?.flatMap(player => player.getDiagnostics()) ?? [],
@@ -218,10 +219,22 @@ export class Conversation extends Document<ConversationType> {
       ...this.quester?.getCodeActions() ?? [],
       ...this.first?.getCodeActions() ?? [],
       ...this.stop?.getCodeActions() ?? [],
-      ...this.finalEvent?.getCodeActions() ?? [],
+      ...this.finalEvents?.getCodeActions() ?? [],
       ...this.interceptor?.getCodeActions() ?? [],
       ...this.npcOptions?.flatMap(npc => npc.getCodeActions()) ?? [],
       ...this.playerOptions?.flatMap(player => player.getCodeActions()) ?? [],
+    ];
+  }
+
+  getDefinitions(uri: string, offset: number): LocationLinkOffset[]  {
+    if (uri !== this.uri) {
+      return [];
+    }
+
+    return [
+      ...this.finalEvents?.getDefinitions(offset) || [],
+      ...this.npcOptions.flatMap(o => o.getDefinitions(offset)),
+      ...this.playerOptions.flatMap(o => o.getDefinitions(offset)),
     ];
   }
 }

@@ -1,20 +1,20 @@
 import { Scalar } from "yaml";
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationConditionsType, ConversationOptionType, NodeV1 } from "../../../node";
+import { ConversationEventsType, ConversationOptionType, NodeV1 } from "../../../node";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
 import { LocationLinkOffset } from "../../../../utils/location";
 import { getScalarSourceAndRange } from "../../../../utils/yaml";
-import { Condition } from "./Condition";
+import { Event } from "./Event";
 
-export class Conditions<PT extends NodeV1<ConversationOptionType>> extends NodeV1<ConversationConditionsType> {
-  type: ConversationConditionsType = "ConversationConditions";
+export class Events<PT extends NodeV1<ConversationOptionType>> extends NodeV1<ConversationEventsType> {
+  type: ConversationEventsType = "ConversationEvents";
   protected uri: string;
   protected parent: PT;
 
   private yml: Scalar<string>; //<Scalar<string>, Scalar<string>>;
-  private conditionsStr: string;
-  private conditions: Condition<this>[] = [];
+  private eventsStr: string;
+  private events: Event<this>[] = [];
 
   constructor(yml: Scalar<string>, parent: PT) {
     super();
@@ -22,12 +22,12 @@ export class Conditions<PT extends NodeV1<ConversationOptionType>> extends NodeV
     this.parent = parent;
 
     this.yml = yml;
-    [this.conditionsStr, [this.offsetStart, this.offsetEnd]] = getScalarSourceAndRange(this.yml);
+    [this.eventsStr, [this.offsetStart, this.offsetEnd]] = getScalarSourceAndRange(this.yml);
 
-    // Split and parse condition IDs
+    // Split and parse Event IDs
     const regex = /(,?)([^,]*)/g; // /(,?)([^,]*)/g
     let matched: RegExpExecArray | null;
-    while ((matched = regex.exec(this.conditionsStr)) !== null && matched[0].length > 0) {
+    while ((matched = regex.exec(this.eventsStr)) !== null && matched[0].length > 0) {
       const str = matched[2];
       const offsetStartWithComma = this.offsetStart + matched.index;
       const offsetStart = offsetStartWithComma + matched[1].length;
@@ -41,12 +41,12 @@ export class Conditions<PT extends NodeV1<ConversationOptionType>> extends NodeV
         // Empty, throw diagnostics warn
         this._addDiagnostic(
           this.getRangeByOffset(offsetStartWithComma, offsetEnd),
-          `Condition ID is empty.`,
+          `Event ID is empty.`,
           DiagnosticSeverity.Warning,
           DiagnosticCode.ElementIdEmpty,
           [
             {
-              title: `Remove empty condition ID`,
+              title: `Remove empty Event ID`,
               text: "",
               range: this.parent.getRangeByOffset(offsetStartWithComma, offsetEnd)
             }
@@ -54,8 +54,8 @@ export class Conditions<PT extends NodeV1<ConversationOptionType>> extends NodeV
         );
       }
 
-      // Parse the Condition ID
-      this.conditions.push(new Condition(strTrimed, [offsetStartTrimed, offsetEndTrimed], this));
+      // Parse the Event ID
+      this.events.push(new Event(strTrimed, [offsetStartTrimed, offsetEndTrimed], this));
 
     }
   }
@@ -63,7 +63,7 @@ export class Conditions<PT extends NodeV1<ConversationOptionType>> extends NodeV
   getDiagnostics(): Diagnostic[] {
     return [
       ...this.diagnostics,
-      ...this.conditions.flatMap(c => c.getDiagnostics())
+      ...this.events.flatMap(c => c.getDiagnostics())
     ];
   }
 
@@ -72,6 +72,6 @@ export class Conditions<PT extends NodeV1<ConversationOptionType>> extends NodeV
       return [];
     }
 
-    return this.conditions.flatMap(c => c.getDefinitions(offset));
+    return this.events.flatMap(c => c.getDefinitions(offset));
   }
 }

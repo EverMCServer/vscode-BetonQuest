@@ -5,14 +5,15 @@ import { LocationsResponse } from "betonquest-utils/lsp/file";
 
 import { AST } from "../ast";
 import { NodeV1, PackageV1Type } from "../node";
+import { HoverInfo } from "../../utils/hover";
+import { LocationLinkOffset } from "../../utils/location";
+import { getParentUrl } from "../../utils/url";
 import { ConditionList } from "./Condition/ConditionList";
 import { EventList } from "./Event/EventList";
 import { ObjectiveList } from "./Objective/ObjectiveList";
-import { HoverInfo } from "../../utils/hover";
 import { SemanticToken } from "../../service/semanticTokens";
 import { Conversation } from "./Conversation/Conversation";
 import { ConditionEntry } from "./Condition/ConditionEntry";
-import { getParentUrl } from "../../utils/url";
 import { EventEntry } from "./Event/EventEntry";
 import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
 
@@ -93,6 +94,20 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
 
   isPackageUri(packageUri: string) {
     return this.uri === packageUri;
+  }
+
+  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
+    if (!uri.startsWith(this.uri)) {
+      return [];
+    }
+
+    return [
+      ...this.conversations?.flatMap(c => c.getDefinitions(uri, offset)) || [],
+      ...this.conditionList?.getDefinitions(uri, offset) || [],
+      ...this.eventList?.getDefinitions(uri, offset) || [],
+      ...this.objectiveList?.getDefinitions(uri, offset) || [],
+      // TODO...
+    ];
   }
 
   // Get Condition entries from child or parent

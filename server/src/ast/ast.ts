@@ -5,6 +5,7 @@ import { PackageV1 } from "./v1/Package";
 import { PackageV2 } from "./v2/Package";
 import { AllDocuments } from "../utils/document";
 import { HoverInfo } from "../utils/hover";
+import { LocationLinkOffset } from "../utils/location";
 import { getParentUrl } from "../utils/url";
 
 // AST by workspace folders
@@ -60,7 +61,7 @@ export class ASTs {
     return this.getAllAstByDocumentUri(sourceUri).flatMap(ast => ast.getLocations(yamlPath, sourceUri));
   }
 
-  getDefinitions(documentUri: string, offset: number) {
+  getDefinitions(documentUri: string, offset: number): LocationLinkOffset[] {
     return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getDefinitions(documentUri, offset));
   }
 
@@ -250,6 +251,13 @@ export class AST {
     ];
   }
 
+  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
+    return [
+      ...this.packagesV1.flatMap(pkg => pkg.getDefinitions(uri, offset)),
+      ...this.packagesV2.flatMap(pkg => pkg.getDefinitions(uri, offset))
+    ];
+  }
+
   getV1ConditionEntry(id: string, packageUri: string) {
     return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getConditionEntries(id, packageUri));
   }
@@ -272,10 +280,6 @@ export class AST {
 
   getV2ObjectiveEntry(id: string, packageUri: string) {
     return this.packagesV2.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getObjectiveEntries(id, packageUri));
-  }
-
-  getDefinitions(uri: string, offset: number): LocationLink[] {
-    return [];
   }
 
 }

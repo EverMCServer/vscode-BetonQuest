@@ -1,5 +1,5 @@
-import { Pair, Scalar, YAMLMap, isPair, isScalar, parseDocument } from "yaml";
-import { CodeAction, Diagnostic, PublishDiagnosticsParams, Range } from "vscode-languageserver";
+import { Pair, Scalar, isPair, isScalar } from "yaml";
+import { PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
@@ -7,6 +7,7 @@ import ListElement from "betonquest-utils/betonquest/ListElement";
 
 import { Document } from "../document";
 import { ElementListType } from "../../node";
+import { LocationLinkOffset } from "../../../utils/location";
 import { PackageV1 } from "../Package";
 import { ElementEntry } from "./ElementEntry";
 
@@ -65,6 +66,14 @@ export abstract class ElementList<LE extends ListElement, Entry extends ElementE
       });
     }
     return result;
+  }
+
+  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
+    if (!uri.startsWith(this.uri)) {
+      return [];
+    }
+
+    return this.entries.flatMap(e => e.getDefinitions(uri, offset));
   }
 
 }

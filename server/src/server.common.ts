@@ -196,11 +196,16 @@ export function server(connection: Connection): void {
   });
 
   // Listen on Definitions requests
-  connection.onDefinition((params, token, workDoneProgress, resultProgress) => {
-    // console.log(`onDefinition params:`, params);
-    
+  connection.onDefinition((params, token, workDoneProgress, resultProgress) => {    
     const position = allDocuments.getOffsetByPosition(params.textDocument.uri, params.position);
-    return asts.getDefinitions(params.textDocument.uri, position);
+    return asts.getDefinitions(params.textDocument.uri, position).map(l => {
+      return {
+        originSelectionRange: l.originSelectionRange ? allDocuments.getRangeByOffsets(params.textDocument.uri, l.originSelectionRange): undefined,
+        targetUri: l.targetUri,
+        targetRange: allDocuments.getRangeByOffsets(l.targetUri, l.targetRange),
+        targetSelectionRange: allDocuments.getRangeByOffsets(l.targetUri, l.targetSelectionRange),
+      };
+    });
   });
 
   // Register custom handlers

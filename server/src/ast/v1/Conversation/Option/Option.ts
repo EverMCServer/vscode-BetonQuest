@@ -2,11 +2,13 @@ import { Pair, Scalar, YAMLMap, isScalar } from "yaml";
 import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationOptionType, NodeV1 } from "../../../node";
+import { DiagnosticCode } from "../../../../utils/diagnostics";
+import { LocationLinkOffset } from "../../../../utils/location";
 import { isStringScalar } from "../../../../utils/yaml";
 import { Text } from "./Text";
-import { DiagnosticCode } from "../../../../utils/diagnostics";
 import { Conversation } from "../Conversation";
 import { Conditions } from "./Conditions";
+import { Events } from "./Events";
 
 export class Option<T extends ConversationOptionType> extends NodeV1<T> {
   type: T;
@@ -19,6 +21,7 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
   yml: Pair<Scalar<string>, YAMLMap>;
   text?: Text;
   conditions?: Conditions<this>; // TODO
+  events?: Events<this>; // TODO
 
   constructor(type: T, yml: Pair<Scalar<string>, YAMLMap>, parent: Conversation) {
     super();
@@ -70,7 +73,6 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
               ]
             );
           case "conditions":
-            // TODO
             if (isScalar<string>(pair.value) && typeof pair.value.value === 'string') {
               this.conditions = new Conditions(pair.value, this);
             } else {
@@ -92,7 +94,11 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
               ]
             );
           case "events":
-            // TODO
+            if (isScalar<string>(pair.value) && typeof pair.value.value === 'string') {
+              this.events = new Events(pair.value, this);
+            } else {
+              // TODO
+            }
             break;
           default:
             this._addDiagnostic(
@@ -116,6 +122,7 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
     return [
       ...this.diagnostics,
       ...this.conditions?.getDiagnostics() ?? [],
+      ...this.events?.getDiagnostics() ?? [],
     ];
   }
 
@@ -123,6 +130,19 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
     return [
       ...this.codeActions,
       ...this.conditions?.getCodeActions() ?? [],
+      ...this.events?.getCodeActions() ?? [],
+    ];
+  }
+
+  getDefinitions(offset: number): LocationLinkOffset[] {
+    if (this.offsetStart! > offset || this.offsetEnd! < offset) {
+      return [];
+    }
+
+    // TODO
+    return [
+      ...this.conditions?.getDefinitions(offset) || [],
+      ...this.events?.getDefinitions(offset) || [],
     ];
   }
 }

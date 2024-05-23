@@ -1,11 +1,12 @@
 import { Scalar } from "yaml";
-import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationFinalEventsType, NodeV1 } from "../../node";
-import { Conversation } from "./Conversation";
-import { AbstractEvent } from "./AbstractEvent";
 import { DiagnosticCode } from "../../../utils/diagnostics";
+import { LocationLinkOffset } from "../../../utils/location";
 import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
+import { Conversation } from "./Conversation";
+import { Event } from "./Option/Event";
 
 export class ConversationFinalEvents extends NodeV1<ConversationFinalEventsType> {
   type: ConversationFinalEventsType = 'ConversationFinalEvents';
@@ -16,7 +17,7 @@ export class ConversationFinalEvents extends NodeV1<ConversationFinalEventsType>
 
   // Cache the parsed yaml document
   yml: Scalar;
-  events: ConversationFinalEvent[] = [];
+  events: Event<this>[] = [];
 
   constructor(yml: Scalar, parent: Conversation) {
     super();
@@ -83,8 +84,8 @@ export class ConversationFinalEvents extends NodeV1<ConversationFinalEventsType>
 
         // Create Event
         this.events.push(
-          new ConversationFinalEvent(
-            this.uri, str,
+          new Event<this>(
+            str,
             [offsetStart, offsetEnd],
             this
           )
@@ -95,14 +96,19 @@ export class ConversationFinalEvents extends NodeV1<ConversationFinalEventsType>
 
   getDiagnostics() {
     const diagnostics = this.diagnostics;
-    // this.events.forEach(event => diagnostics.push(event.getDiagnostics()));
+    this.events.forEach(event => diagnostics.push(...event.getDiagnostics()));
     return diagnostics;
   }
 
   getCodeActions() {
     return this.codeActions;
   }
-}
 
-class ConversationFinalEvent extends AbstractEvent<ConversationFinalEvents> {
+  getDefinitions(offset: number): LocationLinkOffset[] {
+    if (this.offsetStart! > offset || this.offsetEnd! < offset) {
+      return [];
+    }
+
+    return this.events.flatMap(c => c.getDefinitions(offset));
+  }
 }

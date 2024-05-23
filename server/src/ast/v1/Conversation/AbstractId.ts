@@ -1,6 +1,10 @@
-import { NodeV1, NodeType } from "../../node";
+import ListElement from "betonquest-utils/betonquest/ListElement";
 
-export abstract class AbstractID<T extends NodeType, PT extends NodeV1<NodeType>, CT extends NodeV1<NodeType>> extends NodeV1<T> {
+import { NodeV1, NodeType } from "../../node";
+import { LocationLinkOffset } from "../../../utils/location";
+import { ElementEntry } from "../Element/ElementEntry";
+
+export abstract class AbstractID<T extends NodeType, PT extends NodeV1<NodeType>, ET extends ElementEntry<ListElement>> extends NodeV1<T> {
   abstract type: T;
   protected uri: string;
   protected offsetStart: number;
@@ -36,5 +40,18 @@ export abstract class AbstractID<T extends NodeType, PT extends NodeV1<NodeType>
   }
 
   // Method to get the target nodes that this ID points to.
-  abstract getTargetNodes(): CT[];
+  abstract getTargetNodes(): ET[];
+
+  getDefinitions(offset: number): LocationLinkOffset[] {
+    if (this.offsetStart! > offset || this.offsetEnd! < offset) {
+      return [];
+    }
+
+    return this.getTargetNodes().flatMap(n => ({
+      originSelectionRange: [this.offsetStart, this.offsetEnd],
+      targetUri: n.getUri(),
+      targetRange: [n.offsetStart!, n.offsetEnd!],
+      targetSelectionRange: [n.offsetStart!, n.offsetEnd!]
+    }));
+  }
 }
