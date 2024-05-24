@@ -6,7 +6,7 @@ import { DiagnosticCode } from "../../../../utils/diagnostics";
 import { LocationLinkOffset } from "../../../../utils/location";
 import { isStringScalar } from "../../../../utils/yaml";
 import { Text } from "./Text";
-import { Conversation } from "../Conversation";
+import { ConversationSection } from "../Conversation";
 import { Conditions } from "./Conditions";
 import { Events } from "./Events";
 
@@ -15,7 +15,7 @@ export class Option<T extends ConversationOptionType> extends NodeV2<T> {
   uri: string;
   offsetStart?: number; // TODO
   offsetEnd?: number; // TODO
-  parent: Conversation;
+  parent: ConversationSection;
 
   // Cache the parsed yaml document
   yml: Pair<Scalar<string>, YAMLMap>;
@@ -23,7 +23,7 @@ export class Option<T extends ConversationOptionType> extends NodeV2<T> {
   conditions?: Conditions<this>; // TODO
   events?: Events<this>; // TODO
 
-  constructor(type: T, yml: Pair<Scalar<string>, YAMLMap>, parent: Conversation) {
+  constructor(type: T, yml: Pair<Scalar<string>, YAMLMap>, parent: ConversationSection) {
     super();
     this.type = type;
     this.uri = parent.uri;

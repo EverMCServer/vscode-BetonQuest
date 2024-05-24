@@ -7,13 +7,13 @@ import { PackageV2 } from "./Package";
 
 export abstract class Document<T extends NodeType> extends NodeV2<T> {
   uri: string;
-  protected parent: PackageV2;
+  protected parent: SectionCollection<T>;
 
   // VSCode Document, for diagnostics / quick actions / goto definition, etc
   document: TextDocument;
   yml: YAMLMap<Scalar<string>>;
 
-  constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: PackageV2) {
+  constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: SectionCollection<T>) {
     super();
 
     this.uri = uri;
@@ -32,4 +32,18 @@ export abstract class Document<T extends NodeType> extends NodeV2<T> {
       end: this.document.positionAt(offsetEnd)
     } as Range;
   }
+}
+
+export abstract class SectionCollection<T extends NodeType> extends NodeV2<T> {
+  abstract type: T;
+  protected uri: string;
+  protected parent: PackageV2;
+
+  constructor(uri: string, parent: PackageV2) {
+    super();
+    this.uri = uri;
+    this.parent = parent;
+  }
+
+  abstract addSection(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>): void;
 }

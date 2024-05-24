@@ -39,7 +39,7 @@ export abstract class ElementKind<LE extends ListElement> extends NodeV2<Element
     }];
   };
 
-  getHoverInfo(uri: string, offset: number): HoverInfo[] {
+  getHoverInfo(offset: number): HoverInfo[] {
     const infos: HoverInfo[] = [];
     if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
       const info: HoverInfo = {

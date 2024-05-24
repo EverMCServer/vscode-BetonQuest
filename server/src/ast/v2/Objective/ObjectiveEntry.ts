@@ -8,13 +8,13 @@ import { ObjectiveEntryType } from "../../node";
 import { ObjectiveKind } from "./ObjectiveKind";
 import { ObjectiveKey } from "./ObjectiveKey";
 import { ObjectiveArguments } from "./ObjectiveArguments";
-import { ObjectiveList } from "./ObjectiveList";
+import { ObjectiveListSection } from "./ObjectiveList";
 import { ElementEntry } from "../Element/ElementEntry";
 
 export class ObjectiveEntry extends ElementEntry<Objective> {
   type: ObjectiveEntryType = "ObjectiveEntry";
 
-  constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: ObjectiveList) {
+  constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: ObjectiveListSection) {
     super(pair, kinds, parent);
   }
 

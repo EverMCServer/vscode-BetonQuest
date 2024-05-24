@@ -2,7 +2,7 @@ import { Scalar } from "yaml";
 import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationStopType, NodeV2 } from "../../node";
-import { Conversation } from "./Conversation";
+import { ConversationSection } from "./Conversation";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 
 export class ConversationStop extends NodeV2<ConversationStopType> {
@@ -10,13 +10,13 @@ export class ConversationStop extends NodeV2<ConversationStopType> {
   uri: string;
   offsetStart?: number;
   offsetEnd?: number;
-  parent: Conversation;
+  parent: ConversationSection;
 
   // Cache the parsed yaml document
   yml: Scalar;
   value?: boolean;
 
-  constructor(yml: Scalar, parent: Conversation) {
+  constructor(yml: Scalar, parent: ConversationSection) {
     super();
     this.uri = parent.uri;
     this.parent = parent;

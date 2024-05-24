@@ -96,20 +96,6 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
     return this.uri === packageUri;
   }
 
-  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
-    if (!uri.startsWith(this.uri)) {
-      return [];
-    }
-
-    return [
-      ...this.conversations?.flatMap(c => c.getDefinitions(uri, offset)) || [],
-      ...this.conditionList?.getDefinitions(uri, offset) || [],
-      ...this.eventList?.getDefinitions(uri, offset) || [],
-      ...this.objectiveList?.getDefinitions(uri, offset) || [],
-      // TODO...
-    ];
-  }
-
   // Get Condition entries from child or parent
   getConditionEntries(id: string, packageUri: string): ConditionEntry[] {
     if (this.isPackageUri(packageUri)) {
@@ -167,19 +153,16 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
     return codeActions;
   }
 
-  getSemanticTokens(uri: string) {
+  getSemanticTokens(documentUri: string) {
     const semanticTokens: SemanticToken[] = [];
-    if (!uri.startsWith(this.uri)) {
-      return semanticTokens;
-    }
     if (this.conditionList) {
-      semanticTokens.push(...this.conditionList.getSemanticTokens(uri));
+      semanticTokens.push(...this.conditionList.getSemanticTokens(documentUri));
     }
     if (this.eventList) {
-      semanticTokens.push(...this.eventList.getSemanticTokens(uri));
+      semanticTokens.push(...this.eventList.getSemanticTokens(documentUri));
     }
     if (this.objectiveList) {
-      semanticTokens.push(...this.objectiveList.getSemanticTokens(uri));
+      semanticTokens.push(...this.objectiveList.getSemanticTokens(documentUri));
     }
     return semanticTokens;
   }
@@ -216,5 +199,19 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
       locations.push(...this.objectiveList.getLocations(yamlPath, sourceUri));
     }
     return locations;
+  }
+
+  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
+    if (!uri.startsWith(this.uri)) {
+      return [];
+    }
+
+    return [
+      ...this.conversations?.flatMap(c => c.getDefinitions(uri, offset)) || [],
+      ...this.conditionList?.getDefinitions(uri, offset) || [],
+      ...this.eventList?.getDefinitions(uri, offset) || [],
+      ...this.objectiveList?.getDefinitions(uri, offset) || [],
+      // TODO...
+    ];
   }
 }

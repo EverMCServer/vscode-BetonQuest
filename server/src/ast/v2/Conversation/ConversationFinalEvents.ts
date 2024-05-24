@@ -5,7 +5,7 @@ import { ConversationFinalEventsType, NodeV2 } from "../../node";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { LocationLinkOffset } from "../../../utils/location";
 import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
-import { Conversation } from "./Conversation";
+import { ConversationSection } from "./Conversation";
 import { Event } from "./Option/Event";
 
 export class ConversationFinalEvents extends NodeV2<ConversationFinalEventsType> {
@@ -13,13 +13,13 @@ export class ConversationFinalEvents extends NodeV2<ConversationFinalEventsType>
   uri: string;
   offsetStart?: number;
   offsetEnd?: number;
-  parent: Conversation;
+  parent: ConversationSection;
 
   // Cache the parsed yaml document
   yml: Scalar;
   events: Event<this>[] = [];
 
-  constructor(yml: Scalar, parent: Conversation) {
+  constructor(yml: Scalar, parent: ConversationSection) {
     super();
     this.uri = parent.uri;
     this.parent = parent;

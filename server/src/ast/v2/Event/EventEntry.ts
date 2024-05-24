@@ -8,13 +8,13 @@ import { EventEntryType } from "../../node";
 import { EventKind } from "./EventKind";
 import { EventKey } from "./EventKey";
 import { EventArguments } from "./EventArguments";
-import { EventList } from "./EventList";
+import { EventListSection } from "./EventList";
 import { ElementEntry } from "../Element/ElementEntry";
 
 export class EventEntry extends ElementEntry<Event> {
   type: EventEntryType = "EventEntry";
 
-  constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: EventList) {
+  constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: EventListSection) {
     super(pair, kinds, parent);
   }
 

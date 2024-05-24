@@ -7,10 +7,37 @@ import ListElement from "betonquest-utils/betonquest/ListElement";
 
 import { ElementListType } from "../../node";
 import { PackageV2 } from "../Package";
-import { Document } from "../document";
+import { Document, SectionCollection } from "../document";
 import { ElementEntry } from "./ElementEntry";
+import { HoverInfo } from "../../../utils/hover";
 
-export abstract class ElementList<LE extends ListElement> extends Document<ElementListType> {
+export abstract class ElementList<LE extends ListElement> extends SectionCollection<ElementListType> {
+  abstract type: ElementListType;
+
+  entriesSections: ElementListSection<LE>[] =[];
+
+  constructor(uri: string, parent: PackageV2) {
+    super(uri, parent);
+  }
+
+  getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
+    return this.entriesSections.filter(section => !documentUri || section.uri === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
+  }
+
+  getSemanticTokens(documentUri: string) {
+    return this.entriesSections.filter(section => section.uri === documentUri).flatMap(section => section.getSemanticTokens());
+  }
+
+  getHoverInfo(documentUri: string, offset: number): HoverInfo[] {
+    return this.entriesSections.filter(section => section.uri === documentUri).flatMap(section => section.getHoverInfo(offset));
+  }
+
+  getLocations(yamlPath: string[], sourceUri: string) {
+    return this.entriesSections.flatMap(section => section.getLocations(yamlPath, sourceUri));
+  }
+}
+
+export abstract class ElementListSection<LE extends ListElement> extends Document<ElementListType> {
   abstract type: ElementListType;
 
   entries: ElementEntry<LE>[] = [];
@@ -19,7 +46,7 @@ export abstract class ElementList<LE extends ListElement> extends Document<Eleme
     return this.entries;
   }
 
-  constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: PackageV2) {
+  constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: ElementList<LE>) {
     super(uri, document, yml, parent);
 
     // Parse Elements
@@ -42,18 +69,15 @@ export abstract class ElementList<LE extends ListElement> extends Document<Eleme
     } as PublishDiagnosticsParams;
   }
 
-  getSemanticTokens(uri: string) {
-    if (this.uri !== uri) {
-      return [];
-    }
+  getSemanticTokens() {
     return this.entries.flatMap(e => {
       return e.getSemanticTokens();
     });
   }
 
-  getHoverInfo(uri: string, offset: number) {
-    if (this.uri === uri && this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
-      return this.entries.flatMap(e => e.getHoverInfo(uri, offset));
+  getHoverInfo(offset: number) {
+    if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
+      return this.entries.flatMap(e => e.getHoverInfo(offset));
     }
     return [];
   }

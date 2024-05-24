@@ -8,7 +8,7 @@ import { ElementEntryType, NodeV2 } from "../../node";
 import { ElementKind } from "./ElementKind";
 import { ElementKey } from "./ElementKey";
 import { ElementArguments } from "./ElementArguments";
-import { ElementList } from "./ElementList";
+import { ElementListSection } from "./ElementList";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getScalarSourceAndRange } from "../../../utils/yaml";
 import { SemanticToken } from "../../../service/semanticTokens";
@@ -18,7 +18,7 @@ export abstract class ElementEntry<LE extends ListElement> extends NodeV2<Elemen
   uri: string;
   offsetStart?: number;
   offsetEnd?: number;
-  parent: ElementList<LE>;
+  parent: ElementListSection<LE>;
 
   yaml: Pair<Scalar<string>, Scalar<string>>;
 
@@ -26,7 +26,7 @@ export abstract class ElementEntry<LE extends ListElement> extends NodeV2<Elemen
   elementKind?: ElementKind<LE>;
   elementArguments?: ElementArguments<LE>;
 
-  constructor(pair: Pair<Scalar<string>, Scalar<string>>, kinds: _ElementKind<LE>[], parent: ElementList<LE>) {
+  constructor(pair: Pair<Scalar<string>, Scalar<string>>, kinds: _ElementKind<LE>[], parent: ElementListSection<LE>) {
     super();
     this.uri = parent.uri;
     this.offsetStart = pair.key?.range?.[0];
@@ -119,14 +119,14 @@ export abstract class ElementEntry<LE extends ListElement> extends NodeV2<Elemen
     return tokens;
   }
 
-  getHoverInfo(uri: string, offset: number) {
+  getHoverInfo(offset: number) {
     if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
-      const hoverInfo = [this.elementKey.getHoverInfo(uri, offset)];
+      const hoverInfo = [this.elementKey.getHoverInfo(offset)];
       if (this.elementKind) {
-        hoverInfo.push(this.elementKind.getHoverInfo(uri, offset));
+        hoverInfo.push(this.elementKind.getHoverInfo(offset));
       }
       if (this.elementArguments) {
-        hoverInfo.push(this.elementArguments.getHoverInfo(uri, offset));
+        hoverInfo.push(this.elementArguments.getHoverInfo(offset));
       }
       return hoverInfo.flat();
     }

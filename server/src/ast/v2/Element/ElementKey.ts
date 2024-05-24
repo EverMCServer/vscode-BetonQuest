@@ -29,7 +29,7 @@ export abstract class ElementKey<LE extends ListElement> extends NodeV2<ElementK
 
   abstract getSemanticTokens(): SemanticToken[];
 
-  getHoverInfo(uri: string, offset: number): HoverInfo[] {
+  getHoverInfo(offset: number): HoverInfo[] {
     if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
       return [
         {

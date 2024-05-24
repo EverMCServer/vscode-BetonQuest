@@ -2,7 +2,7 @@ import { Scalar } from "yaml";
 import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationInterceptorType, NodeV2 } from "../../node";
-import { Conversation } from "./Conversation";
+import { ConversationSection } from "./Conversation";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getScalarRangeByValue, getScalarSourceAndRange, getSourceByValue } from "../../../utils/yaml";
 
@@ -11,7 +11,7 @@ export class ConversationInterceptor extends NodeV2<ConversationInterceptorType>
   uri: string;
   offsetStart: number;
   offsetEnd: number;
-  parent: Conversation;
+  parent: ConversationSection;
 
   // Cache the parsed yaml document
   yml: Scalar;
@@ -38,7 +38,7 @@ export class ConversationInterceptor extends NodeV2<ConversationInterceptorType>
     },
   ];
 
-  constructor(yml: Scalar, parent: Conversation) {
+  constructor(yml: Scalar, parent: ConversationSection) {
     super();
     this.uri = parent.uri;
     this.parent = parent;

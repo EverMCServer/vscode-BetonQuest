@@ -7,16 +7,49 @@ import { ConversationNpcOptionType, ConversationPlayerOptionType, ConversationTy
 import { isYamlMapPair } from "../../../utils/yaml";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { LocationLinkOffset } from "../../../utils/location";
+import { HoverInfo } from "../../../utils/hover";
 import { getFilename } from "../../../utils/url";
 import { ConversationQuester } from "./ConversationQuester";
 import { ConversationFirst } from "./ConversationFirst";
 import { ConversationStop } from "./ConversationStop";
 import { ConversationFinalEvents } from "./ConversationFinalEvents";
 import { ConversationInterceptor } from "./ConversationInterceptor";
-import { Document } from "../document";
+import { Document, SectionCollection } from "../document";
 import { Option } from "./Option/Option";
+import { SemanticToken } from "../../../service/semanticTokens";
 
-export class Conversation extends Document<ConversationType> {
+export class Conversation extends SectionCollection<ConversationType> {
+  type: ConversationType = 'Conversation';
+
+  // Conversation sections
+  conversationSections: ConversationSection[] = [];
+
+  constructor(uri: string, parent: PackageV2) {
+    super(uri, parent);
+  }
+
+  addSection(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>) {
+    this.conversationSections.push(new ConversationSection(uri, document, yml, this));
+  }
+
+  getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
+    return this.conversationSections.filter(c => !documentUri || c.uri === documentUri).flatMap(c => c.getPublishDiagnosticsParams());
+  }
+
+  getCodeActions(documentUri?: string) {
+    return this.conversationSections.filter(c => !documentUri || c.uri === documentUri).flatMap(c => c.getCodeActions());
+  }
+
+  getSemanticTokens(documentUri: string): SemanticToken[] {
+    return this.conversationSections.filter(c => !documentUri || c.uri === documentUri).flatMap(c => c.getSemanticTokens());
+  }
+
+  getHoverInfo(documentUri: string, offset: number): HoverInfo[] {
+    return this.conversationSections.filter(c => c.uri === documentUri).flatMap(c => c.getHoverInfo(offset));
+  }
+}
+
+export class ConversationSection extends Document<ConversationType> {
   type: ConversationType = 'Conversation';
 
   // Contents
@@ -28,12 +61,8 @@ export class Conversation extends Document<ConversationType> {
   npcOptions: Option<ConversationNpcOptionType>[] = [];
   playerOptions: Option<ConversationPlayerOptionType>[] = [];
 
-  constructor(uri: string, document: TextDocument, pair: Pair<Scalar<string>, YAMLMap>, parent: PackageV2) {
-    if (!isMap<Scalar<string>>(pair.value)) {
-      // TODO Diagnostic
-      return;
-    }
-    super(uri, document, pair.value, parent);
+  constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: Conversation) {
+    super(uri, document, yml, parent);
 
     // Parse Elements
     this.yml.items.forEach(pair => {
@@ -208,6 +237,16 @@ export class Conversation extends Document<ConversationType> {
       ...this.npcOptions?.flatMap(npc => npc.getCodeActions()) ?? [],
       ...this.playerOptions?.flatMap(player => player.getCodeActions()) ?? [],
     ];
+  }
+
+  getSemanticTokens(): SemanticToken[] {
+    // TODO
+    return [];
+  }
+
+  getHoverInfo(offset: number) {
+    // TODO
+    return [];
   }
 
   getDefinitions(uri: string, offset: number): LocationLinkOffset[] {

@@ -1,5 +1,4 @@
-import { LocationLink } from "vscode-languageserver";
-import { Position, TextDocument } from "vscode-languageserver-textdocument";
+import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { PackageV1 } from "./v1/Package";
 import { PackageV2 } from "./v2/Package";
@@ -213,24 +212,24 @@ export class AST {
   // Get all diagnostics from parser
   getDiagnostics(documentUri?: string) {
     return [
-      ...this.packagesV1.filter(p => documentUri ? documentUri.startsWith(p.getUri()) : true).flatMap(p => p.getPublishDiagnosticsParams(documentUri)),
-      ...this.packagesV2.filter(p => documentUri ? documentUri.startsWith(p.getUri()) : true).flatMap(p => p.getPublishDiagnosticsParams(documentUri))
+      ...this.packagesV1.filter(p => !documentUri || documentUri.startsWith(p.getUri())).flatMap(p => p.getPublishDiagnosticsParams(documentUri)),
+      ...this.packagesV2.filter(p => !documentUri || documentUri.startsWith(p.getUri())).flatMap(p => p.getPublishDiagnosticsParams(documentUri))
     ];
   }
 
   // Get all CodeActions
   getCodeActions(documentUri?: string) {
     return [
-      ...this.packagesV1.filter(p => documentUri ? documentUri.startsWith(p.getUri()) : true).flatMap(p => p.getCodeActions(documentUri)),
-      // ...this.packagesV2.filter(p => documentUri ? documentUri.startsWith(p.getUri()) : true).flatMap(p => p.getCodeActions(documentUri))
+      ...this.packagesV1.filter(p => !documentUri || documentUri.startsWith(p.getUri())).flatMap(p => p.getCodeActions(documentUri)),
+      ...this.packagesV2.filter(p => !documentUri || documentUri.startsWith(p.getUri())).flatMap(p => p.getCodeActions(documentUri))
     ];
   }
 
   // Get semantic tokens for embeded betonquest's instructions
-  getSemanticTokens(uri: string) {
+  getSemanticTokens(documentUri: string) {
     return [
-      ...this.packagesV1.flatMap(p => p.getSemanticTokens(uri)),
-      ...this.packagesV2.flatMap(p => p.getSemanticTokens(uri))
+      ...this.packagesV1.filter(p => documentUri.startsWith(p.getUri())).flatMap(p => p.getSemanticTokens(documentUri)),
+      ...this.packagesV2.filter(p => documentUri.startsWith(p.getUri())).flatMap(p => p.getSemanticTokens(documentUri))
     ];
   }
 

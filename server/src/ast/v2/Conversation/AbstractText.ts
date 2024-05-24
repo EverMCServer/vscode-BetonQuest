@@ -1,21 +1,21 @@
 import { Scalar, YAMLMap, isMap, isScalar } from "yaml";
 
 import { ConversationOptionType, ConversationTypes, NodeV2 } from "../../node";
-import { Conversation } from "./Conversation";
+import { ConversationSection } from "./Conversation";
 import { AbstractTextTranslations } from "./AbstractTextTranslations";
 import { Option } from "./Option/Option";
 
 export abstract class AbstractText<NT extends ConversationTypes, TT extends AbstractTextTranslations<ConversationTypes>> extends NodeV2<NT> {
   abstract type: NT;
   uri: string;
-  parent: Conversation | Option<ConversationOptionType>;
+  parent: ConversationSection | Option<ConversationOptionType>;
 
   yml: Scalar | YAMLMap;
   contentType?: 'string' | 'translations';
   contentString?: string;
   contentTranslations?: TT;
 
-  constructor(yml: Scalar | YAMLMap, parent: Conversation | Option<ConversationOptionType>) {
+  constructor(yml: Scalar | YAMLMap, parent: ConversationSection | Option<ConversationOptionType>) {
     super();
     this.uri = parent.uri;
     this.parent = parent;

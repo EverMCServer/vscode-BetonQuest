@@ -8,13 +8,13 @@ import { ConditionEntryType } from "../../node";
 import { ConditionKind } from "./ConditionKind";
 import { ConditionKey } from "./ConditionKey";
 import { ConditionArguments } from "./ConditionArguments";
-import { ConditionList } from "./ConditionList";
+import { ConditionListSection } from "./ConditionList";
 import { ElementEntry } from "../Element/ElementEntry";
 
 export class ConditionEntry extends ElementEntry<Condition> {
   type: ConditionEntryType = "ConditionEntry";
 
-  constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: ConditionList) {
+  constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: ConditionListSection) {
     super(pair, kinds, parent);
   }
 
