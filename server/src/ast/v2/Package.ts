@@ -1,20 +1,23 @@
 import { PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { Scalar, YAMLMap, parseDocument } from "yaml";
+import { Scalar, YAMLMap, isMap, isScalar, parseDocument } from "yaml";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
 import { AST } from "../ast";
-import { ConversationListType, NodeV2, PackageV2Type } from "../node";
+import { NodeV2, PackageV2Type } from "../node";
 import { HoverInfo } from "../../utils/hover";
+import { LocationLinkOffset } from "../../utils/location";
+import { getParentUrl } from "../../utils/url";
 import { ConditionList } from "./Condition/ConditionList";
 import { EventList } from "./Event/EventList";
 import { ObjectiveList } from "./Objective/ObjectiveList";
 import { SemanticToken } from "../../service/semanticTokens";
-import { getParentUrl } from "../../utils/url";
+import { Conversation } from "./Conversation/Conversation";
 import { ConditionEntry } from "./Condition/ConditionEntry";
 import { EventEntry } from "./Event/EventEntry";
 import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
+import { isStringScalar, isStringScalarPair, isYamlMapPair } from "../../utils/yaml";
 
 export class PackageV2 extends NodeV2<PackageV2Type> {
   protected type: PackageV2Type = "PackageV2";
@@ -23,7 +26,7 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
   private parentAst: AST;
   readonly packagePath: string[];
 
-  conversationList: NodeV2<ConversationListType>[] = []; // TODO: Conversations[]
+  conversations: Conversation[] = []; // TODO: Conversations[]
   conditionLists: ConditionList[] = [];
   eventLists: EventList[] = [];
   objectiveLists: ObjectiveList[] = [];
@@ -48,20 +51,41 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
       );
 
       // Switch by YAML nodes
-      yml.contents?.items.forEach((item) => {
-        switch (item.key.value) {
+      yml.contents?.items.forEach((pair) => {
+        switch (pair.key.value) {
           case 'conditions':
-            this.conditionLists.push(new ConditionList(document.uri, document, item.value, this));
+            if (isMap<Scalar<string>>(pair.value) && isStringScalar(pair.key)) {
+              this.conditionLists.push(new ConditionList(document.uri, document, pair.value, this));
+            } else {
+              // TODO: Diagnostics
+            }
             break;
           case 'events':
-            this.eventLists.push(new EventList(document.uri, document, item.value, this));
+            if (isMap<Scalar<string>>(pair.value) && isStringScalar(pair.key)) {
+              this.eventLists.push(new EventList(document.uri, document, pair.value, this));
+            } else {
+              // TODO: Diagnostics
+            }
             break;
           case 'objectives':
-            this.objectiveLists.push(new ObjectiveList(document.uri, document, item.value, this));
-            break;
+            if (isMap<Scalar<string>>(pair.value) && isStringScalar(pair.key)) {
+              this.objectiveLists.push(new ObjectiveList(document.uri, document, pair.value, this));
+              break;
+            } else {
+              // TODO: Diagnostics
+            }
           case 'items':
             break;
           case 'conversations':
+            if (isYamlMapPair(pair)) {
+              pair.value?.items.forEach(p => {
+                if (isYamlMapPair(p)) {
+                  this.conversations?.push(new Conversation(document.uri, document, p, this));
+                }
+              });
+            } else {
+              // TODO: Diagnostics
+            }
             break;
           default:
             break;
@@ -98,11 +122,16 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
     return this.uri === packageUri;
   }
 
+  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
+    // TODO
+    return [];
+  }
+
   // Get Condition entries from child or parent
   getConditionEntries(id: string, packageUri: string): ConditionEntry[] {
     if (this.isPackageUri(packageUri)) {
       return this.conditionLists?.flatMap(l => l.getConditionEntries(id, packageUri)) ?? [];
-    } else  {
+    } else {
       return this.parentAst.getV2ConditionEntry(id, packageUri);
     }
   }
@@ -111,7 +140,7 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
   getEventEntries(id: string, packageUri: string): EventEntry[] {
     if (this.isPackageUri(packageUri)) {
       return this.eventLists?.flatMap(l => l.getEventEntries(id, packageUri)) ?? [];
-    } else  {
+    } else {
       return this.parentAst.getV2EventEntry(id, packageUri);
     }
   }
@@ -120,7 +149,7 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
   getObjectiveEntries(id: string, packageUri: string): ObjectiveEntry[] {
     if (this.isPackageUri(packageUri)) {
       return this.objectiveLists?.flatMap(l => l.getObjectiveEntries(id, packageUri)) ?? [];
-    } else  {
+    } else {
       return this.parentAst.getV2ObjectiveEntry(id, packageUri);
     }
   }
