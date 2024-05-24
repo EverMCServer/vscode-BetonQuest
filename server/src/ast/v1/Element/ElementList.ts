@@ -13,8 +13,6 @@ import { ElementEntry } from "./ElementEntry";
 
 export abstract class ElementList<LE extends ListElement, Entry extends ElementEntry<LE>> extends Document<ElementListType> {
   abstract type: ElementListType;
-  offsetStart?: number;
-  offsetEnd?: number;
 
   entries: Entry[] = [];
 

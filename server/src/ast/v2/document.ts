@@ -1,35 +1,25 @@
-import { Scalar, YAMLMap, parseDocument } from "yaml";
+import { Scalar, YAMLMap } from "yaml";
 import { Range } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
-import { NodeV1, NodeType } from "../node";
-import { PackageV1 } from "./Package";
+import { NodeV2, NodeType } from "../node";
+import { PackageV2 } from "./Package";
 
-export abstract class Document<T extends NodeType> extends NodeV1<T> {
+export abstract class Document<T extends NodeType> extends NodeV2<T> {
   uri: string;
-  protected parent: PackageV1;
+  protected parent: PackageV2;
 
   // VSCode Document, for diagnostics / quick actions / goto definition, etc
   document: TextDocument;
   yml: YAMLMap<Scalar<string>>;
 
-  constructor(uri: string, document: TextDocument, parent: PackageV1) {
+  constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: PackageV2) {
     super();
 
     this.uri = uri;
     this.parent = parent;
     this.document = document;
-
-    // Parse yaml
-    const yamlDoc = parseDocument<YAMLMap<Scalar<string>>, false>(
-      document.getText(),
-      {
-        keepSourceTokens: true,
-        strict: false
-      }
-    );
-
-    this.yml = yamlDoc.contents;
+    this.yml = yml;
 
     // Extract offsets
     this.offsetStart = this.yml.range?.[0];

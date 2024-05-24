@@ -1,5 +1,5 @@
 import { Pair, Scalar, isMap, isScalar } from "yaml";
-import { CodeActionKind, Diagnostic, DiagnosticSeverity, PublishDiagnosticsParams } from "vscode-languageserver";
+import { DiagnosticSeverity, PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { PackageV1 } from "../Package";
