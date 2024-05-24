@@ -106,8 +106,8 @@ export class AST {
           return;
         } else {
           const partialPath = document.uri.slice(this.wsFolderUri.length);
-          // if (!partialPath.startsWith('QuestPackages/') || !partialPath.startsWith('BetonQuest/QuestPackages/')) {
-          if (!partialPath.startsWith('QuestPackages/')) {
+          // if (!partialPath.match(/^\/?QuestPackages/m) || !partialPath.match(/^\/?BetonQuest\/QuestPackages/m)) {
+          if (!partialPath.match(/^\/?QuestPackages/m)) {
             return;
           }
         }
