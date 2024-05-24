@@ -42,8 +42,8 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
             break;
           case "pointer":
             // Throw warning diagnostics, change to "*s"
-            this._addDiagnostic(
-              this.getRangeByOffset(pair.key.range![0], pair.key.range![1]),
+            this.addDiagnostic(
+              [pair.key.range![0], pair.key.range![1]],
               `It should be renamed to "${pair.key.value}s"`,
               DiagnosticSeverity.Warning,
               DiagnosticCode.YamlKeyAlternativeNaming,
@@ -60,8 +60,8 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
             break;
           case "condition":
             // Throw warning diagnostics, change to "*s"
-            this._addDiagnostic(
-              this.getRangeByOffset(pair.key.range![0], pair.key.range![1]),
+            this.addDiagnostic(
+              [pair.key.range![0], pair.key.range![1]],
               `It should be renamed to "${pair.key.value}s"`,
               DiagnosticSeverity.Warning,
               DiagnosticCode.YamlKeyAlternativeNaming,
@@ -81,8 +81,8 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
             break;
           case "event":
             // Throw warning diagnostics, change to "*s"
-            this._addDiagnostic(
-              this.getRangeByOffset(pair.key.range![0], pair.key.range![1]),
+            this.addDiagnostic(
+              [pair.key.range![0], pair.key.range![1]],
               `It should be renamed to "${pair.key.value}s"`,
               DiagnosticSeverity.Warning,
               DiagnosticCode.YamlKeyAlternativeNaming,
@@ -101,8 +101,8 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
             }
             break;
           default:
-            this._addDiagnostic(
-              this.getRangeByOffset(pair.key.range![0], pair.key.range![1]),
+            this.addDiagnostic(
+              [pair.key.range![0], pair.key.range![1]],
               `Unknown key "${pair.key.value}"`,
               DiagnosticSeverity.Warning,
               DiagnosticCode.YamlKeyUnknown

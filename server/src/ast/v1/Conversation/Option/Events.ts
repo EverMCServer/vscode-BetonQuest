@@ -39,8 +39,8 @@ export class Events<PT extends NodeV1<ConversationOptionType>> extends NodeV1<Co
 
       if (strTrimed.length === 0) {
         // Empty, throw diagnostics warn
-        this._addDiagnostic(
-          this.getRangeByOffset(offsetStartWithComma, offsetEnd),
+        this.addDiagnostic(
+          [offsetStartWithComma, offsetEnd],
           `Event ID is empty.`,
           DiagnosticSeverity.Warning,
           DiagnosticCode.ElementIdEmpty,
@@ -48,7 +48,6 @@ export class Events<PT extends NodeV1<ConversationOptionType>> extends NodeV1<Co
             {
               title: `Remove empty Event ID`,
               text: "",
-              range: this.parent.getRangeByOffset(offsetStartWithComma, offsetEnd)
             }
           ]
         );

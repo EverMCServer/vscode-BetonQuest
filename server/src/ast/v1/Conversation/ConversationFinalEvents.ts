@@ -38,22 +38,19 @@ export class ConversationFinalEvents extends NodeV1<ConversationFinalEventsType>
         const offsetStartWithComma = this.offsetStart + matched.index;
         const offsetStart = offsetStartWithComma + matched[1].length;
         const offsetEnd = offsetStart + str.length;
-        const rangeWithComma = this.parent.getRangeByOffset(offsetStartWithComma, offsetEnd);
-        const range = this.parent.getRangeByOffset(offsetStart, offsetEnd);
 
         // Check leading & tailing empty spaces
         if (strTrimed !== str) {
           // Throw diagnostics & quick fix
-          this._addDiagnostic(
-            range,
+          this.addDiagnostic(
+            [offsetStart, offsetEnd],
             `Event IDs in "final_events" can not be separated with leading or tailing spaces.`,
             DiagnosticSeverity.Error,
             DiagnosticCode.ValueFormatIncorrect,
             [
               {
                 title: "Remove leading & tailing empty spaces",
-                text: strTrimed,
-                range: range
+                text: strTrimed
               }
             ]
           );
@@ -62,20 +59,19 @@ export class ConversationFinalEvents extends NodeV1<ConversationFinalEventsType>
         // Check if any spaces in the middle
         if (strTrimed.match(/\s+/)) {
           const correctStr = strTrimed.replace(/\s+/g, "_");
-          this._addDiagnostic(
-            range,
+          this.addDiagnostic(
+            [offsetStart, offsetEnd],
             `Event ID cannot contains empty spaces. Do you mean "${correctStr}"?.`,
             DiagnosticSeverity.Error,
             DiagnosticCode.ElementIdSyntax,
             [
               {
                 title: `Change to "${correctStr}"`,
-                range: range,
                 text: correctStr
               },
               {
                 title: `Remove "${strTrimed}"`,
-                range: rangeWithComma,
+                range: [offsetStartWithComma, offsetEnd],
                 text: ""
               }
             ]

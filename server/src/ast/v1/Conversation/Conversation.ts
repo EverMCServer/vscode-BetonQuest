@@ -7,6 +7,7 @@ import { ConversationNpcOptionType, ConversationPlayerOptionType, ConversationTy
 import { isYamlMapPair } from "../../../utils/yaml";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { LocationLinkOffset } from "../../../utils/location";
+import { getFilename } from "../../../utils/url";
 import { ConversationQuester } from "./ConversationQuester";
 import { ConversationFirst } from "./ConversationFirst";
 import { ConversationStop } from "./ConversationStop";
@@ -34,7 +35,6 @@ export class Conversation extends Document<ConversationType> {
     this.yml.items.forEach(pair => {
       const offsetStart = pair.key.range?.[0] ?? 0;
       const offsetEnd = (pair.value as Scalar)?.range?.[1] ?? offsetStart;
-      const range = this.getRangeByOffset(offsetStart, offsetEnd);
       switch (pair.key.value) {
         case "quester":
           if (isScalar(pair.value) || isMap<Scalar<string>>(pair.value)) {
@@ -107,13 +107,6 @@ export class Conversation extends Document<ConversationType> {
           }
           break;
         default:
-          const diagnostic: Diagnostic = {
-            range: range,
-            message: `Unknown key "${pair.key.value}"`,
-            severity: DiagnosticSeverity.Warning,
-            source: 'BetonQuest',
-            code: DiagnosticCode.YamlKeyUnknown
-          };
           let correctKeyStr = pair.key.value.toLowerCase();
           switch (correctKeyStr) {
             case "npc_options":
@@ -125,42 +118,33 @@ export class Conversation extends Document<ConversationType> {
             case "interceptor":
             case "player_options":
               // Throw error diagnostics for incorrect keys
-              diagnostic.message = `Incorrect key "${pair.key.value}". Do you mean "${correctKeyStr}"?`;
-              this.diagnostics.push(diagnostic);
-              this.codeActions.push({
-                title: `Rename key to "${correctKeyStr}"`,
-                kind: CodeActionKind.QuickFix,
-                diagnostics: [diagnostic],
-                edit: {
-                  changes: {
-                    [this.uri]: [
-                      {
-                        range: this.getRangeByOffset(pair.key.range![0], pair.key.range![1]),
-                        newText: correctKeyStr
-                      }
-                    ]
-                  }
-                }
-              });
+              this.addDiagnostic(
+                [offsetStart, offsetEnd],
+                `Incorrect key "${pair.key.value}". Do you mean "${correctKeyStr}"?`,
+                DiagnosticSeverity.Warning,
+                DiagnosticCode.YamlKeyUnknown,
+                [{
+                  title: `Rename key to "${correctKeyStr}"`,
+                  text: correctKeyStr,
+                  range: [pair.key.range![0], pair.key.range![1]],
+                }]
+              );
               break;
             default:
               // Throw warning diagnostics for unknown keys
-              this.diagnostics.push(diagnostic);
-              this.codeActions.push({
-                title: `Remove "${pair.key.value}"`,
-                kind: CodeActionKind.QuickFix,
-                diagnostics: [diagnostic],
-                edit: {
-                  changes: {
-                    [this.uri]: [
-                      {
-                        range: range,
-                        newText: ""
-                      }
-                    ]
+              this.addDiagnostic(
+                [offsetStart, offsetEnd],
+                `Unknown key "${pair.key.value}"`,
+                DiagnosticSeverity.Warning,
+                DiagnosticCode.YamlKeyUnknown,
+                [
+                  {
+                    title: `Remove "${pair.key.value}"`,
+                    text: "",
+                    range: [offsetStart, offsetEnd]
                   }
-                }
-              });
+                ],
+              );
               break;
           }
           break;
@@ -169,22 +153,18 @@ export class Conversation extends Document<ConversationType> {
 
     // Check missing elements
     if (!this.quester) {
-      this.diagnostics.push({
-        range: {
-          start: {
-            line: 0,
-            character: 0
-          },
-          end: {
-            line: 0,
-            character: 0
+      this.addDiagnostic(
+        [0, 0],
+        `Missing element "quester".`,
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ConversationMissingQuester,
+        [
+          {
+            title: `Add element "quester"`,
+            text: `quester: ${getFilename(this.document.uri, true)}\n`
           }
-        },
-        message: `Missing element "quester".`,
-        severity: DiagnosticSeverity.Error,
-        source: 'BetonQuest',
-        code: DiagnosticCode.ConversationMissingQuester
-      });
+        ]
+      );
     }
 
     // ...
@@ -226,7 +206,7 @@ export class Conversation extends Document<ConversationType> {
     ];
   }
 
-  getDefinitions(uri: string, offset: number): LocationLinkOffset[]  {
+  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
     if (uri !== this.uri) {
       return [];
     }

@@ -53,8 +53,8 @@ export class ConversationStop extends NodeV1<ConversationStopType> {
   }
 
   private _addDiagnosticValueTypeIncorrect() {
-    this._addDiagnostic(
-      this.parent!.getRangeByOffset(this.offsetStart!, this.offsetEnd!),
+    this.addDiagnostic(
+      [this.offsetStart!, this.offsetEnd!],
       `Incorrect value "${this.yml.value}"`,
       DiagnosticSeverity.Error,
       DiagnosticCode.ValueContentIncorrect,

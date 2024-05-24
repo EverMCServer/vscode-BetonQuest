@@ -39,16 +39,15 @@ export class Conditions<PT extends NodeV1<ConversationOptionType>> extends NodeV
 
       if (strTrimed.length === 0) {
         // Empty, throw diagnostics warn
-        this._addDiagnostic(
-          this.getRangeByOffset(offsetStartWithComma, offsetEnd),
+        this.addDiagnostic(
+          [offsetStartWithComma, offsetEnd],
           `Condition ID is empty.`,
           DiagnosticSeverity.Warning,
           DiagnosticCode.ElementIdEmpty,
           [
             {
               title: `Remove empty condition ID`,
-              text: "",
-              range: this.parent.getRangeByOffset(offsetStartWithComma, offsetEnd)
+              text: ""
             }
           ]
         );

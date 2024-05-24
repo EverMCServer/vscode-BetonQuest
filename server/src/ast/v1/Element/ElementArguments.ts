@@ -155,12 +155,12 @@ export abstract class ElementArguments<LE extends ListElement> extends NodeV1<El
       } else {
         // Missing mandatory Arugment.
         // Add Diagnotistics
-        this.diagnostics.push({
-          severity: DiagnosticSeverity.Error,
-          code: DiagnosticCode.ArgumentMandatoryMissing,
-          message: `Missing mandatory argument: ${pattern.name}.\nExample value: ${pattern.defaultValue}`,
-          range: this.parent.getRangeByOffset(offsetStart, offsetStart)
-        });
+        this.addDiagnostic(
+          [offsetStart, offsetStart],
+          `Missing mandatory argument: ${pattern.name}.\nExample value: ${pattern.defaultValue}`,
+          DiagnosticSeverity.Error,
+          DiagnosticCode.ArgumentMandatoryMissing,
+        );
         // Create dummy Argument
         this.argumentsMandatory.push(this.newArgumentMandatory(
           "",

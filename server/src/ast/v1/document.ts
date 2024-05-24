@@ -42,12 +42,4 @@ export abstract class Document<T extends NodeType> extends NodeV1<T> {
       end: this.document.positionAt(offsetEnd)
     } as Range;
   }
-
-  addDiagnostic(offset: [start?: number, end?: number], message: string, severity: DiagnosticSeverity, code: string, codeActions?: { title: string, text: string }[]) {
-    if (offset[0] === undefined || offset[1] === undefined) {
-      return;
-    }
-    const range = this.getRangeByOffset(offset[0], offset[1]);
-    super._addDiagnostic(range, message, severity, code, codeActions);
-  }
 }

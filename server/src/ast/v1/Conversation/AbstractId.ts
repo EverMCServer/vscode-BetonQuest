@@ -25,6 +25,10 @@ export abstract class AbstractID<T extends NodeType, PT extends NodeV1<NodeType>
 
     // Parse ID string.
     let str = idString;
+    // Check illigal characters
+    if (str.match(/[\s]/g)) {
+      // TODO this._addDiagnostic();
+    }
     // Parse exclamation mark
     if ((this.withExclamationMark = str.startsWith("!")) === true) {
       str = str.substring(1);
@@ -48,7 +52,7 @@ export abstract class AbstractID<T extends NodeType, PT extends NodeV1<NodeType>
     }
 
     return this.getTargetNodes().flatMap(n => ({
-      originSelectionRange: [this.offsetStart, this.offsetEnd],
+      originSelectionRange: [this.offsetStart + (this.withExclamationMark ? 1 : 0), this.offsetEnd],
       targetUri: n.getUri(),
       targetRange: [n.offsetStart!, n.offsetEnd!],
       targetSelectionRange: [n.offsetStart!, n.offsetEnd!]

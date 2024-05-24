@@ -31,8 +31,8 @@ export abstract class AbstractTextTranslations<N extends ConversationTypes> exte
         const offsetStart = (pair.value as Scalar)?.range?.[0];
         const offsetEnd = (pair.value as Scalar)?.range?.[1];
         if (offsetStart && offsetEnd) {
-          this._addDiagnostic(
-            this.parent.parent.getRangeByOffset(offsetStart, offsetEnd),
+          this.addDiagnostic(
+            [offsetStart, offsetEnd],
             `Incorrect value. It should be a string.`,
             DiagnosticSeverity.Error,
             DiagnosticCode.ValueTypeIncorrect

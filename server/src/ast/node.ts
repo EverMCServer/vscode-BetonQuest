@@ -1,4 +1,6 @@
 import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
+
+import { DiagnosticCode } from "../utils/diagnostics";
 import { ConditionEntry as ConditionEntryV1 } from "./v1/Condition/ConditionEntry";
 import { ConditionEntry as ConditionEntryV2 } from "./v2/Condition/ConditionEntry";
 import { EventEntry as EventEntryV1 } from "./v1/Event/EventEntry";
@@ -98,7 +100,11 @@ export abstract class Node<T extends NodeType> {
 
   // getParent(): Node<NodeType>;
 
-  _addDiagnostic(range: Range, message: string, severity: DiagnosticSeverity, code: string, codeActions?: { title: string, text: string, range?: Range }[]) {
+  addDiagnostic(offsets: [offsetStart?: number, offsetEnd?: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode, codeActions?: { title: string, text: string, range?: [offsetStart: number, offsetEnd: number] }[]) {
+    if (offsets[0] === undefined || offsets[1] === undefined) {
+      return;
+    }
+    const range = this.getRangeByOffset(offsets[0], offsets[1]);
     const diagnostic: Diagnostic = {
       range: range,
       message: message,
@@ -115,7 +121,7 @@ export abstract class Node<T extends NodeType> {
         edit: {
           changes: {
             [this.uri]: [{
-              range: r ?? range,
+              range: r ? this.getRangeByOffset(r[0], r[1]) : range,
               newText: text
             }]
           }
@@ -144,6 +150,12 @@ export abstract class Node<T extends NodeType> {
     return this.codeActions;
   }
 
+  // Get range by offset.
+  // This method must be overrided / hijacked by the top-level class.
+  getRangeByOffset(offsetStart: number, offsetEnd: number): Range {
+    return this.parent.getRangeByOffset(offsetStart, offsetEnd);
+  }
+
   // Get target package's uri by package path.
   // This method must be overrided / hijacked by the top-level class.
   getPackageUri(targetPackagePath: string): string {
@@ -154,24 +166,18 @@ export abstract class Node<T extends NodeType> {
 export abstract class NodeV1<T extends NodeType> extends Node<T> {
   protected abstract parent: NodeV1<NodeType>;
 
-  // Calculate the range by offsets.
-  // This method must be overrided / hijacked by the "Document" class.
-  getRangeByOffset(offsetStart: number, offsetEnd: number): Range {
-    return this.parent.getRangeByOffset(offsetStart, offsetEnd);
-  }
-  
   // Get all target package's Condition entries.
   // This method must be overrided / hijacked by the top-level class.
   getConditionEntries(id: string, packageUri: string): ConditionEntryV1[] {
     return this.parent.getConditionEntries(id, packageUri);
   }
-  
+
   // Get all target package's Event entries.
   // This method must be overrided / hijacked by the top-level class.
   getEventEntries(id: string, packageUri: string): EventEntryV1[] {
     return this.parent.getEventEntries(id, packageUri);
   }
-  
+
   // Get all target package's Objective entries.
   // This method must be overrided / hijacked by the top-level class.
   getObjectiveEntries(id: string, packageUri: string): ObjectiveEntryV1[] {
@@ -188,13 +194,13 @@ export abstract class NodeV2<T extends NodeType> extends Node<T> {
   getConditionEntries(id: string, packageUri: string): ConditionEntryV2[] {
     return this.parent.getConditionEntries(id, packageUri);
   }
-  
+
   // Get all target package's Event entries.
   // This method must be overrided / hijacked by the top-level class.
   getEventEntries(id: string, packageUri: string): EventEntryV2[] {
     return this.parent.getEventEntries(id, packageUri);
   }
-  
+
   // Get all target package's Objective entries.
   // This method must be overrided / hijacked by the top-level class.
   getObjectiveEntries(id: string, packageUri: string): ObjectiveEntryV2[] {

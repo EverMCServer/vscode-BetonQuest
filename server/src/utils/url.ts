@@ -13,6 +13,11 @@ export function getBaseUrl(uri: string) {
   });
 }
 
+export function getFilename(uri: string, excludeExtension?: boolean) {
+  const u = parse(uri, true);
+  return u.path?.split("/").pop()?.replace(/(\.[^/.]+)$/m, excludeExtension ? "" : "$1") ?? "";
+}
+
 export function formatUrl(url: string, options?: {
   removeDoubleSlashes?: boolean;
   removeLast?: boolean;

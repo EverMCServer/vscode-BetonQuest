@@ -41,12 +41,12 @@ export abstract class ElementEntry<LE extends ListElement> extends NodeV2<Elemen
     const [source, [offsetStart, offsetEnd, indent]] = getScalarSourceAndRange(pair.value);
     if (!source || typeof source !== 'string') {
       // Missing or incorrect instructions
-      this.diagnostics?.push({
-        severity: DiagnosticSeverity.Error,
-        code: DiagnosticCode.ElementInstructionMissing,
-        message: `Missing or incorrect instructions: ${source}`,
-        range: this.getRangeByOffset(offsetStart, offsetEnd)
-      });
+      this.addDiagnostic(
+        [offsetStart, offsetEnd],
+        `Missing or incorrect instructions: ${source}`,
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ElementInstructionMissing,
+      );
       return;
     }
     const regex = /(\S+)(\s*)(.*)/s;
@@ -55,12 +55,12 @@ export abstract class ElementEntry<LE extends ListElement> extends NodeV2<Elemen
     // Parse kind
     if (!matched || matched.length < 2) {
       // Missing kind
-      this.diagnostics?.push({
-        severity: DiagnosticSeverity.Error,
-        code: DiagnosticCode.ElementInstructionMissing,
-        message: `Missing or incorrect instructions: ${source}`,
-        range: this.getRangeByOffset(offsetStart, offsetEnd)
-      });
+      this.addDiagnostic(
+        [offsetStart, offsetEnd],
+        `Missing or incorrect instructions: ${source}`,
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ElementInstructionMissing,
+      );
       return;
     }
     const kindStr = matched[1];
@@ -76,12 +76,12 @@ export abstract class ElementEntry<LE extends ListElement> extends NodeV2<Elemen
       // If so, throw diagnostic
       if (kind && kind.value !== "*" && kind.argumentsPatterns.mandatory.length > 0) {
         const _offsetStart = offsetKindEnd;
-        this.diagnostics?.push({
-          severity: DiagnosticSeverity.Error,
-          code: DiagnosticCode.ElementArgumentsMissing,
-          message: `Missing mandatory argument(s) for "${kindStr}"`,
-          range: this.getRangeByOffset(_offsetStart, offsetEnd)
-        });
+        this.addDiagnostic(
+          [_offsetStart, offsetEnd],
+          `Missing mandatory argument(s) for "${kindStr}"`,
+          DiagnosticSeverity.Error,
+          DiagnosticCode.ElementArgumentsMissing,
+        );
       }
       return;
     }
@@ -93,10 +93,6 @@ export abstract class ElementEntry<LE extends ListElement> extends NodeV2<Elemen
   abstract newKey(key: Scalar<string>): ElementKey<LE>;
   abstract newKind(value: string, range: [number?, number?], kindConfig?: _ElementKind<LE>): ElementKind<LE>;
   abstract newArguments(argumentsSourceStr: string, range: [number?, number?], indent: number, kindConfig?: _ElementKind<LE>): ElementArguments<LE>;
-
-  getRangeByOffset(offsetStart: number, offsetEnd: number) {
-    return this.parent.getRangeByOffset(offsetStart, offsetEnd);
-  }
 
   getDiagnostics() {
     const diagnostics: Diagnostic[] = [];

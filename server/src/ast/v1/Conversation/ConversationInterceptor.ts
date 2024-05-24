@@ -70,8 +70,8 @@ export class ConversationInterceptor extends NodeV1<ConversationInterceptorType>
             }
             const offsetStart = this.offsetStart + matched.index + matched[1].length;
             const offsetEnd = offsetStart + matched[2].length;
-            this._addDiagnostic(
-              this.parent.getRangeByOffset(offsetStart, offsetEnd),
+            this.addDiagnostic(
+              [offsetStart, offsetEnd],
               message,
               severity,
               code,
@@ -79,7 +79,7 @@ export class ConversationInterceptor extends NodeV1<ConversationInterceptorType>
                 {
                   title: "Remove value",
                   text: "",
-                  range: this.parent.getRangeByOffset(this.offsetStart + matched.index, offsetEnd)
+                  range: [this.offsetStart + matched.index, offsetEnd]
                 },
                 ...this.defaultCodeActions
               ]
@@ -88,8 +88,8 @@ export class ConversationInterceptor extends NodeV1<ConversationInterceptorType>
         }
       }
     } else if (typeof str !== "string" && str !== null) {
-      this._addDiagnostic(
-        this.parent.getRangeByOffset(this.offsetStart, this.offsetEnd),
+      this.addDiagnostic(
+        [this.offsetStart, this.offsetEnd],
         `Incorrect value type. It should be a string.`,
         DiagnosticSeverity.Error,
         DiagnosticCode.ValueTypeIncorrect,
