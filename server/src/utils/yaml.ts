@@ -124,6 +124,19 @@ export function getScalarRangeByValue(value: Scalar | null): [offsetStart: numbe
   return range;
 }
 
+// Get indent / leading spaces size
+export function getIndent(yml: YAMLMap | Scalar) {
+  switch (yml.srcToken?.type) {
+    case 'scalar':
+    case 'single-quoted-scalar':
+    case 'double-quoted-scalar':
+    case 'block-scalar':
+    case 'block-map':
+      return yml.srcToken.indent;
+  }
+  return 0;
+}
+
 // Type guard function to check if the value is a Scalar<string>
 export function isStringScalar(value: any): value is Scalar<string> {
   return value instanceof Scalar && typeof value.value === 'string';

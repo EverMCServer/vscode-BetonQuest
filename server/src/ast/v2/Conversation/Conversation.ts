@@ -4,7 +4,7 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { PackageV2 } from "../Package";
 import { ConversationNpcOptionType, ConversationPlayerOptionType, ConversationType } from "../../node";
-import { isYamlMapPair } from "../../../utils/yaml";
+import { getIndent, isYamlMapPair } from "../../../utils/yaml";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { LocationLinkOffset } from "../../../utils/location";
 import { HoverInfo } from "../../../utils/hover";
@@ -187,14 +187,14 @@ export class ConversationSection extends Document<ConversationType> {
     // Check missing elements
     if (!this.quester) {
       this.addDiagnostic(
-        [0, 0],
+        [this.offsetStart, this.offsetStart],
         `Missing element "quester".`,
         DiagnosticSeverity.Error,
         DiagnosticCode.ConversationMissingQuester,
         [
           {
             title: `Add element "quester"`,
-            text: `quester: ${getFilename(this.document.uri, true)}\n`
+            text: `quester: ${getFilename(this.document.uri, true)}\n${" ".repeat(getIndent(this.yml))}`
           }
         ]
       );
