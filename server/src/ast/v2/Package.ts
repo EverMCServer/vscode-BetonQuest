@@ -1,6 +1,6 @@
 import { CodeAction, PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { Scalar, YAMLMap, isMap, parseDocument } from "yaml";
+import { Scalar, YAMLMap, isMap, isSeq, parseDocument, visit } from "yaml";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
@@ -47,16 +47,28 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
     // Iterate all files and create nodes.
     documents.forEach((document) => {
       // Parse YAML document
-      const yml = parseDocument<YAMLMap<Scalar<string>, any>, false>(
+      const ymlDoc = parseDocument<YAMLMap<Scalar<string>, any>, false>(
         document.getText(),
         {
           keepSourceTokens: true,
           strict: false
         }
       );
+      // Move comment from YAMLMap onto it's first item, avoiding eemeli/yaml/discussions/490
+      // Ref: https://github.com/eemeli/yaml/issues/502#issuecomment-1795624261
+      visit(ymlDoc as any, {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Map(_, node: any, path) {
+          if (!node.commentBefore || isSeq(path[path.length - 1])) {
+            return;
+          }
+          node.items[0].key.commentBefore = node.commentBefore;
+          delete node.commentBefore;
+        }
+      });
 
       // Switch by YAML nodes
-      yml.contents?.items.forEach((pair) => {
+      ymlDoc.contents?.items.forEach((pair) => {
         switch (pair.key.value) {
           case 'conditions':
             if (isMap<Scalar<string>>(pair.value) && isStringScalar(pair.key)) {

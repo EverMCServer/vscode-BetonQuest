@@ -14,7 +14,7 @@ import { HoverInfo } from "../../../utils/hover";
 export abstract class ElementList<LE extends ListElement> extends SectionCollection<ElementListType> {
   abstract type: ElementListType;
 
-  entriesSections: ElementListSection<LE>[] =[];
+  entriesSections: ElementListSection<LE>[] = [];
 
   constructor(uri: string, parent: PackageV2) {
     super(uri, parent);

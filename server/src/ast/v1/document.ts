@@ -1,4 +1,4 @@
-import { Scalar, YAMLMap, parseDocument } from "yaml";
+import { Scalar, YAMLMap, isSeq, parseDocument, visit } from "yaml";
 import { Range } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
@@ -28,6 +28,18 @@ export abstract class Document<T extends NodeType> extends NodeV1<T> {
         strict: false
       }
     );
+    // Move comment from YAMLMap onto it's first item, avoiding eemeli/yaml/discussions/490
+    // Ref: https://github.com/eemeli/yaml/issues/502#issuecomment-1795624261
+    visit(yamlDoc as any, {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      Map(_, node: any, path) {
+        if (!node.commentBefore || isSeq(path[path.length - 1])) {
+          return;
+        }
+        node.items[0].key.commentBefore = node.commentBefore;
+        delete node.commentBefore;
+      }
+    });
 
     this.yml = yamlDoc.contents;
 
