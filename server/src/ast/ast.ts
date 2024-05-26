@@ -100,14 +100,17 @@ export class AST {
       const u = new URL(document.uri);
       const p = u.pathname.split('/');
       if (p[p.length - 1].match(/^package\.yml$/i)) {
-        // Check if the file within "QuestPackages",
-        // and the workspce opened the whole BetonQuest folder, not it's sub-folders
         if (!document.uri.startsWith(this.wsFolderUri)) {
           return;
         } else {
+          // To ensure the extension could resolve all package paths correctely,
+          // check if the file within "QuestPackages",
+          // and the workspce opened the whole BetonQuest folder, not it's sub-folders.
           const partialPath = document.uri.slice(this.wsFolderUri.length);
-          // if (!partialPath.match(/^\/?QuestPackages/m) || !partialPath.match(/^\/?BetonQuest\/QuestPackages/m)) {
-          if (!partialPath.match(/^\/?QuestPackages/m)) {
+          // if (!document.uri.match(/\/QuestPackages\//)) {
+          // if (!partialPath.match(/^\/?QuestPackages\//m) || !partialPath.match(/^\/?BetonQuest\/QuestPackages\//m)) {
+          // if (!partialPath.match(/^\/?QuestPackages\//m)) {
+          if (!partialPath.match(/(?:^|\/)QuestPackages\//m)) {
             return;
           }
         }
@@ -115,7 +118,7 @@ export class AST {
         // Create package's base path
         const packageUri = getParentUrl(document.uri);
         // Cache the package's with base path.
-        filesV2.set(packageUri, [document]);
+        filesV2.set(packageUri, []);
       }
     });
     // Find all V1 packages
@@ -126,7 +129,7 @@ export class AST {
         // Create package's base path
         const packageUri = getParentUrl(document.uri);
         // Skip if conflict.
-        // 1. Avoid conflict with V2. Skip if this main.yml is nested in V2 package
+        // 1. Avoid conflict with V2. Skip if this main.yml is nested in a V2 package
         for (const path of filesV2.keys()) {
           if (document.uri.startsWith(path)) {
             return;
@@ -144,7 +147,7 @@ export class AST {
           }
         }
         // Cache the package's with base path.
-        filesV1.set(packageUri, [document]);
+        filesV1.set(packageUri, []);
       }
     });
 
@@ -157,9 +160,8 @@ export class AST {
           return false;
         }
         // Make sure this file is not inside another sub-package
-        const u = new URL(document.uri);
-        const p = u.pathname.split('/');
         const b = new URL(document.uri);
+        const p = b.pathname.split('/');
         for (let i = p.length - 1; i > -1; i--) {
           b.pathname = p.slice(0, i).join('/');
           const base = b.toString();
@@ -180,7 +182,23 @@ export class AST {
     // V1
     filesV1.forEach((files, packageUri) => {
       documents.filter((document) => document.uri.startsWith(packageUri)).forEach((document) => {
-        files.push(document);
+        // Load BetonQuest's files only
+        const partialPath = document.uri.slice(packageUri.length);
+        if (
+          [
+            "main.yml",
+            "conditions.yml",
+            "events.yml",
+            "objectives.yml",
+            "journal.yml",
+            "items.yml",
+            "custom.yml",
+          ].includes(partialPath)
+          ||
+          partialPath.match(/^\/?conversations\//m)
+        ) {
+          files.push(document);
+        }
       });
     });
 
