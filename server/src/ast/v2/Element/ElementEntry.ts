@@ -20,7 +20,7 @@ export abstract class ElementEntry<LE extends ListElement> extends NodeV2<Elemen
   offsetEnd?: number;
   parent: ElementListSection<LE>;
 
-  yaml: Pair<Scalar<string>, Scalar<string>>;
+  yml: Pair<Scalar<string>, Scalar<string>>;
 
   elementKey: ElementKey<LE>;
   elementKind?: ElementKind<LE>;
@@ -32,7 +32,7 @@ export abstract class ElementEntry<LE extends ListElement> extends NodeV2<Elemen
     this.offsetStart = pair.key?.range?.[0];
     this.offsetEnd = pair.value?.range?.[1];
     this.parent = parent;
-    this.yaml = pair;
+    this.yml = pair;
 
     // Parse YAML key
     this.elementKey = this.newKey(pair.key);
@@ -121,14 +121,14 @@ export abstract class ElementEntry<LE extends ListElement> extends NodeV2<Elemen
 
   getHoverInfo(offset: number) {
     if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
-      const hoverInfo = [this.elementKey.getHoverInfo(offset)];
+      const hoverInfo = [...this.elementKey.getHoverInfo(offset)];
       if (this.elementKind) {
-        hoverInfo.push(this.elementKind.getHoverInfo(offset));
+        hoverInfo.push(...this.elementKind.getHoverInfo(offset));
       }
       if (this.elementArguments) {
-        hoverInfo.push(this.elementArguments.getHoverInfo(offset));
+        hoverInfo.push(...this.elementArguments.getHoverInfo(offset));
       }
-      return hoverInfo.flat();
+      return hoverInfo;
     }
     return [];
   }

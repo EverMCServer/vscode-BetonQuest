@@ -16,6 +16,7 @@ export abstract class ElementKey<LE extends ListElement> extends NodeV1<ElementK
   parent: ElementEntry<LE>;
 
   value: string;
+  comment?: string;
 
   constructor(key: Scalar<string>, parent: ElementEntry<LE>) {
     super();
@@ -25,18 +26,24 @@ export abstract class ElementKey<LE extends ListElement> extends NodeV1<ElementK
     this.parent = parent;
 
     this.value = key.value;
+    this.comment = key.commentBefore ?? undefined;
   }
 
   abstract getSemanticTokens(): SemanticToken[];
 
   getHoverInfo(uri: string, offset: number): HoverInfo[] {
     if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
-      return [
-        {
-          content: "(full path: " + this.value + ")",
-          offset: [this.offsetStart, this.offsetEnd]
-        },
-      ];
+      const hoverInfo: HoverInfo[] = [{
+        content: "(full path: " + this.value + ")",
+        offset: [this.offsetStart, this.offsetEnd]
+      }];
+      if (this.comment) {
+        hoverInfo.unshift({
+          content: this.comment,
+          offset: [this.offsetStart!, this.offsetEnd!]
+        });
+      }
+      return hoverInfo;
     }
     return [];
   }
