@@ -100,7 +100,7 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
   getConditionEntries(id: string, packageUri: string): ConditionEntry[] {
     if (this.isPackageUri(packageUri)) {
       return this.conditionList?.getConditionEntries(id, packageUri) ?? [];
-    } else  {
+    } else {
       return this.parentAst.getV1ConditionEntry(id, packageUri);
     }
   }
@@ -109,7 +109,7 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
   getEventEntries(id: string, packageUri: string): EventEntry[] {
     if (this.isPackageUri(packageUri)) {
       return this.eventList?.getEventEntries(id, packageUri) ?? [];
-    } else  {
+    } else {
       return this.parentAst.getV1EventEntry(id, packageUri);
     }
   }
@@ -118,7 +118,7 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
   getObjectiveEntries(id: string, packageUri: string): ObjectiveEntry[] {
     if (this.isPackageUri(packageUri)) {
       return this.objectiveList?.getObjectiveEntries(id, packageUri) ?? [];
-    } else  {
+    } else {
       return this.parentAst.getV1ObjectiveEntry(id, packageUri);
     }
   }
@@ -167,21 +167,21 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
     return semanticTokens;
   }
 
-  getHoverInfo(uri: string, offset: number) {
+  getHoverInfo(offset: number, uri: string) {
     const hoverInfo: HoverInfo[] = [];
     if (!uri.startsWith(this.uri)) {
       return hoverInfo;
     }
     if (this.conditionList) {
-      hoverInfo.push(...this.conditionList.getHoverInfo(uri, offset));
+      hoverInfo.push(...this.conditionList.getHoverInfo(offset, uri));
     }
     if (this.eventList) {
-      hoverInfo.push(...this.eventList.getHoverInfo(uri, offset));
+      hoverInfo.push(...this.eventList.getHoverInfo(offset, uri));
     }
     if (this.objectiveList) {
-      hoverInfo.push(...this.objectiveList.getHoverInfo(uri, offset));
+      hoverInfo.push(...this.objectiveList.getHoverInfo(offset, uri));
     }
-    hoverInfo.push(...this.conversations?.flatMap(c => c.getHoverInfo(uri, offset)) || []);
+    hoverInfo.push(...this.conversations?.flatMap(c => c.getHoverInfo(offset, uri)) || []);
     return hoverInfo;
   }
 
@@ -202,16 +202,16 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
     return locations;
   }
 
-  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
+  getDefinitions(offset: number, uri: string): LocationLinkOffset[] {
     if (!uri.startsWith(this.uri)) {
       return [];
     }
 
     return [
-      ...this.conditionList?.getDefinitions(uri, offset) || [],
-      ...this.eventList?.getDefinitions(uri, offset) || [],
-      ...this.objectiveList?.getDefinitions(uri, offset) || [],
-      ...this.conversations?.flatMap(c => c.getDefinitions(uri, offset)) || [],
+      ...this.conditionList?.getDefinitions(offset, uri) || [],
+      ...this.eventList?.getDefinitions(offset, uri) || [],
+      ...this.objectiveList?.getDefinitions(offset, uri) || [],
+      ...this.conversations?.flatMap(c => c.getDefinitions(offset, uri)) || [],
       // TODO...
     ];
   }

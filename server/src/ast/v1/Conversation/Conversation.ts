@@ -217,7 +217,7 @@ export class Conversation extends Document<ConversationType> {
     return semanticTokens;
   };
 
-  getHoverInfo(documentUri: string, offset: number): HoverInfo[] {
+  getHoverInfo(offset: number, documentUri: string): HoverInfo[] {
     const hoverInfo: HoverInfo[] = [];
     if (documentUri !== this.uri) {
       return hoverInfo;
@@ -228,7 +228,7 @@ export class Conversation extends Document<ConversationType> {
     return hoverInfo;
   }
 
-  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
+  getDefinitions(offset: number, uri: string): LocationLinkOffset[] {
     if (uri !== this.uri) {
       return [];
     }

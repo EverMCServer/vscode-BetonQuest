@@ -44,14 +44,14 @@ export class Conversation extends SectionCollection<ConversationType> {
     return this.conversationSections.filter(c => !documentUri || c.uri === documentUri).flatMap(c => c.getSemanticTokens());
   }
 
-  getHoverInfo(documentUri: string, offset: number): HoverInfo[] {
+  getHoverInfo(offset: number, documentUri: string): HoverInfo[] {
     return this.conversationSections.filter(c => c.uri === documentUri).flatMap(c => c.getHoverInfo(offset));
   }
 
-  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
+  getDefinitions(offset: number, uri: string): LocationLinkOffset[] {
     return this.conversationSections
       .filter(section => section.uri === uri)
-      .flatMap(section => section.getDefinitions(uri, offset));
+      .flatMap(section => section.getDefinitions(offset, uri));
   }
 }
 
@@ -258,7 +258,7 @@ export class ConversationSection extends Document<ConversationType> {
     return hoverInfo;
   }
 
-  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
+  getDefinitions(offset: number, uri: string): LocationLinkOffset[] {
     if (uri !== this.uri) {
       return [];
     }

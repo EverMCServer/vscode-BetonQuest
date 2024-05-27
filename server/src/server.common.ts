@@ -196,11 +196,11 @@ export function server(connection: Connection): void {
   });
 
   // Listen on Definitions requests
-  connection.onDefinition((params, token, workDoneProgress, resultProgress) => {    
+  connection.onDefinition((params, token, workDoneProgress, resultProgress) => {
     const position = allDocuments.getOffsetByPosition(params.textDocument.uri, params.position);
-    return asts.getDefinitions(params.textDocument.uri, position).map(l => {
+    return asts.getDefinitions(position, params.textDocument.uri).map(l => {
       return {
-        originSelectionRange: l.originSelectionRange ? allDocuments.getRangeByOffsets(params.textDocument.uri, l.originSelectionRange): undefined,
+        originSelectionRange: l.originSelectionRange ? allDocuments.getRangeByOffsets(params.textDocument.uri, l.originSelectionRange) : undefined,
         targetUri: l.targetUri,
         targetRange: allDocuments.getRangeByOffsets(l.targetUri, l.targetRange),
         targetSelectionRange: allDocuments.getRangeByOffsets(l.targetUri, l.targetSelectionRange),

@@ -28,7 +28,7 @@ export abstract class ElementList<LE extends ListElement> extends SectionCollect
     return this.entriesSections.filter(section => section.uri === documentUri).flatMap(section => section.getSemanticTokens());
   }
 
-  getHoverInfo(documentUri: string, offset: number): HoverInfo[] {
+  getHoverInfo(offset: number, documentUri: string): HoverInfo[] {
     return this.entriesSections.filter(section => section.uri === documentUri).flatMap(section => section.getHoverInfo(offset));
   }
 

@@ -5,7 +5,7 @@ import { AllDocuments } from "../utils/document";
 export const hoverHandler = (allDocuments: AllDocuments, asts: ASTs, params: HoverParams, token: CancellationToken, workDoneProgress: WorkDoneProgressReporter, resultProgress?: ResultProgressReporter<never> | undefined): HandlerResult<Hover | null | undefined, void> => {
   // Get Hover infos from ASTs
   const offset = allDocuments.getOffsetByPosition(params.textDocument.uri, params.position);
-  const hoverInfos = asts.getHoverInfos(params.textDocument.uri, offset);
+  const hoverInfos = asts.getHoverInfos(offset, params.textDocument.uri);
 
   // Concatnate hover infos
   const content = hoverInfos.map(i => i.content).join("\n\n---\n\n");

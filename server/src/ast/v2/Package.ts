@@ -210,16 +210,16 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
     return semanticTokens.sort((a, b) => a.offsetStart - b.offsetStart);
   }
 
-  getHoverInfo(documentUri: string, offset: number): HoverInfo[] {
+  getHoverInfo(offset: number, documentUri: string): HoverInfo[] {
     const hoverInfo: HoverInfo[] = [];
     if (!documentUri.startsWith(this.uri)) {
       return hoverInfo;
     }
-    hoverInfo.push(...this.conditionLists.getHoverInfo(documentUri, offset));
-    hoverInfo.push(...this.eventLists.getHoverInfo(documentUri, offset));
-    hoverInfo.push(...this.objectiveLists.getHoverInfo(documentUri, offset));
+    hoverInfo.push(...this.conditionLists.getHoverInfo(offset, documentUri));
+    hoverInfo.push(...this.eventLists.getHoverInfo(offset, documentUri));
+    hoverInfo.push(...this.objectiveLists.getHoverInfo(offset, documentUri));
     this.conversations.forEach(c => {
-      hoverInfo.push(...c.getHoverInfo(documentUri, offset));
+      hoverInfo.push(...c.getHoverInfo(offset, documentUri));
     });
     return hoverInfo;
   }
@@ -241,13 +241,13 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
     return locations;
   }
 
-  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
+  getDefinitions(offset: number, uri: string): LocationLinkOffset[] {
     const definitions: LocationLinkOffset[] = [];
     if (!uri.startsWith(this.uri)) {
       return definitions;
     }
 
-    this.conversations.forEach(c => definitions.push(...c.getDefinitions(uri, offset)));
+    this.conversations.forEach(c => definitions.push(...c.getDefinitions(offset, uri)));
     // TODO: Condition / Event / Objective list
 
     return definitions;

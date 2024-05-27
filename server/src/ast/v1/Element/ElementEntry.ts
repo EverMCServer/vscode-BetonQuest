@@ -133,7 +133,7 @@ export abstract class ElementEntry<LE extends ListElement> extends NodeV1<Elemen
     return [];
   }
 
-  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
+  getDefinitions(offset: number, uri: string): LocationLinkOffset[] {
     // TODO
     return [];
   }

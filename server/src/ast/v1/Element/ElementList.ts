@@ -47,7 +47,7 @@ export abstract class ElementList<LE extends ListElement, Entry extends ElementE
     });
   }
 
-  getHoverInfo(uri: string, offset: number) {
+  getHoverInfo(offset: number, uri: string) {
     if (this.uri === uri && this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
       return this.entries.flatMap(e => e.getHoverInfo(uri, offset));
     }
@@ -66,12 +66,12 @@ export abstract class ElementList<LE extends ListElement, Entry extends ElementE
     return result;
   }
 
-  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
+  getDefinitions(offset: number, uri: string): LocationLinkOffset[] {
     if (!uri.startsWith(this.uri)) {
       return [];
     }
 
-    return this.entries.flatMap(e => e.getDefinitions(uri, offset));
+    return this.entries.flatMap(e => e.getDefinitions(offset, uri));
   }
 
 }

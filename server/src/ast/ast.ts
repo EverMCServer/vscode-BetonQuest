@@ -47,8 +47,8 @@ export class ASTs {
     return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getSemanticTokens(documentUri));
   }
 
-  getHoverInfos(documentUri: string, offset: number) {
-    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getHoverInfo(documentUri, offset));
+  getHoverInfos(offset: number, documentUri: string) {
+    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getHoverInfo(offset, documentUri));
   }
 
   /**
@@ -60,8 +60,8 @@ export class ASTs {
     return this.getAllAstByDocumentUri(sourceUri).flatMap(ast => ast.getLocations(yamlPath, sourceUri));
   }
 
-  getDefinitions(documentUri: string, offset: number): LocationLinkOffset[] {
-    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getDefinitions(documentUri, offset));
+  getDefinitions(offset: number, documentUri: string): LocationLinkOffset[] {
+    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getDefinitions(offset, documentUri));
   }
 
 }
@@ -252,12 +252,10 @@ export class AST {
   }
 
   // Get all hover info
-  getHoverInfo(uri: string, offset: number): HoverInfo[] {
-    // TODO: return text with range
-    // return ["test `hover` info", "block 2"];
+  getHoverInfo(offset: number, uri: string): HoverInfo[] {
     return [
-      ...this.packagesV1.flatMap(p => p.getHoverInfo(uri, offset)),
-      ...this.packagesV2.flatMap(p => p.getHoverInfo(uri, offset))
+      ...this.packagesV1.flatMap(p => p.getHoverInfo(offset, uri)),
+      ...this.packagesV2.flatMap(p => p.getHoverInfo(offset, uri))
     ];
   }
 
@@ -268,10 +266,10 @@ export class AST {
     ];
   }
 
-  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
+  getDefinitions(offset: number, uri: string): LocationLinkOffset[] {
     return [
-      ...this.packagesV1.flatMap(pkg => pkg.getDefinitions(uri, offset)),
-      ...this.packagesV2.flatMap(pkg => pkg.getDefinitions(uri, offset))
+      ...this.packagesV1.flatMap(pkg => pkg.getDefinitions(offset, uri)),
+      ...this.packagesV2.flatMap(pkg => pkg.getDefinitions(offset, uri))
     ];
   }
 
@@ -279,12 +277,12 @@ export class AST {
     return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getConditionEntries(id, packageUri));
   }
 
-  getV1ObjectiveEntry(id: string, packageUri: string) {
-    return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getObjectiveEntries(id, packageUri));
-  }
-
   getV1EventEntry(id: string, packageUri: string) {
     return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getEventEntries(id, packageUri));
+  }
+
+  getV1ObjectiveEntry(id: string, packageUri: string) {
+    return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getObjectiveEntries(id, packageUri));
   }
 
   getV2ConditionEntry(id: string, packageUri: string) {
