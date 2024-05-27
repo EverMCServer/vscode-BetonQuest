@@ -1,8 +1,10 @@
 import ListElement from "betonquest-utils/betonquest/ListElement";
 
 import { NodeV1, NodeType } from "../../node";
-import { LocationLinkOffset } from "../../../utils/location";
 import { ElementEntry } from "../Element/ElementEntry";
+import { SemanticToken } from "../../../service/semanticTokens";
+import { HoverInfo } from "../../../utils/hover";
+import { LocationLinkOffset } from "../../../utils/location";
 
 export abstract class AbstractID<T extends NodeType, PT extends NodeV1<NodeType>, ET extends ElementEntry<ListElement>> extends NodeV1<T> {
   abstract type: T;
@@ -45,6 +47,33 @@ export abstract class AbstractID<T extends NodeType, PT extends NodeV1<NodeType>
 
   // Method to get the target nodes that this ID points to.
   abstract getTargetNodes(): ET[];
+
+  // TODO
+  getSemanticTokens(): SemanticToken[] {
+    const semanticTokens: SemanticToken[] = [];
+    return semanticTokens;
+  };
+
+  getHoverInfo(offset: number): HoverInfo[] {
+    const hoverInfo: HoverInfo[] = [];
+    if (offset < this.offsetStart || offset > this.offsetEnd) {
+      return hoverInfo;
+    }
+    hoverInfo.push(...this.getTargetNodes().flatMap(n => {
+      const hoverInfo = [...n.elementKey.getHoverInfo().map(h => {
+        h.offset = [this.offsetStart, this.offsetEnd];
+        return h;
+      })];
+      if (n.yml.value) {
+        hoverInfo.unshift({
+          content: n.yml.value.value,
+          offset: [this.offsetStart, this.offsetEnd]
+        });
+      }
+      return hoverInfo;
+    }));
+    return hoverInfo;
+  }
 
   getDefinitions(offset: number): LocationLinkOffset[] {
     if (this.offsetStart! > offset || this.offsetEnd! < offset) {

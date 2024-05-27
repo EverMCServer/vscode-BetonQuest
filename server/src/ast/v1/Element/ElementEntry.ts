@@ -121,12 +121,12 @@ export abstract class ElementEntry<LE extends ListElement> extends NodeV1<Elemen
 
   getHoverInfo(uri: string, offset: number) {
     if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
-      const hoverInfo = [...this.elementKey.getHoverInfo(uri, offset)];
+      const hoverInfo = [...this.elementKey.getHoverInfo(offset)];
       if (this.elementKind) {
-        hoverInfo.push(...this.elementKind.getHoverInfo(uri, offset));
+        hoverInfo.push(...this.elementKind.getHoverInfo(offset));
       }
       if (this.elementArguments) {
-        hoverInfo.push(...this.elementArguments.getHoverInfo(uri, offset));
+        hoverInfo.push(...this.elementArguments.getHoverInfo(offset));
       }
       return hoverInfo;
     }

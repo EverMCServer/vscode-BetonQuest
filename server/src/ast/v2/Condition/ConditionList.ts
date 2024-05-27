@@ -14,16 +14,30 @@ export class ConditionList extends ElementList<Condition> {
     this.entriesSections.push(new ConditionListSection(uri, document, yml, this));
   }
 
-  getConditionEntries(id: string, packageUri: string): ConditionEntry[] {
-    return this.entriesSections.flatMap(section => section.getConditionEntries(id, packageUri));
+  getConditionEntries(id: string, packageUri?: string): ConditionEntry[] {
+    if (!packageUri || this.parent.isPackageUri(packageUri)) {
+      return this.entriesSections
+        .flatMap(section => section.getConditionEntries(id));
+    } else {
+      return this.parent.getConditionEntries(id, packageUri);
+    }
   }
 }
 
-export class ConditionListSection extends ElementListSection<Condition> {
+export class ConditionListSection extends ElementListSection<Condition, ConditionEntry> {
   type: ConditionListType = "ConditionList";
 
   newEntry(pair: Pair<Scalar<string>, Scalar<string>>): ConditionEntry {
     return new ConditionEntry(pair, this);
+  }
+
+  getConditionEntries(id: string, packageUri?: string): ConditionEntry[] {
+    if (!packageUri || this.parent.parent.isPackageUri(packageUri)) {
+      return this.entries
+        .filter(entry => entry.elementKey.value === id);
+    } else {
+      return this.parent.getConditionEntries(id, packageUri);
+    }
   }
 
 }

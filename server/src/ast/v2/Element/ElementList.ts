@@ -14,7 +14,7 @@ import { HoverInfo } from "../../../utils/hover";
 export abstract class ElementList<LE extends ListElement> extends SectionCollection<ElementListType> {
   abstract type: ElementListType;
 
-  entriesSections: ElementListSection<LE>[] = [];
+  entriesSections: ElementListSection<LE, ElementEntry<LE>>[] = [];
 
   constructor(uri: string, parent: PackageV2) {
     super(uri, parent);
@@ -37,10 +37,10 @@ export abstract class ElementList<LE extends ListElement> extends SectionCollect
   }
 }
 
-export abstract class ElementListSection<LE extends ListElement> extends Document<ElementListType> {
+export abstract class ElementListSection<LE extends ListElement, EE extends ElementEntry<LE>> extends Document<ElementListType> {
   abstract type: ElementListType;
 
-  entries: ElementEntry<LE>[] = [];
+  entries: EE[] = [];
 
   getEntries() {
     return this.entries;
@@ -60,7 +60,7 @@ export abstract class ElementListSection<LE extends ListElement> extends Documen
     });
   }
 
-  abstract newEntry(pair: Pair<Scalar<string>, Scalar<string>>): ElementEntry<LE>;
+  abstract newEntry(pair: Pair<Scalar<string>, Scalar<string>>): EE;
 
   getPublishDiagnosticsParams() {
     return {

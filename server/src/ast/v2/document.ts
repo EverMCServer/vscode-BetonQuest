@@ -37,7 +37,7 @@ export abstract class Document<T extends NodeType> extends NodeV2<T> {
 export abstract class SectionCollection<T extends NodeType> extends NodeV2<T> {
   abstract type: T;
   protected uri: string;
-  protected parent: PackageV2;
+  parent: PackageV2;
 
   constructor(uri: string, parent: PackageV2) {
     super();

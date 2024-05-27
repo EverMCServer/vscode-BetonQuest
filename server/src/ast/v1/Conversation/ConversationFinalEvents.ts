@@ -3,6 +3,8 @@ import { DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationFinalEventsType, NodeV1 } from "../../node";
 import { DiagnosticCode } from "../../../utils/diagnostics";
+import { SemanticToken } from "../../../service/semanticTokens";
+import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
 import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
 import { Conversation } from "./Conversation";
@@ -11,8 +13,8 @@ import { Event } from "./Option/Event";
 export class ConversationFinalEvents extends NodeV1<ConversationFinalEventsType> {
   type: ConversationFinalEventsType = 'ConversationFinalEvents';
   uri: string;
-  offsetStart?: number;
-  offsetEnd?: number;
+  offsetStart: number;
+  offsetEnd: number;
   parent: Conversation;
 
   // Cache the parsed yaml document
@@ -98,6 +100,22 @@ export class ConversationFinalEvents extends NodeV1<ConversationFinalEventsType>
 
   getCodeActions() {
     return this.codeActions;
+  }
+
+  // TODO
+  getSemanticTokens(): SemanticToken[] {
+    const semanticTokens: SemanticToken[] = [];
+    return semanticTokens;
+  };
+
+  // TODO
+  getHoverInfo(offset: number): HoverInfo[] {
+    const hoverInfo: HoverInfo[] = [];
+    if (offset < this.offsetStart || offset > this.offsetEnd) {
+      return hoverInfo;
+    }
+    hoverInfo.push(...this.events.flatMap(e => e.getHoverInfo(offset)));
+    return hoverInfo;
   }
 
   getDefinitions(offset: number): LocationLinkOffset[] {

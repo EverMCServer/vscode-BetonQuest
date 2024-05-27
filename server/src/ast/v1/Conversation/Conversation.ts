@@ -7,6 +7,8 @@ import { ConversationNpcOptionType, ConversationPlayerOptionType, ConversationTy
 import { isYamlMapPair } from "../../../utils/yaml";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { LocationLinkOffset } from "../../../utils/location";
+import { SemanticToken } from "../../../service/semanticTokens";
+import { HoverInfo } from "../../../utils/hover";
 import { getFilename } from "../../../utils/url";
 import { ConversationQuester } from "./ConversationQuester";
 import { ConversationFirst } from "./ConversationFirst";
@@ -204,6 +206,26 @@ export class Conversation extends Document<ConversationType> {
       ...this.npcOptions?.flatMap(npc => npc.getCodeActions()) ?? [],
       ...this.playerOptions?.flatMap(player => player.getCodeActions()) ?? [],
     ];
+  }
+
+  // TODO
+  getSemanticTokens(documentUri: string): SemanticToken[] {
+    const semanticTokens: SemanticToken[] = [];
+    if (documentUri !== this.uri) {
+      return semanticTokens;
+    }
+    return semanticTokens;
+  };
+
+  getHoverInfo(documentUri: string, offset: number): HoverInfo[] {
+    const hoverInfo: HoverInfo[] = [];
+    if (documentUri !== this.uri) {
+      return hoverInfo;
+    }
+    hoverInfo.push(...this.finalEvents?.getHoverInfo(offset) || []);
+    hoverInfo.push(...this.npcOptions.flatMap(o => o.getHoverInfo(offset)));
+    hoverInfo.push(...this.playerOptions.flatMap(o => o.getHoverInfo(offset)));
+    return hoverInfo;
   }
 
   getDefinitions(uri: string, offset: number): LocationLinkOffset[] {

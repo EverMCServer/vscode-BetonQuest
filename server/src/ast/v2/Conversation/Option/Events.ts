@@ -3,6 +3,8 @@ import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationEventsType, ConversationOptionType, NodeV2 } from "../../../node";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
+import { SemanticToken } from "../../../../service/semanticTokens";
+import { HoverInfo } from "../../../../utils/hover";
 import { LocationLinkOffset } from "../../../../utils/location";
 import { getScalarSourceAndRange } from "../../../../utils/yaml";
 import { Event } from "./Event";
@@ -10,6 +12,8 @@ import { Event } from "./Event";
 export class Events<PT extends NodeV2<ConversationOptionType>> extends NodeV2<ConversationEventsType> {
   type: ConversationEventsType = "ConversationEvents";
   protected uri: string;
+  offsetStart: number;
+  offsetEnd: number;
   protected parent: PT;
 
   private yml: Scalar<string>; //<Scalar<string>, Scalar<string>>;
@@ -64,6 +68,21 @@ export class Events<PT extends NodeV2<ConversationOptionType>> extends NodeV2<Co
       ...this.diagnostics,
       ...this.events.flatMap(c => c.getDiagnostics())
     ];
+  }
+
+  // TODO
+  getSemanticTokens(): SemanticToken[] {
+    const semanticTokens: SemanticToken[] = [];
+    return semanticTokens;
+  };
+
+  getHoverInfo(offset: number): HoverInfo[] {
+    const hoverInfo: HoverInfo[] = [];
+    if (offset < this.offsetStart || offset > this.offsetEnd) {
+      return hoverInfo;
+    }
+    hoverInfo.push(...this.events.flatMap(e => e.getHoverInfo(offset)));
+    return hoverInfo;
   }
 
   getDefinitions(offset: number): LocationLinkOffset[] {

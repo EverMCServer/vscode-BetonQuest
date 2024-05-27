@@ -144,15 +144,10 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
     return this.uri === packageUri;
   }
 
-  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
-    // TODO
-    return [];
-  }
-
   // Get Condition entries from child or parent
   getConditionEntries(id: string, packageUri: string): ConditionEntry[] {
     if (this.isPackageUri(packageUri)) {
-      return this.conditionLists.getConditionEntries(id, packageUri);
+      return this.conditionLists.getConditionEntries(id);
     } else {
       return this.parentAst.getV2ConditionEntry(id, packageUri);
     }
@@ -161,7 +156,7 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
   // Get Event entries from child or parent
   getEventEntries(id: string, packageUri: string): EventEntry[] {
     if (this.isPackageUri(packageUri)) {
-      return this.conditionLists.getEventEntries(id, packageUri);
+      return this.eventLists.getEventEntries(id, packageUri);
     } else {
       return this.parentAst.getV2EventEntry(id, packageUri);
     }
@@ -170,7 +165,7 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
   // Get Objective entries from child or parent
   getObjectiveEntries(id: string, packageUri: string): ObjectiveEntry[] {
     if (this.isPackageUri(packageUri)) {
-      return this.conditionLists.getObjectiveEntries(id, packageUri);
+      return this.objectiveLists.getObjectiveEntries(id, packageUri);
     } else {
       return this.parentAst.getV2ObjectiveEntry(id, packageUri);
     }
@@ -246,18 +241,15 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
     return locations;
   }
 
-  // TODO
-  // getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
-  //   if (!uri.startsWith(this.uri)) {
-  //     return [];
-  //   }
+  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
+    const definitions: LocationLinkOffset[] = [];
+    if (!uri.startsWith(this.uri)) {
+      return definitions;
+    }
 
-  //   return [
-  //     ...this.conversations?.flatMap(c => c.getDefinitions(uri, offset)) || [],
-  //     ...this.conditionList?.getDefinitions(uri, offset) || [],
-  //     ...this.eventList?.getDefinitions(uri, offset) || [],
-  //     ...this.objectiveList?.getDefinitions(uri, offset) || [],
-  //     // TODO...
-  //   ];
-  // }
+    this.conversations.forEach(c => definitions.push(...c.getDefinitions(uri, offset)));
+    // TODO: Condition / Event / Objective list
+
+    return definitions;
+  }
 }

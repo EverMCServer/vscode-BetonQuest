@@ -181,6 +181,7 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
     if (this.objectiveList) {
       hoverInfo.push(...this.objectiveList.getHoverInfo(uri, offset));
     }
+    hoverInfo.push(...this.conversations?.flatMap(c => c.getHoverInfo(uri, offset)) || []);
     return hoverInfo;
   }
 
@@ -207,10 +208,10 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
     }
 
     return [
-      ...this.conversations?.flatMap(c => c.getDefinitions(uri, offset)) || [],
       ...this.conditionList?.getDefinitions(uri, offset) || [],
       ...this.eventList?.getDefinitions(uri, offset) || [],
       ...this.objectiveList?.getDefinitions(uri, offset) || [],
+      ...this.conversations?.flatMap(c => c.getDefinitions(uri, offset)) || [],
       // TODO...
     ];
   }

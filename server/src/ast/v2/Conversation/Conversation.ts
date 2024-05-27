@@ -47,6 +47,12 @@ export class Conversation extends SectionCollection<ConversationType> {
   getHoverInfo(documentUri: string, offset: number): HoverInfo[] {
     return this.conversationSections.filter(c => c.uri === documentUri).flatMap(c => c.getHoverInfo(offset));
   }
+
+  getDefinitions(uri: string, offset: number): LocationLinkOffset[] {
+    return this.conversationSections
+      .filter(section => section.uri === uri)
+      .flatMap(section => section.getDefinitions(uri, offset));
+  }
 }
 
 export class ConversationSection extends Document<ConversationType> {
@@ -240,13 +246,16 @@ export class ConversationSection extends Document<ConversationType> {
   }
 
   getSemanticTokens(): SemanticToken[] {
-    // TODO
-    return [];
+    const semanticTokens: SemanticToken[] = [];
+    return semanticTokens;
   }
 
   getHoverInfo(offset: number) {
-    // TODO
-    return [];
+    const hoverInfo: HoverInfo[] = [];
+    hoverInfo.push(...this.finalEvents?.getHoverInfo(offset) || []);
+    hoverInfo.push(...this.npcOptions.flatMap(o => o.getHoverInfo(offset)));
+    hoverInfo.push(...this.playerOptions.flatMap(o => o.getHoverInfo(offset)));
+    return hoverInfo;
   }
 
   getDefinitions(uri: string, offset: number): LocationLinkOffset[] {

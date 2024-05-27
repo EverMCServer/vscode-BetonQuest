@@ -13,7 +13,7 @@ export class ConditionList extends ElementList<Condition, ConditionEntry> {
     return new ConditionEntry(pair, this);
   }
 
-  getConditionEntries(id: string, packageUri: string): ConditionEntry[] {
+  getConditionEntries(id: string, packageUri: string): ConditionEntry[] { // TODO: optimize let packageUri be optional
     if (this.parent.isPackageUri(packageUri)) {
       return this.entries.filter(entry => entry.elementKey.value === id);
     } else {

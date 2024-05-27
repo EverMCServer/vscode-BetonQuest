@@ -215,7 +215,8 @@ export abstract class ElementArguments<LE extends ListElement> extends NodeV1<El
     return semanticTokens;
   }
 
-  getHoverInfo(uri: string, offset: number): HoverInfo[] {
+  // TODO
+  getHoverInfo(offset: number): HoverInfo[] {
     if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
       return [];
     }

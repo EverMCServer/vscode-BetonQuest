@@ -3,6 +3,8 @@ import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationConditionsType, ConversationOptionType, NodeV1 } from "../../../node";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
+import { SemanticToken } from "../../../../service/semanticTokens";
+import { HoverInfo } from "../../../../utils/hover";
 import { LocationLinkOffset } from "../../../../utils/location";
 import { getScalarSourceAndRange } from "../../../../utils/yaml";
 import { Condition } from "./Condition";
@@ -10,6 +12,8 @@ import { Condition } from "./Condition";
 export class Conditions<PT extends NodeV1<ConversationOptionType>> extends NodeV1<ConversationConditionsType> {
   type: ConversationConditionsType = "ConversationConditions";
   protected uri: string;
+  offsetStart: number;
+  offsetEnd: number;
   protected parent: PT;
 
   private yml: Scalar<string>; //<Scalar<string>, Scalar<string>>;
@@ -64,6 +68,21 @@ export class Conditions<PT extends NodeV1<ConversationOptionType>> extends NodeV
       ...this.diagnostics,
       ...this.conditions.flatMap(c => c.getDiagnostics())
     ];
+  }
+
+  // TODO
+  getSemanticTokens(): SemanticToken[] {
+    const semanticTokens: SemanticToken[] = [];
+    return semanticTokens;
+  };
+
+  getHoverInfo(offset: number): HoverInfo[] {
+    const hoverInfo: HoverInfo[] = [];
+    if (offset < this.offsetStart || offset > this.offsetEnd) {
+      return hoverInfo;
+    }
+    hoverInfo.push(...this.conditions.flatMap(c => c.getHoverInfo(offset)));
+    return hoverInfo;
   }
 
   getDefinitions(offset: number): LocationLinkOffset[] {

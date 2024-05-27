@@ -3,6 +3,8 @@ import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserve
 
 import { ConversationOptionType, NodeV1 } from "../../../node";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
+import { SemanticToken } from "../../../../service/semanticTokens";
+import { HoverInfo } from "../../../../utils/hover";
 import { LocationLinkOffset } from "../../../../utils/location";
 import { isStringScalar } from "../../../../utils/yaml";
 import { Text } from "./Text";
@@ -13,22 +15,22 @@ import { Events } from "./Events";
 export class Option<T extends ConversationOptionType> extends NodeV1<T> {
   type: T;
   uri: string;
-  offsetStart?: number; // TODO
-  offsetEnd?: number; // TODO
+  offsetStart: number;
+  offsetEnd: number;
   parent: Conversation;
 
   // Cache the parsed yaml document
   yml: Pair<Scalar<string>, YAMLMap>;
   text?: Text;
-  conditions?: Conditions<this>; // TODO
-  events?: Events<this>; // TODO
+  conditions?: Conditions<this>;
+  events?: Events<this>;
 
   constructor(type: T, yml: Pair<Scalar<string>, YAMLMap>, parent: Conversation) {
     super();
     this.type = type;
     this.uri = parent.uri;
     this.offsetStart = yml.key.range![0];
-    this.offsetEnd = yml.value?.range![1];
+    this.offsetEnd = yml.value?.range![1] || yml.key.range![1];
     this.parent = parent;
     this.yml = yml;
 
@@ -132,6 +134,22 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
       ...this.conditions?.getCodeActions() ?? [],
       ...this.events?.getCodeActions() ?? [],
     ];
+  }
+
+  // TODO
+  getSemanticTokens(): SemanticToken[] {
+    const semanticTokens: SemanticToken[] = [];
+    return semanticTokens;
+  };
+
+  getHoverInfo(offset: number): HoverInfo[] {
+    const hoverInfo: HoverInfo[] = [];
+    if (offset < this.offsetStart || offset > this.offsetEnd) {
+      return hoverInfo;
+    }
+    hoverInfo.push(...this.conditions?.getHoverInfo(offset) || []);
+    hoverInfo.push(...this.events?.getHoverInfo(offset) || []);
+    return hoverInfo;
   }
 
   getDefinitions(offset: number): LocationLinkOffset[] {

@@ -11,8 +11,8 @@ import { SemanticToken } from "../../../service/semanticTokens";
 export abstract class ElementKey<LE extends ListElement> extends NodeV1<ElementKeyType> {
   abstract type: ElementKeyType;
   uri: string;
-  offsetStart?: number | undefined;
-  offsetEnd?: number | undefined;
+  offsetStart: number;
+  offsetEnd: number;
   parent: ElementEntry<LE>;
 
   value: string;
@@ -21,18 +21,18 @@ export abstract class ElementKey<LE extends ListElement> extends NodeV1<ElementK
   constructor(key: Scalar<string>, parent: ElementEntry<LE>) {
     super();
     this.uri = parent.uri;
-    this.offsetStart = key.range?.[0];
-    this.offsetEnd = key.range?.[1];
+    this.offsetStart = key.range![0];
+    this.offsetEnd = key.range![1];
     this.parent = parent;
 
     this.value = key.value;
-    this.comment = key.commentBefore ?? undefined;
+    this.comment = key.commentBefore?.split(/\n\n+/).slice(-1)[0] ?? undefined;
   }
 
   abstract getSemanticTokens(): SemanticToken[];
 
-  getHoverInfo(uri: string, offset: number): HoverInfo[] {
-    if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
+  getHoverInfo(offset?: number): HoverInfo[] {
+    if (!offset || this.offsetStart <= offset && this.offsetEnd >= offset) {
       const hoverInfo: HoverInfo[] = [{
         content: "(full path: " + this.value + ")",
         offset: [this.offsetStart, this.offsetEnd]
