@@ -4,6 +4,7 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { NodeV2, NodeType } from "../node";
 import { PackageV2 } from "./Package";
+import { SemanticToken } from "../../service/semanticTokens";
 
 export abstract class Document<T extends NodeType> extends NodeV2<T> {
   uri: string;
@@ -12,6 +13,8 @@ export abstract class Document<T extends NodeType> extends NodeV2<T> {
   // VSCode Document, for diagnostics / quick actions / goto definition, etc
   document: TextDocument;
   yml: YAMLMap<Scalar<string>>;
+
+  semanticTokens: SemanticToken[] = [];
 
   constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: SectionCollection<T>) {
     super();

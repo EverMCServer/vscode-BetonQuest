@@ -1,6 +1,6 @@
 import { CodeAction, PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { Scalar, YAMLMap, isMap, isSeq, parseDocument, visit } from "yaml";
+import { Pair, Scalar, YAMLMap, isMap, isSeq, parseDocument, visit } from "yaml";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
@@ -69,10 +69,20 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
 
       // Switch by YAML nodes
       ymlDoc.contents?.items.forEach((pair) => {
+        // Parse value
         switch (pair.key.value) {
           case 'conditions':
             if (isMap<Scalar<string>>(pair.value) && isStringScalar(pair.key)) {
               this.conditionLists.addSection(document.uri, document, pair.value);
+              // Set key's Semantic Token
+              if (pair.key.range) {
+                this.conditionLists.entriesSections.find(section => section.uri === document.uri)?.
+                  semanticTokens.push({
+                    offsetStart: pair.key.range[0],
+                    offsetEnd: pair.key.range[1],
+                    tokenType: "enumMember"
+                  });
+              }
             } else {
               // TODO: Diagnostics
             }
@@ -80,6 +90,15 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
           case 'events':
             if (isMap<Scalar<string>>(pair.value) && isStringScalar(pair.key)) {
               this.eventLists.addSection(document.uri, document, pair.value);
+              // Set key's Semantic Token
+              if (pair.key.range) {
+                this.eventLists.entriesSections.find(section => section.uri === document.uri)?.
+                  semanticTokens.push({
+                    offsetStart: pair.key.range[0],
+                    offsetEnd: pair.key.range[1],
+                    tokenType: "enumMember"
+                  });
+              }
             } else {
               // TODO: Diagnostics
             }
@@ -87,6 +106,15 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
           case 'objectives':
             if (isMap<Scalar<string>>(pair.value) && isStringScalar(pair.key)) {
               this.objectiveLists.addSection(document.uri, document, pair.value);
+              // Set key's Semantic Token
+              if (pair.key.range) {
+                this.objectiveLists.entriesSections.find(section => section.uri === document.uri)?.
+                  semanticTokens.push({
+                    offsetStart: pair.key.range[0],
+                    offsetEnd: pair.key.range[1],
+                    tokenType: "enumMember"
+                  });
+              }
               break;
             } else {
               // TODO: Diagnostics
@@ -100,7 +128,16 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
                   if (!this.conversations.has(p.key.value)) {
                     this.conversations.set(p.key.value, new Conversation(this.uri, this));
                   }
-                  this.conversations.get(p.key.value)!.addSection(document.uri, document, p.value);
+                  this.conversations.get(p.key.value)?.addSection(document.uri, document, p.value);
+                  // Set key's Semantic Token
+                  if (pair.key.range) {
+                    this.conversations.get(p.key.value)?.conversationSections.find(section => section.uri === document.uri)?.
+                      semanticTokens.push({
+                        offsetStart: pair.key.range[0],
+                        offsetEnd: pair.key.range[1],
+                        tokenType: "enumMember"
+                      });
+                  }
                 } else {
                   // TODO: Diagnostics
                 }

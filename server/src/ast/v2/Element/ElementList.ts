@@ -70,9 +70,12 @@ export abstract class ElementListSection<LE extends ListElement, EE extends Elem
   }
 
   getSemanticTokens() {
-    return this.entries.flatMap(e => {
-      return e.getSemanticTokens();
-    });
+    return [
+      ...this.semanticTokens,
+      ...this.entries.flatMap(e => {
+        return e.getSemanticTokens();
+      })
+    ];
   }
 
   getHoverInfo(offset: number) {

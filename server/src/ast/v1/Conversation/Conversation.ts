@@ -30,6 +30,8 @@ export class Conversation extends Document<ConversationType> {
   npcOptions: Option<ConversationNpcOptionType>[] = [];
   playerOptions: Option<ConversationPlayerOptionType>[] = [];
 
+  semanticTokens: SemanticToken[] = [];
+
   constructor(uri: string, document: TextDocument, parent: PackageV1) {
     super(uri, document, parent);
 
@@ -37,6 +39,24 @@ export class Conversation extends Document<ConversationType> {
     this.yml.items.forEach(pair => {
       const offsetStart = pair.key.range?.[0] ?? 0;
       const offsetEnd = (pair.value as Scalar)?.range?.[1] ?? offsetStart;
+      // Set key's Semantic Token
+      if (pair.key.range) {
+        switch (pair.key.value) {
+          case "quester":
+          case "first":
+          case "stop":
+          case "final_events":
+          case "interceptor":
+          case "NPC_options":
+          case "player_options":
+            this.semanticTokens.push({
+              offsetStart: pair.key.range![0],
+              offsetEnd: pair.key.range![1],
+              tokenType: "keyword"
+            });
+        }
+      }
+      // Parse value
       switch (pair.key.value) {
         case "quester":
           if (isScalar(pair.value) || isMap<Scalar<string>>(pair.value)) {
@@ -213,6 +233,7 @@ export class Conversation extends Document<ConversationType> {
     if (documentUri !== this.uri) {
       return semanticTokens;
     }
+    semanticTokens.push(...this.semanticTokens);
     semanticTokens.push(...this.finalEvents?.getSemanticTokens() || []);
     semanticTokens.push(...this.npcOptions.flatMap(o => o.getSemanticTokens()));
     semanticTokens.push(...this.playerOptions.flatMap(o => o.getSemanticTokens()));
