@@ -153,28 +153,14 @@ export class AST {
 
     // Find all files by package
     // V2
+    const packageUrisV2 = Array.from(filesV2, ([k]) => k);
     filesV2.forEach((files, packageUri) => {
-      const baseEntryFileRegex = new RegExp(`^${packageUri}/package\.yml$`);
       documents.filter((document) => {
-        if (!document.uri.startsWith(packageUri) || document.uri.match(baseEntryFileRegex)) {
+        if (!document.uri.startsWith(packageUri)) {
           return false;
         }
         // Make sure this file is not inside another sub-package
-        const b = new URL(document.uri);
-        const p = b.pathname.split('/');
-        for (let i = p.length - 1; i > -1; i--) {
-          b.pathname = p.slice(0, i).join('/');
-          const base = b.toString();
-          if (base === packageUri) {
-            // It belongs to this package only, skip check.
-            break;
-          }
-          if (filesV2.has(base)) {
-            // It belongs to another package, skip this file.
-            return false;
-          }
-        }
-        return true;
+        return !packageUrisV2.some(uri => uri.length > packageUri.length && uri.startsWith(packageUri) && document.uri.startsWith(uri));
       }).forEach((document) => {
         files.push(document);
       });
