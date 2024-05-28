@@ -48,9 +48,15 @@ export abstract class AbstractID<T extends NodeType, PT extends NodeV1<NodeType>
   // Method to get the target nodes that this ID points to.
   abstract getTargetNodes(): ET[];
 
-  // TODO
   getSemanticTokens(): SemanticToken[] {
     const semanticTokens: SemanticToken[] = [];
+    if (this.withExclamationMark) {
+      semanticTokens.push({
+        offsetStart: this.offsetStart,
+        offsetEnd: this.offsetStart + 1,
+        tokenType: "operator",
+      });
+    }
     return semanticTokens;
   };
 

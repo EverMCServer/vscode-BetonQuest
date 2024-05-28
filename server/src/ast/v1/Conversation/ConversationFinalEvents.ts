@@ -21,6 +21,8 @@ export class ConversationFinalEvents extends NodeV1<ConversationFinalEventsType>
   yml: Scalar;
   events: Event<this>[] = [];
 
+  private semanticTokens: SemanticToken[] = [];
+
   constructor(yml: Scalar, parent: Conversation) {
     super();
     this.uri = parent.uri;
@@ -88,6 +90,15 @@ export class ConversationFinalEvents extends NodeV1<ConversationFinalEventsType>
             this
           )
         );
+
+        // Add semantic tokens for seprator ","
+        if (matched[1].length > 0) {
+          this.semanticTokens.push({
+            offsetStart: offsetStartWithComma,
+            offsetEnd: offsetStartWithComma + 1,
+            tokenType: "operator",
+          });
+        }
       }
     }
   }
@@ -102,13 +113,12 @@ export class ConversationFinalEvents extends NodeV1<ConversationFinalEventsType>
     return this.codeActions;
   }
 
-  // TODO
   getSemanticTokens(): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = [];
+    const semanticTokens: SemanticToken[] = [...this.semanticTokens];
+    semanticTokens.push(...this.events.flatMap(event => event.getSemanticTokens()));
     return semanticTokens;
   };
 
-  // TODO
   getHoverInfo(offset: number): HoverInfo[] {
     const hoverInfo: HoverInfo[] = [];
     if (offset < this.offsetStart || offset > this.offsetEnd) {

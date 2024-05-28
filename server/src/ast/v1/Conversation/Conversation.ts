@@ -208,12 +208,14 @@ export class Conversation extends Document<ConversationType> {
     ];
   }
 
-  // TODO
   getSemanticTokens(documentUri: string): SemanticToken[] {
     const semanticTokens: SemanticToken[] = [];
     if (documentUri !== this.uri) {
       return semanticTokens;
     }
+    semanticTokens.push(...this.finalEvents?.getSemanticTokens() || []);
+    semanticTokens.push(...this.npcOptions.flatMap(o => o.getSemanticTokens()));
+    semanticTokens.push(...this.playerOptions.flatMap(o => o.getSemanticTokens()));
     return semanticTokens;
   };
 

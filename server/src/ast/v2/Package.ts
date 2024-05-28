@@ -26,10 +26,10 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
   private parentAst: AST;
   readonly packagePath: string[];
 
-  conversations: Map<string, Conversation> = new Map(); // key = Conversation's key
   conditionLists: ConditionList;
   eventLists: EventList;
   objectiveLists: ObjectiveList;
+  conversations: Map<string, Conversation> = new Map(); // key = Conversation's key
 
   constructor(packageUri: string, documents: TextDocument[], parent: AST) {
     super();

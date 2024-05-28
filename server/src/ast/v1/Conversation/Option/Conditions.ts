@@ -20,6 +20,8 @@ export class Conditions<PT extends NodeV1<ConversationOptionType>> extends NodeV
   private conditionsStr: string;
   private conditions: Condition<this>[] = [];
 
+  private semanticTokens: SemanticToken[] = [];
+
   constructor(yml: Scalar<string>, parent: PT) {
     super();
     this.uri = parent.getUri();
@@ -60,6 +62,14 @@ export class Conditions<PT extends NodeV1<ConversationOptionType>> extends NodeV
       // Parse the Condition ID
       this.conditions.push(new Condition(strTrimed, [offsetStartTrimed, offsetEndTrimed], this));
 
+      // Add semantic tokens for seprator ","
+      if (matched[1].length > 0) {
+        this.semanticTokens.push({
+          offsetStart: offsetStartWithComma,
+          offsetEnd: offsetStartWithComma + 1,
+          tokenType: "operator",
+        });
+      }
     }
   }
 
@@ -70,9 +80,9 @@ export class Conditions<PT extends NodeV1<ConversationOptionType>> extends NodeV
     ];
   }
 
-  // TODO
   getSemanticTokens(): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = [];
+    const semanticTokens: SemanticToken[] = [...this.semanticTokens];
+    semanticTokens.push(...this.conditions.flatMap(c => c.getSemanticTokens()));
     return semanticTokens;
   };
 

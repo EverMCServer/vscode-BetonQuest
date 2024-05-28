@@ -247,6 +247,9 @@ export class ConversationSection extends Document<ConversationType> {
 
   getSemanticTokens(): SemanticToken[] {
     const semanticTokens: SemanticToken[] = [];
+    semanticTokens.push(...this.finalEvents?.getSemanticTokens() || []);
+    semanticTokens.push(...this.npcOptions.flatMap(o => o.getSemanticTokens()));
+    semanticTokens.push(...this.playerOptions.flatMap(o => o.getSemanticTokens()));
     return semanticTokens;
   }
 

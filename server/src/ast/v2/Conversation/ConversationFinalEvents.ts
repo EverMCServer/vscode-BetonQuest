@@ -102,13 +102,12 @@ export class ConversationFinalEvents extends NodeV2<ConversationFinalEventsType>
     return this.codeActions;
   }
 
-  // TODO
   getSemanticTokens(): SemanticToken[] {
     const semanticTokens: SemanticToken[] = [];
+    semanticTokens.push(...this.events.flatMap(event => event.getSemanticTokens()));
     return semanticTokens;
   };
 
-  // TODO
   getHoverInfo(offset: number): HoverInfo[] {
     const hoverInfo: HoverInfo[] = [];
     if (offset < this.offsetStart || offset > this.offsetEnd) {

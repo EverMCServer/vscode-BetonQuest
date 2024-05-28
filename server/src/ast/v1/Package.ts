@@ -27,7 +27,7 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
   conditionList?: ConditionList;
   eventList?: EventList;
   objectiveList?: ObjectiveList;
-  conversations?: Conversation[] = [];
+  conversations: Conversation[] = [];
 
   constructor(packageUri: string, documents: TextDocument[], parent: AST) {
     super();
@@ -164,7 +164,8 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
     if (this.objectiveList) {
       semanticTokens.push(...this.objectiveList.getSemanticTokens(documentUri));
     }
-    return semanticTokens;
+    semanticTokens.push(...this.conversations.flatMap(c => c.getSemanticTokens(documentUri)) || []);
+    return semanticTokens.sort((a, b) => a.offsetStart - b.offsetStart);
   }
 
   getHoverInfo(offset: number, uri: string) {

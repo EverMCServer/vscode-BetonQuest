@@ -20,6 +20,8 @@ export class Events<PT extends NodeV2<ConversationOptionType>> extends NodeV2<Co
   private eventsStr: string;
   private events: Event<this>[] = [];
 
+  private semanticTokens: SemanticToken[] = [];
+
   constructor(yml: Scalar<string>, parent: PT) {
     super();
     this.uri = parent.getUri();
@@ -60,6 +62,14 @@ export class Events<PT extends NodeV2<ConversationOptionType>> extends NodeV2<Co
       // Parse the Event ID
       this.events.push(new Event(strTrimed, [offsetStartTrimed, offsetEndTrimed], this));
 
+      // Add semantic tokens for seprator ","
+      if (matched[1].length > 0) {
+        this.semanticTokens.push({
+          offsetStart: offsetStartWithComma,
+          offsetEnd: offsetStartWithComma + 1,
+          tokenType: "operator",
+        });
+      }
     }
   }
 
@@ -70,9 +80,9 @@ export class Events<PT extends NodeV2<ConversationOptionType>> extends NodeV2<Co
     ];
   }
 
-  // TODO
   getSemanticTokens(): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = [];
+    const semanticTokens: SemanticToken[] = [...this.semanticTokens];
+    semanticTokens.push(...this.events.flatMap(c => c.getSemanticTokens()));
     return semanticTokens;
   };
 

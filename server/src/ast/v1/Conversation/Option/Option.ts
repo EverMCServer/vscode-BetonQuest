@@ -136,9 +136,10 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
     ];
   }
 
-  // TODO
   getSemanticTokens(): SemanticToken[] {
     const semanticTokens: SemanticToken[] = [];
+    semanticTokens.push(...this.conditions?.getSemanticTokens() || []);
+    semanticTokens.push(...this.events?.getSemanticTokens() || []);
     return semanticTokens;
   };
 
