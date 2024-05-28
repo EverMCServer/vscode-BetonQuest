@@ -1,7 +1,10 @@
+import { DiagnosticSeverity } from "vscode-languageserver";
+
 import ListElement from "betonquest-utils/betonquest/ListElement";
 
 import { NodeV1, NodeType } from "../../node";
 import { ElementEntry } from "../Element/ElementEntry";
+import { DiagnosticCode } from "../../../utils/diagnostics";
 import { SemanticToken } from "../../../service/semanticTokens";
 import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
@@ -27,13 +30,25 @@ export abstract class AbstractID<T extends NodeType, PT extends NodeV1<NodeType>
 
     // Parse ID string.
     let str = idString;
-    // Check illigal characters
-    if (str.match(/[\s]/g)) {
-      // TODO this._addDiagnostic();
-    }
     // Parse exclamation mark
     if ((this.withExclamationMark = str.startsWith("!")) === true) {
       str = str.substring(1);
+    }
+    // Check illigal characters
+    if (str.match(/\s/)) {
+      // TODO this._addDiagnostic();
+      this.addDiagnostic(
+        [this.offsetStart + (this.withExclamationMark ? 1 : 0), this.offsetEnd],
+        "An ID cannot contains any spaces",
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ValueIdContainsSpace,
+        [
+          {
+            title: "Remove spaces",
+            text: str.replace(/\s/g, "")
+          }
+        ]
+      );
     }
     // Parse package path
     if (str.includes(".")) {

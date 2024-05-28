@@ -1,5 +1,5 @@
 import { Scalar } from "yaml";
-import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationEventsType, ConversationOptionType, NodeV2 } from "../../../node";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
@@ -77,6 +77,13 @@ export class Events<PT extends NodeV2<ConversationOptionType>> extends NodeV2<Co
     return [
       ...this.diagnostics,
       ...this.events.flatMap(c => c.getDiagnostics())
+    ];
+  }
+
+  getCodeActions(): CodeAction[] {
+    return [
+      ...this.codeActions,
+      ...this.events.flatMap(e=> e.getCodeActions())
     ];
   }
 

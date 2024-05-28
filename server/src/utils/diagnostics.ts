@@ -51,6 +51,11 @@ export enum DiagnosticCode {
    */
   ValueBooleanIncorrect = "BQ-0113",
 
+  /**
+   * The yaml value is incorrect. ID should not contains space.
+   */
+  ValueIdContainsSpace = "BQ-0121",
+
   // /**
   //  * The translation key is duplicated with others.
   //  */

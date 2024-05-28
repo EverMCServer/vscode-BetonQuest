@@ -1,5 +1,5 @@
 import { Scalar } from "yaml";
-import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationConditionsType, ConversationOptionType, NodeV2 } from "../../../node";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
@@ -77,6 +77,13 @@ export class Conditions<PT extends NodeV2<ConversationOptionType>> extends NodeV
     return [
       ...this.diagnostics,
       ...this.conditions.flatMap(c => c.getDiagnostics())
+    ];
+  }
+
+  getCodeActions(): CodeAction[] {
+    return [
+      ...this.codeActions,
+      ...this.conditions.flatMap(c=> c.getCodeActions())
     ];
   }
 
