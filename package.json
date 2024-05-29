@@ -28,6 +28,14 @@
   "main": "./extension/dist/extension.js",
   "browser": "./extension/dist/web/extension.js",
   "contributes": {
+    "languages": [
+      {
+        "id": "betonquest-2-events",
+        "extensions": [
+          ".bq2events"
+        ]
+      }
+    ],
     "commands": [
       {
         "command": "betonquest.openConversationEditor",
@@ -192,7 +200,7 @@
     "webpack:compile": "webpack --config webpack.prod.js",
     "watch:all": "tsc -b -watch ./extension/ ./webview/ ./server/",
     "webpack:watch": "webpack --watch --config webpack.dev.js",
-    "open-in-browser": "vscode-test-web --browserOption=--remote-debugging-port=9221 --extensionDevelopmentPath=."
+    "open-in-browser": "vscode-test-web --browserOption=--remote-debugging-port=9221 --extensionDevelopmentPath=. /Users/kenneth/projects/bq-demo"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",

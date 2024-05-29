@@ -1,0 +1,9 @@
+{
+"grammars": [
+  {
+    "language": "betonquest-2-events",
+    "scopeName": "source.betonquest-2-events",
+    "path": "./syntaxes/betonquest-2-events.tmLanguage."
+  }
+]
+}

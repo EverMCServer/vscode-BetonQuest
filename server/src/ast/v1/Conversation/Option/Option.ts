@@ -3,7 +3,7 @@ import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserve
 
 import { ConversationOptionType, NodeV1 } from "../../../node";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
-import { SemanticToken } from "../../../../service/semanticTokens";
+import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
 import { HoverInfo } from "../../../../utils/hover";
 import { LocationLinkOffset } from "../../../../utils/location";
 import { isStringScalar } from "../../../../utils/yaml";
@@ -11,6 +11,7 @@ import { Text } from "./Text";
 import { Conversation } from "../Conversation";
 import { Conditions } from "./Conditions";
 import { Events } from "./Events";
+import { Pointers } from "./Pointers";
 
 export class Option<T extends ConversationOptionType> extends NodeV1<T> {
   type: T;
@@ -21,9 +22,13 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
 
   // Cache the parsed yaml document
   yml: Pair<Scalar<string>, YAMLMap>;
+  id: string;
   text?: Text;
   conditions?: Conditions<this>;
   events?: Events<this>;
+  pointers?: Pointers<T>;
+
+  semanticTokens: SemanticToken[] = [];
 
   constructor(type: T, yml: Pair<Scalar<string>, YAMLMap>, parent: Conversation) {
     super();
@@ -34,6 +39,17 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
     this.parent = parent;
     this.yml = yml;
 
+    // Parse ID
+    this.id = this.yml.key.value;
+    if (this.yml.key.range) {
+      this.semanticTokens.push({
+        offsetStart: this.yml.key.range[0],
+        offsetEnd: this.yml.key.range[1],
+        tokenType: this.type === "ConversationNpcOption" ? SemanticTokenType.ConversationOptionNpcID : SemanticTokenType.ConversationOptionPlayerID
+      });
+    }
+
+    // Parse values
     this.yml.value?.items.forEach(pair => {
       if (isStringScalar(pair.key)) {
         switch (pair.key.value) {
@@ -57,8 +73,11 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
               ]
             );
           case "pointers":
-            // TODO
-
+            if (isScalar<string>(pair.value) && typeof pair.value.value === 'string') {
+              this.pointers = new Pointers(pair.value, this);
+            } else {
+              // TODO
+            }
             break;
           case "condition":
             // Throw warning diagnostics, change to "*s"
@@ -125,6 +144,7 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
       ...this.diagnostics,
       ...this.conditions?.getDiagnostics() ?? [],
       ...this.events?.getDiagnostics() ?? [],
+      ...this.pointers?.getDiagnostics() ?? [],
     ];
   }
 
@@ -133,13 +153,15 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
       ...this.codeActions,
       ...this.conditions?.getCodeActions() ?? [],
       ...this.events?.getCodeActions() ?? [],
+      ...this.pointers?.getCodeActions() ?? [],
     ];
   }
 
   getSemanticTokens(): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = [];
+    const semanticTokens: SemanticToken[] = this.semanticTokens;
     semanticTokens.push(...this.conditions?.getSemanticTokens() || []);
     semanticTokens.push(...this.events?.getSemanticTokens() || []);
+    semanticTokens.push(...this.pointers?.getSemanticTokens() || []);
     return semanticTokens;
   };
 
@@ -150,6 +172,7 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
     }
     hoverInfo.push(...this.conditions?.getHoverInfo(offset) || []);
     hoverInfo.push(...this.events?.getHoverInfo(offset) || []);
+    hoverInfo.push(...this.pointers?.getHoverInfo(offset) || []);
     return hoverInfo;
   }
 
@@ -162,6 +185,7 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
     return [
       ...this.conditions?.getDefinitions(offset) || [],
       ...this.events?.getDefinitions(offset) || [],
+      ...this.pointers?.getDefinitions(offset) || [],
     ];
   }
 }

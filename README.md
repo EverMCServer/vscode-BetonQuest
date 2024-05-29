@@ -8,10 +8,11 @@ A GUI based editor for [BetonQuest](https://github.com/BetonQuest/BetonQuest) sc
 
 ![conversation editor](assets/screenshot-conversation-light.jpg)
 
-## Download
+## How to use
 
-1. Download [VSCode](https://code.visualstudio.com/).
-1. Install from [VS Marketplace](https://marketplace.visualstudio.com/items?itemName=EverMC.betonquest)
+1. Download and install [VSCode](https://code.visualstudio.com/).
+1. Install this extension from [VS Marketplace](https://marketplace.visualstudio.com/items?itemName=EverMC.betonquest).
+1. Open the whole `BetonQuest` folder with VSCode.
 
 ## Showcase
 
