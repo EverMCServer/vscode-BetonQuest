@@ -2,7 +2,7 @@ import Condition from "betonquest-utils/betonquest/Condition";
 
 import { ConditionKeyType } from "../../node";
 import { ElementKey } from "../Element/ElementKey";
-import { SemanticToken } from "../../../service/semanticTokens";
+import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 
 export class ConditionKey extends ElementKey<Condition> {
   type: ConditionKeyType = "ConditionKey";
@@ -14,7 +14,7 @@ export class ConditionKey extends ElementKey<Condition> {
     return [{
       offsetStart: this.offsetStart,
       offsetEnd: this.offsetEnd,
-      tokenType: "class"
+      tokenType: SemanticTokenType.ConditionID
     }];
   };
 }

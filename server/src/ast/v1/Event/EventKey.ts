@@ -2,7 +2,7 @@ import Event from "betonquest-utils/betonquest/Event";
 
 import { EventKeyType } from "../../node";
 import { ElementKey } from "../Element/ElementKey";
-import { SemanticToken } from "../../../service/semanticTokens";
+import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 
 export class EventKey extends ElementKey<Event> {
   type: EventKeyType = "EventKey";
@@ -14,7 +14,7 @@ export class EventKey extends ElementKey<Event> {
     return [{
       offsetStart: this.offsetStart,
       offsetEnd: this.offsetEnd,
-      tokenType: "function"
+      tokenType: SemanticTokenType.EventID
     }];
   };
 }

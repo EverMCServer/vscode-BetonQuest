@@ -3,7 +3,7 @@ import { DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationFinalEventsType, NodeV1 } from "../../node";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { SemanticToken } from "../../../service/semanticTokens";
+import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
 import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
@@ -96,7 +96,7 @@ export class ConversationFinalEvents extends NodeV1<ConversationFinalEventsType>
           this.semanticTokens.push({
             offsetStart: offsetStartWithComma,
             offsetEnd: offsetStartWithComma + 1,
-            tokenType: "operator",
+            tokenType: SemanticTokenType.Operator
           });
         }
       }

@@ -11,7 +11,7 @@ import { ElementArgumentMandatory } from "./ElementArgumentMandatory";
 import { ElementArgumentOptional } from "./ElementArgumentOptional";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { HoverInfo } from "../../../utils/hover";
-import { SemanticToken } from "../../../service/semanticTokens";
+import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 
 export abstract class ElementArguments<LE extends ListElement> extends NodeV1<ElementArgumentsType> {
   abstract type: ElementArgumentsType;
@@ -208,7 +208,7 @@ export abstract class ElementArguments<LE extends ListElement> extends NodeV1<El
     const semanticTokens: SemanticToken[] = [{
       offsetStart: this.offsetStart,
       offsetEnd: this.offsetEnd,
-      tokenType: "string"
+      tokenType: SemanticTokenType.InstructionArguments
     }];
     semanticTokens.push(...this.argumentsMandatory.flatMap(a => a.getSemanticTokens()));
     semanticTokens.push(...this.argumentsOptional.flatMap(a => a.getSemanticTokens()));

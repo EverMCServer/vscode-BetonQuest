@@ -3,7 +3,7 @@ import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserve
 
 import { ConversationConditionsType, ConversationOptionType, NodeV1 } from "../../../node";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
-import { SemanticToken } from "../../../../service/semanticTokens";
+import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
 import { HoverInfo } from "../../../../utils/hover";
 import { LocationLinkOffset } from "../../../../utils/location";
 import { getScalarSourceAndRange } from "../../../../utils/yaml";
@@ -67,7 +67,7 @@ export class Conditions<PT extends NodeV1<ConversationOptionType>> extends NodeV
         this.semanticTokens.push({
           offsetStart: offsetStartWithComma,
           offsetEnd: offsetStartWithComma + 1,
-          tokenType: "operator",
+          tokenType: SemanticTokenType.Operator
         });
       }
     }

@@ -5,7 +5,7 @@ import ListElement from "betonquest-utils/betonquest/ListElement";
 import { NodeV2, NodeType } from "../../node";
 import { ElementEntry } from "../Element/ElementEntry";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { SemanticToken } from "../../../service/semanticTokens";
+import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
 
@@ -69,7 +69,7 @@ export abstract class AbstractID<T extends NodeType, PT extends NodeV2<NodeType>
       semanticTokens.push({
         offsetStart: this.offsetStart,
         offsetEnd: this.offsetStart + 1,
-        tokenType: "operator",
+        tokenType: SemanticTokenType.Operator
       });
     }
     return semanticTokens;

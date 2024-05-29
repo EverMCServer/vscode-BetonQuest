@@ -4,7 +4,7 @@ import ListElement from "betonquest-utils/betonquest/ListElement";
 import { ElementKindType, NodeV2 } from "../../node";
 import { ElementEntry } from "./ElementEntry";
 import { HoverInfo } from "../../../utils/hover";
-import { SemanticToken } from "../../../service/semanticTokens";
+import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { CodeAction, Diagnostic } from "vscode-languageserver";
 
 export abstract class ElementKind<LE extends ListElement> extends NodeV2<ElementKindType> {
@@ -35,7 +35,7 @@ export abstract class ElementKind<LE extends ListElement> extends NodeV2<Element
     return [{
       offsetStart: this.offsetStart,
       offsetEnd: this.offsetEnd,
-      tokenType: "macro"
+      tokenType: SemanticTokenType.InstructionKind
     }];
   };
 

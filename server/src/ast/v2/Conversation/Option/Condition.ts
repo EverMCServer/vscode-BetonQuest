@@ -1,6 +1,6 @@
 import { ConversationConditionType, NodeType, NodeV2 } from "../../../node";
 import { AbstractID } from "../AbstractId";
-import { SemanticToken } from "../../../../service/semanticTokens";
+import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
 import { ConditionEntry } from "../../Condition/ConditionEntry";
 
 export class Condition<PT extends NodeV2<NodeType>> extends AbstractID<ConversationConditionType, PT, ConditionEntry> {
@@ -15,7 +15,7 @@ export class Condition<PT extends NodeV2<NodeType>> extends AbstractID<Conversat
     semanticTokens.push({
       offsetStart: this.offsetStart + (this.withExclamationMark ? 1 : 0), 
       offsetEnd: this.offsetEnd,
-      tokenType: "class",
+      tokenType: SemanticTokenType.ConditionID
     });
     return semanticTokens;
   };

@@ -7,7 +7,7 @@ import { ConversationNpcOptionType, ConversationPlayerOptionType, ConversationTy
 import { isYamlMapPair } from "../../../utils/yaml";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { LocationLinkOffset } from "../../../utils/location";
-import { SemanticToken } from "../../../service/semanticTokens";
+import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { HoverInfo } from "../../../utils/hover";
 import { getFilename } from "../../../utils/url";
 import { ConversationQuester } from "./ConversationQuester";
@@ -52,7 +52,7 @@ export class Conversation extends Document<ConversationType> {
             this.semanticTokens.push({
               offsetStart: pair.key.range![0],
               offsetEnd: pair.key.range![1],
-              tokenType: "keyword"
+              tokenType: SemanticTokenType.ConversationKeyword
             });
         }
       }

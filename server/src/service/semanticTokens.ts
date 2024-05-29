@@ -1,4 +1,5 @@
-import { SemanticTokens, SemanticTokensParams, HandlerResult, SemanticTokensBuilder } from "vscode-languageserver";
+/* eslint-disable @typescript-eslint/naming-convention */
+import { SemanticTokens, SemanticTokensParams, HandlerResult, SemanticTokensBuilder, SemanticTokenTypes } from "vscode-languageserver";
 import { ASTs } from "../ast/ast";
 import { AllDocuments } from "../utils/document";
 import { legend, tokenTypeCondition, tokenTypeEnum, tokenTypeEvent, tokenTypeNumber, tokenTypeObjective, tokenTypeString } from "../semantics/legend";
@@ -6,7 +7,7 @@ import { legend, tokenTypeCondition, tokenTypeEnum, tokenTypeEvent, tokenTypeNum
 export type SemanticToken = {
   offsetStart: number,
   offsetEnd: number,
-  tokenType: string,
+  tokenType: SemanticTokenType,
   tokenModifier?: string
 };
 
@@ -62,4 +63,147 @@ export const semanticTokensHandler = (allDocuments: AllDocuments, asts: ASTs, pa
   const result = builder.build();
 
   return result;
+};
+
+export enum SemanticTokenType {
+  /**
+   * Thumbs of rule:
+   * ---
+   * class namespace enum interface struct
+   * - ConditionID
+   * - ConversationOptionPlayerID
+   * ---
+   * event variable parameter property
+   * - ObjectiveID
+   * ---
+   * enumMember
+   * - SectionKeyword
+   * ---
+   * function decorator method
+   * - EventID
+   * ---
+   * macro ~= label
+   * - InstructionKind
+   * - ConversationOptionNpcID
+   * ---
+   * label ~= macro
+   * ---
+   * comment
+   * - x
+   * ---
+   * string
+   * - InstructionArguments
+   * ---
+   * keyword
+   * - ConversationKeyword
+   * ---
+   * number
+   * - ConversationOptionNpcID
+   * ---
+   * regexp
+   * ---
+   * operator
+   * - Operator
+   *
+
+  * original plan:
+  namespace: 
+  class: conditions / player_options
+  enum: 
+  interface: 
+  struct: 
+  typeParameter: 
+  type: 
+  parameter: 
+  variable: variables
+  property: 
+  enumMember: items / v2 top level keywords
+  decorator: 
+  event: objectives
+  function: 
+  method: events / jouirnals
+  macro: boolean / npc_options
+  label: minecraft / optional_key
+  comment: 
+  string: default
+  keyword: tag / point
+  number: number
+  regexp: 
+  operator: ,:^!
+   */
+
+  /**
+   * Operator / Seprator, e.g.: , : !
+   */
+  Operator = SemanticTokenTypes.operator,
+
+  /**
+   * For V2 top level keywords. e.g.
+   * ```yaml
+   * conditions:
+   * events:
+   * conversations:
+   * ```
+   */
+  SectionKeyword = SemanticTokenTypes.enumMember,
+
+  /**
+   * ID of Conditions.
+   */
+  ConditionID = SemanticTokenTypes.class,
+
+  /**
+   * ID of Events.
+   */
+  EventID = SemanticTokenTypes.function,
+
+  /**
+   * ID of Objectives
+   */
+  ObjectiveID = SemanticTokenTypes.event,
+
+  /**
+   * Kind of Instruction, e.g. Condition "kill"
+   */
+  InstructionKind = SemanticTokenTypes.macro,
+
+  /**
+   * Default Arguments of Instructions, e.g. the location of a "tp" Condition
+   */
+  InstructionArguments = SemanticTokenTypes.string,
+
+  /**
+   * Conversation's keywords. e.g.
+   * ```yaml
+   * quester:
+   * first:
+   * stop:
+   * final_events:
+   * interceptor:
+   * NPC_options:
+   * player_options:
+   * ```
+   */
+  ConversationKeyword = SemanticTokenTypes.keyword,
+
+  /**
+   * Conversation option's keywords. e.g.
+   * ```yaml
+   * text:
+   * conditions:
+   * events:
+   * pointers:
+   * ```
+   */
+  ConversationOptionKeyword = SemanticTokenTypes.macro,
+
+  /**
+   * Conversation Player option's ID.
+   */
+  ConversationOptionNpcID = SemanticTokenTypes.number,
+
+  /**
+   * Conversation Player option's ID.
+   */
+  ConversationOptionPlayerID = SemanticTokenTypes.class,
 };

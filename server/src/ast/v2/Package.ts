@@ -13,7 +13,7 @@ import { isStringScalar, isYamlMapPair } from "../../utils/yaml";
 import { ConditionList } from "./Condition/ConditionList";
 import { EventList } from "./Event/EventList";
 import { ObjectiveList } from "./Objective/ObjectiveList";
-import { SemanticToken } from "../../service/semanticTokens";
+import { SemanticToken, SemanticTokenType } from "../../service/semanticTokens";
 import { Conversation } from "./Conversation/Conversation";
 import { ConditionEntry } from "./Condition/ConditionEntry";
 import { EventEntry } from "./Event/EventEntry";
@@ -80,7 +80,7 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
                   semanticTokens.push({
                     offsetStart: pair.key.range[0],
                     offsetEnd: pair.key.range[1],
-                    tokenType: "enumMember"
+                    tokenType: SemanticTokenType.SectionKeyword
                   });
               }
             } else {
@@ -96,7 +96,7 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
                   semanticTokens.push({
                     offsetStart: pair.key.range[0],
                     offsetEnd: pair.key.range[1],
-                    tokenType: "enumMember"
+                    tokenType: SemanticTokenType.SectionKeyword
                   });
               }
             } else {
@@ -112,7 +112,7 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
                   semanticTokens.push({
                     offsetStart: pair.key.range[0],
                     offsetEnd: pair.key.range[1],
-                    tokenType: "enumMember"
+                    tokenType: SemanticTokenType.SectionKeyword
                   });
               }
               break;
@@ -135,7 +135,7 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
                       semanticTokens.push({
                         offsetStart: pair.key.range[0],
                         offsetEnd: pair.key.range[1],
-                        tokenType: "enumMember"
+                        tokenType: SemanticTokenType.SectionKeyword
                       });
                   }
                 } else {

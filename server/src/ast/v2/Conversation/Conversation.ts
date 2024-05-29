@@ -16,7 +16,7 @@ import { ConversationFinalEvents } from "./ConversationFinalEvents";
 import { ConversationInterceptor } from "./ConversationInterceptor";
 import { Document, SectionCollection } from "../document";
 import { Option } from "./Option/Option";
-import { SemanticToken } from "../../../service/semanticTokens";
+import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 
 export class Conversation extends SectionCollection<ConversationType> {
   type: ConversationType = 'Conversation';
@@ -89,7 +89,7 @@ export class ConversationSection extends Document<ConversationType> {
             this.semanticTokens.push({
               offsetStart: pair.key.range![0],
               offsetEnd: pair.key.range![1],
-              tokenType: "keyword"
+              tokenType: SemanticTokenType.ConversationKeyword
             });
         }
       }

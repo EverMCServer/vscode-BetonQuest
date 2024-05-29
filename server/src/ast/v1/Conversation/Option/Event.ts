@@ -1,6 +1,6 @@
 import { ConversationEventType, NodeType, NodeV1 } from "../../../node";
 import { AbstractID } from "../AbstractId";
-import { SemanticToken } from "../../../../service/semanticTokens";
+import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
 import { EventEntry } from "../../Event/EventEntry";
 
 export class Event<PT extends NodeV1<NodeType>> extends AbstractID<ConversationEventType, PT, EventEntry> {
@@ -15,7 +15,7 @@ export class Event<PT extends NodeV1<NodeType>> extends AbstractID<ConversationE
     semanticTokens.push({
       offsetStart: this.offsetStart + (this.withExclamationMark ? 1 : 0), 
       offsetEnd: this.offsetEnd,
-      tokenType: "function",
+      tokenType: SemanticTokenType.EventID
     });
     return semanticTokens;
   };

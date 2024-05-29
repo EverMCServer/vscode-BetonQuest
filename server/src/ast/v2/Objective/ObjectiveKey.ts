@@ -2,7 +2,7 @@ import Objective from "betonquest-utils/betonquest/Objective";
 
 import { ObjectiveKeyType } from "../../node";
 import { ElementKey } from "../Element/ElementKey";
-import { SemanticToken } from "../../../service/semanticTokens";
+import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 
 export class ObjectiveKey extends ElementKey<Objective> {
   type: ObjectiveKeyType = "ObjectiveKey";
@@ -14,7 +14,7 @@ export class ObjectiveKey extends ElementKey<Objective> {
     return [{
       offsetStart: this.offsetStart,
       offsetEnd: this.offsetEnd,
-      tokenType: "event"
+      tokenType: SemanticTokenType.ObjectiveID
     }];
   };
 }
