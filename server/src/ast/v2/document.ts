@@ -6,9 +6,9 @@ import { NodeV2, NodeType } from "../node";
 import { PackageV2 } from "./Package";
 import { SemanticToken } from "../../service/semanticTokens";
 
-export abstract class Document<T extends NodeType> extends NodeV2<T> {
+export abstract class Document<T extends NodeType, PT extends SectionCollection<T>> extends NodeV2<T> {
   uri: string;
-  protected parent: SectionCollection<T>;
+  parent: PT;
 
   // VSCode Document, for diagnostics / quick actions / goto definition, etc
   document: TextDocument;
@@ -16,7 +16,7 @@ export abstract class Document<T extends NodeType> extends NodeV2<T> {
 
   semanticTokens: SemanticToken[] = [];
 
-  constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: SectionCollection<T>) {
+  constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: PT) {
     super();
 
     this.uri = uri;

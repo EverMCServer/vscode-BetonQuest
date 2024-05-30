@@ -6,6 +6,7 @@ import { AllDocuments } from "../utils/document";
 import { HoverInfo } from "../utils/hover";
 import { LocationLinkOffset } from "../utils/location";
 import { getParentUrl } from "../utils/url";
+import { ConversationOptionType } from "./node";
 
 // AST by workspace folders
 export class ASTs {
@@ -271,6 +272,10 @@ export class AST {
     return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getObjectiveEntries(id, packageUri));
   }
 
+  getV1ConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID: string, packageUri: string) {
+    return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions(type, optionID, conversationID, packageUri));
+  }
+
   getV2ConditionEntry(id: string, packageUri: string) {
     return this.packagesV2.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getConditionEntries(id, packageUri));
   }
@@ -281,6 +286,10 @@ export class AST {
 
   getV2ObjectiveEntry(id: string, packageUri: string) {
     return this.packagesV2.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getObjectiveEntries(id, packageUri));
+  }
+
+  getV2ConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID: string, packageUri: string) {
+    return this.packagesV2.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions(type, optionID, conversationID, packageUri));
   }
 
 }

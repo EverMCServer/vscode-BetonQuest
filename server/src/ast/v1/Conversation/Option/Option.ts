@@ -27,6 +27,7 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
   conditions?: Conditions<this>;
   events?: Events<this>;
   pointers?: Pointers<T>;
+  comment?: string;
 
   semanticTokens: SemanticToken[] = [];
 
@@ -38,6 +39,7 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
     this.offsetEnd = yml.value?.range![1] || yml.key.range![1];
     this.parent = parent;
     this.yml = yml;
+    this.comment = yml.key.commentBefore?.split(/\n\n+/).slice(-1)[0] ?? undefined;
 
     // Parse ID
     this.id = this.yml.key.value;
@@ -169,6 +171,12 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
     const hoverInfo: HoverInfo[] = [];
     if (offset < this.offsetStart || offset > this.offsetEnd) {
       return hoverInfo;
+    }
+    if (offset >= this.yml.key.range![0] && offset <= this.yml.key.range![1] && this.comment) {
+      hoverInfo.push({
+        content: this.comment,
+        offset: [this.offsetStart, this.offsetEnd]
+      });
     }
     hoverInfo.push(...this.conditions?.getHoverInfo(offset) || []);
     hoverInfo.push(...this.events?.getHoverInfo(offset) || []);

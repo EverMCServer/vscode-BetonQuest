@@ -3,7 +3,7 @@ import { DiagnosticSeverity, PublishDiagnosticsParams } from "vscode-languageser
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { PackageV2 } from "../Package";
-import { ConversationNpcOptionType, ConversationPlayerOptionType, ConversationType } from "../../node";
+import { ConversationNpcOptionType, ConversationOptionType, ConversationPlayerOptionType, ConversationType } from "../../node";
 import { getIndent, isYamlMapPair } from "../../../utils/yaml";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { LocationLinkOffset } from "../../../utils/location";
@@ -22,14 +22,20 @@ export class Conversation extends SectionCollection<ConversationType> {
   type: ConversationType = 'Conversation';
 
   // Conversation sections
+  conversationID: string;
   conversationSections: ConversationSection[] = [];
 
-  constructor(uri: string, parent: PackageV2) {
+  constructor(uri: string, conversationID: string, parent: PackageV2) {
     super(uri, parent);
+    this.conversationID = conversationID;
   }
 
   addSection(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>) {
     this.conversationSections.push(new ConversationSection(uri, document, yml, this));
+  }
+
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string): Option<T>[] {
+    return this.conversationSections.flatMap(section => section.getConversationOptions(type, optionID));
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
@@ -55,7 +61,7 @@ export class Conversation extends SectionCollection<ConversationType> {
   }
 }
 
-export class ConversationSection extends Document<ConversationType> {
+export class ConversationSection extends Document<ConversationType, Conversation> {
   type: ConversationType = 'Conversation';
 
   // Contents
@@ -292,5 +298,15 @@ export class ConversationSection extends Document<ConversationType> {
       ...this.npcOptions.flatMap(o => o.getDefinitions(offset)),
       ...this.playerOptions.flatMap(o => o.getDefinitions(offset)),
     ];
+  }
+
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string): Option<T>[] {
+    switch (type) {
+      case "ConversationNpcOption":
+        return this.npcOptions.filter(o => o.id === optionID) as Option<T>[];
+      case "ConversationPlayerOption":
+        return this.playerOptions.filter(o => o.id === optionID) as Option<T>[];
+    }
+    return [];
   }
 }

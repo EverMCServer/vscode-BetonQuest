@@ -17,7 +17,8 @@ export class Pointer<T extends ConversationOptionType> extends NodeV2<NodeType> 
   // Cache content
   protected withExclamationMark: boolean;
   protected package: string = "";
-  protected id: string;
+  protected conversationID: string;
+  protected optionID: string;
 
   private semanticTokens: SemanticToken[] = [];
 
@@ -50,13 +51,15 @@ export class Pointer<T extends ConversationOptionType> extends NodeV2<NodeType> 
         ]
       );
     }
-    // Parse package path
+    // Parse package package, Conversation ID, Pointer ID
     if (str.includes(".")) {
-      const splited = str.split(".", 2);
+      const splited = str.split(".", 3); // TODO: check number of "."
       this.package = splited[0];
-      this.id = splited[1];
+      this.conversationID = splited[1];
+      this.optionID = splited[2];
     } else {
-      this.id = str;
+      this.conversationID = this.parent.parent.parent.parent.conversationID;
+      this.optionID = str;
     }
 
     // Generate Semantic Tokens
@@ -87,15 +90,31 @@ export class Pointer<T extends ConversationOptionType> extends NodeV2<NodeType> 
     if (offset < this.offsetStart || offset > this.offsetEnd) {
       return [];
     }
-    // TODO ...
-    return [];
+    const hoverInfos: HoverInfo[] = this.getTargetNodes().filter(n => n.comment).flatMap(n => ({
+      content: n.comment!,
+      offset: [this.offsetStart, this.offsetEnd]
+    }));
+    return hoverInfos;
   }
 
   getDefinitions(offset: number): LocationLinkOffset[] {
     if (this.offsetStart! > offset || this.offsetEnd! < offset) {
       return [];
     }
-    // TODO
-    return [];
+    const locations: LocationLinkOffset[] = this.getTargetNodes().flatMap(n => ({
+      originSelectionRange: [this.offsetStart, this.offsetEnd],
+      targetUri: n.getUri(),
+      targetRange: [n.offsetStart!, n.offsetEnd!],
+      targetSelectionRange: [n.offsetStart!, n.offsetEnd!]
+    }));
+    return locations;
+  }
+
+  getTargetNodes() {
+    return this.getConversationOptions(
+      this.parent.parent.type === "ConversationNpcOption" ? "ConversationPlayerOption" : "ConversationNpcOption",
+      this.optionID,
+      this.conversationID,
+      this.getPackageUri(this.package));
   }
 }

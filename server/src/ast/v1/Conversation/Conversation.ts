@@ -3,7 +3,7 @@ import { DiagnosticSeverity, PublishDiagnosticsParams } from "vscode-languageser
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { PackageV1 } from "../Package";
-import { ConversationNpcOptionType, ConversationPlayerOptionType, ConversationType } from "../../node";
+import { ConversationNpcOptionType, ConversationOptionType, ConversationPlayerOptionType, ConversationType } from "../../node";
 import { isYamlMapPair } from "../../../utils/yaml";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { LocationLinkOffset } from "../../../utils/location";
@@ -22,6 +22,7 @@ export class Conversation extends Document<ConversationType> {
   type: ConversationType = 'Conversation';
 
   // Contents
+  conversationID: string;
   quester?: ConversationQuester;
   first?: ConversationFirst;
   stop?: ConversationStop;
@@ -34,6 +35,7 @@ export class Conversation extends Document<ConversationType> {
 
   constructor(uri: string, document: TextDocument, parent: PackageV1) {
     super(uri, document, parent);
+    this.conversationID = this.uri.match(/([^\/]+)\.yml$/m)![1];
 
     // Parse Elements
     this.yml.items.forEach(pair => {
@@ -261,5 +263,15 @@ export class Conversation extends Document<ConversationType> {
       ...this.npcOptions.flatMap(o => o.getDefinitions(offset)),
       ...this.playerOptions.flatMap(o => o.getDefinitions(offset)),
     ];
+  }
+
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string): Option<T>[] {
+    switch (type) {
+      case "ConversationNpcOption":
+        return this.npcOptions.filter(o => o.id === optionID) as Option<T>[];
+      case "ConversationPlayerOption":
+        return this.playerOptions.filter(o => o.id === optionID) as Option<T>[];
+    }
+    return [];
   }
 }

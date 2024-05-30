@@ -4,7 +4,7 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
 import { AST } from "../ast";
-import { NodeV1, PackageV1Type } from "../node";
+import { ConversationOptionType, NodeV1, PackageV1Type } from "../node";
 import { HoverInfo } from "../../utils/hover";
 import { LocationLinkOffset } from "../../utils/location";
 import { getParentUrl } from "../../utils/url";
@@ -16,6 +16,7 @@ import { Conversation } from "./Conversation/Conversation";
 import { ConditionEntry } from "./Condition/ConditionEntry";
 import { EventEntry } from "./Event/EventEntry";
 import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
+import { Option } from "./Conversation/Option/Option";
 
 export class PackageV1 extends NodeV1<PackageV1Type> {
   protected type: PackageV1Type = "PackageV1";
@@ -121,6 +122,13 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
     } else {
       return this.parentAst.getV1ObjectiveEntry(id, packageUri);
     }
+  }
+
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID: string, packageUri: string): Option<T>[] {
+    if (this.isPackageUri(packageUri)) {
+      return this.conversations.filter(c => c.conversationID === conversationID).flatMap(c => c.getConversationOptions(type, optionID));
+    }
+    return this.parentAst.getV1ConversationOptions(type, optionID, conversationID, packageUri);
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {

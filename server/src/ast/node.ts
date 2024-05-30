@@ -7,6 +7,8 @@ import { EventEntry as EventEntryV1 } from "./v1/Event/EventEntry";
 import { EventEntry as EventEntryV2 } from "./v2/Event/EventEntry";
 import { ObjectiveEntry as ObjectiveEntryV1 } from "./v1/Objective/ObjectiveEntry";
 import { ObjectiveEntry as ObjectiveEntryV2 } from "./v2/Objective/ObjectiveEntry";
+import { Option as OptionV1 } from "./v1/Conversation/Option/Option";
+import { Option as OptionV2 } from "./v2/Conversation/Option/Option";
 
 export type PackageV1Type = 'PackageV1';
 export type PackageV2Type = 'PackageV2';
@@ -184,6 +186,12 @@ export abstract class NodeV1<T extends NodeType> extends Node<T> {
     return this.parent.getObjectiveEntries(id, packageUri);
   }
 
+  // Get all target package's conversation options.
+  // This method must be overrided / hijacked by the top-level class.
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): OptionV1<T>[] {
+    return this.parent.getConversationOptions<T>(type, optionID, conversationID, packageUri);
+  }
+
 }
 
 export abstract class NodeV2<T extends NodeType> extends Node<T> {
@@ -205,5 +213,11 @@ export abstract class NodeV2<T extends NodeType> extends Node<T> {
   // This method must be overrided / hijacked by the top-level class.
   getObjectiveEntries(id: string, packageUri?: string): ObjectiveEntryV2[] {
     return this.parent.getObjectiveEntries(id, packageUri);
+  }
+
+  // Get all target package's conversation options.
+  // This method must be overrided / hijacked by the top-level class.
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): OptionV2<T>[] {
+    return this.parent.getConversationOptions(type, optionID, conversationID, packageUri);
   }
 }

@@ -5,7 +5,7 @@ import { Pair, Scalar, YAMLMap, isMap, isSeq, parseDocument, visit } from "yaml"
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
 import { AST } from "../ast";
-import { NodeV2, PackageV2Type } from "../node";
+import { ConversationOptionType, NodeV2, PackageV2Type } from "../node";
 import { HoverInfo } from "../../utils/hover";
 import { LocationLinkOffset } from "../../utils/location";
 import { getParentUrl } from "../../utils/url";
@@ -18,6 +18,7 @@ import { Conversation } from "./Conversation/Conversation";
 import { ConditionEntry } from "./Condition/ConditionEntry";
 import { EventEntry } from "./Event/EventEntry";
 import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
+import { Option } from "./Conversation/Option/Option";
 
 export class PackageV2 extends NodeV2<PackageV2Type> {
   protected type: PackageV2Type = "PackageV2";
@@ -126,7 +127,7 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
               pair.value?.items.forEach(p => {
                 if (isYamlMapPair(p) && isMap<Scalar<string>>(p.value)) {
                   if (!this.conversations.has(p.key.value)) {
-                    this.conversations.set(p.key.value, new Conversation(this.uri, this));
+                    this.conversations.set(p.key.value, new Conversation(this.uri, p.key.value, this));
                   }
                   this.conversations.get(p.key.value)?.addSection(document.uri, document, p.value);
                   // Set key's Semantic Token
@@ -206,6 +207,19 @@ export class PackageV2 extends NodeV2<PackageV2Type> {
     } else {
       return this.parentAst.getV2ObjectiveEntry(id, packageUri);
     }
+  }
+
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID: string, packageUri: string): Option<T>[] {
+    if (!this.isPackageUri(packageUri)) {
+      return this.parentAst.getV2ConversationOptions(type, optionID, conversationID, packageUri);
+    }
+    const options: Option<T>[] = [];
+    this.conversations.forEach((c, k) => {
+      if (k === conversationID) {
+        options.push(...c.getConversationOptions<T>(type, optionID));
+      }
+    });
+    return options;
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {

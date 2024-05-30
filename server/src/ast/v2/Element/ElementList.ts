@@ -37,7 +37,7 @@ export abstract class ElementList<LE extends ListElement> extends SectionCollect
   }
 }
 
-export abstract class ElementListSection<LE extends ListElement, EE extends ElementEntry<LE>> extends Document<ElementListType> {
+export abstract class ElementListSection<LE extends ListElement, EE extends ElementEntry<LE>> extends Document<ElementListType, ElementList<LE>> {
   abstract type: ElementListType;
 
   entries: EE[] = [];
