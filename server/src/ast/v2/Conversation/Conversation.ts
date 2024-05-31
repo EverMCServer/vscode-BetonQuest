@@ -10,7 +10,7 @@ import { LocationLinkOffset } from "../../../utils/location";
 import { HoverInfo } from "../../../utils/hover";
 import { getFilename } from "../../../utils/url";
 import { ConversationQuester } from "./ConversationQuester";
-import { ConversationFirst } from "./ConversationFirst";
+import { First } from "./First";
 import { ConversationStop } from "./ConversationStop";
 import { ConversationFinalEvents } from "./ConversationFinalEvents";
 import { ConversationInterceptor } from "./ConversationInterceptor";
@@ -66,7 +66,7 @@ export class ConversationSection extends Document<ConversationType, Conversation
 
   // Contents
   quester?: ConversationQuester;
-  first?: ConversationFirst;
+  first?: First;
   stop?: ConversationStop;
   finalEvents?: ConversationFinalEvents;
   interceptor?: ConversationInterceptor;
@@ -111,7 +111,7 @@ export class ConversationSection extends Document<ConversationType, Conversation
           break;
         case "first":
           if (isScalar(pair.value)) {
-            this.first = new ConversationFirst(pair.value, this);
+            this.first = new First(pair.value, this);
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
@@ -274,6 +274,7 @@ export class ConversationSection extends Document<ConversationType, Conversation
   getSemanticTokens(): SemanticToken[] {
     const semanticTokens: SemanticToken[] = [];
     semanticTokens.push(...this.semanticTokens);
+    semanticTokens.push(...this.first?.getSemanticTokens() || []);
     semanticTokens.push(...this.finalEvents?.getSemanticTokens() || []);
     semanticTokens.push(...this.npcOptions.flatMap(o => o.getSemanticTokens()));
     semanticTokens.push(...this.playerOptions.flatMap(o => o.getSemanticTokens()));
@@ -282,6 +283,7 @@ export class ConversationSection extends Document<ConversationType, Conversation
 
   getHoverInfo(offset: number) {
     const hoverInfo: HoverInfo[] = [];
+    hoverInfo.push(...this.first?.getHoverInfo(offset) || []);
     hoverInfo.push(...this.finalEvents?.getHoverInfo(offset) || []);
     hoverInfo.push(...this.npcOptions.flatMap(o => o.getHoverInfo(offset)));
     hoverInfo.push(...this.playerOptions.flatMap(o => o.getHoverInfo(offset)));
@@ -294,6 +296,7 @@ export class ConversationSection extends Document<ConversationType, Conversation
     }
 
     return [
+      ...this.first?.getDefinitions(offset) || [],
       ...this.finalEvents?.getDefinitions(offset) || [],
       ...this.npcOptions.flatMap(o => o.getDefinitions(offset)),
       ...this.playerOptions.flatMap(o => o.getDefinitions(offset)),

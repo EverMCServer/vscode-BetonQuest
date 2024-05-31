@@ -66,6 +66,10 @@ export class ConversationStop extends NodeV2<ConversationStopType> {
         {
           title: `Change value to "true"`,
           text: "true"
+        },
+        {
+          title: `Change value to "false"`,
+          text: "false"
         }
       ]
     );
