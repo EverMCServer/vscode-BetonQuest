@@ -4,11 +4,14 @@ import { DiagnosticSeverity } from "vscode-languageserver";
 import { ConversationTypes, NodeV2 } from "../../node";
 import { AbstractText } from "./AbstractText";
 import { DiagnosticCode } from "../../../utils/diagnostics";
+import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 
 export abstract class AbstractTextTranslations<N extends ConversationTypes> extends NodeV2<N> {
   abstract type: N;
   uri: string;
   parent: AbstractText<ConversationTypes, AbstractTextTranslations<N>>;
+
+  semanticTokens: SemanticToken[] = [];
 
   yml: YAMLMap<Scalar<string>>;
 
@@ -26,6 +29,13 @@ export abstract class AbstractTextTranslations<N extends ConversationTypes> exte
     yml.items.forEach(pair => {
       if (isScalar<string>(pair.value)) {
         this.contentStrings.push([pair.key.value, pair.value]);
+
+        // Add Semantic Tokens
+        this.semanticTokens.push({
+          offsetStart: pair.value.range![0],
+          offsetEnd: pair.value.range![1],
+          tokenType: SemanticTokenType.String
+        });
       } else {
         // Throw incorrect value diagnostics
         const offsetStart = (pair.value as Scalar)?.range?.[0];
@@ -40,5 +50,9 @@ export abstract class AbstractTextTranslations<N extends ConversationTypes> exte
         }
       }
     });
+  }
+
+  getSemanticTokens() {
+    return this.semanticTokens;
   }
 }

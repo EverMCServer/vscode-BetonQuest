@@ -1,9 +1,10 @@
 import { Scalar } from "yaml";
-import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationStopType, NodeV2 } from "../../node";
 import { ConversationSection } from "./Conversation";
 import { DiagnosticCode } from "../../../utils/diagnostics";
+import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 
 export class ConversationStop extends NodeV2<ConversationStopType> {
   type: ConversationStopType = 'ConversationStop';
@@ -11,6 +12,8 @@ export class ConversationStop extends NodeV2<ConversationStopType> {
   offsetStart?: number;
   offsetEnd?: number;
   parent: ConversationSection;
+
+  semanticTokens: SemanticToken[] = [];
 
   // Cache the parsed yaml document
   yml: Scalar;
@@ -43,8 +46,22 @@ export class ConversationStop extends NodeV2<ConversationStopType> {
           this._addDiagnosticValueTypeIncorrect();
           break;
       }
+
+      // Add Semantic Tokens
+      this.semanticTokens.push({
+        offsetStart: this.offsetStart!,
+        offsetEnd: this.offsetEnd!,
+        tokenType: SemanticTokenType.Boolean
+      });
     } else if (typeof this.yml.value === 'boolean') {
       this.value = this.yml.value;
+
+      // Add Semantic Tokens
+      this.semanticTokens.push({
+        offsetStart: this.offsetStart!,
+        offsetEnd: this.offsetEnd!,
+        tokenType: SemanticTokenType.Boolean
+      });
     } else if (this.yml.value === null) {
     } else {
       // Incorecct value, throw diagnostics warning + quick actions
@@ -74,4 +91,9 @@ export class ConversationStop extends NodeV2<ConversationStopType> {
       ]
     );
   }
+
+  getSemanticTokens(): SemanticToken[] {
+    const semanticTokens: SemanticToken[] = this.semanticTokens;
+    return semanticTokens;
+  };
 }

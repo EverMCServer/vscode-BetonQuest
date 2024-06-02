@@ -83,6 +83,7 @@ export enum SemanticTokenType {
    * - EventID
    * ---
    * macro ~= label
+   * - Boolean
    * - InstructionKind
    * - ConversationOptionNpcID
    * ---
@@ -92,6 +93,7 @@ export enum SemanticTokenType {
    * - x
    * ---
    * string
+   * - String
    * - InstructionArguments
    * ---
    * keyword
@@ -131,6 +133,10 @@ export enum SemanticTokenType {
   regexp: 
   operator: ,:^!
    */
+
+  String = SemanticTokenTypes.string,
+
+  Boolean = SemanticTokenTypes.macro,
 
   /**
    * Operator / Seprator, e.g.: , : !

@@ -161,6 +161,7 @@ export class Option<T extends ConversationOptionType> extends NodeV1<T> {
 
   getSemanticTokens(): SemanticToken[] {
     const semanticTokens: SemanticToken[] = this.semanticTokens;
+    semanticTokens.push(...this.text?.getSemanticTokens() || []);
     semanticTokens.push(...this.conditions?.getSemanticTokens() || []);
     semanticTokens.push(...this.events?.getSemanticTokens() || []);
     semanticTokens.push(...this.pointers?.getSemanticTokens() || []);

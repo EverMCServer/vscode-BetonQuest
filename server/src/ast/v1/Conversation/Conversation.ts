@@ -236,7 +236,9 @@ export class Conversation extends Document<ConversationType> {
       return semanticTokens;
     }
     semanticTokens.push(...this.semanticTokens);
+    semanticTokens.push(...this.quester?.getSemanticTokens() || []);
     semanticTokens.push(...this.first?.getSemanticTokens() || []);
+    semanticTokens.push(...this.stop?.getSemanticTokens() || []);
     semanticTokens.push(...this.finalEvents?.getSemanticTokens() || []);
     semanticTokens.push(...this.npcOptions.flatMap(o => o.getSemanticTokens()));
     semanticTokens.push(...this.playerOptions.flatMap(o => o.getSemanticTokens()));
