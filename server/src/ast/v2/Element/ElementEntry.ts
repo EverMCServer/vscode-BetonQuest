@@ -65,7 +65,7 @@ export abstract class ElementEntry<LE extends ListElement> extends NodeV2<Elemen
     }
     const kindStr = matched[1];
     const kind = kinds.find(k => k.value === kindStr.toLowerCase()) ?? kinds.find(k => k.value === "*");
-    const offsetKindStart = offsetStart + (pair.value?.srcToken?.type === 'block-scalar' ? 0 : matched.index);
+    const offsetKindStart = offsetStart + matched.index;
     const offsetKindEnd = offsetKindStart + kindStr.length;
     this.elementKind = this.newKind(kindStr, [offsetKindStart, offsetKindEnd], kind);
 

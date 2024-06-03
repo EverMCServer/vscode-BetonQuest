@@ -98,12 +98,7 @@ export function getScalarRangeByValue(value: Scalar | null): [offsetStart: numbe
             // case 'double-quoted-scalar':
             // case 'block-scalar':
             // Calculate initial offset from raw source
-            let offset = lastProp.indent;
-            const valueOffsetMatched = /[ \n\r]+(?=[^ \n\r])/s.exec(value.srcToken.source);
-            if (valueOffsetMatched) {
-              offset += valueOffsetMatched[0].length;
-            }
-            range[0] = lastProp.offset + lastProp.source.length + offset;
+            range[0] = lastProp.offset + lastProp.source.length;
             // Calculate indent of the block scalar
             let indent = lastProp.indent;
             const valueIndentMatched = /^ *(?=[^ \n\r])/sm.exec(value.srcToken.source);
