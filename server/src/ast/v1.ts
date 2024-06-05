@@ -1,3 +1,4 @@
+import { CodeAction, Diagnostic } from "vscode-languageserver";
 import { AST } from "./ast";
 import { NodeType, AbstractNode, ConversationOptionType, ConversationNpcOptionType, ConversationPlayerOptionType } from "./node";
 import { ConditionEntry } from "./v1/Condition/ConditionEntry";
@@ -13,6 +14,9 @@ import { EventList } from "./v1/Event/EventList";
 import { ObjectiveEntry } from "./v1/Objective/ObjectiveEntry";
 import { ObjectiveList } from "./v1/Objective/ObjectiveList";
 import { PackageV1 } from "./v1/Package";
+import { SemanticToken } from "../service/semanticTokens";
+import { HoverInfo } from "../utils/hover";
+import { LocationLinkOffset } from "../utils/location";
 
 export type ConversationChild = ConversationQuester | ConversationStop | ConversationFinalEvents | ConversationInterceptor | Option<ConversationNpcOptionType> | Option<ConversationPlayerOptionType>;
 export type NodeV1 = PackageV1 | ConditionList | EventList | ObjectiveList | Conversation | ConversationChild;
@@ -28,9 +32,43 @@ export abstract class AbstractNodeV1<T extends NodeType> extends AbstractNode<T,
     }
   }
 
-  // getNode<N extends NodeV1>(type: NodeType) {
-  //   return this.children.find<N>((c): c is N => c.type === type);
-  // }
+  getDiagnostics(): Diagnostic[] {
+    return [
+      ...this.diagnostics,
+      ...this.children.flatMap(c => c.getDiagnostics())
+    ];
+  }
+
+  getCodeActions(): CodeAction[] {
+    return [
+      ...this.diagnostics,
+      ...this.children.flatMap(c => c.getCodeActions())
+    ];
+  }
+
+  getSemanticTokens(): SemanticToken[] {
+    return [
+      ...this.semanticTokens,
+      ...this.children.flatMap(c => c.getSemanticTokens())
+    ];
+  };
+
+  getHoverInfo(offset: number): HoverInfo[] {
+    if (this.offsetStart && this.offsetEnd && (offset < this.offsetStart || offset > this.offsetEnd)) {
+      return [];
+    }
+    return this.children.flatMap(c => c.getHoverInfo(offset));
+  }
+
+  getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
+    // if (documentUri && !documentUri.startsWith(this.uri)) {
+    //   return [];
+    // }
+    if (this.offsetStart && this.offsetEnd && (offset < this.offsetStart || offset > this.offsetEnd) {
+      return [];
+    }
+    return this.children.flatMap(c => c.getDefinitions(offset));
+  }
 
   // Get all target package's Condition entries.
   // This method must be overrided / hijacked by the top-level class.

@@ -4,7 +4,7 @@ import { ArgumentsPatternMandatory, ArgumentsPatternOptional, ArgumentsPatterns 
 import { ElementKind } from "betonquest-utils/betonquest/v1/Element";
 import ListElement from "betonquest-utils/betonquest/ListElement";
 
-import { ElementArgumentsType, AbstractNodeV1 } from "../../node";
+import { ElementArgumentsType } from "../../node";
 import { ElementEntry } from "./ElementEntry";
 import { ElementArgument } from "./ElementArgument";
 import { ElementArgumentMandatory } from "./ElementArgumentMandatory";
@@ -12,12 +12,11 @@ import { ElementArgumentOptional } from "./ElementArgumentOptional";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { HoverInfo } from "../../../utils/hover";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
+import { AbstractNodeV1 } from "../../v1";
 
 export abstract class ElementArguments<LE extends ListElement> extends AbstractNodeV1<ElementArgumentsType> {
   abstract type: ElementArgumentsType;
   uri: string;
-  offsetStart?: number;
-  offsetEnd?: number;
   parent: ElementEntry<LE>;
 
 
@@ -139,6 +138,13 @@ export abstract class ElementArguments<LE extends ListElement> extends AbstractN
       // Parse optional arguments
       this.assignArgumentsOptional(argumentOptionalStrs, offsetStart, argumentsPatterns.optional);
     }
+
+    // Set Semantic Token
+    this.semanticTokens.push({
+      offsetStart: this.offsetStart!,
+      offsetEnd: this.offsetEnd!,
+      tokenType: SemanticTokenType.InstructionArguments
+    });
   }
 
   private assignArgumentsMandatory(argumentMandatoryStrs: string[], offsetStart: number, patterns: ArgumentsPatternMandatory[]) {
@@ -189,37 +195,4 @@ export abstract class ElementArguments<LE extends ListElement> extends AbstractN
   abstract newArgumentMandatory(argumentStr: string, range: [number?, number?], pattern: ArgumentsPatternMandatory): ElementArgumentMandatory<LE>;
   abstract newArgumentOptional(argumentStr: string, range: [number?, number?], pattern: ArgumentsPatternOptional): ElementArgumentOptional<LE>;
 
-  getDiagnostics(): Diagnostic[] {
-    const diagnostics: Diagnostic[] = this.diagnostics;
-    // From Child arguments
-    if (this.argumentsMandatory) {
-      diagnostics.push(...this.argumentsMandatory.flatMap(a => a.getDiagnostics()));
-    }
-    if (this.argumentsOptional) {
-      diagnostics.push(...this.argumentsOptional.flatMap(a => a.getDiagnostics()));
-    }
-    return diagnostics;
-  }
-
-  getSemanticTokens(): SemanticToken[] {
-    if (this.offsetStart === undefined || this.offsetEnd === undefined) {
-      return [];
-    }
-    const semanticTokens: SemanticToken[] = [{
-      offsetStart: this.offsetStart,
-      offsetEnd: this.offsetEnd,
-      tokenType: SemanticTokenType.InstructionArguments
-    }];
-    semanticTokens.push(...this.argumentsMandatory.flatMap(a => a.getSemanticTokens()));
-    semanticTokens.push(...this.argumentsOptional.flatMap(a => a.getSemanticTokens()));
-    return semanticTokens;
-  }
-
-  // TODO
-  getHoverInfo(offset: number): HoverInfo[] {
-    if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
-      return [];
-    }
-    return [];
-  }
 }

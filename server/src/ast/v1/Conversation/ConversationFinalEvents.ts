@@ -1,7 +1,7 @@
 import { Scalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationFinalEventsType, AbstractNodeV1 } from "../../node";
+import { ConversationFinalEventsType } from "../../node";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { HoverInfo } from "../../../utils/hover";
@@ -9,6 +9,7 @@ import { LocationLinkOffset } from "../../../utils/location";
 import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
 import { Conversation } from "./Conversation";
 import { Event } from "./Option/Event";
+import { AbstractNodeV1 } from "../../v1";
 
 export class ConversationFinalEvents extends AbstractNodeV1<ConversationFinalEventsType> {
   type: ConversationFinalEventsType = 'ConversationFinalEvents';
@@ -20,8 +21,6 @@ export class ConversationFinalEvents extends AbstractNodeV1<ConversationFinalEve
   // Cache the parsed yaml document
   yml: Scalar;
   events: Event<this>[] = [];
-
-  private semanticTokens: SemanticToken[] = [];
 
   constructor(yml: Scalar, parent: Conversation) {
     super();
@@ -101,38 +100,5 @@ export class ConversationFinalEvents extends AbstractNodeV1<ConversationFinalEve
         }
       }
     }
-  }
-
-  getDiagnostics() {
-    const diagnostics = this.diagnostics;
-    this.events.forEach(event => diagnostics.push(...event.getDiagnostics()));
-    return diagnostics;
-  }
-
-  getCodeActions() {
-    return this.codeActions;
-  }
-
-  getSemanticTokens(): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = [...this.semanticTokens];
-    semanticTokens.push(...this.events.flatMap(event => event.getSemanticTokens()));
-    return semanticTokens;
-  };
-
-  getHoverInfo(offset: number): HoverInfo[] {
-    const hoverInfo: HoverInfo[] = [];
-    if (offset < this.offsetStart || offset > this.offsetEnd) {
-      return hoverInfo;
-    }
-    hoverInfo.push(...this.events.flatMap(e => e.getHoverInfo(offset)));
-    return hoverInfo;
-  }
-
-  getDefinitions(offset: number): LocationLinkOffset[] {
-    if (this.offsetStart! > offset || this.offsetEnd! < offset) {
-      return [];
-    }
-
-    return this.events.flatMap(c => c.getDefinitions(offset));
   }
 }

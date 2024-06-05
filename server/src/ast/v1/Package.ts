@@ -153,53 +153,6 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
     // return diagnostics;
   }
 
-  getCodeActions(documentUri?: string) {
-    return this.children.flatMap(c => c.getCodeActions(documentUri));
-    // const codeActions: CodeAction[] = [];
-    // // Get Conversations' code actions
-    // this.conversations?.forEach(c => {
-    //   if (!documentUri || c.uri === documentUri) {
-    //     codeActions.push(...c.getCodeActions());
-    //   }
-    // });
-    // return codeActions;
-  }
-
-  getSemanticTokens(documentUri: string) {
-    return this.children.flatMap(c => c.getSemanticTokens(documentUri)).sort((a, b) => a.offsetStart - b.offsetStart);
-    // const semanticTokens: SemanticToken[] = [];
-    // if (this.conditionList) {
-    //   semanticTokens.push(...this.conditionList.getSemanticTokens(documentUri));
-    // }
-    // if (this.eventList) {
-    //   semanticTokens.push(...this.eventList.getSemanticTokens(documentUri));
-    // }
-    // if (this.objectiveList) {
-    //   semanticTokens.push(...this.objectiveList.getSemanticTokens(documentUri));
-    // }
-    // semanticTokens.push(...this.conversations.flatMap(c => c.getSemanticTokens(documentUri)) || []);
-    // return semanticTokens.sort((a, b) => a.offsetStart - b.offsetStart);
-  }
-
-  getHoverInfo(offset: number, uri: string) {
-    return this.children.flatMap(c => c.getHoverInfo(offset, uri));
-    // const hoverInfo: HoverInfo[] = [];
-    // if (!uri.startsWith(this.uri)) {
-    //   return hoverInfo;
-    // }
-    // if (this.conditionList) {
-    //   hoverInfo.push(...this.conditionList.getHoverInfo(offset, uri));
-    // }
-    // if (this.eventList) {
-    //   hoverInfo.push(...this.eventList.getHoverInfo(offset, uri));
-    // }
-    // if (this.objectiveList) {
-    //   hoverInfo.push(...this.objectiveList.getHoverInfo(offset, uri));
-    // }
-    // hoverInfo.push(...this.conversations?.flatMap(c => c.getHoverInfo(offset, uri)) || []);
-    // return hoverInfo;
-  }
-
   getLocations(yamlPath: string[], sourceUri: string) {
     const locations: LocationsResponse = [];
     if (!sourceUri.startsWith(this.uri)) {

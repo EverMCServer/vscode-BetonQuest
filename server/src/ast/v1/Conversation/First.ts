@@ -86,41 +86,4 @@ export class First extends AbstractNodeV1<ConversationFirstType> {
       }
     }
   }
-
-  getDiagnostics(): Diagnostic[] {
-    return [
-      ...this.diagnostics,
-      ...this.entries.flatMap(c => c.getDiagnostics())
-    ];
-  }
-
-  getCodeActions(): CodeAction[] {
-    return [
-      ...this.codeActions,
-      ...this.entries.flatMap(e => e.getCodeActions())
-    ];
-  }
-
-  getSemanticTokens(): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = [...this.semanticTokens];
-    semanticTokens.push(...this.entries.flatMap(c => c.getSemanticTokens()));
-    return semanticTokens;
-  };
-
-  getHoverInfo(offset: number): HoverInfo[] {
-    const hoverInfo: HoverInfo[] = [];
-    if (offset < this.offsetStart || offset > this.offsetEnd) {
-      return hoverInfo;
-    }
-    hoverInfo.push(...this.entries.flatMap(e => e.getHoverInfo(offset)));
-    return hoverInfo;
-  }
-
-  getDefinitions(offset: number): LocationLinkOffset[] {
-    if (this.offsetStart! > offset || this.offsetEnd! < offset) {
-      return [];
-    }
-
-    return this.entries.flatMap(c => c.getDefinitions(offset));
-  }
 }

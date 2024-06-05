@@ -217,24 +217,24 @@ export class AST {
   // Get all diagnostics from parser
   getDiagnostics(documentUri?: string) {
     return [
-      ...this.packagesV1.filter(p => !documentUri || documentUri.startsWith(p.getUri())).flatMap(p => p.getPublishDiagnosticsParams(documentUri)),
-      ...this.packagesV2.filter(p => !documentUri || documentUri.startsWith(p.getUri())).flatMap(p => p.getPublishDiagnosticsParams(documentUri))
+      ...this.packagesV1.filter(p => !documentUri || documentUri.startsWith(p.uri)).flatMap(p => p.getPublishDiagnosticsParams(documentUri)),
+      ...this.packagesV2.filter(p => !documentUri || documentUri.startsWith(p.uri)).flatMap(p => p.getPublishDiagnosticsParams(documentUri))
     ];
   }
 
   // Get all CodeActions
   getCodeActions(documentUri?: string) {
     return [
-      ...this.packagesV1.filter(p => !documentUri || documentUri.startsWith(p.getUri())).flatMap(p => p.getCodeActions(documentUri)),
-      ...this.packagesV2.filter(p => !documentUri || documentUri.startsWith(p.getUri())).flatMap(p => p.getCodeActions(documentUri))
+      ...this.packagesV1.filter(p => !documentUri || documentUri.startsWith(p.uri)).flatMap(p => p.getCodeActions(documentUri)),
+      ...this.packagesV2.filter(p => !documentUri || documentUri.startsWith(p.uri)).flatMap(p => p.getCodeActions(documentUri))
     ];
   }
 
   // Get semantic tokens for embeded betonquest's instructions
   getSemanticTokens(documentUri: string) {
     return [
-      ...this.packagesV1.filter(p => documentUri.startsWith(p.getUri())).flatMap(p => p.getSemanticTokens(documentUri)),
-      ...this.packagesV2.filter(p => documentUri.startsWith(p.getUri())).flatMap(p => p.getSemanticTokens(documentUri))
+      ...this.packagesV1.filter(p => documentUri.startsWith(p.uri)).flatMap(p => p.getSemanticTokens(documentUri)),
+      ...this.packagesV2.filter(p => documentUri.startsWith(p.uri)).flatMap(p => p.getSemanticTokens(documentUri))
     ];
   }
 
@@ -273,7 +273,7 @@ export class AST {
   }
 
   getV1ConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string) {
-    return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions(type, optionID, conversationID, packageUri));
+    return this.packagesV1.filter(pkg => !packageUri || pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions(type, optionID, conversationID, packageUri));
   }
 
   getV2ConditionEntry(id: string, packageUri: string) {
