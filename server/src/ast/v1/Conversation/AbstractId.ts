@@ -2,14 +2,14 @@ import { DiagnosticSeverity } from "vscode-languageserver";
 
 import ListElement from "betonquest-utils/betonquest/ListElement";
 
-import { NodeV1, NodeType } from "../../node";
+import { AbstractNodeV1, NodeType } from "../../node";
 import { ElementEntry } from "../Element/ElementEntry";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
 
-export abstract class AbstractID<T extends NodeType, PT extends NodeV1<NodeType>, ET extends ElementEntry<ListElement>> extends NodeV1<T> {
+export abstract class AbstractID<T extends NodeType, PT extends AbstractNodeV1<NodeType>, ET extends ElementEntry<ListElement>> extends AbstractNodeV1<T> {
   abstract type: T;
   protected uri: string;
   protected offsetStart: number;

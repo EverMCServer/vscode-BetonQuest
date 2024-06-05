@@ -1,12 +1,12 @@
 import { Scalar } from "yaml";
 import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationInterceptorType, NodeV1 } from "../../node";
+import { ConversationInterceptorType, AbstractNodeV1 } from "../../node";
 import { Conversation } from "./Conversation";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getScalarRangeByValue, getScalarSourceAndRange, getSourceByValue } from "../../../utils/yaml";
 
-export class ConversationInterceptor extends NodeV1<ConversationInterceptorType> {
+export class ConversationInterceptor extends AbstractNodeV1<ConversationInterceptorType> {
   type: ConversationInterceptorType = 'ConversationInterceptor';
   uri: string;
   offsetStart: number;

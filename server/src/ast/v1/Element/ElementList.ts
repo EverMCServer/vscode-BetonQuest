@@ -31,7 +31,10 @@ export abstract class ElementList<LE extends ListElement, Entry extends ElementE
 
   abstract newEntry(pair: Pair<Scalar<string>, Scalar<string>>): Entry;
 
-  getPublishDiagnosticsParams() {
+  getPublishDiagnosticsParams(documentUri?: string) {
+    if (documentUri && this.uri !== documentUri) {
+      return [];
+    }
     return {
       uri: this.document.uri,
       diagnostics: this.entries.flatMap(e => e.getDiagnostics())

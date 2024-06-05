@@ -1,13 +1,13 @@
 import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v2/Element";
 import ListElement from "betonquest-utils/betonquest/ListElement";
 
-import { ElementKindType, NodeV2 } from "../../node";
+import { ElementKindType, AbstractNodeV2 } from "../../node";
 import { ElementEntry } from "./ElementEntry";
 import { HoverInfo } from "../../../utils/hover";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { CodeAction, Diagnostic } from "vscode-languageserver";
 
-export abstract class ElementKind<LE extends ListElement> extends NodeV2<ElementKindType> {
+export abstract class ElementKind<LE extends ListElement> extends AbstractNodeV2<ElementKindType> {
   abstract type: ElementKindType;
   uri: string;
   offsetStart?: number;

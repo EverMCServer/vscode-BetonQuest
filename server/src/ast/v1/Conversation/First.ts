@@ -1,7 +1,7 @@
 import { Scalar } from "yaml";
 import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationFirstType, NodeV1 } from "../../node";
+import { ConversationFirstType } from "../../node";
 import { Conversation } from "./Conversation";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
@@ -9,10 +9,11 @@ import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
 import { getScalarSourceAndRange } from "../../../utils/yaml";
 import { FirstPointer } from "./FirstPointer";
+import { AbstractNodeV1 } from "../../v1";
 
-export class First extends NodeV1<ConversationFirstType> {
+export class First extends AbstractNodeV1<ConversationFirstType> {
   type: ConversationFirstType = 'ConversationFirst';
-  protected uri: string;
+  uri: string;
   offsetStart: number;
   offsetEnd: number;
   parent: Conversation;
@@ -21,11 +22,9 @@ export class First extends NodeV1<ConversationFirstType> {
   private entriesStr: string;
   private entries: FirstPointer[] = [];
 
-  private semanticTokens: SemanticToken[] = [];
-
   constructor(yml: Scalar, parent: Conversation) {
     super();
-    this.uri = parent.getUri();
+    this.uri = parent.uri;
     this.parent = parent;
 
     [this.entriesStr, [this.offsetStart, this.offsetEnd]] = getScalarSourceAndRange(yml);

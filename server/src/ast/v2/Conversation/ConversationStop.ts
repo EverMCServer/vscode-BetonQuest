@@ -1,12 +1,12 @@
 import { Scalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationStopType, NodeV2 } from "../../node";
+import { ConversationStopType, AbstractNodeV2 } from "../../node";
 import { ConversationSection } from "./Conversation";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 
-export class ConversationStop extends NodeV2<ConversationStopType> {
+export class ConversationStop extends AbstractNodeV2<ConversationStopType> {
   type: ConversationStopType = 'ConversationStop';
   uri: string;
   offsetStart?: number;

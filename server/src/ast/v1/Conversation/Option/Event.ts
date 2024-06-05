@@ -1,9 +1,9 @@
-import { ConversationEventType, NodeType, NodeV1 } from "../../../node";
+import { ConversationEventType, NodeType, AbstractNodeV1 } from "../../../node";
 import { AbstractID } from "../AbstractId";
 import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
 import { EventEntry } from "../../Event/EventEntry";
 
-export class Event<PT extends NodeV1<NodeType>> extends AbstractID<ConversationEventType, PT, EventEntry> {
+export class Event<PT extends AbstractNodeV1<NodeType>> extends AbstractID<ConversationEventType, PT, EventEntry> {
   type: ConversationEventType = "ConversationEvent";
 
   constructor(idString: string, range: [offsetStart: number, offsetEnd: number], parent: PT) {

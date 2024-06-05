@@ -1,7 +1,7 @@
 import { Scalar } from "yaml";
 import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationEventsType, ConversationOptionType, NodeV1 } from "../../../node";
+import { ConversationEventsType, ConversationOptionType, AbstractNodeV1 } from "../../../node";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
 import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
 import { HoverInfo } from "../../../../utils/hover";
@@ -9,7 +9,7 @@ import { LocationLinkOffset } from "../../../../utils/location";
 import { getScalarSourceAndRange } from "../../../../utils/yaml";
 import { Event } from "./Event";
 
-export class Events<PT extends NodeV1<ConversationOptionType>> extends NodeV1<ConversationEventsType> {
+export class Events<PT extends AbstractNodeV1<ConversationOptionType>> extends AbstractNodeV1<ConversationEventsType> {
   type: ConversationEventsType = "ConversationEvents";
   protected uri: string;
   offsetStart: number;

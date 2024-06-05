@@ -5,7 +5,7 @@ import { Pair, Scalar, YAMLMap, isMap, isSeq, parseDocument, visit } from "yaml"
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
 import { AST } from "../ast";
-import { ConversationOptionType, NodeV2, PackageV2Type } from "../node";
+import { ConversationOptionType, PackageV2Type } from "../node";
 import { HoverInfo } from "../../utils/hover";
 import { LocationLinkOffset } from "../../utils/location";
 import { getParentUrl } from "../../utils/url";
@@ -19,12 +19,13 @@ import { ConditionEntry } from "./Condition/ConditionEntry";
 import { EventEntry } from "./Event/EventEntry";
 import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
 import { Option } from "./Conversation/Option/Option";
+import { AbstractNodeV2 } from "../v2";
 
-export class PackageV2 extends NodeV2<PackageV2Type> {
-  protected type: PackageV2Type = "PackageV2";
-  protected uri: string;
-  protected parent: PackageV2 = this;
-  private parentAst: AST;
+export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
+  type: PackageV2Type = "PackageV2";
+  readonly uri: string;
+  parent: PackageV2 = this;
+  readonly parentAst: AST;
   readonly packagePath: string[];
 
   conditionLists: ConditionList;

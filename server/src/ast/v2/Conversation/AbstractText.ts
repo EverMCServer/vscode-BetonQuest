@@ -1,12 +1,12 @@
 import { Scalar, YAMLMap, isMap, isScalar } from "yaml";
 
-import { ConversationOptionType, ConversationTypes, NodeV2 } from "../../node";
+import { ConversationOptionType, ConversationTypes, AbstractNodeV2 } from "../../node";
 import { ConversationSection } from "./Conversation";
 import { AbstractTextTranslations } from "./AbstractTextTranslations";
 import { Option } from "./Option/Option";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 
-export abstract class AbstractText<NT extends ConversationTypes, TT extends AbstractTextTranslations<ConversationTypes>> extends NodeV2<NT> {
+export abstract class AbstractText<NT extends ConversationTypes, TT extends AbstractTextTranslations<ConversationTypes>> extends AbstractNodeV2<NT> {
   abstract type: NT;
   uri: string;
   protected offsetStart: number;

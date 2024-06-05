@@ -9,6 +9,12 @@ import { ObjectiveEntry as ObjectiveEntryV1 } from "./v1/Objective/ObjectiveEntr
 import { ObjectiveEntry as ObjectiveEntryV2 } from "./v2/Objective/ObjectiveEntry";
 import { Option as OptionV1 } from "./v1/Conversation/Option/Option";
 import { Option as OptionV2 } from "./v2/Conversation/Option/Option";
+import { SemanticToken } from "../service/semanticTokens";
+import { PackageV1 } from "./v1/Package";
+import { PackageV2 } from "./v2/Package";
+import { AST } from "./ast";
+import { NodeV1 } from "./v1";
+import { NodeV2 } from "./v2";
 
 export type PackageV1Type = 'PackageV1';
 export type PackageV2Type = 'PackageV2';
@@ -83,24 +89,33 @@ export type ElementTypes = ElementListType | ElementEntryType | ElementKeyType |
 
 export type NodeType = PackageTypes | ConversationTypes | EventTypes | ConditionTypes | ObjectiveTypes;
 
-export abstract class Node<T extends NodeType> {
-  protected abstract type: T;
-  protected abstract uri: string;
-  protected offsetStart?: number;
-  protected offsetEnd?: number;
-  protected abstract parent: Node<NodeType>;
+export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2> {
+  abstract readonly type: T;
+  abstract readonly uri: string;
+  offsetStart?: number;
+  offsetEnd?: number;
+  abstract readonly parent: N;
+  protected children: N[] = [];
   protected diagnostics: Diagnostic[] = [];
   protected codeActions: CodeAction[] = [];
-  // children?: Node<NodeType>[],
+  protected semanticTokens: SemanticToken[] = [];
 
-  // name?: string,
-  // value?: string,
-  // [key: string]: any,
+  addChild(child: N) {
+    this.children.push(child);
+  }
 
-  // findByOffset(uri: string, offset: number): Node<T>;
-  // findByType(uri: string, type: T): Node<T>;
+  getChild<Node extends N>(type: NodeType, additionalCheck?: (child: Node) => boolean) {
+    return this.children.find<Node>((c): c is Node => c.type === type && (!additionalCheck || additionalCheck(c as Node)));
+  }
 
-  // getParent(): Node<NodeType>;
+  getChildren<Node extends N>(type: NodeType, additionalCheck?: (child: Node) => boolean) {
+    return this.children.filter<Node>((c): c is Node => c.type === type && (!additionalCheck || additionalCheck(c as Node)));
+  }
+
+  /**
+   * Get the root AST node
+   */
+  abstract getAst(): AST;
 
   addDiagnostic(offsets: [offsetStart?: number, offsetEnd?: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode, codeActions?: { title: string, text: string, range?: [offsetStart: number, offsetEnd: number] }[]) {
     if (offsets[0] === undefined || offsets[1] === undefined) {
@@ -132,18 +147,6 @@ export abstract class Node<T extends NodeType> {
     });
   }
 
-  getUri() {
-    return this.uri;
-  }
-
-  getOffsetStart() {
-    return this.offsetStart;
-  }
-
-  getOffsetEnd() {
-    return this.offsetEnd;
-  }
-
   getDiagnostics() {
     return this.diagnostics;
   }
@@ -164,60 +167,3 @@ export abstract class Node<T extends NodeType> {
     return this.parent.getPackageUri(targetPackagePath);
   }
 };
-
-export abstract class NodeV1<T extends NodeType> extends Node<T> {
-  protected abstract parent: NodeV1<NodeType>;
-
-  // Get all target package's Condition entries.
-  // This method must be overrided / hijacked by the top-level class.
-  getConditionEntries(id: string, packageUri: string): ConditionEntryV1[] {
-    return this.parent.getConditionEntries(id, packageUri);
-  }
-
-  // Get all target package's Event entries.
-  // This method must be overrided / hijacked by the top-level class.
-  getEventEntries(id: string, packageUri: string): EventEntryV1[] {
-    return this.parent.getEventEntries(id, packageUri);
-  }
-
-  // Get all target package's Objective entries.
-  // This method must be overrided / hijacked by the top-level class.
-  getObjectiveEntries(id: string, packageUri: string): ObjectiveEntryV1[] {
-    return this.parent.getObjectiveEntries(id, packageUri);
-  }
-
-  // Get all target package's conversation options.
-  // This method must be overrided / hijacked by the top-level class.
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): OptionV1<T>[] {
-    return this.parent.getConversationOptions<T>(type, optionID, conversationID, packageUri);
-  }
-
-}
-
-export abstract class NodeV2<T extends NodeType> extends Node<T> {
-  protected abstract parent: NodeV2<NodeType>;
-
-  // Get all target package's Condition entries.
-  // This method must be overrided / hijacked by the top-level class.
-  getConditionEntries(id: string, packageUri?: string): ConditionEntryV2[] {
-    return this.parent.getConditionEntries(id, packageUri);
-  }
-
-  // Get all target package's Event entries.
-  // This method must be overrided / hijacked by the top-level class.
-  getEventEntries(id: string, packageUri?: string): EventEntryV2[] {
-    return this.parent.getEventEntries(id, packageUri);
-  }
-
-  // Get all target package's Objective entries.
-  // This method must be overrided / hijacked by the top-level class.
-  getObjectiveEntries(id: string, packageUri?: string): ObjectiveEntryV2[] {
-    return this.parent.getObjectiveEntries(id, packageUri);
-  }
-
-  // Get all target package's conversation options.
-  // This method must be overrided / hijacked by the top-level class.
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): OptionV2<T>[] {
-    return this.parent.getConversationOptions(type, optionID, conversationID, packageUri);
-  }
-}

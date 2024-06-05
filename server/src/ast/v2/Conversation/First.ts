@@ -1,7 +1,7 @@
 import { Scalar } from "yaml";
 import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationFirstType, NodeV2 } from "../../node";
+import { ConversationFirstType, AbstractNodeV2 } from "../../node";
 import { ConversationSection } from "./Conversation";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
@@ -10,7 +10,7 @@ import { LocationLinkOffset } from "../../../utils/location";
 import { getScalarSourceAndRange } from "../../../utils/yaml";
 import { FirstPointer } from "./FirstPointer";
 
-export class First extends NodeV2<ConversationFirstType> {
+export class First extends AbstractNodeV2<ConversationFirstType> {
   type: ConversationFirstType = 'ConversationFirst';
   protected uri: string;
   offsetStart: number;

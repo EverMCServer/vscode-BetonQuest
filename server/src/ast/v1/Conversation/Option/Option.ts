@@ -1,7 +1,7 @@
 import { Pair, Scalar, YAMLMap, isScalar } from "yaml";
 import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationOptionType, NodeV1 } from "../../../node";
+import { ConversationOptionType } from "../../../node";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
 import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
 import { HoverInfo } from "../../../../utils/hover";
@@ -12,8 +12,9 @@ import { Conversation } from "../Conversation";
 import { Conditions } from "./Conditions";
 import { Events } from "./Events";
 import { Pointers } from "./Pointers";
+import { AbstractNodeV1 } from "../../../v1";
 
-export class Option<T extends ConversationOptionType> extends NodeV1<T> {
+export class Option<T extends ConversationOptionType> extends AbstractNodeV1<T> {
   type: T;
   uri: string;
   offsetStart: number;

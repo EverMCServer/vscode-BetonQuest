@@ -1,7 +1,7 @@
 import { Scalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationFinalEventsType, NodeV2 } from "../../node";
+import { ConversationFinalEventsType, AbstractNodeV2 } from "../../node";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { SemanticToken } from "../../../service/semanticTokens";
 import { HoverInfo } from "../../../utils/hover";
@@ -10,7 +10,7 @@ import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
 import { ConversationSection } from "./Conversation";
 import { Event } from "./Option/Event";
 
-export class ConversationFinalEvents extends NodeV2<ConversationFinalEventsType> {
+export class ConversationFinalEvents extends AbstractNodeV2<ConversationFinalEventsType> {
   type: ConversationFinalEventsType = 'ConversationFinalEvents';
   uri: string;
   offsetStart: number;

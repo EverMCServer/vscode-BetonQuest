@@ -1,7 +1,7 @@
 import { Scalar } from "yaml";
 import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationOptionType, ConversationPointersType, NodeV1 } from "../../../node";
+import { ConversationOptionType, ConversationPointersType, AbstractNodeV1 } from "../../../node";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
 import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
 import { HoverInfo } from "../../../../utils/hover";
@@ -10,7 +10,7 @@ import { getScalarSourceAndRange } from "../../../../utils/yaml";
 import { Option } from "./Option";
 import { Pointer } from "./Pointer";
 
-export class Pointers<T extends ConversationOptionType> extends NodeV1<ConversationPointersType> {
+export class Pointers<T extends ConversationOptionType> extends AbstractNodeV1<ConversationPointersType> {
   type: ConversationPointersType = "ConversationPointers";
   protected uri: string;
   offsetStart: number;

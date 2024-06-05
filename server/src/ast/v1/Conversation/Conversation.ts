@@ -23,13 +23,13 @@ export class Conversation extends Document<ConversationType> {
 
   // Contents
   conversationID: string;
-  quester?: ConversationQuester;
-  first?: First;
-  stop?: ConversationStop;
-  finalEvents?: ConversationFinalEvents;
-  interceptor?: ConversationInterceptor;
-  npcOptions: Option<ConversationNpcOptionType>[] = [];
-  playerOptions: Option<ConversationPlayerOptionType>[] = [];
+  // quester?: ConversationQuester;
+  // first?: First;
+  // stop?: ConversationStop;
+  // finalEvents?: ConversationFinalEvents;
+  // interceptor?: ConversationInterceptor;
+  // npcOptions: Option<ConversationNpcOptionType>[] = [];
+  // playerOptions: Option<ConversationPlayerOptionType>[] = [];
 
   semanticTokens: SemanticToken[] = [];
 
@@ -62,7 +62,7 @@ export class Conversation extends Document<ConversationType> {
       switch (pair.key.value) {
         case "quester":
           if (isScalar(pair.value) || isMap<Scalar<string>>(pair.value)) {
-            this.quester = new ConversationQuester(pair.value, this);
+            this.addChild(new ConversationQuester(pair.value, this));
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string or a translation list.`);
@@ -70,7 +70,7 @@ export class Conversation extends Document<ConversationType> {
           break;
         case "first":
           if (isScalar(pair.value)) {
-            this.first = new First(pair.value, this);
+            this.addChild(new First(pair.value, this));
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
@@ -78,7 +78,7 @@ export class Conversation extends Document<ConversationType> {
           break;
         case "stop":
           if (isScalar(pair.value)) {
-            this.stop = new ConversationStop(pair.value, this);
+            this.addChild(new ConversationStop(pair.value, this));
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
@@ -86,7 +86,7 @@ export class Conversation extends Document<ConversationType> {
           break;
         case "final_events":
           if (isScalar(pair.value)) {
-            this.finalEvents = new ConversationFinalEvents(pair.value, this);
+            this.addChild(new ConversationFinalEvents(pair.value, this));
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
@@ -94,7 +94,7 @@ export class Conversation extends Document<ConversationType> {
           break;
         case "interceptor":
           if (isScalar(pair.value)) {
-            this.interceptor = new ConversationInterceptor(pair.value, this);
+            this.addChild(new ConversationInterceptor(pair.value, this));
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
@@ -105,7 +105,7 @@ export class Conversation extends Document<ConversationType> {
             pair.value.items.forEach(option => {
               // Check YAML value type
               if (isYamlMapPair(option) && option.value) {
-                this.npcOptions.push(new Option("ConversationNpcOption", option, this));
+                this.addChild(new Option("ConversationNpcOption", option, this));
               } else {
                 // TODO: throw diagnostics error.
               }
@@ -120,7 +120,7 @@ export class Conversation extends Document<ConversationType> {
             pair.value.items.forEach(option => {
               // Check YAML value type
               if (isYamlMapPair(option) && option.value) {
-                this.playerOptions.push(new Option("ConversationPlayerOption", option, this));
+                this.addChild(new Option("ConversationPlayerOption", option, this));
               } else {
                 // TODO: throw diagnostics error.
               }
@@ -176,7 +176,7 @@ export class Conversation extends Document<ConversationType> {
     });
 
     // Check missing elements
-    if (!this.quester) {
+    if (!this.getChild('ConversationFirst')) {
       this.addDiagnostic(
         [0, 0],
         `Missing element "quester".`,
@@ -200,49 +200,58 @@ export class Conversation extends Document<ConversationType> {
     this.addDiagnostic([offsetStart, offsetEnd], message, DiagnosticSeverity.Error, DiagnosticCode.ValueTypeIncorrect);
   }
 
-  getPublishDiagnosticsParams() {
+  getPublishDiagnosticsParams(documentUri?: string) {
+    if (documentUri && this.uri !== documentUri) {
+      return [];
+    }
     return {
       uri: this.uri,
-      diagnostics: [
-        ...this.diagnostics,
-        ...this.quester?.getDiagnostics() ?? [],
-        ...this.first?.getDiagnostics() ?? [],
-        ...this.stop?.getDiagnostics() ?? [],
-        ...this.finalEvents?.getDiagnostics() ?? [],
-        ...this.interceptor?.getDiagnostics() ?? [],
-        ...this.npcOptions?.flatMap(npc => npc.getDiagnostics()) ?? [],
-        ...this.playerOptions?.flatMap(player => player.getDiagnostics()) ?? [],
-      ]
+      diagnostics: this.children.flatMap(c => c.getDiagnostics())
+      // diagnostics: [
+      //   ...this.diagnostics,
+      //   ...this.quester?.getDiagnostics() ?? [],
+      //   ...this.first?.getDiagnostics() ?? [],
+      //   ...this.stop?.getDiagnostics() ?? [],
+      //   ...this.finalEvents?.getDiagnostics() ?? [],
+      //   ...this.interceptor?.getDiagnostics() ?? [],
+      //   ...this.npcOptions?.flatMap(npc => npc.getDiagnostics()) ?? [],
+      //   ...this.playerOptions?.flatMap(player => player.getDiagnostics()) ?? [],
+      // ]
     } as PublishDiagnosticsParams;
   }
 
   // Get all CodeActions, quick fixes etc
-  getCodeActions() {
-    return [
-      ...this.codeActions,
-      ...this.quester?.getCodeActions() ?? [],
-      ...this.first?.getCodeActions() ?? [],
-      ...this.stop?.getCodeActions() ?? [],
-      ...this.finalEvents?.getCodeActions() ?? [],
-      ...this.interceptor?.getCodeActions() ?? [],
-      ...this.npcOptions?.flatMap(npc => npc.getCodeActions()) ?? [],
-      ...this.playerOptions?.flatMap(player => player.getCodeActions()) ?? [],
-    ];
+  getCodeActions(documentUri?: string) {
+    if (documentUri && this.uri !== documentUri) {
+      return [];
+    }
+    return this.children.flatMap(c => c.getCodeActions());
+    // return [
+    //   ...this.codeActions,
+    //   ...this.quester?.getCodeActions() ?? [],
+    //   ...this.first?.getCodeActions() ?? [],
+    //   ...this.stop?.getCodeActions() ?? [],
+    //   ...this.finalEvents?.getCodeActions() ?? [],
+    //   ...this.interceptor?.getCodeActions() ?? [],
+    //   ...this.npcOptions?.flatMap(npc => npc.getCodeActions()) ?? [],
+    //   ...this.playerOptions?.flatMap(player => player.getCodeActions()) ?? [],
+    // ];
   }
 
   getSemanticTokens(documentUri: string): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = [];
     if (documentUri !== this.uri) {
-      return semanticTokens;
+      return [];
     }
-    semanticTokens.push(...this.semanticTokens);
-    semanticTokens.push(...this.quester?.getSemanticTokens() || []);
-    semanticTokens.push(...this.first?.getSemanticTokens() || []);
-    semanticTokens.push(...this.stop?.getSemanticTokens() || []);
-    semanticTokens.push(...this.finalEvents?.getSemanticTokens() || []);
-    semanticTokens.push(...this.npcOptions.flatMap(o => o.getSemanticTokens()));
-    semanticTokens.push(...this.playerOptions.flatMap(o => o.getSemanticTokens()));
-    return semanticTokens;
+    return this.children.flatMap(c => c.getSemanticTokens());
+    // const semanticTokens: SemanticToken[] = [];
+    // semanticTokens.push(...this.semanticTokens);
+    // semanticTokens.push(...this.quester?.getSemanticTokens() || []);
+    // semanticTokens.push(...this.first?.getSemanticTokens() || []);
+    // semanticTokens.push(...this.stop?.getSemanticTokens() || []);
+    // semanticTokens.push(...this.finalEvents?.getSemanticTokens() || []);
+    // semanticTokens.push(...this.npcOptions.flatMap(o => o.getSemanticTokens()));
+    // semanticTokens.push(...this.playerOptions.flatMap(o => o.getSemanticTokens()));
+    // return semanticTokens;
   };
 
   getHoverInfo(offset: number, documentUri: string): HoverInfo[] {
@@ -250,11 +259,12 @@ export class Conversation extends Document<ConversationType> {
     if (documentUri !== this.uri) {
       return hoverInfo;
     }
-    hoverInfo.push(...this.first?.getHoverInfo(offset) || []);
-    hoverInfo.push(...this.finalEvents?.getHoverInfo(offset) || []);
-    hoverInfo.push(...this.npcOptions.flatMap(o => o.getHoverInfo(offset)));
-    hoverInfo.push(...this.playerOptions.flatMap(o => o.getHoverInfo(offset)));
-    return hoverInfo;
+    return this.children.flatMap(c => c.getHoverInfo(offset));
+    // hoverInfo.push(...this.first?.getHoverInfo(offset) || []);
+    // hoverInfo.push(...this.finalEvents?.getHoverInfo(offset) || []);
+    // hoverInfo.push(...this.npcOptions.flatMap(o => o.getHoverInfo(offset)));
+    // hoverInfo.push(...this.playerOptions.flatMap(o => o.getHoverInfo(offset)));
+    // return hoverInfo;
   }
 
   getDefinitions(offset: number, uri: string): LocationLinkOffset[] {
@@ -262,20 +272,22 @@ export class Conversation extends Document<ConversationType> {
       return [];
     }
 
-    return [
-      ...this.first?.getDefinitions(offset) || [],
-      ...this.finalEvents?.getDefinitions(offset) || [],
-      ...this.npcOptions.flatMap(o => o.getDefinitions(offset)),
-      ...this.playerOptions.flatMap(o => o.getDefinitions(offset)),
-    ];
+    return this.children.flatMap(c => c.getDefinitions(offset));
+
+    // return [
+    //   ...this.first?.getDefinitions(offset) || [],
+    //   ...this.finalEvents?.getDefinitions(offset) || [],
+    //   ...this.npcOptions.flatMap(o => o.getDefinitions(offset)),
+    //   ...this.playerOptions.flatMap(o => o.getDefinitions(offset)),
+    // ];
   }
 
   getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string): Option<T>[] {
     switch (type) {
       case "ConversationNpcOption":
-        return this.npcOptions.filter(o => o.id === optionID) as Option<T>[];
+        return this.getChildren<Option<ConversationNpcOptionType>>('ConversationNpcOption').filter(o => o.id === optionID) as Option<T>[];
       case "ConversationPlayerOption":
-        return this.playerOptions.filter(o => o.id === optionID) as Option<T>[];
+        return this.getChildren<Option<ConversationPlayerOptionType>>('ConversationPlayerOption').filter(o => o.id === optionID) as Option<T>[];
     }
     return [];
   }

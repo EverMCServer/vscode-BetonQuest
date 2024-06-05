@@ -1,7 +1,7 @@
 import { Scalar } from "yaml";
 import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationConditionsType, ConversationOptionType, NodeV2 } from "../../../node";
+import { ConversationConditionsType, ConversationOptionType, AbstractNodeV2 } from "../../../node";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
 import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
 import { HoverInfo } from "../../../../utils/hover";
@@ -9,7 +9,7 @@ import { LocationLinkOffset } from "../../../../utils/location";
 import { getScalarSourceAndRange } from "../../../../utils/yaml";
 import { Condition } from "./Condition";
 
-export class Conditions<PT extends NodeV2<ConversationOptionType>> extends NodeV2<ConversationConditionsType> {
+export class Conditions<PT extends AbstractNodeV2<ConversationOptionType>> extends AbstractNodeV2<ConversationConditionsType> {
   type: ConversationConditionsType = "ConversationConditions";
   protected uri: string;
   offsetStart: number;

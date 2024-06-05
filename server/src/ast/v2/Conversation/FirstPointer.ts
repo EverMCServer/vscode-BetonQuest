@@ -4,10 +4,10 @@ import { SemanticToken, SemanticTokenType } from "../../../service/semanticToken
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
-import { ConversationPointerType, NodeType, NodeV2 } from "../../node";
+import { ConversationPointerType, NodeType, AbstractNodeV2 } from "../../node";
 import { First } from "./First";
 
-export class FirstPointer extends NodeV2<NodeType> {
+export class FirstPointer extends AbstractNodeV2<NodeType> {
   type: ConversationPointerType = "ConversationPointer";
   protected uri: string;
   protected offsetStart: number;

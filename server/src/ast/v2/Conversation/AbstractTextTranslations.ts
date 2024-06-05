@@ -1,12 +1,12 @@
 import { Scalar, YAMLMap, isScalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationTypes, NodeV2 } from "../../node";
+import { ConversationTypes, AbstractNodeV2 } from "../../node";
 import { AbstractText } from "./AbstractText";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 
-export abstract class AbstractTextTranslations<N extends ConversationTypes> extends NodeV2<N> {
+export abstract class AbstractTextTranslations<N extends ConversationTypes> extends AbstractNodeV2<N> {
   abstract type: N;
   uri: string;
   parent: AbstractText<ConversationTypes, AbstractTextTranslations<N>>;

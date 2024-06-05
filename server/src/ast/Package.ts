@@ -2,11 +2,11 @@ import { PublishDiagnosticsParams } from "vscode-languageserver";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
-import { Node, PackageTypes } from "./node";
+import { AbstractNode, PackageTypes } from "./node";
 import { HoverInfo } from "../utils/hover";
 import { SemanticToken } from "../service/semanticTokens";
 
-export abstract class Package<T extends PackageTypes> extends Node<T> {
+export abstract class Package<T extends PackageTypes> extends AbstractNode<T> {
   type: T;
   uri: string;
 

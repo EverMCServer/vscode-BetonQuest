@@ -272,7 +272,7 @@ export class AST {
     return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getObjectiveEntries(id, packageUri));
   }
 
-  getV1ConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID: string, packageUri: string) {
+  getV1ConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string) {
     return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions(type, optionID, conversationID, packageUri));
   }
 

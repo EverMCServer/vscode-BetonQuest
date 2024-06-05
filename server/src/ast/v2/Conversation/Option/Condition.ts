@@ -1,9 +1,9 @@
-import { ConversationConditionType, NodeType, NodeV2 } from "../../../node";
+import { ConversationConditionType, NodeType, AbstractNodeV2 } from "../../../node";
 import { AbstractID } from "../AbstractId";
 import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
 import { ConditionEntry } from "../../Condition/ConditionEntry";
 
-export class Condition<PT extends NodeV2<NodeType>> extends AbstractID<ConversationConditionType, PT, ConditionEntry> {
+export class Condition<PT extends AbstractNodeV2<NodeType>> extends AbstractID<ConversationConditionType, PT, ConditionEntry> {
   type: ConversationConditionType = "ConversationCondition";
 
   constructor(idString: string, range: [offsetStart: number, offsetEnd: number], parent: PT) {

@@ -2,11 +2,12 @@ import { Scalar, YAMLMap } from "yaml";
 import { Range } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
-import { NodeV2, NodeType } from "../node";
+import { NodeType } from "../node";
 import { PackageV2 } from "./Package";
 import { SemanticToken } from "../../service/semanticTokens";
+import { AbstractNodeV2 } from "../v2";
 
-export abstract class Document<T extends NodeType, PT extends SectionCollection<T>> extends NodeV2<T> {
+export abstract class Document<T extends NodeType, PT extends SectionCollection<T>> extends AbstractNodeV2<T> {
   uri: string;
   parent: PT;
 
@@ -37,9 +38,9 @@ export abstract class Document<T extends NodeType, PT extends SectionCollection<
   }
 }
 
-export abstract class SectionCollection<T extends NodeType> extends NodeV2<T> {
+export abstract class SectionCollection<T extends NodeType> extends AbstractNodeV2<T> {
   abstract type: T;
-  protected uri: string;
+  uri: string;
   parent: PackageV2;
 
   constructor(uri: string, parent: PackageV2) {
