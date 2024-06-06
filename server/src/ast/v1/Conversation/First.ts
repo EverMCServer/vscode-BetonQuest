@@ -1,26 +1,23 @@
 import { Scalar } from "yaml";
-import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationFirstType } from "../../node";
 import { Conversation } from "./Conversation";
-import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
+import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { HoverInfo } from "../../../utils/hover";
-import { LocationLinkOffset } from "../../../utils/location";
 import { getScalarSourceAndRange } from "../../../utils/yaml";
 import { FirstPointer } from "./FirstPointer";
 import { AbstractNodeV1 } from "../../v1";
 
 export class First extends AbstractNodeV1<ConversationFirstType> {
-  type: ConversationFirstType = 'ConversationFirst';
-  uri: string;
-  offsetStart: number;
-  offsetEnd: number;
-  parent: Conversation;
+  readonly type: ConversationFirstType = 'ConversationFirst';
+  readonly uri: string;
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: Conversation;
 
   private yml: Scalar;
   private entriesStr: string;
-  private entries: FirstPointer[] = [];
 
   constructor(yml: Scalar, parent: Conversation) {
     super();
@@ -74,7 +71,7 @@ export class First extends AbstractNodeV1<ConversationFirstType> {
       }
 
       // Parse the Option ID
-      this.entries.push(new FirstPointer(strTrimed, [offsetStartTrimed, offsetEndTrimed], this));
+      this.addChild(new FirstPointer(strTrimed, [offsetStartTrimed, offsetEndTrimed], this));
 
       // Add semantic tokens for seprator ","
       if (matched[1].length > 0) {

@@ -1,7 +1,8 @@
-import { ConversationConditionType, NodeType, AbstractNodeV1 } from "../../../node";
+import { ConversationConditionType, NodeType } from "../../../node";
 import { AbstractID } from "../AbstractId";
 import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
 import { ConditionEntry } from "../../Condition/ConditionEntry";
+import { AbstractNodeV1 } from "../../../v1";
 
 export class Condition<PT extends AbstractNodeV1<NodeType>> extends AbstractID<ConversationConditionType, PT, ConditionEntry> {
   type: ConversationConditionType = "ConversationCondition";

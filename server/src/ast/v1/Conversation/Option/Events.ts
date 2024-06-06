@@ -73,26 +73,6 @@ export class Events<PT extends AbstractNodeV1<ConversationOptionType>> extends A
     }
   }
 
-  getDiagnostics(): Diagnostic[] {
-    return [
-      ...this.diagnostics,
-      ...this.events.flatMap(c => c.getDiagnostics())
-    ];
-  }
-
-  getCodeActions(): CodeAction[] {
-    return [
-      ...this.codeActions,
-      ...this.events.flatMap(e=> e.getCodeActions())
-    ];
-  }
-
-  getSemanticTokens(): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = [...this.semanticTokens];
-    semanticTokens.push(...this.events.flatMap(c => c.getSemanticTokens()));
-    return semanticTokens;
-  };
-
   getHoverInfo(offset: number): HoverInfo[] {
     const hoverInfo: HoverInfo[] = [];
     if (offset < this.offsetStart || offset > this.offsetEnd) {

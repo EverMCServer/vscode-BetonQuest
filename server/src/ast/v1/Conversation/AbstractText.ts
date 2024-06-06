@@ -9,17 +9,15 @@ import { AbstractNodeV1 } from "../../v1";
 
 export abstract class AbstractText<NT extends ConversationTypes, TT extends AbstractTextTranslations<ConversationTypes>> extends AbstractNodeV1<NT> {
   abstract type: NT;
-  uri: string;
-  protected offsetStart: number;
-  protected offsetEnd: number;
-  parent: Conversation | Option<ConversationOptionType>;
+  readonly uri: string;
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: Conversation | Option<ConversationOptionType>;
 
-  semanticTokens: SemanticToken[] = [];
-
-  yml: Scalar | YAMLMap;
-  contentType?: 'string' | 'translations';
-  contentString?: string;
-  contentTranslations?: TT;
+  private yml: Scalar | YAMLMap;
+  private contentType?: 'string' | 'translations';
+  private contentString?: string;
+  private contentTranslations?: TT; // TODO
 
   constructor(yml: Scalar | YAMLMap, parent: Conversation | Option<ConversationOptionType>) {
     super();
@@ -42,7 +40,7 @@ export abstract class AbstractText<NT extends ConversationTypes, TT extends Abst
       });
     } else if (isMap<Scalar<string>>(yml)) {
       this.contentType = 'translations';
-      this.contentTranslations = this.newTranslations(yml);
+      this.contentTranslations = this.newTranslations(yml); // TODO: replace
     }
 
   }

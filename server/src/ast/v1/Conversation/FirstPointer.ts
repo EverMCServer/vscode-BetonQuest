@@ -4,15 +4,16 @@ import { SemanticToken, SemanticTokenType } from "../../../service/semanticToken
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
-import { ConversationPointerType, NodeType, AbstractNodeV1 } from "../../node";
+import { ConversationPointerType, NodeType } from "../../node";
 import { First } from "./First";
+import { AbstractNodeV1 } from "../../v1";
 
 export class FirstPointer extends AbstractNodeV1<NodeType> {
-  type: ConversationPointerType = "ConversationPointer";
-  protected uri: string;
-  protected offsetStart: number;
-  protected offsetEnd: number;
-  protected parent: First;
+  readonly type: ConversationPointerType = "ConversationPointer";
+  readonly uri: string;
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: First;
 
   // Cache content
   protected withExclamationMark: boolean;
@@ -20,11 +21,9 @@ export class FirstPointer extends AbstractNodeV1<NodeType> {
   protected conversationID: string;
   protected optionID: string;
 
-  private semanticTokens: SemanticToken[] = [];
-
   constructor(idString: string, range: [offsetStart: number, offsetEnd: number], parent: First) {
     super();
-    this.uri = parent.getUri();
+    this.uri = parent.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
     this.parent = parent;
@@ -70,22 +69,6 @@ export class FirstPointer extends AbstractNodeV1<NodeType> {
     });
   }
 
-  // getDiagnostics(): Diagnostic[] {
-  //   return [
-  //     ...this.diagnostics,
-  //   ];
-  // }
-
-  // getCodeActions(): CodeAction[] {
-  //   return [
-  //     ...this.codeActions,
-  //   ];
-  // }
-
-  getSemanticTokens(): SemanticToken[] {
-    return this.semanticTokens;
-  };
-
   getHoverInfo(offset: number): HoverInfo[] {
     if (offset < this.offsetStart || offset > this.offsetEnd) {
       return [];
@@ -103,7 +86,7 @@ export class FirstPointer extends AbstractNodeV1<NodeType> {
     }
     const locations: LocationLinkOffset[] = this.getTargetNodes().flatMap(n => ({
       originSelectionRange: [this.offsetStart, this.offsetEnd],
-      targetUri: n.getUri(),
+      targetUri: n.uri,
       targetRange: [n.offsetStart!, n.offsetEnd!],
       targetSelectionRange: [n.offsetStart!, n.offsetEnd!]
     }));

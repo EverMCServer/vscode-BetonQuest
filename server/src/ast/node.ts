@@ -92,8 +92,8 @@ export type NodeType = PackageTypes | ConversationTypes | EventTypes | Condition
 export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2> {
   abstract readonly type: T;
   abstract readonly uri: string;
-  offsetStart?: number;
-  offsetEnd?: number;
+  readonly offsetStart?: number;
+  readonly offsetEnd?: number;
   abstract readonly parent: N;
   protected children: N[] = [];
   protected diagnostics: Diagnostic[] = [];

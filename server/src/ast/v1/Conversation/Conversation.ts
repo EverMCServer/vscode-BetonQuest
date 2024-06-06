@@ -1,14 +1,12 @@
 import { Pair, Scalar, isMap, isScalar } from "yaml";
-import { DiagnosticSeverity, PublishDiagnosticsParams } from "vscode-languageserver";
+import { DiagnosticSeverity } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { PackageV1 } from "../Package";
 import { ConversationNpcOptionType, ConversationOptionType, ConversationPlayerOptionType, ConversationType } from "../../node";
 import { isYamlMapPair } from "../../../utils/yaml";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { LocationLinkOffset } from "../../../utils/location";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
-import { HoverInfo } from "../../../utils/hover";
 import { getFilename } from "../../../utils/url";
 import { ConversationQuester } from "./ConversationQuester";
 import { First } from "./First";
@@ -176,7 +174,7 @@ export class Conversation extends Document<ConversationType> {
     });
 
     // Check missing elements
-    if (!this.getChild('ConversationFirst')) {
+    if (!this.getChild('ConversationQuester')) {
       this.addDiagnostic(
         [0, 0],
         `Missing element "quester".`,
@@ -198,88 +196,6 @@ export class Conversation extends Document<ConversationType> {
     const offsetStart = (pair.value as any).range?.[0] as number | undefined ?? pair.key.range?.[0];
     const offsetEnd = offsetStart ? (pair.value as any).range?.[1] as number : pair.key.range?.[1];
     this.addDiagnostic([offsetStart, offsetEnd], message, DiagnosticSeverity.Error, DiagnosticCode.ValueTypeIncorrect);
-  }
-
-  getPublishDiagnosticsParams(documentUri?: string) {
-    if (documentUri && this.uri !== documentUri) {
-      return [];
-    }
-    return {
-      uri: this.uri,
-      diagnostics: this.children.flatMap(c => c.getDiagnostics())
-      // diagnostics: [
-      //   ...this.diagnostics,
-      //   ...this.quester?.getDiagnostics() ?? [],
-      //   ...this.first?.getDiagnostics() ?? [],
-      //   ...this.stop?.getDiagnostics() ?? [],
-      //   ...this.finalEvents?.getDiagnostics() ?? [],
-      //   ...this.interceptor?.getDiagnostics() ?? [],
-      //   ...this.npcOptions?.flatMap(npc => npc.getDiagnostics()) ?? [],
-      //   ...this.playerOptions?.flatMap(player => player.getDiagnostics()) ?? [],
-      // ]
-    } as PublishDiagnosticsParams;
-  }
-
-  // Get all CodeActions, quick fixes etc
-  getCodeActions(documentUri?: string) {
-    if (documentUri && this.uri !== documentUri) {
-      return [];
-    }
-    return this.children.flatMap(c => c.getCodeActions());
-    // return [
-    //   ...this.codeActions,
-    //   ...this.quester?.getCodeActions() ?? [],
-    //   ...this.first?.getCodeActions() ?? [],
-    //   ...this.stop?.getCodeActions() ?? [],
-    //   ...this.finalEvents?.getCodeActions() ?? [],
-    //   ...this.interceptor?.getCodeActions() ?? [],
-    //   ...this.npcOptions?.flatMap(npc => npc.getCodeActions()) ?? [],
-    //   ...this.playerOptions?.flatMap(player => player.getCodeActions()) ?? [],
-    // ];
-  }
-
-  getSemanticTokens(documentUri: string): SemanticToken[] {
-    if (documentUri !== this.uri) {
-      return [];
-    }
-    return this.children.flatMap(c => c.getSemanticTokens());
-    // const semanticTokens: SemanticToken[] = [];
-    // semanticTokens.push(...this.semanticTokens);
-    // semanticTokens.push(...this.quester?.getSemanticTokens() || []);
-    // semanticTokens.push(...this.first?.getSemanticTokens() || []);
-    // semanticTokens.push(...this.stop?.getSemanticTokens() || []);
-    // semanticTokens.push(...this.finalEvents?.getSemanticTokens() || []);
-    // semanticTokens.push(...this.npcOptions.flatMap(o => o.getSemanticTokens()));
-    // semanticTokens.push(...this.playerOptions.flatMap(o => o.getSemanticTokens()));
-    // return semanticTokens;
-  };
-
-  getHoverInfo(offset: number, documentUri: string): HoverInfo[] {
-    const hoverInfo: HoverInfo[] = [];
-    if (documentUri !== this.uri) {
-      return hoverInfo;
-    }
-    return this.children.flatMap(c => c.getHoverInfo(offset));
-    // hoverInfo.push(...this.first?.getHoverInfo(offset) || []);
-    // hoverInfo.push(...this.finalEvents?.getHoverInfo(offset) || []);
-    // hoverInfo.push(...this.npcOptions.flatMap(o => o.getHoverInfo(offset)));
-    // hoverInfo.push(...this.playerOptions.flatMap(o => o.getHoverInfo(offset)));
-    // return hoverInfo;
-  }
-
-  getDefinitions(offset: number, uri: string): LocationLinkOffset[] {
-    if (uri !== this.uri) {
-      return [];
-    }
-
-    return this.children.flatMap(c => c.getDefinitions(offset));
-
-    // return [
-    //   ...this.first?.getDefinitions(offset) || [],
-    //   ...this.finalEvents?.getDefinitions(offset) || [],
-    //   ...this.npcOptions.flatMap(o => o.getDefinitions(offset)),
-    //   ...this.playerOptions.flatMap(o => o.getDefinitions(offset)),
-    // ];
   }
 
   getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string): Option<T>[] {

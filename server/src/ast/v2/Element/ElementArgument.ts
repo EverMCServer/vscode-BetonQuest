@@ -37,10 +37,6 @@ export abstract class ElementArgument<LE extends ListElement> extends AbstractNo
 
   abstract getSemanticTokens(): SemanticToken[];
 
-  getDiagnostics() {
-    return this.diagnostics;
-  }
-
   getHoverInfo(uri: string, offset: number): string[] {
     if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
       return [];

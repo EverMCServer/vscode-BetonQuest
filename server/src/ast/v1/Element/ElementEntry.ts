@@ -94,45 +94,6 @@ export abstract class ElementEntry<LE extends ListElement> extends AbstractNodeV
   abstract newKind(value: string, range: [number?, number?], kindConfig?: _ElementKind<LE>): ElementKind<LE>;
   abstract newArguments(argumentsSourceStr: string, range: [number?, number?], indent: number, kindConfig?: _ElementKind<LE>): ElementArguments<LE>;
 
-  getDiagnostics() {
-    const diagnostics: Diagnostic[] = [];
-    // From this.diagnostics
-    if (this.diagnostics) {
-      diagnostics.push(...this.diagnostics);
-    }
-    // From Child arguments
-    if (this.elementArguments) {
-      diagnostics.push(...this.elementArguments.getDiagnostics());
-    }
-    return diagnostics;
-  }
-
-  getSemanticTokens(): SemanticToken[] {
-    const tokens: SemanticToken[] = [];
-    tokens.push(...this.elementKey.getSemanticTokens());
-    if (this.elementKind) {
-      tokens.push(...this.elementKind.getSemanticTokens());
-    }
-    if (this.elementArguments) {
-      tokens.push(...this.elementArguments.getSemanticTokens());
-    }
-    return tokens;
-  }
-
-  getHoverInfo(uri: string, offset: number) {
-    if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
-      const hoverInfo = [...this.elementKey.getHoverInfo(offset)];
-      if (this.elementKind) {
-        hoverInfo.push(...this.elementKind.getHoverInfo(offset));
-      }
-      if (this.elementArguments) {
-        hoverInfo.push(...this.elementArguments.getHoverInfo(offset));
-      }
-      return hoverInfo;
-    }
-    return [];
-  }
-
   getDefinitions(offset: number, uri: string): LocationLinkOffset[] {
     // TODO
     return [];

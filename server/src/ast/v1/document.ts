@@ -55,4 +55,35 @@ export abstract class Document<T extends NodeType> extends AbstractNodeV1<T> {
       end: this.document.positionAt(offsetEnd)
     } as Range;
   }
+
+  // Get all CodeActions, quick fixes etc
+  getCodeActions(documentUri?: string) {
+    if (documentUri && documentUri !== this.uri) {
+      return [];
+    }
+    return super.getCodeActions();
+  }
+
+  getSemanticTokens(documentUri?: string) {
+    if (documentUri && documentUri !== this.uri) {
+      return [];
+    }
+    return super.getSemanticTokens();
+  }
+
+  getHoverInfo(offset: number, documentUri?: string) {
+    if (documentUri && documentUri !== this.uri) {
+      return [];
+    }
+    return super.getHoverInfo(offset, documentUri);
+  }
+
+  getDefinitions(offset: number, documentUri?: string) {
+    if (documentUri && documentUri !== this.uri) {
+      return [];
+    }
+
+    return super.getDefinitions(offset);
+  }
+
 }

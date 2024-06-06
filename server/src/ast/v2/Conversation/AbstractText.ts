@@ -46,16 +46,5 @@ export abstract class AbstractText<NT extends ConversationTypes, TT extends Abst
 
   }
 
-  getDiagnostics() {
-    return [
-      ...this.diagnostics,
-      ...this.contentTranslations?.getDiagnostics() ?? []
-    ];
-  }
-
-  getSemanticTokens() {
-    return [...this.semanticTokens, ...this.contentTranslations?.getSemanticTokens() || []];
-  }
-
   abstract newTranslations(pair: YAMLMap<Scalar<string>>): TT;
 }

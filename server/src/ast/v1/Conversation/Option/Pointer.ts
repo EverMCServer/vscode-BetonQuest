@@ -4,27 +4,26 @@ import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTo
 import { DiagnosticCode } from "../../../../utils/diagnostics";
 import { HoverInfo } from "../../../../utils/hover";
 import { LocationLinkOffset } from "../../../../utils/location";
-import { ConversationOptionType, ConversationPointerType, NodeType, AbstractNodeV1 } from "../../../node";
+import { ConversationOptionType, ConversationPointerType, NodeType } from "../../../node";
 import { Pointers } from "./Pointers";
+import { AbstractNodeV1 } from "../../../v1";
 
 export class Pointer<T extends ConversationOptionType> extends AbstractNodeV1<NodeType> {
-  type: ConversationPointerType = "ConversationPointer";
-  protected uri: string;
-  protected offsetStart: number;
-  protected offsetEnd: number;
-  protected parent: Pointers<T>;
+  readonly type: ConversationPointerType = "ConversationPointer";
+  readonly uri: string;
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: Pointers<T>;
 
   // Cache content
-  protected withExclamationMark: boolean;
-  protected package: string = "";
-  protected conversationID: string;
-  protected optionID: string;
-
-  private semanticTokens: SemanticToken[] = [];
+  readonly withExclamationMark: boolean;
+  readonly package: string = "";
+  readonly conversationID: string;
+  readonly optionID: string;
 
   constructor(idString: string, range: [offsetStart: number, offsetEnd: number], parent: Pointers<T>) {
     super();
-    this.uri = parent.getUri();
+    this.uri = parent.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
     this.parent = parent;
@@ -70,22 +69,6 @@ export class Pointer<T extends ConversationOptionType> extends AbstractNodeV1<No
     });
   }
 
-  // getDiagnostics(): Diagnostic[] {
-  //   return [
-  //     ...this.diagnostics,
-  //   ];
-  // }
-
-  // getCodeActions(): CodeAction[] {
-  //   return [
-  //     ...this.codeActions,
-  //   ];
-  // }
-
-  getSemanticTokens(): SemanticToken[] {
-    return this.semanticTokens;
-  };
-
   getHoverInfo(offset: number): HoverInfo[] {
     if (offset < this.offsetStart || offset > this.offsetEnd) {
       return [];
@@ -103,7 +86,7 @@ export class Pointer<T extends ConversationOptionType> extends AbstractNodeV1<No
     }
     const locations: LocationLinkOffset[] = this.getTargetNodes().flatMap(n => ({
       originSelectionRange: [this.offsetStart, this.offsetEnd],
-      targetUri: n.getUri(),
+      targetUri: n.uri,
       targetRange: [n.offsetStart!, n.offsetEnd!],
       targetSelectionRange: [n.offsetStart!, n.offsetEnd!]
     }));

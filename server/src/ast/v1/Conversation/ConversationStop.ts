@@ -1,23 +1,22 @@
 import { Scalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationStopType, AbstractNodeV1 } from "../../node";
+import { ConversationStopType } from "../../node";
 import { Conversation } from "./Conversation";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
+import { AbstractNodeV1 } from "../../v1";
 
 export class ConversationStop extends AbstractNodeV1<ConversationStopType> {
-  type: ConversationStopType = 'ConversationStop';
-  uri: string;
-  offsetStart?: number;
-  offsetEnd?: number;
-  parent: Conversation;
-
-  semanticTokens: SemanticToken[] = [];
+  readonly type: ConversationStopType = 'ConversationStop';
+  readonly uri: string;
+  readonly offsetStart?: number;
+  readonly offsetEnd?: number;
+  readonly parent: Conversation;
 
   // Cache the parsed yaml document
-  yml: Scalar;
-  value?: boolean;
+  private yml: Scalar;
+  private value?: boolean;
 
   constructor(yml: Scalar, parent: Conversation) {
     super();
@@ -91,9 +90,4 @@ export class ConversationStop extends AbstractNodeV1<ConversationStopType> {
       ]
     );
   }
-
-  getSemanticTokens(): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = this.semanticTokens;
-    return semanticTokens;
-  };
 }

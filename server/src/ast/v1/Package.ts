@@ -134,23 +134,12 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
-    return this.children.flatMap(c => c.getPublishDiagnosticsParams(documentUri));
-    // const diagnostics: PublishDiagnosticsParams[] = [];
-    // if (this.conditionList && (!documentUri || this.conditionList.uri === documentUri)) {
-    //   diagnostics.push(this.conditionList.getPublishDiagnosticsParams());
-    // }
-    // if (this.eventList && (!documentUri || this.eventList.uri === documentUri)) {
-    //   diagnostics.push(this.eventList.getPublishDiagnosticsParams());
-    // }
-    // if (this.objectiveList && (!documentUri || this.objectiveList.uri === documentUri)) {
-    //   diagnostics.push(this.objectiveList.getPublishDiagnosticsParams());
-    // }
-    // this.conversations?.forEach(conversation => {
-    //   if (!documentUri || conversation.uri === documentUri) {
-    //     diagnostics.push(conversation.getPublishDiagnosticsParams());
-    //   }
-    // });
-    // return diagnostics;
+    return this.children.filter(c => !documentUri || c.uri === documentUri).flatMap(c => {
+      return {
+        uri: c.uri,
+        diagnostics: c.getDiagnostics()
+      };
+    });
   }
 
   getLocations(yamlPath: string[], sourceUri: string) {
@@ -172,20 +161,5 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
       locations.push(...this.getChild<ObjectiveList>('ObjectiveList')?.getLocations(yamlPath, sourceUri) || []);
     }
     return locations;
-  }
-
-  getDefinitions(offset: number, uri: string): LocationLinkOffset[] {
-    if (!uri.startsWith(this.uri)) {
-      return [];
-    }
-
-    return this.children.flatMap(c => c.getDefinitions(offset, uri));
-    // return [
-    //   ...this.conditionList?.getDefinitions(offset, uri) || [],
-    //   ...this.eventList?.getDefinitions(offset, uri) || [],
-    //   ...this.objectiveList?.getDefinitions(offset, uri) || [],
-    //   ...this.conversations?.flatMap(c => c.getDefinitions(offset, uri)) || [],
-    //   // TODO...
-    // ];
   }
 }

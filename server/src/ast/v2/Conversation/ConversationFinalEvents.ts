@@ -92,31 +92,6 @@ export class ConversationFinalEvents extends AbstractNodeV2<ConversationFinalEve
     }
   }
 
-  getDiagnostics() {
-    const diagnostics = this.diagnostics;
-    this.events.forEach(event => diagnostics.push(...event.getDiagnostics()));
-    return diagnostics;
-  }
-
-  getCodeActions() {
-    return this.codeActions;
-  }
-
-  getSemanticTokens(): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = [];
-    semanticTokens.push(...this.events.flatMap(event => event.getSemanticTokens()));
-    return semanticTokens;
-  };
-
-  getHoverInfo(offset: number): HoverInfo[] {
-    const hoverInfo: HoverInfo[] = [];
-    if (offset < this.offsetStart || offset > this.offsetEnd) {
-      return hoverInfo;
-    }
-    hoverInfo.push(...this.events.flatMap(e => e.getHoverInfo(offset)));
-    return hoverInfo;
-  }
-
   getDefinitions(offset: number): LocationLinkOffset[] {
     if (this.offsetStart! > offset || this.offsetEnd! < offset) {
       return [];

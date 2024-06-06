@@ -2,19 +2,20 @@ import { DiagnosticSeverity } from "vscode-languageserver";
 
 import ListElement from "betonquest-utils/betonquest/ListElement";
 
-import { AbstractNodeV1, NodeType } from "../../node";
+import { NodeType } from "../../node";
 import { ElementEntry } from "../Element/ElementEntry";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
+import { AbstractNodeV1 } from "../../v1";
 
 export abstract class AbstractID<T extends NodeType, PT extends AbstractNodeV1<NodeType>, ET extends ElementEntry<ListElement>> extends AbstractNodeV1<T> {
-  abstract type: T;
-  protected uri: string;
-  protected offsetStart: number;
-  protected offsetEnd: number;
-  protected parent: PT;
+  abstract readonly type: T;
+  readonly uri: string;
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: PT;
 
   // Cache content
   protected withExclamationMark: boolean;
@@ -23,7 +24,7 @@ export abstract class AbstractID<T extends NodeType, PT extends AbstractNodeV1<N
 
   constructor(idString: string, range: [number, number], parent: PT) {
     super();
-    this.uri = parent.getUri();
+    this.uri = parent.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
     this.parent = parent;
@@ -103,7 +104,7 @@ export abstract class AbstractID<T extends NodeType, PT extends AbstractNodeV1<N
 
     return this.getTargetNodes().flatMap(n => ({
       originSelectionRange: [this.offsetStart + (this.withExclamationMark ? 1 : 0), this.offsetEnd],
-      targetUri: n.getUri(),
+      targetUri: n.uri,
       targetRange: [n.offsetStart!, n.offsetEnd!],
       targetSelectionRange: [n.offsetStart!, n.offsetEnd!]
     }));

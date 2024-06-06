@@ -239,10 +239,10 @@ export class AST {
   }
 
   // Get all hover info
-  getHoverInfo(offset: number, uri: string): HoverInfo[] {
+  getHoverInfo(offset: number, documentUri: string): HoverInfo[] {
     return [
-      ...this.packagesV1.flatMap(p => p.getHoverInfo(offset, uri)),
-      ...this.packagesV2.flatMap(p => p.getHoverInfo(offset, uri))
+      ...this.packagesV1.flatMap(p => p.getHoverInfo(offset, documentUri)),
+      ...this.packagesV2.flatMap(p => p.getHoverInfo(offset, documentUri))
     ];
   }
 

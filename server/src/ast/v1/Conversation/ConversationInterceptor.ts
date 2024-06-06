@@ -1,21 +1,22 @@
 import { Scalar } from "yaml";
-import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationInterceptorType, AbstractNodeV1 } from "../../node";
+import { ConversationInterceptorType } from "../../node";
 import { Conversation } from "./Conversation";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { getScalarRangeByValue, getScalarSourceAndRange, getSourceByValue } from "../../../utils/yaml";
+import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
+import { AbstractNodeV1 } from "../../v1";
 
 export class ConversationInterceptor extends AbstractNodeV1<ConversationInterceptorType> {
-  type: ConversationInterceptorType = 'ConversationInterceptor';
-  uri: string;
-  offsetStart: number;
-  offsetEnd: number;
-  parent: Conversation;
+  readonly type: ConversationInterceptorType = 'ConversationInterceptor';
+  readonly uri: string;
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: Conversation;
 
   // Cache the parsed yaml document
-  yml: Scalar;
-  interceptors: string[] = [];
+  private yml: Scalar;
+  private interceptors: string[] = [];
 
   readonly availableInterceptors = [
     "simple",

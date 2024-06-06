@@ -1,5 +1,5 @@
 import { Pair, Scalar, YAMLMap, isScalar } from "yaml";
-import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationOptionType } from "../../../node";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
@@ -15,20 +15,16 @@ import { Pointers } from "./Pointers";
 import { AbstractNodeV1 } from "../../../v1";
 
 export class Option<T extends ConversationOptionType> extends AbstractNodeV1<T> {
-  type: T;
-  uri: string;
-  offsetStart: number;
-  offsetEnd: number;
-  parent: Conversation;
+  readonly type: T;
+  readonly uri: string;
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: Conversation;
 
   // Cache the parsed yaml document
-  yml: Pair<Scalar<string>, YAMLMap>;
-  id: string;
-  text?: Text;
-  conditions?: Conditions<this>;
-  events?: Events<this>;
-  pointers?: Pointers<T>;
-  comment?: string;
+  private yml: Pair<Scalar<string>, YAMLMap>;
+  private id: string;
+  readonly comment?: string;
 
   semanticTokens: SemanticToken[] = [];
 
@@ -58,7 +54,7 @@ export class Option<T extends ConversationOptionType> extends AbstractNodeV1<T> 
         switch (pair.key.value) {
           case "text":
             if (isStringScalar(pair.value) || pair.value instanceof YAMLMap) {
-              this.text = new Text(pair.value, this);
+              this.addChild(new Text(pair.value, this));
             }
             break;
           case "pointer":
@@ -77,7 +73,7 @@ export class Option<T extends ConversationOptionType> extends AbstractNodeV1<T> 
             );
           case "pointers":
             if (isScalar<string>(pair.value) && typeof pair.value.value === 'string') {
-              this.pointers = new Pointers(pair.value, this);
+              this.addChild(new Pointers(pair.value, this));
             } else {
               // TODO
             }
@@ -98,7 +94,7 @@ export class Option<T extends ConversationOptionType> extends AbstractNodeV1<T> 
             );
           case "conditions":
             if (isScalar<string>(pair.value) && typeof pair.value.value === 'string') {
-              this.conditions = new Conditions(pair.value, this);
+              this.addChild(new Conditions(pair.value, this));
             } else {
               // TODO
             }
@@ -141,33 +137,6 @@ export class Option<T extends ConversationOptionType> extends AbstractNodeV1<T> 
 
     // ...
   }
-
-  getDiagnostics(): Diagnostic[] {
-    return [
-      ...this.diagnostics,
-      ...this.conditions?.getDiagnostics() ?? [],
-      ...this.events?.getDiagnostics() ?? [],
-      ...this.pointers?.getDiagnostics() ?? [],
-    ];
-  }
-
-  getCodeActions(): CodeAction[] {
-    return [
-      ...this.codeActions,
-      ...this.conditions?.getCodeActions() ?? [],
-      ...this.events?.getCodeActions() ?? [],
-      ...this.pointers?.getCodeActions() ?? [],
-    ];
-  }
-
-  getSemanticTokens(): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = this.semanticTokens;
-    semanticTokens.push(...this.text?.getSemanticTokens() || []);
-    semanticTokens.push(...this.conditions?.getSemanticTokens() || []);
-    semanticTokens.push(...this.events?.getSemanticTokens() || []);
-    semanticTokens.push(...this.pointers?.getSemanticTokens() || []);
-    return semanticTokens;
-  };
 
   getHoverInfo(offset: number): HoverInfo[] {
     const hoverInfo: HoverInfo[] = [];

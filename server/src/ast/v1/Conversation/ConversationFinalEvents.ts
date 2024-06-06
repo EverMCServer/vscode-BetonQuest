@@ -3,24 +3,21 @@ import { DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationFinalEventsType } from "../../node";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
-import { HoverInfo } from "../../../utils/hover";
-import { LocationLinkOffset } from "../../../utils/location";
+import { SemanticTokenType } from "../../../service/semanticTokens";
 import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
 import { Conversation } from "./Conversation";
 import { Event } from "./Option/Event";
 import { AbstractNodeV1 } from "../../v1";
 
 export class ConversationFinalEvents extends AbstractNodeV1<ConversationFinalEventsType> {
-  type: ConversationFinalEventsType = 'ConversationFinalEvents';
-  uri: string;
-  offsetStart: number;
-  offsetEnd: number;
-  parent: Conversation;
+  readonly type: ConversationFinalEventsType = 'ConversationFinalEvents';
+  readonly uri: string;
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: Conversation;
 
   // Cache the parsed yaml document
-  yml: Scalar;
-  events: Event<this>[] = [];
+  private yml: Scalar;
 
   constructor(yml: Scalar, parent: Conversation) {
     super();
@@ -82,7 +79,7 @@ export class ConversationFinalEvents extends AbstractNodeV1<ConversationFinalEve
         }
 
         // Create Event
-        this.events.push(
+        this.addChild(
           new Event<this>(
             str,
             [offsetStart, offsetEnd],

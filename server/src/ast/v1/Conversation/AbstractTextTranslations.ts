@@ -1,19 +1,20 @@
 import { Scalar, YAMLMap, isScalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationTypes, AbstractNodeV1 } from "../../node";
+import { ConversationTypes } from "../../node";
 import { AbstractText } from "./AbstractText";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
+import { SemanticTokenType } from "../../../service/semanticTokens";
+import { AbstractNodeV1 } from "../../v1";
 
 export abstract class AbstractTextTranslations<N extends ConversationTypes> extends AbstractNodeV1<N> {
-  abstract type: N;
-  uri: string;
-  parent: AbstractText<ConversationTypes, AbstractTextTranslations<N>>;
+  abstract readonly type: N;
+  readonly uri: string;
+  readonly offsetStart?: number;
+  readonly offsetEnd?: number;
+  readonly parent: AbstractText<ConversationTypes, AbstractTextTranslations<N>>;
 
-  semanticTokens: SemanticToken[] = [];
-
-  yml: YAMLMap<Scalar<string>>;
+  private yml: YAMLMap<Scalar<string>>;
 
   contentStrings: [lang: string, text: Scalar<string>][] = [];
 
@@ -52,7 +53,4 @@ export abstract class AbstractTextTranslations<N extends ConversationTypes> exte
     });
   }
 
-  getSemanticTokens() {
-    return this.semanticTokens;
-  }
 }

@@ -17,12 +17,25 @@ import { PackageV1 } from "./v1/Package";
 import { SemanticToken } from "../service/semanticTokens";
 import { HoverInfo } from "../utils/hover";
 import { LocationLinkOffset } from "../utils/location";
+import { First } from "./v1/Conversation/First";
+import { FirstPointer } from "./v1/Conversation/FirstPointer";
+import { Event } from "./v1/Conversation/Option/Event";
+import { Condition } from "./v1/Conversation/Option/Condition";
+import { Pointer } from "./v1/Conversation/Option/Pointer";
+import { Pointers } from "./v1/Conversation/Option/Pointers";
+import { Text } from "./v1/Conversation/Option/Text";
+import { Events } from "./v1/Conversation/Option/Events";
+import { Conditions } from "./v1/Conversation/Option/Conditions";
+import { AbstractID } from "./v1/Conversation/AbstractId";
+import { ElementEntry } from "./v1/Element/ElementEntry";
+import ListElement from "betonquest-utils/betonquest/ListElement";
 
-export type ConversationChild = ConversationQuester | ConversationStop | ConversationFinalEvents | ConversationInterceptor | Option<ConversationNpcOptionType> | Option<ConversationPlayerOptionType>;
-export type NodeV1 = PackageV1 | ConditionList | EventList | ObjectiveList | Conversation | ConversationChild;
+export type ConversationChild = ConversationQuester | First | FirstPointer | ConversationStop | ConversationFinalEvents | ConversationInterceptor | Option<ConversationOptionType>;
+export type ConversationOptionChild = Conditions<Option<ConversationOptionType>> | Condition<Conditions<Option<ConversationOptionType>>> | Event<Events<Option<ConversationOptionType>>> | Event<ConversationFinalEvents> | Pointers<ConversationOptionType> | Pointer<ConversationOptionType> | Text | AbstractID<NodeType, AbstractNodeV1<NodeType>, ElementEntry<ListElement>>;
+export type NodeV1 = PackageV1 | ConditionList | EventList | ObjectiveList | Conversation | ConversationChild | ConversationOptionChild;
 
 export abstract class AbstractNodeV1<T extends NodeType> extends AbstractNode<T, NodeV1> {
-  // abstract readonly parent: NodeV1;
+  abstract readonly parent: NodeV1;
 
   getAst(): AST {
     if (this.parent.type === 'PackageV1') {
@@ -39,35 +52,35 @@ export abstract class AbstractNodeV1<T extends NodeType> extends AbstractNode<T,
     ];
   }
 
-  getCodeActions(): CodeAction[] {
+  getCodeActions(documentUri?: string): CodeAction[] {
     return [
-      ...this.diagnostics,
-      ...this.children.flatMap(c => c.getCodeActions())
+      ...this.codeActions,
+      ...this.children.flatMap(c => c.getCodeActions(documentUri))
     ];
   }
 
-  getSemanticTokens(): SemanticToken[] {
+  getSemanticTokens(documentUri?: string): SemanticToken[] {
     return [
       ...this.semanticTokens,
-      ...this.children.flatMap(c => c.getSemanticTokens())
+      ...this.children.flatMap(c => c.getSemanticTokens(documentUri))
     ];
   };
 
-  getHoverInfo(offset: number): HoverInfo[] {
+  getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
     if (this.offsetStart && this.offsetEnd && (offset < this.offsetStart || offset > this.offsetEnd)) {
       return [];
     }
-    return this.children.flatMap(c => c.getHoverInfo(offset));
+    return this.children.flatMap(c => c.getHoverInfo(offset, documentUri));
   }
 
   getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
     // if (documentUri && !documentUri.startsWith(this.uri)) {
     //   return [];
     // }
-    if (this.offsetStart && this.offsetEnd && (offset < this.offsetStart || offset > this.offsetEnd) {
+    if (this.offsetStart && this.offsetEnd && (offset < this.offsetStart || offset > this.offsetEnd)) {
       return [];
     }
-    return this.children.flatMap(c => c.getDefinitions(offset));
+    return this.children.flatMap(c => c.getDefinitions(offset, documentUri));
   }
 
   // Get all target package's Condition entries.
