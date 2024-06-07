@@ -15,6 +15,8 @@ import { ConversationFinalEvents } from "./ConversationFinalEvents";
 import { ConversationInterceptor } from "./ConversationInterceptor";
 import { Document } from "../document";
 import { Option } from "./Option/Option";
+import { NpcOption } from "./Option/NpcOption";
+import { PlayerOption } from "./Option/PlayerOption";
 
 export class Conversation extends Document<ConversationType> {
   type: ConversationType = 'Conversation';
@@ -103,7 +105,7 @@ export class Conversation extends Document<ConversationType> {
             pair.value.items.forEach(option => {
               // Check YAML value type
               if (isYamlMapPair(option) && option.value) {
-                this.addChild(new Option("ConversationNpcOption", option, this));
+                this.addChild(new NpcOption(option, this));
               } else {
                 // TODO: throw diagnostics error.
               }
@@ -118,7 +120,7 @@ export class Conversation extends Document<ConversationType> {
             pair.value.items.forEach(option => {
               // Check YAML value type
               if (isYamlMapPair(option) && option.value) {
-                this.addChild(new Option("ConversationPlayerOption", option, this));
+                this.addChild(new PlayerOption(option, this));
               } else {
                 // TODO: throw diagnostics error.
               }
@@ -201,9 +203,9 @@ export class Conversation extends Document<ConversationType> {
   getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string): Option<T>[] {
     switch (type) {
       case "ConversationNpcOption":
-        return this.getChildren<Option<ConversationNpcOptionType>>('ConversationNpcOption').filter(o => o.id === optionID) as Option<T>[];
+        return this.getChildren<NpcOption>('ConversationNpcOption').filter(o => o.id === optionID) as Option<T>[];
       case "ConversationPlayerOption":
-        return this.getChildren<Option<ConversationPlayerOptionType>>('ConversationPlayerOption').filter(o => o.id === optionID) as Option<T>[];
+        return this.getChildren<PlayerOption>('ConversationPlayerOption').filter(o => o.id === optionID) as Option<T>[];
     }
     return [];
   }

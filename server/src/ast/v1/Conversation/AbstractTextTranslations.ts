@@ -12,7 +12,6 @@ export abstract class AbstractTextTranslations<N extends ConversationTypes> exte
   readonly uri: string;
   readonly offsetStart?: number;
   readonly offsetEnd?: number;
-  readonly parent: AbstractText<ConversationTypes, AbstractTextTranslations<N>>;
 
   private yml: YAMLMap<Scalar<string>>;
 
@@ -21,7 +20,6 @@ export abstract class AbstractTextTranslations<N extends ConversationTypes> exte
   constructor(yml: YAMLMap<Scalar<string>>, parent: AbstractText<ConversationTypes, AbstractTextTranslations<N>>) {
     super();
     this.uri = parent.uri;
-    this.parent = parent;
     this.yml = yml;
     this.offsetStart = this.yml.range?.[0];
     this.offsetEnd = this.yml.range?.[1];

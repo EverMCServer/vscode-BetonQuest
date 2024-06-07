@@ -7,8 +7,10 @@ import { PackageV1 } from "./Package";
 import { AbstractNodeV1 } from "../v1";
 
 export abstract class Document<T extends NodeType> extends AbstractNodeV1<T> {
-  uri: string;
-  parent: PackageV1;
+  readonly uri: string;
+  readonly offsetStart?: number;
+  readonly offsetEnd?: number;
+  readonly parent: PackageV1;
 
   // VSCode Document, for diagnostics / quick actions / goto definition, etc
   document: TextDocument;

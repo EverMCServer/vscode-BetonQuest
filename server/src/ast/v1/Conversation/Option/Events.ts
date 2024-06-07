@@ -1,30 +1,29 @@
 import { Scalar } from "yaml";
 import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationEventsType, ConversationOptionType, AbstractNodeV1 } from "../../../node";
+import { ConversationEventsType, ConversationOptionType } from "../../../node";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
 import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
 import { HoverInfo } from "../../../../utils/hover";
 import { LocationLinkOffset } from "../../../../utils/location";
 import { getScalarSourceAndRange } from "../../../../utils/yaml";
 import { Event } from "./Event";
+import { AbstractNodeV1 } from "../../../v1";
+import { Option } from "./Option";
 
-export class Events<PT extends AbstractNodeV1<ConversationOptionType>> extends AbstractNodeV1<ConversationEventsType> {
-  type: ConversationEventsType = "ConversationEvents";
-  protected uri: string;
-  offsetStart: number;
-  offsetEnd: number;
-  protected parent: PT;
+export class Events<OT extends ConversationOptionType> extends AbstractNodeV1<ConversationEventsType> {
+  readonly type: ConversationEventsType = "ConversationEvents";
+  readonly uri: string;
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: Option<OT>;
 
   private yml: Scalar<string>; //<Scalar<string>, Scalar<string>>;
   private eventsStr: string;
-  private events: Event<this>[] = [];
 
-  private semanticTokens: SemanticToken[] = [];
-
-  constructor(yml: Scalar<string>, parent: PT) {
+  constructor(yml: Scalar<string>, parent: Option<OT>) {
     super();
-    this.uri = parent.getUri();
+    this.uri = parent.uri;
     this.parent = parent;
 
     this.yml = yml;
@@ -60,7 +59,7 @@ export class Events<PT extends AbstractNodeV1<ConversationOptionType>> extends A
       }
 
       // Parse the Event ID
-      this.events.push(new Event(strTrimed, [offsetStartTrimed, offsetEndTrimed], this));
+      this.addChild(new Event(strTrimed, [offsetStartTrimed, offsetEndTrimed], this));
 
       // Add semantic tokens for seprator ","
       if (matched[1].length > 0) {
@@ -73,20 +72,4 @@ export class Events<PT extends AbstractNodeV1<ConversationOptionType>> extends A
     }
   }
 
-  getHoverInfo(offset: number): HoverInfo[] {
-    const hoverInfo: HoverInfo[] = [];
-    if (offset < this.offsetStart || offset > this.offsetEnd) {
-      return hoverInfo;
-    }
-    hoverInfo.push(...this.events.flatMap(e => e.getHoverInfo(offset)));
-    return hoverInfo;
-  }
-
-  getDefinitions(offset: number): LocationLinkOffset[] {
-    if (this.offsetStart! > offset || this.offsetEnd! < offset) {
-      return [];
-    }
-
-    return this.events.flatMap(c => c.getDefinitions(offset));
-  }
 }

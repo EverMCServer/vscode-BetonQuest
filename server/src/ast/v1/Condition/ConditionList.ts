@@ -7,7 +7,7 @@ import { ConditionEntry } from "./ConditionEntry";
 import { ElementList } from "../Element/ElementList";
 
 export class ConditionList extends ElementList<Condition, ConditionEntry> {
-  type: ConditionListType = "ConditionList";
+  readonly type: ConditionListType = "ConditionList";
 
   newEntry(pair: Pair<Scalar<string>, Scalar<string>>): ConditionEntry {
     return new ConditionEntry(pair, this);

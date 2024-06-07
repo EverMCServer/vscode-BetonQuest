@@ -1,14 +1,17 @@
-import { ConversationConditionType, NodeType } from "../../../node";
+import { ConversationConditionType } from "../../../node";
 import { AbstractID } from "../AbstractId";
 import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
 import { ConditionEntry } from "../../Condition/ConditionEntry";
-import { AbstractNodeV1 } from "../../../v1";
+import { NodeV1 } from "../../../v1";
+import { Conditions } from "./Conditions";
 
-export class Condition<PT extends AbstractNodeV1<NodeType>> extends AbstractID<ConversationConditionType, PT, ConditionEntry> {
-  type: ConversationConditionType = "ConversationCondition";
+export class Condition<PT extends NodeV1> extends AbstractID<ConversationConditionType, PT, ConditionEntry> {
+  readonly type: ConversationConditionType = "ConversationCondition";
+  readonly parent: Conditions;
 
-  constructor(idString: string, range: [offsetStart: number, offsetEnd: number], parent: PT) {
+  constructor(idString: string, range: [offsetStart: number, offsetEnd: number], parent: Conditions) {
     super(idString, range, parent);
+    this.parent = parent;
   }
 
   getSemanticTokens(): SemanticToken[] {

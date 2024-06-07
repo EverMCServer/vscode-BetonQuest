@@ -1,4 +1,4 @@
-import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { DiagnosticSeverity } from "vscode-languageserver";
 
 import { ArgumentsPatternMandatory, ArgumentsPatternOptional, ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
 import { ElementKind } from "betonquest-utils/betonquest/v1/Element";
@@ -6,19 +6,16 @@ import ListElement from "betonquest-utils/betonquest/ListElement";
 
 import { ElementArgumentsType } from "../../node";
 import { ElementEntry } from "./ElementEntry";
-import { ElementArgument } from "./ElementArgument";
 import { ElementArgumentMandatory } from "./ElementArgumentMandatory";
 import { ElementArgumentOptional } from "./ElementArgumentOptional";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { HoverInfo } from "../../../utils/hover";
-import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
+import { SemanticTokenType } from "../../../service/semanticTokens";
 import { AbstractNodeV1 } from "../../v1";
 
 export abstract class ElementArguments<LE extends ListElement> extends AbstractNodeV1<ElementArgumentsType> {
-  abstract type: ElementArgumentsType;
-  uri: string;
-  parent: ElementEntry<LE>;
-
+  readonly uri: string;
+  readonly offsetStart?: number;
+  readonly offsetEnd?: number;
 
   indent: number;
   // argumentsStrs: string[] = [];
@@ -30,7 +27,6 @@ export abstract class ElementArguments<LE extends ListElement> extends AbstractN
     this.uri = parent.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
-    this.parent = parent;
     this.indent = indent;
 
     // Split argumentsStr by whitespaces, with respect to quotes ("")

@@ -8,9 +8,9 @@ import { DiagnosticCode } from "../../../utils/diagnostics";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
-import { AbstractNodeV1 } from "../../v1";
+import { AbstractNodeV1, NodeV1 } from "../../v1";
 
-export abstract class AbstractID<T extends NodeType, PT extends AbstractNodeV1<NodeType>, ET extends ElementEntry<ListElement>> extends AbstractNodeV1<T> {
+export abstract class AbstractID<T extends NodeType, PT extends NodeV1, ET extends ElementEntry<ListElement>> extends AbstractNodeV1<T> {
   abstract readonly type: T;
   readonly uri: string;
   readonly offsetStart: number;

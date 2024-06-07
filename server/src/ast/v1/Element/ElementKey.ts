@@ -3,27 +3,26 @@ import { CodeAction, Diagnostic } from "vscode-languageserver";
 
 import ListElement from "betonquest-utils/betonquest/ListElement";
 
-import { ElementKeyType, AbstractNodeV1 } from "../../node";
+import { ElementKeyType } from "../../node";
 import { ElementEntry } from "./ElementEntry";
 import { HoverInfo } from "../../../utils/hover";
 import { SemanticToken } from "../../../service/semanticTokens";
+import { AbstractNodeV1 } from "../../v1";
 
 export abstract class ElementKey<LE extends ListElement> extends AbstractNodeV1<ElementKeyType> {
   abstract type: ElementKeyType;
-  uri: string;
-  offsetStart: number;
-  offsetEnd: number;
-  parent: ElementEntry<LE>;
+  readonly uri: string;
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
 
-  value: string;
-  comment?: string;
+  readonly value: string;
+  readonly comment?: string;
 
   constructor(key: Scalar<string>, parent: ElementEntry<LE>) {
     super();
     this.uri = parent.uri;
     this.offsetStart = key.range![0];
     this.offsetEnd = key.range![1];
-    this.parent = parent;
 
     this.value = key.value;
     this.comment = key.commentBefore?.split(/\n\n+/).slice(-1)[0] ?? undefined;

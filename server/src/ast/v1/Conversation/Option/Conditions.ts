@@ -9,19 +9,19 @@ import { LocationLinkOffset } from "../../../../utils/location";
 import { getScalarSourceAndRange } from "../../../../utils/yaml";
 import { Condition } from "./Condition";
 import { AbstractNodeV1 } from "../../../v1";
+import { Option } from "./Option";
 
-export class Conditions<PT extends AbstractNodeV1<ConversationOptionType>> extends AbstractNodeV1<ConversationConditionsType> {
+export class Conditions<OT extends ConversationOptionType> extends AbstractNodeV1<ConversationConditionsType> {
   readonly type: ConversationConditionsType = "ConversationConditions";
   readonly uri: string;
   readonly offsetStart: number;
   readonly offsetEnd: number;
-  readonly parent: PT;
+  readonly parent: Option<OT>;
 
   private yml: Scalar<string>; //<Scalar<string>, Scalar<string>>;
   private conditionsStr: string;
-  // private conditions: Condition<this>[] = [];
 
-  constructor(yml: Scalar<string>, parent: PT) {
+  constructor(yml: Scalar<string>, parent: Option<OT>) {
     super();
     this.uri = parent.uri;
     this.parent = parent;

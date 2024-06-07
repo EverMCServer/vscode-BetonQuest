@@ -13,8 +13,8 @@ import { SemanticToken } from "../service/semanticTokens";
 import { PackageV1 } from "./v1/Package";
 import { PackageV2 } from "./v2/Package";
 import { AST } from "./ast";
-import { NodeV1 } from "./v1";
-import { NodeV2 } from "./v2";
+import { AbstractNodeV1, NodeV1 } from "./v1";
+import { AbstractNodeV2, NodeV2 } from "./v2";
 
 export type PackageV1Type = 'PackageV1';
 export type PackageV2Type = 'PackageV2';
@@ -89,7 +89,7 @@ export type ElementTypes = ElementListType | ElementEntryType | ElementKeyType |
 
 export type NodeType = PackageTypes | ConversationTypes | EventTypes | ConditionTypes | ObjectiveTypes;
 
-export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2> {
+export abstract class AbstractNode<T extends NodeType, N extends AbstractNodeV1<NodeType> | AbstractNodeV2<NodeType>> {
   abstract readonly type: T;
   abstract readonly uri: string;
   readonly offsetStart?: number;

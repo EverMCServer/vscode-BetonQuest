@@ -1,6 +1,6 @@
 import { CodeAction, Diagnostic } from "vscode-languageserver";
 import { AST } from "./ast";
-import { NodeType, AbstractNode, ConversationOptionType, ConversationNpcOptionType, ConversationPlayerOptionType } from "./node";
+import { NodeType, AbstractNode, ConversationOptionType } from "./node";
 import { ConditionEntry } from "./v1/Condition/ConditionEntry";
 import { ConditionList } from "./v1/Condition/ConditionList";
 import { Conversation } from "./v1/Conversation/Conversation";
@@ -26,13 +26,34 @@ import { Pointers } from "./v1/Conversation/Option/Pointers";
 import { Text } from "./v1/Conversation/Option/Text";
 import { Events } from "./v1/Conversation/Option/Events";
 import { Conditions } from "./v1/Conversation/Option/Conditions";
-import { AbstractID } from "./v1/Conversation/AbstractId";
-import { ElementEntry } from "./v1/Element/ElementEntry";
-import ListElement from "betonquest-utils/betonquest/ListElement";
+import { ConversationQuesterTranslations } from "./v1/Conversation/ConversationQuesterTranslations";
+import { ConditionKey } from "./v1/Condition/ConditionKey";
+import { ConditionKind } from "./v1/Condition/ConditionKind";
+import { ConditionArguments } from "./v1/Condition/ConditionArguments";
+import { ConditionArgument } from "./v1/Condition/ConditionArgument";
+import { ConditionArgumentMandatory } from "./v1/Condition/ConditionArgumentMandatory";
+import { ConditionArgumentOptional } from "./v1/Condition/ConditionArgumentOptional";
+import { EventKey } from "./v1/Event/EventKey";
+import { EventKind } from "./v1/Event/EventKind";
+import { EventArguments } from "./v1/Event/EventArguments";
+import { EventArgument } from "./v1/Event/EventArgument";
+import { EventArgumentMandatory } from "./v1/Event/EventArgumentMandatory";
+import { EventArgumentOptional } from "./v1/Event/EventArgumentOptional";
+import { ObjectiveKey } from "./v1/Objective/ObjectiveKey";
+import { ObjectiveKind } from "./v1/Objective/ObjectiveKind";
+import { ObjectiveArguments } from "./v1/Objective/ObjectiveArguments";
+import { ObjectiveArgument } from "./v1/Objective/ObjectiveArgument";
+import { ObjectiveArgumentMandatory } from "./v1/Objective/ObjectiveArgumentMandatory";
+import { ObjectiveArgumentOptional } from "./v1/Objective/ObjectiveArgumentOptional";
+import { NpcOption } from "./v1/Conversation/Option/NpcOption";
+import { PlayerOption } from "./v1/Conversation/Option/PlayerOption";
 
-export type ConversationChild = ConversationQuester | First | FirstPointer | ConversationStop | ConversationFinalEvents | ConversationInterceptor | Option<ConversationOptionType>;
-export type ConversationOptionChild = Conditions<Option<ConversationOptionType>> | Condition<Conditions<Option<ConversationOptionType>>> | Event<Events<Option<ConversationOptionType>>> | Event<ConversationFinalEvents> | Pointers<ConversationOptionType> | Pointer<ConversationOptionType> | Text | AbstractID<NodeType, AbstractNodeV1<NodeType>, ElementEntry<ListElement>>;
-export type NodeV1 = PackageV1 | ConditionList | EventList | ObjectiveList | Conversation | ConversationChild | ConversationOptionChild;
+type TConditionList = ConditionList | ConditionEntry | ConditionKey | ConditionKind | ConditionArguments | ConditionArgument | ConditionArgumentMandatory | ConditionArgumentOptional;
+type TEventListList = EventList | EventEntry | EventKey | EventKind | EventArguments | EventArgument | EventArgumentMandatory | EventArgumentOptional;
+type TObjectiveList = ObjectiveList | ObjectiveEntry | ObjectiveKey | ObjectiveKind | ObjectiveArguments | ObjectiveArgument | ObjectiveArgumentMandatory | ObjectiveArgumentOptional;
+type TConversationOption = NpcOption | PlayerOption | Conditions<ConversationOptionType> | Condition<Conditions<ConversationOptionType>> | Events<ConversationOptionType> | Event<Events<ConversationOptionType>> | Event<ConversationFinalEvents> | Pointers<ConversationOptionType> | Pointer<ConversationOptionType> | Text;
+type TConversation = Conversation | ConversationQuester | ConversationQuesterTranslations | First | FirstPointer | ConversationStop | ConversationFinalEvents | ConversationInterceptor | TConversationOption;
+export type NodeV1 = PackageV1 | TConditionList | TEventListList | TObjectiveList | TConversation;
 
 export abstract class AbstractNodeV1<T extends NodeType> extends AbstractNode<T, NodeV1> {
   abstract readonly parent: NodeV1;

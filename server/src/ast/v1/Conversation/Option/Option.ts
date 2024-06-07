@@ -3,9 +3,8 @@ import { DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationOptionType } from "../../../node";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
-import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
+import { SemanticTokenType } from "../../../../service/semanticTokens";
 import { HoverInfo } from "../../../../utils/hover";
-import { LocationLinkOffset } from "../../../../utils/location";
 import { isStringScalar } from "../../../../utils/yaml";
 import { Text } from "./Text";
 import { Conversation } from "../Conversation";
@@ -14,19 +13,16 @@ import { Events } from "./Events";
 import { Pointers } from "./Pointers";
 import { AbstractNodeV1 } from "../../../v1";
 
-export class Option<T extends ConversationOptionType> extends AbstractNodeV1<T> {
+export abstract class Option<T extends ConversationOptionType> extends AbstractNodeV1<T> {
   readonly type: T;
   readonly uri: string;
   readonly offsetStart: number;
   readonly offsetEnd: number;
-  readonly parent: Conversation;
 
   // Cache the parsed yaml document
   private yml: Pair<Scalar<string>, YAMLMap>;
-  private id: string;
+  readonly id: string;
   readonly comment?: string;
-
-  semanticTokens: SemanticToken[] = [];
 
   constructor(type: T, yml: Pair<Scalar<string>, YAMLMap>, parent: Conversation) {
     super();
@@ -34,7 +30,6 @@ export class Option<T extends ConversationOptionType> extends AbstractNodeV1<T> 
     this.uri = parent.uri;
     this.offsetStart = yml.key.range![0];
     this.offsetEnd = yml.value?.range![1] || yml.key.range![1];
-    this.parent = parent;
     this.yml = yml;
     this.comment = yml.key.commentBefore?.split(/\n\n+/).slice(-1)[0] ?? undefined;
 
@@ -115,7 +110,7 @@ export class Option<T extends ConversationOptionType> extends AbstractNodeV1<T> 
             );
           case "events":
             if (isScalar<string>(pair.value) && typeof pair.value.value === 'string') {
-              this.events = new Events(pair.value, this);
+              this.addChild(new Events(pair.value, this));
             } else {
               // TODO
             }
@@ -139,7 +134,7 @@ export class Option<T extends ConversationOptionType> extends AbstractNodeV1<T> 
   }
 
   getHoverInfo(offset: number): HoverInfo[] {
-    const hoverInfo: HoverInfo[] = [];
+    const hoverInfo: HoverInfo[] = super.getHoverInfo(offset);
     if (offset < this.offsetStart || offset > this.offsetEnd) {
       return hoverInfo;
     }
@@ -149,22 +144,7 @@ export class Option<T extends ConversationOptionType> extends AbstractNodeV1<T> 
         offset: [this.offsetStart, this.offsetEnd]
       });
     }
-    hoverInfo.push(...this.conditions?.getHoverInfo(offset) || []);
-    hoverInfo.push(...this.events?.getHoverInfo(offset) || []);
-    hoverInfo.push(...this.pointers?.getHoverInfo(offset) || []);
     return hoverInfo;
   }
 
-  getDefinitions(offset: number): LocationLinkOffset[] {
-    if (this.offsetStart! > offset || this.offsetEnd! < offset) {
-      return [];
-    }
-
-    // TODO
-    return [
-      ...this.conditions?.getDefinitions(offset) || [],
-      ...this.events?.getDefinitions(offset) || [],
-      ...this.pointers?.getDefinitions(offset) || [],
-    ];
-  }
 }

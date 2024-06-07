@@ -12,10 +12,12 @@ import { ConditionList } from "./ConditionList";
 import { ElementEntry } from "../Element/ElementEntry";
 
 export class ConditionEntry extends ElementEntry<Condition> {
-  type: ConditionEntryType = "ConditionEntry";
+  readonly type: ConditionEntryType = "ConditionEntry";
+  readonly parent: ConditionList;
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: ConditionList) {
     super(pair, kinds, parent);
+    this.parent = parent;
   }
 
   newKey(key: Scalar<string>): ConditionKey {

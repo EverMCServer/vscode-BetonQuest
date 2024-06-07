@@ -1,23 +1,20 @@
-import { CodeAction, PublishDiagnosticsParams } from "vscode-languageserver";
+import { PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
 import { AST } from "../ast";
 import { ConversationOptionType, PackageV1Type } from "../node";
-import { HoverInfo } from "../../utils/hover";
-import { LocationLinkOffset } from "../../utils/location";
 import { getParentUrl } from "../../utils/url";
 import { ConditionList } from "./Condition/ConditionList";
 import { EventList } from "./Event/EventList";
 import { ObjectiveList } from "./Objective/ObjectiveList";
-import { SemanticToken } from "../../service/semanticTokens";
 import { Conversation } from "./Conversation/Conversation";
 import { ConditionEntry } from "./Condition/ConditionEntry";
 import { EventEntry } from "./Event/EventEntry";
 import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
 import { Option } from "./Conversation/Option/Option";
-import { AbstractNodeV1, NodeV1 } from "../v1";
+import { AbstractNodeV1 } from "../v1";
 
 export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
   type: PackageV1Type = "PackageV1";

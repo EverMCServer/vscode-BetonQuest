@@ -3,27 +3,25 @@ import { CodeAction, Diagnostic } from "vscode-languageserver";
 import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v1/Element";
 import ListElement from "betonquest-utils/betonquest/ListElement";
 
-import { ElementKindType, AbstractNodeV1 } from "../../node";
-import { ElementEntry } from "./ElementEntry";
+import { ElementKindType } from "../../node";
 import { HoverInfo } from "../../../utils/hover";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
+import { AbstractNodeV1, NodeV1 } from "../../v1";
 
 export abstract class ElementKind<LE extends ListElement> extends AbstractNodeV1<ElementKindType> {
   abstract type: ElementKindType;
   uri: string;
   offsetStart?: number;
   offsetEnd?: number;
-  parent: ElementEntry<LE>;
 
   value: string;
   kindConfig?: _ElementKind<LE>;
 
-  constructor(value: string, range: [number?, number?], kindConfig: _ElementKind<LE>, parent: ElementEntry<LE>) {
+  constructor(value: string, range: [number?, number?], kindConfig: _ElementKind<LE>, parent: NodeV1) {
     super();
     this.uri = parent.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
-    this.parent = parent;
 
     this.value = value;
     this.kindConfig = kindConfig;
