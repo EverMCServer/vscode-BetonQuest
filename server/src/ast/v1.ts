@@ -51,7 +51,7 @@ import { PlayerOption } from "./v1/Conversation/Option/PlayerOption";
 type TConditionList = ConditionList | ConditionEntry | ConditionKey | ConditionKind | ConditionArguments | ConditionArgument | ConditionArgumentMandatory | ConditionArgumentOptional;
 type TEventListList = EventList | EventEntry | EventKey | EventKind | EventArguments | EventArgument | EventArgumentMandatory | EventArgumentOptional;
 type TObjectiveList = ObjectiveList | ObjectiveEntry | ObjectiveKey | ObjectiveKind | ObjectiveArguments | ObjectiveArgument | ObjectiveArgumentMandatory | ObjectiveArgumentOptional;
-type TConversationOption = NpcOption | PlayerOption | Conditions<ConversationOptionType> | Condition<Conditions<ConversationOptionType>> | Events<ConversationOptionType> | Event<Events<ConversationOptionType>> | Event<ConversationFinalEvents> | Pointers<ConversationOptionType> | Pointer<ConversationOptionType> | Text;
+type TConversationOption = NpcOption | PlayerOption | Conditions<ConversationOptionType> | Condition<ConversationOptionType> | Events<ConversationOptionType> | Event<Events<ConversationOptionType>> | Event<ConversationFinalEvents> | Pointers<ConversationOptionType> | Pointer<ConversationOptionType> | Text<ConversationOptionType>;
 type TConversation = Conversation | ConversationQuester | ConversationQuesterTranslations | First | FirstPointer | ConversationStop | ConversationFinalEvents | ConversationInterceptor | TConversationOption;
 export type NodeV1 = PackageV1 | TConditionList | TEventListList | TObjectiveList | TConversation;
 

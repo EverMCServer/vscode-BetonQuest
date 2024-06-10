@@ -90,15 +90,24 @@ export type ElementTypes = ElementListType | ElementEntryType | ElementKeyType |
 export type NodeType = PackageTypes | ConversationTypes | EventTypes | ConditionTypes | ObjectiveTypes;
 
 export abstract class AbstractNode<T extends NodeType, N extends AbstractNodeV1<NodeType> | AbstractNodeV2<NodeType>> {
-  abstract readonly type: T;
-  abstract readonly uri: string;
+  readonly abstract type: T;
+  protected uri?: string;
   readonly offsetStart?: number;
   readonly offsetEnd?: number;
-  abstract readonly parent: N;
+  readonly abstract parent: N;
   protected children: N[] = [];
   protected diagnostics: Diagnostic[] = [];
   protected codeActions: CodeAction[] = [];
   protected semanticTokens: SemanticToken[] = [];
+
+  getUri(): string {
+    if (this.uri) {
+      return this.uri;
+    } else if (typeof this.parent !== typeof this) {
+      return this.parent.getUri();
+    }
+    return "";
+  }
 
   addChild(child: N) {
     this.children.push(child);
@@ -137,7 +146,7 @@ export abstract class AbstractNode<T extends NodeType, N extends AbstractNodeV1<
         diagnostics: [diagnostic],
         edit: {
           changes: {
-            [this.uri]: [{
+            [this.getUri()]: [{
               range: r ? this.getRangeByOffset(r[0], r[1]) : range,
               newText: text
             }]

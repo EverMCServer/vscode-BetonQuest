@@ -9,7 +9,7 @@ export class NpcOption extends Option<"ConversationNpcOption"> {
   readonly parent: Conversation;
 
   constructor(yml: Pair<Scalar<string>, YAMLMap>, parent: Conversation) {
-    super("ConversationNpcOption", yml, parent);
+    super(yml);
     this.parent = parent;
   }
 

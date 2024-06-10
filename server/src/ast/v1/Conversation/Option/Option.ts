@@ -1,7 +1,7 @@
 import { Pair, Scalar, YAMLMap, isScalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationOptionType } from "../../../node";
+import { ConversationOptionType, NodeType } from "../../../node";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
 import { SemanticTokenType } from "../../../../service/semanticTokens";
 import { HoverInfo } from "../../../../utils/hover";
@@ -13,9 +13,7 @@ import { Events } from "./Events";
 import { Pointers } from "./Pointers";
 import { AbstractNodeV1 } from "../../../v1";
 
-export abstract class Option<T extends ConversationOptionType> extends AbstractNodeV1<T> {
-  readonly type: T;
-  readonly uri: string;
+export abstract class Option<T extends NodeType> extends AbstractNodeV1<T> {
   readonly offsetStart: number;
   readonly offsetEnd: number;
 
@@ -24,10 +22,8 @@ export abstract class Option<T extends ConversationOptionType> extends AbstractN
   readonly id: string;
   readonly comment?: string;
 
-  constructor(type: T, yml: Pair<Scalar<string>, YAMLMap>, parent: Conversation) {
+  constructor(yml: Pair<Scalar<string>, YAMLMap>) {
     super();
-    this.type = type;
-    this.uri = parent.uri;
     this.offsetStart = yml.key.range![0];
     this.offsetEnd = yml.value?.range![1] || yml.key.range![1];
     this.yml = yml;
@@ -39,7 +35,7 @@ export abstract class Option<T extends ConversationOptionType> extends AbstractN
       this.semanticTokens.push({
         offsetStart: this.yml.key.range[0],
         offsetEnd: this.yml.key.range[1],
-        tokenType: this.type === "ConversationNpcOption" ? SemanticTokenType.ConversationOptionNpcID : SemanticTokenType.ConversationOptionPlayerID
+        tokenType: this.getType() === "ConversationNpcOption" ? SemanticTokenType.ConversationOptionNpcID : SemanticTokenType.ConversationOptionPlayerID
       });
     }
 

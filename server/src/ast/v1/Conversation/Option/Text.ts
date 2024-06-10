@@ -1,13 +1,20 @@
 import { Scalar, YAMLMap } from "yaml";
 
-import { ConversationTextType } from "../../../node";
+import { ConversationOptionType, ConversationTextType } from "../../../node";
 import { TextTranslations } from "./TextTranslations";
 import { AbstractText } from "../AbstractText";
+import { Option } from "./Option";
 
-export class Text extends AbstractText<ConversationTextType, TextTranslations> {
-  type: ConversationTextType = 'ConversationText';
+export class Text<OT extends ConversationOptionType> extends AbstractText<ConversationTextType, TextTranslations<OT>> {
+  readonly type: ConversationTextType = 'ConversationText';
+  readonly parent: Option<OT>;
 
-  newTranslations(pair: YAMLMap<Scalar<string>>): TextTranslations {
+  constructor(yml: Scalar | YAMLMap, parent: Option<OT>) {
+    super(yml, parent);
+    this.parent = parent;
+  }
+
+  newTranslations(pair: YAMLMap<Scalar<string>>): TextTranslations<OT> {
     return new TextTranslations(pair, this);
   }
 }
