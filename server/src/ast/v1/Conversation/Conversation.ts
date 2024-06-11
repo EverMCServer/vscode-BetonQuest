@@ -3,7 +3,7 @@ import { DiagnosticSeverity } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { PackageV1 } from "../Package";
-import { ConversationNpcOptionType, ConversationOptionType, ConversationPlayerOptionType, ConversationType } from "../../node";
+import { ConversationOptionType, ConversationType } from "../../node";
 import { isYamlMapPair } from "../../../utils/yaml";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
@@ -14,7 +14,6 @@ import { ConversationStop } from "./ConversationStop";
 import { ConversationFinalEvents } from "./ConversationFinalEvents";
 import { ConversationInterceptor } from "./ConversationInterceptor";
 import { Document } from "../document";
-import { Option } from "./Option/Option";
 import { NpcOption } from "./Option/NpcOption";
 import { PlayerOption } from "./Option/PlayerOption";
 
@@ -35,7 +34,7 @@ export class Conversation extends Document<ConversationType> {
 
   constructor(uri: string, document: TextDocument, parent: PackageV1) {
     super(uri, document, parent);
-    this.conversationID = this.uri.match(/([^\/]+)\.yml$/m)![1];
+    this.conversationID = this.getUri().match(/([^\/]+)\.yml$/m)![1];
 
     // Parse Elements
     this.yml.items.forEach(pair => {
@@ -200,12 +199,12 @@ export class Conversation extends Document<ConversationType> {
     this.addDiagnostic([offsetStart, offsetEnd], message, DiagnosticSeverity.Error, DiagnosticCode.ValueTypeIncorrect);
   }
 
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string): Option<T>[] {
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string): NpcOption[] | PlayerOption[] {
     switch (type) {
       case "ConversationNpcOption":
-        return this.getChildren<NpcOption>('ConversationNpcOption').filter(o => o.id === optionID) as Option<T>[];
+        return this.getChildren<NpcOption>('ConversationNpcOption').filter(o => o.id === optionID) as NpcOption[];
       case "ConversationPlayerOption":
-        return this.getChildren<PlayerOption>('ConversationPlayerOption').filter(o => o.id === optionID) as Option<T>[];
+        return this.getChildren<PlayerOption>('ConversationPlayerOption').filter(o => o.id === optionID) as PlayerOption[];
     }
     return [];
   }

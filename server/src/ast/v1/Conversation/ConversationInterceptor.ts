@@ -9,7 +9,6 @@ import { AbstractNodeV1 } from "../../v1";
 
 export class ConversationInterceptor extends AbstractNodeV1<ConversationInterceptorType> {
   readonly type: ConversationInterceptorType = 'ConversationInterceptor';
-  readonly uri: string;
   readonly offsetStart: number;
   readonly offsetEnd: number;
   readonly parent: Conversation;
@@ -41,7 +40,6 @@ export class ConversationInterceptor extends AbstractNodeV1<ConversationIntercep
 
   constructor(yml: Scalar, parent: Conversation) {
     super();
-    this.uri = parent.uri;
     this.parent = parent;
     this.yml = yml;
     [this.offsetStart, this.offsetEnd] = getScalarRangeByValue(this.yml);

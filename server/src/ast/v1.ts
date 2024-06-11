@@ -8,7 +8,6 @@ import { ConversationFinalEvents } from "./v1/Conversation/ConversationFinalEven
 import { ConversationInterceptor } from "./v1/Conversation/ConversationInterceptor";
 import { ConversationQuester } from "./v1/Conversation/ConversationQuester";
 import { ConversationStop } from "./v1/Conversation/ConversationStop";
-import { Option } from "./v1/Conversation/Option/Option";
 import { EventEntry } from "./v1/Event/EventEntry";
 import { EventList } from "./v1/Event/EventList";
 import { ObjectiveEntry } from "./v1/Objective/ObjectiveEntry";
@@ -19,13 +18,20 @@ import { HoverInfo } from "../utils/hover";
 import { LocationLinkOffset } from "../utils/location";
 import { First } from "./v1/Conversation/First";
 import { FirstPointer } from "./v1/Conversation/FirstPointer";
-import { Event } from "./v1/Conversation/Option/Event";
-import { Condition } from "./v1/Conversation/Option/Condition";
-import { Pointer } from "./v1/Conversation/Option/Pointer";
-import { Pointers } from "./v1/Conversation/Option/Pointers";
-import { Text } from "./v1/Conversation/Option/Text";
-import { Events } from "./v1/Conversation/Option/Events";
-import { Conditions } from "./v1/Conversation/Option/Conditions";
+import { Text as NpcText } from "./v1/Conversation/Option/Npc/Text";
+import { Conditions as NpcConditions } from "./v1/Conversation/Option/Npc/Conditions";
+import { Condition as NpcCondition } from "./v1/Conversation/Option/Npc/Condition";
+import { Events as NpcEvents } from "./v1/Conversation/Option/Npc/Events";
+import { Event as NpcEvent } from "./v1/Conversation/Option/Npc/Event";
+import { Pointer as NpcPointer } from "./v1/Conversation/Option/Npc/Pointer";
+import { Pointers as NpcPointers } from "./v1/Conversation/Option/Npc/Pointers";
+import { Text as PlayerText } from "./v1/Conversation/Option/Player/Text";
+import { Conditions as PlayerConditions } from "./v1/Conversation/Option/Player/Conditions";
+import { Condition as PlayerCondition } from "./v1/Conversation/Option/Player/Condition";
+import { Events as PlayerEvents } from "./v1/Conversation/Option/Player/Events";
+import { Event as PlayerEvent } from "./v1/Conversation/Option/Player/Event";
+import { Pointer as PlayerPointer } from "./v1/Conversation/Option/Player/Pointer";
+import { Pointers as PlayerPointers } from "./v1/Conversation/Option/Player/Pointers";
 import { ConversationQuesterTranslations } from "./v1/Conversation/ConversationQuesterTranslations";
 import { ConditionKey } from "./v1/Condition/ConditionKey";
 import { ConditionKind } from "./v1/Condition/ConditionKind";
@@ -51,8 +57,9 @@ import { PlayerOption } from "./v1/Conversation/Option/PlayerOption";
 type TConditionList = ConditionList | ConditionEntry | ConditionKey | ConditionKind | ConditionArguments | ConditionArgument | ConditionArgumentMandatory | ConditionArgumentOptional;
 type TEventListList = EventList | EventEntry | EventKey | EventKind | EventArguments | EventArgument | EventArgumentMandatory | EventArgumentOptional;
 type TObjectiveList = ObjectiveList | ObjectiveEntry | ObjectiveKey | ObjectiveKind | ObjectiveArguments | ObjectiveArgument | ObjectiveArgumentMandatory | ObjectiveArgumentOptional;
-type TConversationOption = NpcOption | PlayerOption | Conditions<ConversationOptionType> | Condition<ConversationOptionType> | Events<ConversationOptionType> | Event<Events<ConversationOptionType>> | Event<ConversationFinalEvents> | Pointers<ConversationOptionType> | Pointer<ConversationOptionType> | Text<ConversationOptionType>;
-type TConversation = Conversation | ConversationQuester | ConversationQuesterTranslations | First | FirstPointer | ConversationStop | ConversationFinalEvents | ConversationInterceptor | TConversationOption;
+type TConversationNpcOption = NpcOption | NpcConditions | NpcCondition | NpcEvents | NpcEvent | NpcPointers | NpcPointer | NpcText;
+type TConversationPlayerOption = PlayerOption | PlayerConditions | PlayerCondition | PlayerEvents | PlayerEvent | PlayerPointers | PlayerPointer | PlayerText;
+type TConversation = Conversation | ConversationQuester | ConversationQuesterTranslations | First | FirstPointer | ConversationStop | ConversationFinalEvents | ConversationInterceptor | TConversationNpcOption | TConversationPlayerOption;
 export type NodeV1 = PackageV1 | TConditionList | TEventListList | TObjectiveList | TConversation;
 
 export abstract class AbstractNodeV1<T extends NodeType> extends AbstractNode<T, NodeV1> {
@@ -124,7 +131,7 @@ export abstract class AbstractNodeV1<T extends NodeType> extends AbstractNode<T,
 
   // Get all target package's conversation options.
   // This method must be overrided / hijacked by the top-level class.
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): Option<T>[] {
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): NpcOption[] | PlayerOption[] {
     return this.parent.getConversationOptions<T>(type, optionID, conversationID, packageUri);
   }
 

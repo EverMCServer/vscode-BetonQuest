@@ -1,36 +1,34 @@
 import { Scalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationOptionType, ConversationPointersType } from "../../../node";
-import { DiagnosticCode } from "../../../../utils/diagnostics";
-import { SemanticTokenType } from "../../../../service/semanticTokens";
-import { getScalarSourceAndRange } from "../../../../utils/yaml";
-import { Option } from "./Option";
-import { Pointer } from "./Pointer";
-import { AbstractNodeV1 } from "../../../v1";
+import { ConversationConditionsType } from "../../../../node";
+import { DiagnosticCode } from "../../../../../utils/diagnostics";
+import { SemanticTokenType } from "../../../../../service/semanticTokens";
+import { getScalarSourceAndRange } from "../../../../../utils/yaml";
+import { Condition } from "./Condition";
+import { AbstractNodeV1 } from "../../../../v1";
+import { NpcOption } from "../NpcOption";
 
-export class Pointers<T extends ConversationOptionType> extends AbstractNodeV1<ConversationPointersType> {
-  readonly type: ConversationPointersType = "ConversationPointers";
-  readonly uri: string;
+export class Conditions extends AbstractNodeV1<ConversationConditionsType> {
+  readonly type: ConversationConditionsType = "ConversationConditions";
   readonly offsetStart: number;
   readonly offsetEnd: number;
-  readonly parent: Option<T>;
+  readonly parent: NpcOption;
 
-  private yml: Scalar<string>;
-  private entriesStr: string;
+  private yml: Scalar<string>; //<Scalar<string>, Scalar<string>>;
+  private conditionsStr: string;
 
-  constructor(yml: Scalar<string>, parent: Option<T>) {
+  constructor(yml: Scalar<string>, parent: NpcOption) {
     super();
-    this.uri = parent.uri;
     this.parent = parent;
 
     this.yml = yml;
-    [this.entriesStr, [this.offsetStart, this.offsetEnd]] = getScalarSourceAndRange(this.yml);
+    [this.conditionsStr, [this.offsetStart, this.offsetEnd]] = getScalarSourceAndRange(this.yml);
 
-    // Split and parse IDs
+    // Split and parse condition IDs
     const regex = /(,?)([^,]*)/g; // /(,?)([^,]*)/g
     let matched: RegExpExecArray | null;
-    while ((matched = regex.exec(this.entriesStr)) !== null && matched[0].length > 0) {
+    while ((matched = regex.exec(this.conditionsStr)) !== null && matched[0].length > 0) {
       const str = matched[2];
       const offsetStartWithComma = this.offsetStart + matched.index;
       const offsetStart = offsetStartWithComma + matched[1].length;
@@ -44,20 +42,20 @@ export class Pointers<T extends ConversationOptionType> extends AbstractNodeV1<C
         // Empty, throw diagnostics warn
         this.addDiagnostic(
           [offsetStartWithComma, offsetEnd],
-          `Pointer ID is empty.`,
+          `Condition ID is empty.`,
           DiagnosticSeverity.Warning,
           DiagnosticCode.ElementIdEmpty,
           [
             {
-              title: `Remove empty Pointer ID`,
-              text: "",
+              title: `Remove empty condition ID`,
+              text: ""
             }
           ]
         );
       }
 
-      // Parse the Option ID
-      this.addChild(new Pointer(strTrimed, [offsetStartTrimed, offsetEndTrimed], this));
+      // Parse the Condition ID
+      this.addChild(new Condition(strTrimed, [offsetStartTrimed, offsetEndTrimed], this));
 
       // Add semantic tokens for seprator ","
       if (matched[1].length > 0) {

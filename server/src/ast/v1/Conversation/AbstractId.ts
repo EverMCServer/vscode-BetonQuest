@@ -2,33 +2,27 @@ import { DiagnosticSeverity } from "vscode-languageserver";
 
 import ListElement from "betonquest-utils/betonquest/ListElement";
 
-import { ConversationOptionType, NodeType } from "../../node";
+import { NodeType } from "../../node";
 import { ElementEntry } from "../Element/ElementEntry";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
-import { AbstractNodeV1, NodeV1 } from "../../v1";
-import { Conditions } from "./Option/Conditions";
+import { AbstractNodeV1 } from "../../v1";
 
-export abstract class AbstractID<T extends NodeType, PT extends Conditions<ConversationOptionType>, ET extends ElementEntry<ListElement>> extends AbstractNodeV1<T> {
-  // abstract readonly type: T;
-  readonly uri: string;
+export abstract class AbstractID<T extends NodeType, ET extends ElementEntry<ListElement>> extends AbstractNodeV1<T> {
   readonly offsetStart: number;
   readonly offsetEnd: number;
-  readonly parent: PT;
 
   // Cache content
   protected withExclamationMark: boolean;
   protected package: string = "";
   protected id: string;
 
-  constructor(idString: string, range: [number, number], parent: PT) {
+  constructor(idString: string, range: [number, number]) {
     super();
-    this.uri = parent.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
-    this.parent = parent;
 
     // Parse ID string.
     let str = idString;

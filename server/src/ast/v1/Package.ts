@@ -13,8 +13,9 @@ import { Conversation } from "./Conversation/Conversation";
 import { ConditionEntry } from "./Condition/ConditionEntry";
 import { EventEntry } from "./Event/EventEntry";
 import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
-import { Option } from "./Conversation/Option/Option";
 import { AbstractNodeV1 } from "../v1";
+import { NpcOption } from "./Conversation/Option/NpcOption";
+import { PlayerOption } from "./Conversation/Option/PlayerOption";
 
 export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
   type: PackageV1Type = "PackageV1";
@@ -123,17 +124,17 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
     }
   }
 
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): Option<T>[] {
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): NpcOption[] | PlayerOption[] {
     if (packageUri && this.isPackageUri(packageUri)) {
-      return this.getChildren<Conversation>('Conversation', c => c.conversationID === conversationID)?.flatMap(c => c.getConversationOptions(type, optionID));
+      return this.getChildren<Conversation>('Conversation', c => c.conversationID === conversationID)?.flatMap(c => c.getConversationOptions<T>(type, optionID));
     }
-    return this.parentAst.getV1ConversationOptions(type, optionID, conversationID, packageUri);
+    return this.parentAst.getV1ConversationOptions<T>(type, optionID, conversationID, packageUri);
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
-    return this.children.filter(c => !documentUri || c.uri === documentUri).flatMap(c => {
+    return this.children.filter(c => !documentUri || c.getUri() === documentUri).flatMap(c => {
       return {
-        uri: c.uri,
+        uri: c.getUri(),
         diagnostics: c.getDiagnostics()
       };
     });

@@ -273,7 +273,7 @@ export class AST {
   }
 
   getV1ConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string) {
-    return this.packagesV1.filter(pkg => !packageUri || pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions(type, optionID, conversationID, packageUri));
+    return this.packagesV1.filter(pkg => !packageUri || pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions<T>(type, optionID, conversationID, packageUri));
   }
 
   getV2ConditionEntry(id: string, packageUri: string) {

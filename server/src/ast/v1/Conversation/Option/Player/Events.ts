@@ -1,29 +1,25 @@
 import { Scalar } from "yaml";
-import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationEventsType, ConversationOptionType } from "../../../node";
-import { DiagnosticCode } from "../../../../utils/diagnostics";
-import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
-import { HoverInfo } from "../../../../utils/hover";
-import { LocationLinkOffset } from "../../../../utils/location";
-import { getScalarSourceAndRange } from "../../../../utils/yaml";
+import { ConversationEventsType } from "../../../../node";
+import { DiagnosticCode } from "../../../../../utils/diagnostics";
+import { SemanticTokenType } from "../../../../../service/semanticTokens";
+import { getScalarSourceAndRange } from "../../../../../utils/yaml";
 import { Event } from "./Event";
-import { AbstractNodeV1 } from "../../../v1";
-import { Option } from "./Option";
+import { AbstractNodeV1 } from "../../../../v1";
+import { PlayerOption } from "../PlayerOption";
 
-export class Events<OT extends ConversationOptionType> extends AbstractNodeV1<ConversationEventsType> {
+export class Events extends AbstractNodeV1<ConversationEventsType> {
   readonly type: ConversationEventsType = "ConversationEvents";
-  readonly uri: string;
   readonly offsetStart: number;
   readonly offsetEnd: number;
-  readonly parent: Option<OT>;
+  readonly parent: PlayerOption;
 
   private yml: Scalar<string>; //<Scalar<string>, Scalar<string>>;
   private eventsStr: string;
 
-  constructor(yml: Scalar<string>, parent: Option<OT>) {
+  constructor(yml: Scalar<string>, parent: PlayerOption) {
     super();
-    this.uri = parent.uri;
     this.parent = parent;
 
     this.yml = yml;

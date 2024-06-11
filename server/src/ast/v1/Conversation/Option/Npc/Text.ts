@@ -1,25 +1,26 @@
 import { Scalar, YAMLMap, isMap, isScalar } from "yaml";
 
-import { ConversationOptionType, ConversationTypes } from "../../node";
-import { Conversation } from "./Conversation";
-import { AbstractTextTranslations } from "./AbstractTextTranslations";
-import { Option } from "./Option/Option";
-import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
-import { AbstractNodeV1, NodeV1 } from "../../v1";
+import { ConversationTextType } from "../../../../node";
+import { TextTranslations } from "./TextTranslations";
+import { NpcOption } from "../NpcOption";
+import { SemanticTokenType } from "../../../../../service/semanticTokens";
+import { AbstractNodeV1 } from "../../../../v1";
 
-export abstract class AbstractText<NT extends ConversationTypes, TT extends AbstractTextTranslations<ConversationTypes>> extends AbstractNodeV1<NT> {
-  abstract type: NT;
+export class Text extends AbstractNodeV1<ConversationTextType> {
+  readonly type: ConversationTextType = 'ConversationText';
   readonly offsetStart: number;
   readonly offsetEnd: number;
+  readonly parent: NpcOption;
 
   private yml: Scalar | YAMLMap;
   private contentType?: 'string' | 'translations';
   private contentString?: string;
-  private contentTranslations?: TT; // TODO
+  private contentTranslations?: TextTranslations; // TODO
 
-  constructor(yml: Scalar | YAMLMap, parent: NodeV1) {
+  constructor(yml: Scalar | YAMLMap, parent: NpcOption) {
     super();
     this.yml = yml;
+    this.parent = parent;
     this.offsetStart = this.yml.range![0];
     this.offsetEnd = this.yml.range![1];
 
@@ -36,10 +37,7 @@ export abstract class AbstractText<NT extends ConversationTypes, TT extends Abst
       });
     } else if (isMap<Scalar<string>>(yml)) {
       this.contentType = 'translations';
-      this.contentTranslations = this.newTranslations(yml); // TODO: replace
+      this.contentTranslations = new TextTranslations(yml, this);
     }
-
   }
-
-  abstract newTranslations(pair: YAMLMap<Scalar<string>>): TT;
 }

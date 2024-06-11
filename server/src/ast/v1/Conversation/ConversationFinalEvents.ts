@@ -11,7 +11,6 @@ import { AbstractNodeV1 } from "../../v1";
 
 export class ConversationFinalEvents extends AbstractNodeV1<ConversationFinalEventsType> {
   readonly type: ConversationFinalEventsType = 'ConversationFinalEvents';
-  readonly uri: string;
   readonly offsetStart: number;
   readonly offsetEnd: number;
   readonly parent: Conversation;
@@ -21,7 +20,6 @@ export class ConversationFinalEvents extends AbstractNodeV1<ConversationFinalEve
 
   constructor(yml: Scalar, parent: Conversation) {
     super();
-    this.uri = parent.uri;
     this.parent = parent;
     this.yml = yml;
     [this.offsetStart, this.offsetEnd] = getScalarRangeByValue(this.yml);

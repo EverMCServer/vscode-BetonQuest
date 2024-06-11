@@ -9,7 +9,6 @@ import { AbstractNodeV1 } from "../../v1";
 
 export class ConversationStop extends AbstractNodeV1<ConversationStopType> {
   readonly type: ConversationStopType = 'ConversationStop';
-  readonly uri: string;
   readonly offsetStart?: number;
   readonly offsetEnd?: number;
   readonly parent: Conversation;
@@ -20,7 +19,6 @@ export class ConversationStop extends AbstractNodeV1<ConversationStopType> {
 
   constructor(yml: Scalar, parent: Conversation) {
     super();
-    this.uri = parent.uri;
     this.parent = parent;
     this.yml = yml;
 
