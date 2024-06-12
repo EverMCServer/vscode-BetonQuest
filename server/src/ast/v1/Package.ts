@@ -24,11 +24,6 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
   readonly parentAst: AST;
   readonly packagePath: string[];
 
-  // conditionList?: ConditionList;
-  // eventList?: EventList;
-  // objectiveList?: ObjectiveList;
-  // conversations: Conversation[] = [];
-
   constructor(packageUri: string, documents: TextDocument[], parent: AST) {
     super();
     this.uri = packageUri;

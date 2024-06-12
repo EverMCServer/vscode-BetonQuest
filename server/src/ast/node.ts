@@ -1,10 +1,10 @@
 import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
 
-import { DiagnosticCode } from "../utils/diagnostics";
 import { SemanticToken } from "../service/semanticTokens";
+import { DiagnosticCode } from "../utils/diagnostics";
 import { AST } from "./ast";
-import { AbstractNodeV1 } from "./v1";
-import { AbstractNodeV2 } from "./v2";
+import { NodeV1 } from "./v1";
+import { NodeV2 } from "./v2";
 
 export type PackageV1Type = 'PackageV1';
 export type PackageV2Type = 'PackageV2';
@@ -79,7 +79,7 @@ export type ElementTypes = ElementListType | ElementEntryType | ElementKeyType |
 
 export type NodeType = PackageTypes | ConversationTypes | EventTypes | ConditionTypes | ObjectiveTypes;
 
-export abstract class AbstractNode<T extends NodeType, N extends AbstractNodeV1<NodeType> | AbstractNodeV2<NodeType>> {
+export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2> {
   readonly abstract type: T;
   protected uri?: string;
   readonly offsetStart?: number;

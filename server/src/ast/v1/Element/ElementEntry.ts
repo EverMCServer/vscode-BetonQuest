@@ -1,17 +1,16 @@
-import { Pair, Scalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
+import { Pair, Scalar } from "yaml";
 
 import ListElement from "betonquest-utils/betonquest/ListElement";
 import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v1/Element";
 
-import { ElementEntryType } from "../../node";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { LocationLinkOffset } from "../../../utils/location";
 import { getScalarSourceAndRange } from "../../../utils/yaml";
-import { ElementKind } from "./ElementKind";
-import { ElementKey } from "./ElementKey";
-import { ElementArguments } from "./ElementArguments";
+import { ElementEntryType } from "../../node";
 import { AbstractNodeV1, NodeV1 } from "../../v1";
+import { ElementArguments } from "./ElementArguments";
+import { ElementKey } from "./ElementKey";
+import { ElementKind } from "./ElementKind";
 
 export abstract class ElementEntry<LE extends ListElement> extends AbstractNodeV1<ElementEntryType> {
   abstract type: ElementEntryType;
