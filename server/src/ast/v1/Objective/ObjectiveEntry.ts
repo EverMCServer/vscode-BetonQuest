@@ -12,10 +12,12 @@ import { ObjectiveList } from "./ObjectiveList";
 import { ElementEntry } from "../Element/ElementEntry";
 
 export class ObjectiveEntry extends ElementEntry<Objective> {
-  type: ObjectiveEntryType = "ObjectiveEntry";
+  readonly type: ObjectiveEntryType = "ObjectiveEntry";
+  readonly parent: ObjectiveList;
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: ObjectiveList) {
     super(pair, kinds, parent);
+    this.parent = parent;
   }
 
   newKey(key: Scalar<string>): ObjectiveKey {

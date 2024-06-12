@@ -7,6 +7,8 @@ import { HoverInfo } from "../utils/hover";
 import { LocationLinkOffset } from "../utils/location";
 import { getParentUrl } from "../utils/url";
 import { ConversationOptionType } from "./node";
+import { NpcOption as V1NpcOption } from "./v1/Conversation/Option/NpcOption";
+import { PlayerOption as V1PlayerOption } from "./v1/Conversation/Option/PlayerOption";
 
 // AST by workspace folders
 export class ASTs {
@@ -273,7 +275,7 @@ export class AST {
   }
 
   getV1ConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string) {
-    return this.packagesV1.filter(pkg => !packageUri || pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions<T>(type, optionID, conversationID, packageUri));
+    return this.packagesV1.filter(pkg => !packageUri || pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions<T>(type, optionID, conversationID, packageUri).flat()) as  V1NpcOption[] | V1PlayerOption[];
   }
 
   getV2ConditionEntry(id: string, packageUri: string) {

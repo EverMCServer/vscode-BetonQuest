@@ -3,7 +3,14 @@ import Objective from "betonquest-utils/betonquest/Objective";
 
 import { ObjectiveKindType } from "../../node";
 import { ElementKind } from "../Element/ElementKind";
+import { ObjectiveEntry } from "./ObjectiveEntry";
 
 export class ObjectiveKind extends ElementKind<Objective> {
-  type: ObjectiveKindType = "ObjectiveKind";
+  readonly type: ObjectiveKindType = "ObjectiveKind";
+  readonly parent: ObjectiveEntry;
+
+  constructor(value: string, range: [number?, number?], kindConfig: _ElementKind<Objective>, parent: ObjectiveEntry) {
+    super(value, range, kindConfig, parent);
+    this.parent = parent;
+  }
 }

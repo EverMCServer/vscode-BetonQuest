@@ -7,7 +7,6 @@ import { AbstractNodeV1 } from "../../v1";
 
 export abstract class ElementArgument<LE extends ListElement> extends AbstractNodeV1<ElementArgumentType> {
   abstract type: ElementArgumentType;
-  uri: string;
   offsetStart?: number;
   offsetEnd?: number;
 
@@ -21,7 +20,6 @@ export abstract class ElementArgument<LE extends ListElement> extends AbstractNo
   ) {
     super();
 
-    this.uri = parent.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
 

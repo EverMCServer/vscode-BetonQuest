@@ -99,7 +99,7 @@ export abstract class AbstractID<T extends NodeType, ET extends ElementEntry<Lis
 
     return this.getTargetNodes().flatMap(n => ({
       originSelectionRange: [this.offsetStart + (this.withExclamationMark ? 1 : 0), this.offsetEnd],
-      targetUri: n.uri,
+      targetUri: n.getUri(),
       targetRange: [n.offsetStart!, n.offsetEnd!],
       targetSelectionRange: [n.offsetStart!, n.offsetEnd!]
     }));

@@ -1,20 +1,10 @@
 import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
 
 import { DiagnosticCode } from "../utils/diagnostics";
-import { ConditionEntry as ConditionEntryV1 } from "./v1/Condition/ConditionEntry";
-import { ConditionEntry as ConditionEntryV2 } from "./v2/Condition/ConditionEntry";
-import { EventEntry as EventEntryV1 } from "./v1/Event/EventEntry";
-import { EventEntry as EventEntryV2 } from "./v2/Event/EventEntry";
-import { ObjectiveEntry as ObjectiveEntryV1 } from "./v1/Objective/ObjectiveEntry";
-import { ObjectiveEntry as ObjectiveEntryV2 } from "./v2/Objective/ObjectiveEntry";
-import { Option as OptionV1 } from "./v1/Conversation/Option/Option";
-import { Option as OptionV2 } from "./v2/Conversation/Option/Option";
 import { SemanticToken } from "../service/semanticTokens";
-import { PackageV1 } from "./v1/Package";
-import { PackageV2 } from "./v2/Package";
 import { AST } from "./ast";
-import { AbstractNodeV1, NodeV1 } from "./v1";
-import { AbstractNodeV2, NodeV2 } from "./v2";
+import { AbstractNodeV1 } from "./v1";
+import { AbstractNodeV2 } from "./v2";
 
 export type PackageV1Type = 'PackageV1';
 export type PackageV2Type = 'PackageV2';

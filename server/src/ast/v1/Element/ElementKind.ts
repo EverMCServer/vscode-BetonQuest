@@ -10,7 +10,6 @@ import { AbstractNodeV1, NodeV1 } from "../../v1";
 
 export abstract class ElementKind<LE extends ListElement> extends AbstractNodeV1<ElementKindType> {
   abstract type: ElementKindType;
-  uri: string;
   offsetStart?: number;
   offsetEnd?: number;
 
@@ -19,7 +18,6 @@ export abstract class ElementKind<LE extends ListElement> extends AbstractNodeV1
 
   constructor(value: string, range: [number?, number?], kindConfig: _ElementKind<LE>, parent: NodeV1) {
     super();
-    this.uri = parent.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
 

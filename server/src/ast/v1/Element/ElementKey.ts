@@ -11,7 +11,6 @@ import { AbstractNodeV1 } from "../../v1";
 
 export abstract class ElementKey<LE extends ListElement> extends AbstractNodeV1<ElementKeyType> {
   abstract type: ElementKeyType;
-  readonly uri: string;
   readonly offsetStart: number;
   readonly offsetEnd: number;
 
@@ -20,7 +19,6 @@ export abstract class ElementKey<LE extends ListElement> extends AbstractNodeV1<
 
   constructor(key: Scalar<string>, parent: ElementEntry<LE>) {
     super();
-    this.uri = parent.uri;
     this.offsetStart = key.range![0];
     this.offsetEnd = key.range![1];
 

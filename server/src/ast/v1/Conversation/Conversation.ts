@@ -199,12 +199,12 @@ export class Conversation extends Document<ConversationType> {
     this.addDiagnostic([offsetStart, offsetEnd], message, DiagnosticSeverity.Error, DiagnosticCode.ValueTypeIncorrect);
   }
 
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string): NpcOption[] | PlayerOption[] {
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string) {
     switch (type) {
       case "ConversationNpcOption":
-        return this.getChildren<NpcOption>('ConversationNpcOption').filter(o => o.id === optionID) as NpcOption[];
+        return this.getChildren<NpcOption>('ConversationNpcOption').filter(o => o.id === optionID);
       case "ConversationPlayerOption":
-        return this.getChildren<PlayerOption>('ConversationPlayerOption').filter(o => o.id === optionID) as PlayerOption[];
+        return this.getChildren<PlayerOption>('ConversationPlayerOption').filter(o => o.id === optionID);
     }
     return [];
   }

@@ -6,7 +6,7 @@ import { DiagnosticCode } from "../../../utils/diagnostics";
 import { SemanticTokenType } from "../../../service/semanticTokens";
 import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
 import { Conversation } from "./Conversation";
-import { Event } from "./Option/Event";
+import { ConversationFinalEvent } from "./ConversationFinalEvent";
 import { AbstractNodeV1 } from "../../v1";
 
 export class ConversationFinalEvents extends AbstractNodeV1<ConversationFinalEventsType> {
@@ -78,7 +78,7 @@ export class ConversationFinalEvents extends AbstractNodeV1<ConversationFinalEve
 
         // Create Event
         this.addChild(
-          new Event<this>(
+          new ConversationFinalEvent(
             str,
             [offsetStart, offsetEnd],
             this

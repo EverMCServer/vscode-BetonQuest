@@ -15,7 +15,6 @@ import { AbstractNodeV1, NodeV1 } from "../../v1";
 
 export abstract class ElementEntry<LE extends ListElement> extends AbstractNodeV1<ElementEntryType> {
   abstract type: ElementEntryType;
-  uri: string;
   offsetStart?: number;
   offsetEnd?: number;
 
@@ -27,7 +26,6 @@ export abstract class ElementEntry<LE extends ListElement> extends AbstractNodeV
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, kinds: _ElementKind<LE>[], parent: NodeV1) {
     super();
-    this.uri = parent.uri;
     this.offsetStart = pair.key?.range?.[0];
     this.offsetEnd = pair.value?.range?.[1];
     this.yml = pair;

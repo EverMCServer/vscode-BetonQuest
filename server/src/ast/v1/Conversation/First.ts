@@ -11,7 +11,6 @@ import { AbstractNodeV1 } from "../../v1";
 
 export class First extends AbstractNodeV1<ConversationFirstType> {
   readonly type: ConversationFirstType = 'ConversationFirst';
-  readonly uri: string;
   readonly offsetStart: number;
   readonly offsetEnd: number;
   readonly parent: Conversation;
@@ -21,7 +20,6 @@ export class First extends AbstractNodeV1<ConversationFirstType> {
 
   constructor(yml: Scalar, parent: Conversation) {
     super();
-    this.uri = parent.uri;
     this.parent = parent;
 
     [this.entriesStr, [this.offsetStart, this.offsetEnd]] = getScalarSourceAndRange(yml);

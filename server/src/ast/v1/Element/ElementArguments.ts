@@ -13,7 +13,6 @@ import { SemanticTokenType } from "../../../service/semanticTokens";
 import { AbstractNodeV1 } from "../../v1";
 
 export abstract class ElementArguments<LE extends ListElement> extends AbstractNodeV1<ElementArgumentsType> {
-  readonly uri: string;
   readonly offsetStart?: number;
   readonly offsetEnd?: number;
 
@@ -24,7 +23,6 @@ export abstract class ElementArguments<LE extends ListElement> extends AbstractN
 
   constructor(argumentsSourceStr: string, range: [number?, number?], indent: number, kindConfig: ElementKind<LE>, parent: ElementEntry<LE>) {
     super();
-    this.uri = parent.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
     this.indent = indent;

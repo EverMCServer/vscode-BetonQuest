@@ -12,10 +12,12 @@ import { EventList } from "./EventList";
 import { ElementEntry } from "../Element/ElementEntry";
 
 export class EventEntry extends ElementEntry<Event> {
-  type: EventEntryType = "EventEntry";
+  readonly type: EventEntryType = "EventEntry";
+  readonly parent: EventList;
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: EventList) {
     super(pair, kinds, parent);
+    this.parent = parent;
   }
 
   newKey(key: Scalar<string>): EventKey {

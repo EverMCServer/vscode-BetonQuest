@@ -10,7 +10,6 @@ import { AbstractNodeV1 } from "../../v1";
 
 export class FirstPointer extends AbstractNodeV1<NodeType> {
   readonly type: ConversationPointerType = "ConversationPointer";
-  readonly uri: string;
   readonly offsetStart: number;
   readonly offsetEnd: number;
   readonly parent: First;
@@ -23,7 +22,6 @@ export class FirstPointer extends AbstractNodeV1<NodeType> {
 
   constructor(idString: string, range: [offsetStart: number, offsetEnd: number], parent: First) {
     super();
-    this.uri = parent.uri;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
     this.parent = parent;
@@ -86,7 +84,7 @@ export class FirstPointer extends AbstractNodeV1<NodeType> {
     }
     const locations: LocationLinkOffset[] = this.getTargetNodes().flatMap(n => ({
       originSelectionRange: [this.offsetStart, this.offsetEnd],
-      targetUri: n.uri,
+      targetUri: n.getUri(),
       targetRange: [n.offsetStart!, n.offsetEnd!],
       targetSelectionRange: [n.offsetStart!, n.offsetEnd!]
     }));

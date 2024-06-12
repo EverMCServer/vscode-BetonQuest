@@ -7,13 +7,13 @@ import { ObjectiveEntry } from "./ObjectiveEntry";
 import { ElementList } from "../Element/ElementList";
 
 export class ObjectiveList extends ElementList<Objective, ObjectiveEntry> {
-  type: ObjectiveListType = "ObjectiveList";
+  readonly type: ObjectiveListType = "ObjectiveList";
 
   newEntry(pair: Pair<Scalar<string>, Scalar<string>>): ObjectiveEntry {
     return new ObjectiveEntry(pair, this);
   }
 
-  getObjectiveEntries(id: string, packageUri: string): ObjectiveEntry[] {
+  getObjectiveEntries(id: string, packageUri: string): ObjectiveEntry[] { // TODO: optimize let packageUri be optional
     if (this.parent.isPackageUri(packageUri)) {
       return this.entries.filter(entry => entry.elementKey.value === id);
     } else {

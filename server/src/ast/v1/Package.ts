@@ -3,19 +3,19 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
+import { getParentUrl } from "../../utils/url";
 import { AST } from "../ast";
 import { ConversationOptionType, PackageV1Type } from "../node";
-import { getParentUrl } from "../../utils/url";
-import { ConditionList } from "./Condition/ConditionList";
-import { EventList } from "./Event/EventList";
-import { ObjectiveList } from "./Objective/ObjectiveList";
-import { Conversation } from "./Conversation/Conversation";
-import { ConditionEntry } from "./Condition/ConditionEntry";
-import { EventEntry } from "./Event/EventEntry";
-import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
 import { AbstractNodeV1 } from "../v1";
+import { ConditionEntry } from "./Condition/ConditionEntry";
+import { ConditionList } from "./Condition/ConditionList";
+import { Conversation } from "./Conversation/Conversation";
 import { NpcOption } from "./Conversation/Option/NpcOption";
 import { PlayerOption } from "./Conversation/Option/PlayerOption";
+import { EventEntry } from "./Event/EventEntry";
+import { EventList } from "./Event/EventList";
+import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
+import { ObjectiveList } from "./Objective/ObjectiveList";
 
 export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
   type: PackageV1Type = "PackageV1";
@@ -126,7 +126,7 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
 
   getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): NpcOption[] | PlayerOption[] {
     if (packageUri && this.isPackageUri(packageUri)) {
-      return this.getChildren<Conversation>('Conversation', c => c.conversationID === conversationID)?.flatMap(c => c.getConversationOptions<T>(type, optionID));
+      return this.getChildren<Conversation>('Conversation', c => c.conversationID === conversationID)?.flatMap(c => c.getConversationOptions<T>(type, optionID).flat()) as NpcOption[] | PlayerOption[];
     }
     return this.parentAst.getV1ConversationOptions<T>(type, optionID, conversationID, packageUri);
   }

@@ -7,13 +7,13 @@ import { EventEntry } from "./EventEntry";
 import { ElementList } from "../Element/ElementList";
 
 export class EventList extends ElementList<Event, EventEntry> {
-  type: EventListType = "EventList";
+  readonly type: EventListType = "EventList";
 
   newEntry(pair: Pair<Scalar<string>, Scalar<string>>): EventEntry {
     return new EventEntry(pair, this);
   }
 
-  getEventEntries(id: string, packageUri: string): EventEntry[] {
+  getEventEntries(id: string, packageUri: string): EventEntry[] { // TODO: optimize let packageUri be optional
     if (this.parent.isPackageUri(packageUri)) {
       return this.entries.filter(entry => entry.elementKey.value === id);
     } else {

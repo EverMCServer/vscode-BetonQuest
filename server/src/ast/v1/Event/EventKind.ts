@@ -3,7 +3,14 @@ import Event from "betonquest-utils/betonquest/Event";
 
 import { EventKindType } from "../../node";
 import { ElementKind } from "../Element/ElementKind";
+import { EventEntry } from "./EventEntry";
 
 export class EventKind extends ElementKind<Event> {
-  type: EventKindType = "EventKind";
+  readonly type: EventKindType = "EventKind";
+  readonly parent: EventEntry;
+
+  constructor(value: string, range: [number?, number?], kindConfig: _ElementKind<Event>, parent: EventEntry) {
+    super(value, range, kindConfig, parent);
+    this.parent = parent;
+  }
 }
