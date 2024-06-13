@@ -1,16 +1,19 @@
 import { DiagnosticSeverity } from "vscode-languageserver";
 
-import ListElement from "betonquest-utils/betonquest/ListElement";
-
-import { NodeType } from "../../node";
-import { ElementEntry } from "../Element/ElementEntry";
-import { DiagnosticCode } from "../../../utils/diagnostics";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
+import { DiagnosticCode } from "../../../utils/diagnostics";
 import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
+import { NodeType } from "../../node";
 import { AbstractNodeV1 } from "../../v1";
+import { ConditionEntry } from "../Condition/ConditionEntry";
+import { ConditionKey } from "../Condition/ConditionKey";
+import { EventEntry } from "../Event/EventEntry";
+import { EventKey } from "../Event/EventKey";
+import { ObjectiveEntry } from "../Objective/ObjectiveEntry";
+import { ObjectiveKey } from "../Objective/ObjectiveKey";
 
-export abstract class AbstractID<T extends NodeType, ET extends AbstractNodeV1<NodeType>> extends AbstractNodeV1<T> {
+export abstract class AbstractID<T extends NodeType, ET extends ConditionEntry | EventEntry | ObjectiveEntry> extends AbstractNodeV1<T> {
   readonly offsetStart: number;
   readonly offsetEnd: number;
 
@@ -77,10 +80,13 @@ export abstract class AbstractID<T extends NodeType, ET extends AbstractNodeV1<N
       return hoverInfo;
     }
     hoverInfo.push(...this.getTargetNodes().flatMap(n => {
-      const hoverInfo = [...n.elementKey.getHoverInfo().map(h => {
-        h.offset = [this.offsetStart, this.offsetEnd];
-        return h;
-      })];
+      const hoverInfo = [
+        ...n.getChild<ConditionKey | EventKey | ObjectiveKey>(['ConditionKey', 'EventKey', 'ObjectiveKey'])!
+          .getHoverInfo().map(h => {
+            h.offset = [this.offsetStart, this.offsetEnd];
+            return h;
+          })
+      ];
       if (n.yml.value) {
         hoverInfo.unshift({
           content: n.yml.value.value,

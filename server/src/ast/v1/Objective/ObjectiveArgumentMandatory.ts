@@ -1,13 +1,16 @@
-import Objective from "betonquest-utils/betonquest/Objective";
 
-import { ObjectiveArgumentType } from "../../node";
-import { ElementArgumentMandatory } from "../Element/ElementArgumentMandatory";
-import { ObjectiveArguments } from "./ObjectiveArguments";
 import { ArgumentsPatternMandatory } from "betonquest-utils/betonquest/Arguments";
+import { ObjectiveArgumentType } from "../../node";
+import { AbstractNodeV1 } from "../../v1";
+import { ObjectiveArguments } from "./ObjectiveArguments";
 
-export class ObjectiveArgumentMandatory extends ElementArgumentMandatory<Objective> {
-  readonly type: ObjectiveArgumentType = 'ObjectiveArgument';
+export class ObjectiveArgumentMandatory extends AbstractNodeV1<ObjectiveArgumentType> {
+  readonly type: ObjectiveArgumentType = 'ObjectiveArgument'; // TODO remove Mandatory / Optional
+  offsetStart?: number;
+  offsetEnd?: number;
   readonly parent: ObjectiveArguments;
+
+  argumentStr: string;
 
   constructor(argumentStr: string,
     range: [number?, number?],
@@ -15,7 +18,15 @@ export class ObjectiveArgumentMandatory extends ElementArgumentMandatory<Objecti
     pattern: ArgumentsPatternMandatory,
     parent: ObjectiveArguments,
   ) {
-    super(argumentStr, range, pattern, parent);
+    super();
     this.parent = parent;
+
+    this.offsetStart = range[0];
+    this.offsetEnd = range[1];
+
+    // Parse argumentStr
+    this.argumentStr = argumentStr;
+
+    // Check format
   }
 }
