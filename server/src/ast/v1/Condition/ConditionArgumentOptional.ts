@@ -1,13 +1,16 @@
-import Condition from "betonquest-utils/betonquest/Condition";
 
-import { ConditionArgumentType } from "../../node";
-import { ElementArgumentOptional } from "../Element/ElementArgumentOptional";
-import { ConditionArguments } from "./ConditionArguments";
 import { ArgumentsPatternOptional } from "betonquest-utils/betonquest/Arguments";
+import { ConditionArgumentType } from "../../node";
+import { AbstractNodeV1 } from "../../v1";
+import { ConditionArguments } from "./ConditionArguments";
 
-export class ConditionArgumentOptional extends ElementArgumentOptional<Condition> {
-  readonly type: ConditionArgumentType = 'ConditionArgument';
+export class ConditionArgumentOptional extends AbstractNodeV1<ConditionArgumentType> {
+  readonly type: ConditionArgumentType = 'ConditionArgument'; // TODO remove Mandatory / Optional
+  offsetStart?: number;
+  offsetEnd?: number;
   readonly parent: ConditionArguments;
+
+  argumentStr: string;
 
   constructor(argumentStr: string,
     range: [number?, number?],
@@ -15,9 +18,16 @@ export class ConditionArgumentOptional extends ElementArgumentOptional<Condition
     pattern: ArgumentsPatternOptional,
     parent: ConditionArguments,
   ) {
-    super(argumentStr, range, pattern, parent);
+    super();
     this.parent = parent;
+
+    this.offsetStart = range[0];
+    this.offsetEnd = range[1];
+
+    // Parse argumentStr
+    this.argumentStr = argumentStr;
+
+    // Check format
   }
 }
 
-// new ConditionArgumentOptional().parent;

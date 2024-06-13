@@ -1,18 +1,28 @@
-import Objective from "betonquest-utils/betonquest/Objective";
 
-import { ObjectiveKeyType } from "../../node";
-import { ElementKey } from "../Element/ElementKey";
-import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
-import { ObjectiveEntry } from "./ObjectiveEntry";
 import { Scalar } from "yaml";
+import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
+import { HoverInfo } from "../../../utils/hover";
+import { ObjectiveKeyType } from "../../node";
+import { AbstractNodeV1 } from "../../v1";
+import { ObjectiveEntry } from "./ObjectiveEntry";
 
-export class ObjectiveKey extends ElementKey<Objective> {
+export class ObjectiveKey extends AbstractNodeV1<ObjectiveKeyType> {
   readonly type: ObjectiveKeyType = "ObjectiveKey";
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
   readonly parent: ObjectiveEntry;
 
+  readonly value: string;
+  readonly comment?: string;
+
   constructor(key: Scalar<string>, parent: ObjectiveEntry) {
-    super(key, parent);
+    super();
+    this.offsetStart = key.range![0];
+    this.offsetEnd = key.range![1];
     this.parent = parent;
+
+    this.value = key.value;
+    this.comment = key.commentBefore?.split(/\n\n+/).slice(-1)[0] ?? undefined;
   }
 
   getSemanticTokens(): SemanticToken[] {
@@ -25,4 +35,21 @@ export class ObjectiveKey extends ElementKey<Objective> {
       tokenType: SemanticTokenType.ObjectiveID
     }];
   };
+
+  getHoverInfo(offset?: number): HoverInfo[] {
+    if (!offset || this.offsetStart <= offset && this.offsetEnd >= offset) {
+      const hoverInfo: HoverInfo[] = [{
+        content: "(full path: " + this.value + ")",
+        offset: [this.offsetStart, this.offsetEnd]
+      }];
+      if (this.comment) {
+        hoverInfo.unshift({
+          content: this.comment,
+          offset: [this.offsetStart!, this.offsetEnd!]
+        });
+      }
+      return hoverInfo;
+    }
+    return [];
+  }
 }

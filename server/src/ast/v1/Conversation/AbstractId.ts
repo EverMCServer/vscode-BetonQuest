@@ -10,7 +10,7 @@ import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
 import { AbstractNodeV1 } from "../../v1";
 
-export abstract class AbstractID<T extends NodeType, ET extends ElementEntry<ListElement>> extends AbstractNodeV1<T> {
+export abstract class AbstractID<T extends NodeType, ET extends AbstractNodeV1<NodeType>> extends AbstractNodeV1<T> {
   readonly offsetStart: number;
   readonly offsetEnd: number;
 

@@ -6,6 +6,7 @@ import { ConditionListType } from "../../node";
 import { PackageV1 } from "../Package";
 import { Document } from "../document";
 import { ConditionEntry } from "./ConditionEntry";
+import { ConditionKey } from "./ConditionKey";
 
 export class ConditionList extends Document<ConditionListType> {
   readonly type: ConditionListType = "ConditionList";
@@ -25,7 +26,7 @@ export class ConditionList extends Document<ConditionListType> {
 
   getLocations(yamlPath: string[], sourceUri: string) {
     const result: LocationsResponse = [];
-    const key = this.getChild<ConditionEntry>('ConditionEntry', e => e.elementKey.value === yamlPath[1])?.elementKey;
+    const key = this.getChild<ConditionEntry>('ConditionEntry')?.getChild<ConditionKey>('ConditionKey', e => e.value === yamlPath[1]);
     if (key) {
       result.push({
         uri: this.uri!,
@@ -37,7 +38,7 @@ export class ConditionList extends Document<ConditionListType> {
 
   getConditionEntries(id: string, packageUri: string): ConditionEntry[] { // TODO: optimize let packageUri be optional
     if (this.parent.isPackageUri(packageUri)) {
-      return this.getChildren<ConditionEntry>('ConditionEntry', entry => entry.elementKey.value === id);
+      return this.getChildren<ConditionEntry>('ConditionEntry', e => e.getChild<ConditionKey>('ConditionKey')?.value === id);
     } else {
       return this.parent.getConditionEntries(id, packageUri);
     }

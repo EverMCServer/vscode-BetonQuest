@@ -6,6 +6,7 @@ import { EventListType } from "../../node";
 import { PackageV1 } from "../Package";
 import { Document } from "../document";
 import { EventEntry } from "./EventEntry";
+import { EventKey } from "./EventKey";
 
 export class EventList extends Document<EventListType> {
   readonly type: EventListType = "EventList";
@@ -25,7 +26,7 @@ export class EventList extends Document<EventListType> {
 
   getLocations(yamlPath: string[], sourceUri: string) {
     const result: LocationsResponse = [];
-    const key = this.getChild<EventEntry>('EventEntry', e => e.elementKey.value === yamlPath[1])?.elementKey;
+    const key = this.getChild<EventEntry>('EventEntry')?.getChild<EventKey>('EventKey', e => e.value === yamlPath[1]);
     if (key) {
       result.push({
         uri: this.uri!,
@@ -37,7 +38,7 @@ export class EventList extends Document<EventListType> {
 
   getEventEntries(id: string, packageUri: string): EventEntry[] { // TODO: optimize let packageUri be optional
     if (this.parent.isPackageUri(packageUri)) {
-      return this.getChildren<EventEntry>('EventEntry', entry => entry.elementKey.value === id);
+      return this.getChildren<EventEntry>('EventEntry', e => e.getChild<EventKey>('EventKey')?.value === id);
     } else {
       return this.parent.getEventEntries(id, packageUri);
     }

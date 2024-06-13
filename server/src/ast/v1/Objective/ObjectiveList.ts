@@ -6,6 +6,7 @@ import { ObjectiveListType } from "../../node";
 import { PackageV1 } from "../Package";
 import { Document } from "../document";
 import { ObjectiveEntry } from "./ObjectiveEntry";
+import { ObjectiveKey } from "./ObjectiveKey";
 
 export class ObjectiveList extends Document<ObjectiveListType> {
   readonly type: ObjectiveListType = "ObjectiveList";
@@ -25,7 +26,7 @@ export class ObjectiveList extends Document<ObjectiveListType> {
 
   getLocations(yamlPath: string[], sourceUri: string) {
     const result: LocationsResponse = [];
-    const key = this.getChild<ObjectiveEntry>('ObjectiveEntry', e => e.elementKey.value === yamlPath[1])?.elementKey;
+    const key = this.getChild<ObjectiveEntry>('ObjectiveEntry')?.getChild<ObjectiveKey>('ObjectiveKey', e => e.value === yamlPath[1]);
     if (key) {
       result.push({
         uri: this.uri!,
@@ -37,7 +38,7 @@ export class ObjectiveList extends Document<ObjectiveListType> {
 
   getObjectiveEntries(id: string, packageUri: string): ObjectiveEntry[] { // TODO: optimize let packageUri be optional
     if (this.parent.isPackageUri(packageUri)) {
-      return this.getChildren<ObjectiveEntry>('ObjectiveEntry', entry => entry.elementKey.value === id);
+      return this.getChildren<ObjectiveEntry>('ObjectiveEntry', e => e.getChild<ObjectiveKey>('ObjectiveKey')?.value === id);
     } else {
       return this.parent.getObjectiveEntries(id, packageUri);
     }
