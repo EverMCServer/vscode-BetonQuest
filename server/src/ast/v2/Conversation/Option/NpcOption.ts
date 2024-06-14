@@ -1,43 +1,34 @@
 import { Pair, Scalar, YAMLMap, isScalar } from "yaml";
-import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationOptionType, AbstractNodeV2 } from "../../../node";
+import { ConversationNpcOptionType } from "../../../node";
+import { Conversation } from "../Conversation";
+import { DiagnosticSeverity } from "vscode";
+import { SemanticTokenType } from "../../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
-import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
-import { HoverInfo } from "../../../../utils/hover";
-import { LocationLinkOffset } from "../../../../utils/location";
 import { isStringScalar } from "../../../../utils/yaml";
-import { Text } from "./Text";
-import { ConversationSection } from "../Conversation";
-import { Conditions } from "./Conditions";
-import { Events } from "./Events";
-import { Pointers } from "./Pointers";
+import { AbstractNodeV2 } from "../../../v2";
+import { Conditions } from "./Npc/Conditions";
+import { Events } from "./Npc/Events";
+import { Pointers } from "./Npc/Pointers";
+import { Text } from "./Npc/Text";
+import { HoverInfo } from "../../../../utils/hover";
 
-export class Option<T extends ConversationOptionType> extends AbstractNodeV2<T> {
-  type: T;
-  uri: string;
-  offsetStart: number;
-  offsetEnd: number;
-  parent: ConversationSection;
+export class NpcOption extends AbstractNodeV2<ConversationNpcOptionType> {
+  readonly type: ConversationNpcOptionType = "ConversationNpcOption";
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: Conversation;
 
   // Cache the parsed yaml document
-  yml: Pair<Scalar<string>, YAMLMap>;
-  id: string;
-  text?: Text;
-  conditions?: Conditions<this>;
-  events?: Events<this>;
-  pointers?: Pointers<T>;
-  comment?: string;
+  private yml: Pair<Scalar<string>, YAMLMap>;
+  readonly id: string;
+  readonly comment?: string;
 
-  semanticTokens: SemanticToken[] = [];
-
-  constructor(type: T, yml: Pair<Scalar<string>, YAMLMap>, parent: ConversationSection) {
+  constructor(yml: Pair<Scalar<string>, YAMLMap>, parent: Conversation) {
     super();
-    this.type = type;
-    this.uri = parent.uri;
+    this.parent = parent;
     this.offsetStart = yml.key.range![0];
     this.offsetEnd = yml.value?.range![1] || yml.key.range![1];
-    this.parent = parent;
     this.yml = yml;
     this.comment = yml.key.commentBefore?.split(/\n\n+/).slice(-1)[0] ?? undefined;
 
@@ -47,16 +38,17 @@ export class Option<T extends ConversationOptionType> extends AbstractNodeV2<T> 
       this.semanticTokens.push({
         offsetStart: this.yml.key.range[0],
         offsetEnd: this.yml.key.range[1],
-        tokenType: this.type === "ConversationNpcOption" ? SemanticTokenType.ConversationOptionNpcID : SemanticTokenType.ConversationOptionPlayerID
+        tokenType: SemanticTokenType.ConversationOptionNpcID
       });
     }
 
+    // Parse values
     this.yml.value?.items.forEach(pair => {
       if (isStringScalar(pair.key)) {
         switch (pair.key.value) {
           case "text":
             if (isStringScalar(pair.value) || pair.value instanceof YAMLMap) {
-              this.text = new Text(pair.value, this);
+              this.addChild(new Text(pair.value, this));
             }
             break;
           case "pointer":
@@ -75,7 +67,7 @@ export class Option<T extends ConversationOptionType> extends AbstractNodeV2<T> 
             );
           case "pointers":
             if (isScalar<string>(pair.value) && typeof pair.value.value === 'string') {
-              this.pointers = new Pointers(pair.value, this);
+              this.addChild(new Pointers(pair.value, this));
             } else {
               // TODO
             }
@@ -96,7 +88,7 @@ export class Option<T extends ConversationOptionType> extends AbstractNodeV2<T> 
             );
           case "conditions":
             if (isScalar<string>(pair.value) && typeof pair.value.value === 'string') {
-              this.conditions = new Conditions(pair.value, this);
+              this.addChild(new Conditions(pair.value, this));
             } else {
               // TODO
             }
@@ -117,7 +109,7 @@ export class Option<T extends ConversationOptionType> extends AbstractNodeV2<T> 
             );
           case "events":
             if (isScalar<string>(pair.value) && typeof pair.value.value === 'string') {
-              this.events = new Events(pair.value, this);
+              this.addChild(new Events(pair.value, this));
             } else {
               // TODO
             }
@@ -140,35 +132,8 @@ export class Option<T extends ConversationOptionType> extends AbstractNodeV2<T> 
     // ...
   }
 
-  getDiagnostics(): Diagnostic[] {
-    return [
-      ...this.diagnostics,
-      ...this.conditions?.getDiagnostics() ?? [],
-      ...this.events?.getDiagnostics() ?? [],
-      ...this.pointers?.getDiagnostics() ?? [],
-    ];
-  }
-
-  getCodeActions(): CodeAction[] {
-    return [
-      ...this.codeActions,
-      ...this.conditions?.getCodeActions() ?? [],
-      ...this.events?.getCodeActions() ?? [],
-      ...this.pointers?.getCodeActions() ?? [],
-    ];
-  }
-
-  getSemanticTokens(): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = this.semanticTokens;
-    semanticTokens.push(...this.text?.getSemanticTokens() || []);
-    semanticTokens.push(...this.conditions?.getSemanticTokens() || []);
-    semanticTokens.push(...this.events?.getSemanticTokens() || []);
-    semanticTokens.push(...this.pointers?.getSemanticTokens() || []);
-    return semanticTokens;
-  };
-
   getHoverInfo(offset: number): HoverInfo[] {
-    const hoverInfo: HoverInfo[] = [];
+    const hoverInfo: HoverInfo[] = super.getHoverInfo(offset);
     if (offset < this.offsetStart || offset > this.offsetEnd) {
       return hoverInfo;
     }
@@ -178,21 +143,7 @@ export class Option<T extends ConversationOptionType> extends AbstractNodeV2<T> 
         offset: [this.offsetStart, this.offsetEnd]
       });
     }
-    hoverInfo.push(...this.conditions?.getHoverInfo(offset) || []);
-    hoverInfo.push(...this.events?.getHoverInfo(offset) || []);
-    hoverInfo.push(...this.pointers?.getHoverInfo(offset) || []);
     return hoverInfo;
   }
 
-  getDefinitions(offset: number): LocationLinkOffset[] {
-    if (this.offsetStart! > offset || this.offsetEnd! < offset) {
-      return [];
-    }
-
-    return [
-      ...this.conditions?.getDefinitions(offset) || [],
-      ...this.events?.getDefinitions(offset) || [],
-      ...this.pointers?.getDefinitions(offset) || [],
-    ];
-  }
 }

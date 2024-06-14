@@ -1,19 +1,19 @@
-import { Pair, Scalar, isMap, isScalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
+import { Pair, Scalar, isMap, isScalar } from "yaml";
 
-import { PackageV1 } from "../Package";
-import { ConversationOptionType, ConversationType } from "../../node";
-import { isYamlMapPair } from "../../../utils/yaml";
+import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { getFilename } from "../../../utils/url";
-import { ConversationQuester } from "./ConversationQuester";
-import { First } from "./First";
-import { ConversationStop } from "./ConversationStop";
+import { isYamlMapPair } from "../../../utils/yaml";
+import { ConversationOptionType, ConversationType } from "../../node";
+import { PackageV1 } from "../Package";
+import { Document } from "../document";
 import { ConversationFinalEvents } from "./ConversationFinalEvents";
 import { ConversationInterceptor } from "./ConversationInterceptor";
-import { Document } from "../document";
+import { ConversationQuester } from "./ConversationQuester";
+import { ConversationStop } from "./ConversationStop";
+import { First } from "./First";
 import { NpcOption } from "./Option/NpcOption";
 import { PlayerOption } from "./Option/PlayerOption";
 
@@ -22,15 +22,6 @@ export class Conversation extends Document<ConversationType> {
 
   // Contents
   conversationID: string;
-  // quester?: ConversationQuester;
-  // first?: First;
-  // stop?: ConversationStop;
-  // finalEvents?: ConversationFinalEvents;
-  // interceptor?: ConversationInterceptor;
-  // npcOptions: Option<ConversationNpcOptionType>[] = [];
-  // playerOptions: Option<ConversationPlayerOptionType>[] = [];
-
-  semanticTokens: SemanticToken[] = [];
 
   constructor(uri: string, document: TextDocument, parent: PackageV1) {
     super(uri, document, parent);

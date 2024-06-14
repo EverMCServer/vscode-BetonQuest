@@ -1,29 +1,25 @@
 import { Scalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationFinalEventsType, AbstractNodeV2 } from "../../node";
+import { ConversationFinalEventsType } from "../../node";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { SemanticToken } from "../../../service/semanticTokens";
-import { HoverInfo } from "../../../utils/hover";
-import { LocationLinkOffset } from "../../../utils/location";
+import { SemanticTokenType } from "../../../service/semanticTokens";
 import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
-import { ConversationSection } from "./Conversation";
-import { Event } from "./Option/Event";
+import { Conversation } from "./Conversation";
+import { ConversationFinalEvent } from "./ConversationFinalEvent";
+import { AbstractNodeV1 } from "../../v1";
 
-export class ConversationFinalEvents extends AbstractNodeV2<ConversationFinalEventsType> {
-  type: ConversationFinalEventsType = 'ConversationFinalEvents';
-  uri: string;
-  offsetStart: number;
-  offsetEnd: number;
-  parent: ConversationSection;
+export class ConversationFinalEvents extends AbstractNodeV1<ConversationFinalEventsType> {
+  readonly type: ConversationFinalEventsType = 'ConversationFinalEvents';
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: Conversation;
 
   // Cache the parsed yaml document
-  yml: Scalar;
-  events: Event<this>[] = [];
+  private yml: Scalar;
 
-  constructor(yml: Scalar, parent: ConversationSection) {
+  constructor(yml: Scalar, parent: Conversation) {
     super();
-    this.uri = parent.uri;
     this.parent = parent;
     this.yml = yml;
     [this.offsetStart, this.offsetEnd] = getScalarRangeByValue(this.yml);
@@ -81,22 +77,23 @@ export class ConversationFinalEvents extends AbstractNodeV2<ConversationFinalEve
         }
 
         // Create Event
-        this.events.push(
-          new Event<this>(
+        this.addChild(
+          new ConversationFinalEvent(
             str,
             [offsetStart, offsetEnd],
             this
           )
         );
+
+        // Add semantic tokens for seprator ","
+        if (matched[1].length > 0) {
+          this.semanticTokens.push({
+            offsetStart: offsetStartWithComma,
+            offsetEnd: offsetStartWithComma + 1,
+            tokenType: SemanticTokenType.Operator
+          });
+        }
       }
     }
-  }
-
-  getDefinitions(offset: number): LocationLinkOffset[] {
-    if (this.offsetStart! > offset || this.offsetEnd! < offset) {
-      return [];
-    }
-
-    return this.events.flatMap(c => c.getDefinitions(offset));
   }
 }

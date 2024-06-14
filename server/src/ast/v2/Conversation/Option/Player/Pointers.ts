@@ -1,43 +1,29 @@
 import { Scalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationFirstType } from "../../node";
-import { Conversation } from "./Conversation";
-import { SemanticTokenType } from "../../../service/semanticTokens";
-import { DiagnosticCode } from "../../../utils/diagnostics";
-import { getScalarSourceAndRange } from "../../../utils/yaml";
-import { FirstPointer } from "./FirstPointer";
-import { AbstractNodeV1 } from "../../v1";
+import { ConversationPointersType } from "../../../../node";
+import { DiagnosticCode } from "../../../../../utils/diagnostics";
+import { SemanticTokenType } from "../../../../../service/semanticTokens";
+import { getScalarSourceAndRange } from "../../../../../utils/yaml";
+import { Pointer } from "./Pointer";
+import { AbstractNodeV2 } from "../../../../v2";
+import { PlayerOption } from "../PlayerOption";
 
-export class First extends AbstractNodeV1<ConversationFirstType> {
-  readonly type: ConversationFirstType = 'ConversationFirst';
+export class Pointers extends AbstractNodeV2<ConversationPointersType> {
+  readonly type: ConversationPointersType = "ConversationPointers";
   readonly offsetStart: number;
   readonly offsetEnd: number;
-  readonly parent: Conversation;
+  readonly parent: PlayerOption;
 
-  private yml: Scalar;
+  private yml: Scalar<string>;
   private entriesStr: string;
 
-  constructor(yml: Scalar, parent: Conversation) {
+  constructor(yml: Scalar<string>, parent: PlayerOption) {
     super();
     this.parent = parent;
 
-    [this.entriesStr, [this.offsetStart, this.offsetEnd]] = getScalarSourceAndRange(yml);
-    if (typeof yml.value !== 'string') {
-      this.addDiagnostic(
-        [this.offsetStart, this.offsetEnd],
-        "Invalid string value",
-        DiagnosticSeverity.Error,
-        DiagnosticCode.ValueContentIncorrect,
-        [
-          {
-            title: "Clear value",
-            text: `""`,
-          }
-        ]
-      );
-    }
     this.yml = yml;
+    [this.entriesStr, [this.offsetStart, this.offsetEnd]] = getScalarSourceAndRange(this.yml);
 
     // Split and parse IDs
     const regex = /(,?)([^,]*)/g; // /(,?)([^,]*)/g
@@ -69,7 +55,7 @@ export class First extends AbstractNodeV1<ConversationFirstType> {
       }
 
       // Parse the Option ID
-      this.addChild(new FirstPointer(strTrimed, [offsetStartTrimed, offsetEndTrimed], this));
+      this.addChild(new Pointer(strTrimed, [offsetStartTrimed, offsetEndTrimed], this));
 
       // Add semantic tokens for seprator ","
       if (matched[1].length > 0) {
@@ -81,4 +67,5 @@ export class First extends AbstractNodeV1<ConversationFirstType> {
       }
     }
   }
+
 }

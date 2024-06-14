@@ -7,7 +7,7 @@ import { ConditionEntry } from "./v2/Condition/ConditionEntry";
 import { ConditionKey } from "./v2/Condition/ConditionKey";
 import { ConditionKind } from "./v2/Condition/ConditionKind";
 import { ConditionList } from "./v2/Condition/ConditionList";
-import { Conversation } from "./v2/Conversation/Conversation";
+import { Conversation, ConversationSection } from "./v2/Conversation/Conversation";
 import { ConversationFinalEvent } from "./v2/Conversation/ConversationFinalEvent";
 import { ConversationFinalEvents } from "./v2/Conversation/ConversationFinalEvents";
 import { ConversationInterceptor } from "./v2/Conversation/ConversationInterceptor";
@@ -53,7 +53,7 @@ type TEventListList = EventList | EventEntry | EventKey | EventKind | EventArgum
 type TObjectiveList = ObjectiveList | ObjectiveEntry | ObjectiveKey | ObjectiveKind | ObjectiveArguments | ObjectiveArgumentMandatory | ObjectiveArgumentOptional;
 type TConversationNpcOption = NpcOption | NpcConditions | NpcCondition | NpcEvents | NpcEvent | NpcPointers | NpcPointer | NpcText;
 type TConversationPlayerOption = PlayerOption | PlayerConditions | PlayerCondition | PlayerEvents | PlayerEvent | PlayerPointers | PlayerPointer | PlayerText;
-type TConversation = Conversation | ConversationQuester | ConversationQuesterTranslations | First | FirstPointer | ConversationStop | ConversationFinalEvents | ConversationFinalEvent | ConversationInterceptor | TConversationNpcOption | TConversationPlayerOption;
+type TConversation = Conversation | ConversationSection | ConversationQuester | ConversationQuesterTranslations | First | FirstPointer | ConversationStop | ConversationFinalEvents | ConversationFinalEvent | ConversationInterceptor | TConversationNpcOption | TConversationPlayerOption;
 export type NodeV2 = PackageV2 | TConditionList | TEventListList | TObjectiveList | TConversation;
 
 export abstract class AbstractNodeV2<T extends NodeType> extends AbstractNode<T, NodeV2> {

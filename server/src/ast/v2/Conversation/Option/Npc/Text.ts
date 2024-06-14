@@ -1,27 +1,26 @@
 import { Scalar, YAMLMap, isMap, isScalar } from "yaml";
 
-import { SemanticTokenType } from "../../../service/semanticTokens";
-import { ConversationQuesterType } from "../../node";
-import { AbstractNodeV1 } from "../../v1";
-import { ConversationSection } from "./Conversation";
-import { ConversationQuesterTranslations } from "./ConversationQuesterTranslations";
+import { ConversationTextType } from "../../../../node";
+import { TextTranslations } from "./TextTranslations";
+import { NpcOption } from "../NpcOption";
+import { SemanticTokenType } from "../../../../../service/semanticTokens";
+import { AbstractNodeV2 } from "../../../../v2";
 
-export class ConversationQuester extends AbstractNodeV1<ConversationQuesterType> {
-  readonly type: ConversationQuesterType = 'ConversationQuester';
+export class Text extends AbstractNodeV2<ConversationTextType> {
+  readonly type: ConversationTextType = 'ConversationText';
   readonly offsetStart: number;
   readonly offsetEnd: number;
-  readonly parent: ConversationSection;
+  readonly parent: NpcOption;
 
   private yml: Scalar | YAMLMap;
   private contentType?: 'string' | 'translations';
   private contentString?: string;
-  private contentTranslations?: ConversationQuesterTranslations; // TODO
+  private contentTranslations?: TextTranslations; // TODO
 
-  constructor(yml: Scalar | YAMLMap, parent: ConversationSection) {
+  constructor(yml: Scalar | YAMLMap, parent: NpcOption) {
     super();
-    this.parent = parent;
-
     this.yml = yml;
+    this.parent = parent;
     this.offsetStart = this.yml.range![0];
     this.offsetEnd = this.yml.range![1];
 
@@ -38,9 +37,7 @@ export class ConversationQuester extends AbstractNodeV1<ConversationQuesterType>
       });
     } else if (isMap<Scalar<string>>(yml)) {
       this.contentType = 'translations';
-      this.contentTranslations = new ConversationQuesterTranslations(yml, this); // TODO: replace
+      this.contentTranslations = new TextTranslations(yml, this);
     }
-
   }
-
 }

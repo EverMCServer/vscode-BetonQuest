@@ -1,27 +1,24 @@
 import { Scalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationStopType, AbstractNodeV2 } from "../../node";
-import { ConversationSection } from "./Conversation";
+import { ConversationStopType } from "../../node";
+import { Conversation } from "./Conversation";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
+import { AbstractNodeV1 } from "../../v1";
 
-export class ConversationStop extends AbstractNodeV2<ConversationStopType> {
-  type: ConversationStopType = 'ConversationStop';
-  uri: string;
-  offsetStart?: number;
-  offsetEnd?: number;
-  parent: ConversationSection;
-
-  semanticTokens: SemanticToken[] = [];
+export class ConversationStop extends AbstractNodeV1<ConversationStopType> {
+  readonly type: ConversationStopType = 'ConversationStop';
+  readonly offsetStart?: number;
+  readonly offsetEnd?: number;
+  readonly parent: Conversation;
 
   // Cache the parsed yaml document
-  yml: Scalar;
-  value?: boolean;
+  private yml: Scalar;
+  private value?: boolean;
 
-  constructor(yml: Scalar, parent: ConversationSection) {
+  constructor(yml: Scalar, parent: Conversation) {
     super();
-    this.uri = parent.uri;
     this.parent = parent;
     this.yml = yml;
 
@@ -91,9 +88,4 @@ export class ConversationStop extends AbstractNodeV2<ConversationStopType> {
       ]
     );
   }
-
-  getSemanticTokens(): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = this.semanticTokens;
-    return semanticTokens;
-  };
 }

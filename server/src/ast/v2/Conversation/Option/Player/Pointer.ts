@@ -1,30 +1,27 @@
 import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
-import { DiagnosticCode } from "../../../../utils/diagnostics";
-import { HoverInfo } from "../../../../utils/hover";
-import { LocationLinkOffset } from "../../../../utils/location";
-import { ConversationOptionType, ConversationPointerType, NodeType, AbstractNodeV2 } from "../../../node";
+import { SemanticTokenType } from "../../../../../service/semanticTokens";
+import { DiagnosticCode } from "../../../../../utils/diagnostics";
+import { HoverInfo } from "../../../../../utils/hover";
+import { LocationLinkOffset } from "../../../../../utils/location";
+import { ConversationPointerType } from "../../../../node";
 import { Pointers } from "./Pointers";
+import { AbstractNodeV2 } from "../../../../v2";
 
-export class Pointer<T extends ConversationOptionType> extends AbstractNodeV2<NodeType> {
-  type: ConversationPointerType = "ConversationPointer";
-  protected uri: string;
-  protected offsetStart: number;
-  protected offsetEnd: number;
-  protected parent: Pointers<T>;
+export class Pointer extends AbstractNodeV2<ConversationPointerType> {
+  readonly type: ConversationPointerType = "ConversationPointer";
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: Pointers;
 
   // Cache content
-  protected withExclamationMark: boolean;
-  protected package: string = "";
-  protected conversationID: string;
-  protected optionID: string;
+  readonly withExclamationMark: boolean;
+  readonly package: string = "";
+  readonly conversationID: string;
+  readonly optionID: string;
 
-  private semanticTokens: SemanticToken[] = [];
-
-  constructor(idString: string, range: [offsetStart: number, offsetEnd: number], parent: Pointers<T>) {
+  constructor(idString: string, range: [offsetStart: number, offsetEnd: number], parent: Pointers) {
     super();
-    this.uri = parent.getUri();
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
     this.parent = parent;
@@ -58,7 +55,7 @@ export class Pointer<T extends ConversationOptionType> extends AbstractNodeV2<No
       this.conversationID = splited[1];
       this.optionID = splited[2];
     } else {
-      this.conversationID = this.parent.parent.parent.parent.conversationID;
+      this.conversationID = this.parent.parent.parent.conversationID;
       this.optionID = str;
     }
 
@@ -66,25 +63,9 @@ export class Pointer<T extends ConversationOptionType> extends AbstractNodeV2<No
     this.semanticTokens.push({
       offsetStart: this.offsetStart + (this.withExclamationMark ? 1 : 0),
       offsetEnd: this.offsetEnd,
-      tokenType: this.parent.parent.type === "ConversationNpcOption" ? SemanticTokenType.ConversationOptionPlayerID : SemanticTokenType.ConversationOptionNpcID
+      tokenType: SemanticTokenType.ConversationOptionNpcID
     });
   }
-
-  // getDiagnostics(): Diagnostic[] {
-  //   return [
-  //     ...this.diagnostics,
-  //   ];
-  // }
-
-  // getCodeActions(): CodeAction[] {
-  //   return [
-  //     ...this.codeActions,
-  //   ];
-  // }
-
-  getSemanticTokens(): SemanticToken[] {
-    return this.semanticTokens;
-  };
 
   getHoverInfo(offset: number): HoverInfo[] {
     if (offset < this.offsetStart || offset > this.offsetEnd) {
@@ -112,7 +93,7 @@ export class Pointer<T extends ConversationOptionType> extends AbstractNodeV2<No
 
   getTargetNodes() {
     return this.getConversationOptions(
-      this.parent.parent.type === "ConversationNpcOption" ? "ConversationPlayerOption" : "ConversationNpcOption",
+      "ConversationNpcOption",
       this.optionID,
       this.conversationID,
       this.getPackageUri(this.package));
