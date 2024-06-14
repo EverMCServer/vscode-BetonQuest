@@ -73,7 +73,7 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
               this._getConditionList().addSection(document.uri, document, pair.value);
               // Set key's Semantic Token
               if (pair.key.range) {
-                this._getConditionList().entriesSections.find(section => section.uri === document.uri)?.
+                this._getConditionList().getChildren().find(section => section.getUri() === document.uri)?.
                   addSemanticTokens({
                     offsetStart: pair.key.range[0],
                     offsetEnd: pair.key.range[1],
@@ -89,7 +89,7 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
               this._getEventList().addSection(document.uri, document, pair.value);
               // Set key's Semantic Token
               if (pair.key.range) {
-                this._getEventList().entriesSections.find(section => section.uri === document.uri)?.
+                this._getEventList().getChildren().find(section => section.getUri() === document.uri)?.
                   addSemanticTokens({
                     offsetStart: pair.key.range[0],
                     offsetEnd: pair.key.range[1],
@@ -105,7 +105,7 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
               this._getObjectiveList().addSection(document.uri, document, pair.value);
               // Set key's Semantic Token
               if (pair.key.range) {
-                this._getObjectiveList().entriesSections.find(section => section.uri === document.uri)?.
+                this._getObjectiveList().getChildren().find(section => section.getUri() === document.uri)?.
                   addSemanticTokens({
                     offsetStart: pair.key.range[0],
                     offsetEnd: pair.key.range[1],
@@ -130,7 +130,7 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
                   }
                   // Set key's Semantic Token
                   if (pair.key.range) {
-                    this._getConversation(p.key.value)?.conversationSections.find(section => section.uri === document.uri)?.
+                    this._getConversation(p.key.value)?.getChildren().find(section => section.getUri() === document.uri)?.
                       semanticTokens.push({
                         offsetStart: pair.key.range[0],
                         offsetEnd: pair.key.range[1],
