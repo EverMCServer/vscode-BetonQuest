@@ -2,6 +2,8 @@ import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity, Range } fro
 
 import { SemanticToken } from "../service/semanticTokens";
 import { DiagnosticCode } from "../utils/diagnostics";
+import { HoverInfo } from "../utils/hover";
+import { LocationLinkOffset } from "../utils/location";
 import { AST } from "./ast";
 import { NodeV1 } from "./v1";
 import { NodeV2 } from "./v2";
@@ -152,12 +154,50 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
     });
   }
 
-  getDiagnostics() {
-    return this.diagnostics;
+  getDiagnostics(): Diagnostic[] {
+    return [
+      ...this.diagnostics,
+      ...this.children.flatMap(c => c.getDiagnostics())
+    ];
   }
 
-  getCodeActions() {
-    return this.codeActions;
+  addDiagnostics(...diag: Diagnostic[]) {
+    this.diagnostics.push(...diag);
+  }
+
+  getCodeActions(documentUri?: string): CodeAction[] {
+    return [
+      ...this.codeActions,
+      ...this.children.flatMap(c => c.getCodeActions(documentUri))
+    ];
+  }
+
+  addSemanticTokens(...token: SemanticToken[]) {
+    this.semanticTokens.push(...token);
+  }
+
+  getSemanticTokens(documentUri?: string): SemanticToken[] {
+    return [
+      ...this.semanticTokens,
+      ...this.children.flatMap(c => c.getSemanticTokens(documentUri))
+    ];
+  };
+
+  getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
+    if (this.offsetStart && this.offsetEnd && (offset < this.offsetStart || offset > this.offsetEnd)) {
+      return [];
+    }
+    return this.children.flatMap(c => c.getHoverInfo(offset, documentUri));
+  }
+
+  getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
+    // if (documentUri && !documentUri.startsWith(this.uri)) {
+    //   return [];
+    // }
+    if (this.offsetStart && this.offsetEnd && (offset < this.offsetStart || offset > this.offsetEnd)) {
+      return [];
+    }
+    return this.children.flatMap(c => c.getDefinitions(offset, documentUri));
   }
 
   // Get range by offset.

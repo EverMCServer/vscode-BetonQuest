@@ -1,7 +1,3 @@
-import { CodeAction, Diagnostic } from "vscode-languageserver";
-import { SemanticToken } from "../service/semanticTokens";
-import { HoverInfo } from "../utils/hover";
-import { LocationLinkOffset } from "../utils/location";
 import { AST } from "./ast";
 import { AbstractNode, ConversationOptionType, NodeType } from "./node";
 import { ConditionArgumentMandatory } from "./v1/Condition/ConditionArgumentMandatory";
@@ -69,44 +65,6 @@ export abstract class AbstractNodeV1<T extends NodeType> extends AbstractNode<T,
     } else {
       return this.parent.getAst();
     }
-  }
-
-  getDiagnostics(): Diagnostic[] {
-    return [
-      ...this.diagnostics,
-      ...this.children.flatMap(c => c.getDiagnostics())
-    ];
-  }
-
-  getCodeActions(documentUri?: string): CodeAction[] {
-    return [
-      ...this.codeActions,
-      ...this.children.flatMap(c => c.getCodeActions(documentUri))
-    ];
-  }
-
-  getSemanticTokens(documentUri?: string): SemanticToken[] {
-    return [
-      ...this.semanticTokens,
-      ...this.children.flatMap(c => c.getSemanticTokens(documentUri))
-    ];
-  };
-
-  getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
-    if (this.offsetStart && this.offsetEnd && (offset < this.offsetStart || offset > this.offsetEnd)) {
-      return [];
-    }
-    return this.children.flatMap(c => c.getHoverInfo(offset, documentUri));
-  }
-
-  getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
-    // if (documentUri && !documentUri.startsWith(this.uri)) {
-    //   return [];
-    // }
-    if (this.offsetStart && this.offsetEnd && (offset < this.offsetStart || offset > this.offsetEnd)) {
-      return [];
-    }
-    return this.children.flatMap(c => c.getDefinitions(offset, documentUri));
   }
 
   // Get all target package's Condition entries.

@@ -1,21 +1,33 @@
-import { Scalar, YAMLMap } from "yaml";
 import { Range } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
+import { Scalar, YAMLMap } from "yaml";
 
 import { NodeType } from "../node";
-import { PackageV2 } from "./Package";
-import { SemanticToken } from "../../service/semanticTokens";
 import { AbstractNodeV2 } from "../v2";
+import { PackageV2 } from "./Package";
+
+export abstract class SectionCollection<T extends NodeType> extends AbstractNodeV2<T> {
+  abstract type: T;
+  uri: string;
+  parent: PackageV2;
+
+  constructor(uri: string, parent: PackageV2) {
+    super();
+    this.uri = uri;
+    this.parent = parent;
+  }
+
+  abstract addSection(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>): void;
+}
 
 export abstract class Document<T extends NodeType, PT extends SectionCollection<T>> extends AbstractNodeV2<T> {
-  uri: string;
-  parent: PT;
+  readonly offsetStart?: number | undefined;
+  readonly offsetEnd?: number | undefined;
+  readonly parent: PT;
 
   // VSCode Document, for diagnostics / quick actions / goto definition, etc
   document: TextDocument;
   yml: YAMLMap<Scalar<string>>;
-
-  semanticTokens: SemanticToken[] = [];
 
   constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: PT) {
     super();
@@ -36,18 +48,4 @@ export abstract class Document<T extends NodeType, PT extends SectionCollection<
       end: this.document.positionAt(offsetEnd)
     } as Range;
   }
-}
-
-export abstract class SectionCollection<T extends NodeType> extends AbstractNodeV2<T> {
-  abstract type: T;
-  uri: string;
-  parent: PackageV2;
-
-  constructor(uri: string, parent: PackageV2) {
-    super();
-    this.uri = uri;
-    this.parent = parent;
-  }
-
-  abstract addSection(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>): void;
 }
