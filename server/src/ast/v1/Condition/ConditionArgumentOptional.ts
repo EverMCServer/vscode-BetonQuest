@@ -1,11 +1,11 @@
 
 import { ArgumentsPatternOptional } from "betonquest-utils/betonquest/Arguments";
-import { ConditionArgumentType } from "../../node";
+import { ConditionArgumentOptionalType } from "../../node";
 import { AbstractNodeV1 } from "../../v1";
 import { ConditionArguments } from "./ConditionArguments";
 
-export class ConditionArgumentOptional extends AbstractNodeV1<ConditionArgumentType> {
-  readonly type: ConditionArgumentType = 'ConditionArgument'; // TODO remove Mandatory / Optional
+export class ConditionArgumentOptional extends AbstractNodeV1<ConditionArgumentOptionalType> {
+  readonly type: ConditionArgumentOptionalType = 'ConditionArgumentOptional'; // TODO remove Mandatory / Optional
   offsetStart?: number;
   offsetEnd?: number;
   readonly parent: ConditionArguments;

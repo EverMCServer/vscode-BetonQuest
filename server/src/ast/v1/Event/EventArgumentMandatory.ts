@@ -1,11 +1,11 @@
 
 import { ArgumentsPatternMandatory } from "betonquest-utils/betonquest/Arguments";
-import { EventArgumentType } from "../../node";
+import { EventArgumentMandatoryType } from "../../node";
 import { AbstractNodeV1 } from "../../v1";
 import { EventArguments } from "./EventArguments";
 
-export class EventArgumentMandatory extends AbstractNodeV1<EventArgumentType> {
-  readonly type: EventArgumentType = 'EventArgument'; // TODO remove Mandatory / Optional
+export class EventArgumentMandatory extends AbstractNodeV1<EventArgumentMandatoryType> {
+  readonly type: EventArgumentMandatoryType = 'EventArgumentMandatory'; // TODO remove Mandatory / Optional
   offsetStart?: number;
   offsetEnd?: number;
   readonly parent: EventArguments;

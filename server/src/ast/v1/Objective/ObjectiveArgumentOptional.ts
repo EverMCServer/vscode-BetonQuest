@@ -1,11 +1,11 @@
 
 import { ArgumentsPatternOptional } from "betonquest-utils/betonquest/Arguments";
-import { ObjectiveArgumentType } from "../../node";
+import { ObjectiveArgumentOptionalType } from "../../node";
 import { AbstractNodeV1 } from "../../v1";
 import { ObjectiveArguments } from "./ObjectiveArguments";
 
-export class ObjectiveArgumentOptional extends AbstractNodeV1<ObjectiveArgumentType> {
-  readonly type: ObjectiveArgumentType = 'ObjectiveArgument'; // TODO remove Mandatory / Optional
+export class ObjectiveArgumentOptional extends AbstractNodeV1<ObjectiveArgumentOptionalType> {
+  readonly type: ObjectiveArgumentOptionalType = 'ObjectiveArgumentOptional'; // TODO remove Mandatory / Optional
   offsetStart?: number;
   offsetEnd?: number;
   readonly parent: ObjectiveArguments;
