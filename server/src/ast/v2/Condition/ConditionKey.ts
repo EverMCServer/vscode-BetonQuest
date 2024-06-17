@@ -13,8 +13,8 @@ export class ConditionKey extends AbstractNodeV2<ConditionKeyType> {
   readonly offsetEnd: number;
   readonly parent: ConditionEntry;
 
-  private value: string;
-  private comment?: string;
+  readonly value: string;
+  readonly comment?: string;
 
   constructor(key: Scalar<string>, parent: ConditionEntry) {
     super();

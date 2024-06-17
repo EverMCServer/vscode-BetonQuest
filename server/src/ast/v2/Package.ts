@@ -253,38 +253,6 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
     return Array.from(diagnostics, ([_, d]) => d);
   }
 
-  getCodeActions(documentUri?: string) {
-    const codeActions: CodeAction[] = [];
-    // Get Conversations' code actions
-    codeActions.push(...this._getConversations().flatMap(c => c.getCodeActions()));
-    return codeActions;
-  }
-
-  getSemanticTokens(documentUri: string) {
-    const semanticTokens: SemanticToken[] = [];
-    semanticTokens.push(...this._getConditionList().getSemanticTokens(documentUri));
-    semanticTokens.push(...this._getEventList().getSemanticTokens(documentUri));
-    semanticTokens.push(...this._getObjectiveList().getSemanticTokens(documentUri));
-    this._getConversations().forEach(c => {
-      semanticTokens.push(...c.getSemanticTokens(documentUri));
-    });
-    return semanticTokens.sort((a, b) => a.offsetStart - b.offsetStart);
-  }
-
-  getHoverInfo(offset: number, documentUri: string): HoverInfo[] {
-    const hoverInfo: HoverInfo[] = [];
-    if (!documentUri.startsWith(this.uri)) {
-      return hoverInfo;
-    }
-    hoverInfo.push(...this._getConditionList().getHoverInfo(offset, documentUri));
-    hoverInfo.push(...this._getEventList().getHoverInfo(offset, documentUri));
-    hoverInfo.push(...this._getObjectiveList().getHoverInfo(offset, documentUri));
-    this._getConversations().forEach(c => {
-      hoverInfo.push(...c.getHoverInfo(offset, documentUri));
-    });
-    return hoverInfo;
-  }
-
   getLocations(yamlPath: string[], sourceUri: string) {
     const locations: LocationsResponse = [];
     if (!sourceUri.startsWith(this.uri)) {

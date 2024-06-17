@@ -13,8 +13,8 @@ export class ObjectiveKey extends AbstractNodeV2<ObjectiveKeyType> {
   readonly offsetEnd: number;
   readonly parent: ObjectiveEntry;
 
-  private value: string;
-  private comment?: string;
+  readonly value: string;
+  readonly comment?: string;
 
   constructor(key: Scalar<string>, parent: ObjectiveEntry) {
     super();

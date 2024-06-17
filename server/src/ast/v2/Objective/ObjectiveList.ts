@@ -9,6 +9,7 @@ import { ObjectiveListType } from "../../node";
 import { PackageV2 } from "../Package";
 import { Document, SectionCollection } from "../document";
 import { ObjectiveEntry } from "./ObjectiveEntry";
+import { ObjectiveKey } from "./ObjectiveKey";
 
 export class ObjectiveList extends SectionCollection<ObjectiveListType> {
   type: ObjectiveListType = "ObjectiveList";
@@ -22,25 +23,17 @@ export class ObjectiveList extends SectionCollection<ObjectiveListType> {
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
-    return this.children.filter(section => !documentUri || section.uri === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
-  }
-
-  getSemanticTokens(documentUri: string) {
-    return this.children.filter(section => section.uri === documentUri).flatMap(section => section.getSemanticTokens());
-  }
-
-  getHoverInfo(offset: number, documentUri: string): HoverInfo[] {
-    return this.children.filter(section => section.uri === documentUri).flatMap(section => section.getHoverInfo(offset));
+    return this.getChildren<ObjectiveListSection>('ObjectiveList', section => !documentUri || section.getUri() === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
   }
 
   getLocations(yamlPath: string[], sourceUri: string) {
-    return this.children.flatMap(section => section.getLocations(yamlPath, sourceUri));
+    return this.children.flatMap(section => (section as ObjectiveListSection).getLocations(yamlPath, sourceUri));
   }
 
   getObjectiveEntries(id: string, packageUri?: string): ObjectiveEntry[] {
     if (!packageUri || this.parent.isPackageUri(packageUri)) {
       return this.children
-        .flatMap(section => section.getObjectiveEntries(id));
+        .flatMap(section => (section as ObjectiveListSection).getObjectiveEntries(id));
     } else {
       return this.parent.getObjectiveEntries(id, packageUri);
     }
@@ -71,25 +64,9 @@ export class ObjectiveListSection extends Document<ObjectiveListType, ObjectiveL
     } as PublishDiagnosticsParams;
   }
 
-  getSemanticTokens() {
-    return [
-      ...this.semanticTokens,
-      ...this.children.flatMap(e => {
-        return e.getSemanticTokens();
-      })
-    ];
-  }
-
-  getHoverInfo(offset: number) {
-    if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
-      return this.children.flatMap(e => e.getHoverInfo(offset));
-    }
-    return [];
-  }
-
   getLocations(yamlPath: string[], sourceUri: string) {
     const result: LocationsResponse = [];
-    const key = this.children.find(e => e.elementKey.value === yamlPath[1])?.elementKey;
+    const key = this.getChild<ObjectiveEntry>('ObjectiveEntry')?.getChild<ObjectiveKey>('ObjectiveKey', e => e.value === yamlPath[1]);
     if (key) {
       result.push({
         uri: this.uri!,
@@ -101,8 +78,7 @@ export class ObjectiveListSection extends Document<ObjectiveListType, ObjectiveL
 
   getObjectiveEntries(id: string, packageUri?: string): ObjectiveEntry[] {
     if (!packageUri || this.parent.parent.isPackageUri(packageUri)) {
-      return this.children
-        .filter(entry => entry.elementKey.value === id);
+      return this.getChildren<ObjectiveEntry>('ObjectiveEntry', e => e.getChild<ObjectiveKey>('ObjectiveKey')?.value === id);
     } else {
       return this.parent.getObjectiveEntries(id, packageUri);
     }

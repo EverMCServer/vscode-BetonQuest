@@ -9,6 +9,7 @@ import { ConditionListType } from "../../node";
 import { PackageV2 } from "../Package";
 import { Document, SectionCollection } from "../document";
 import { ConditionEntry } from "./ConditionEntry";
+import { ConditionKey } from "./ConditionKey";
 
 export class ConditionList extends SectionCollection<ConditionListType> {
   type: ConditionListType = "ConditionList";
@@ -22,25 +23,17 @@ export class ConditionList extends SectionCollection<ConditionListType> {
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
-    return this.children.filter(section => !documentUri || section.uri === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
-  }
-
-  getSemanticTokens(documentUri: string) {
-    return this.children.filter(section => section.uri === documentUri).flatMap(section => section.getSemanticTokens());
-  }
-
-  getHoverInfo(offset: number, documentUri: string): HoverInfo[] {
-    return this.children.filter(section => section.uri === documentUri).flatMap(section => section.getHoverInfo(offset));
+    return this.getChildren<ConditionListSection>('ConditionList', section => !documentUri || section.getUri() === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
   }
 
   getLocations(yamlPath: string[], sourceUri: string) {
-    return this.children.flatMap(section => section.getLocations(yamlPath, sourceUri));
+    return this.children.flatMap(section => (section as ConditionListSection).getLocations(yamlPath, sourceUri));
   }
 
   getConditionEntries(id: string, packageUri?: string): ConditionEntry[] {
     if (!packageUri || this.parent.isPackageUri(packageUri)) {
       return this.children
-        .flatMap(section => section.getConditionEntries(id));
+        .flatMap(section => (section as ConditionListSection).getConditionEntries(id));
     } else {
       return this.parent.getConditionEntries(id, packageUri);
     }
@@ -71,25 +64,9 @@ export class ConditionListSection extends Document<ConditionListType, ConditionL
     } as PublishDiagnosticsParams;
   }
 
-  getSemanticTokens() {
-    return [
-      ...this.semanticTokens,
-      ...this.children.flatMap(e => {
-        return e.getSemanticTokens();
-      })
-    ];
-  }
-
-  getHoverInfo(offset: number) {
-    if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
-      return this.children.flatMap(e => e.getHoverInfo(offset));
-    }
-    return [];
-  }
-
   getLocations(yamlPath: string[], sourceUri: string) {
     const result: LocationsResponse = [];
-    const key = this.children.find(e => e.elementKey.value === yamlPath[1])?.elementKey;
+    const key = this.getChild<ConditionEntry>('ConditionEntry')?.getChild<ConditionKey>('ConditionKey', e => e.value === yamlPath[1]);
     if (key) {
       result.push({
         uri: this.uri!,
@@ -101,8 +78,7 @@ export class ConditionListSection extends Document<ConditionListType, ConditionL
 
   getConditionEntries(id: string, packageUri?: string): ConditionEntry[] {
     if (!packageUri || this.parent.parent.isPackageUri(packageUri)) {
-      return this.children
-        .filter(entry => entry.elementKey.value === id);
+      return this.getChildren<ConditionEntry>('ConditionEntry', e => e.getChild<ConditionKey>('ConditionKey')?.value === id);
     } else {
       return this.parent.getConditionEntries(id, packageUri);
     }

@@ -9,6 +9,7 @@ import { EventListType } from "../../node";
 import { PackageV2 } from "../Package";
 import { Document, SectionCollection } from "../document";
 import { EventEntry } from "./EventEntry";
+import { EventKey } from "./EventKey";
 
 export class EventList extends SectionCollection<EventListType> {
   type: EventListType = "EventList";
@@ -22,25 +23,17 @@ export class EventList extends SectionCollection<EventListType> {
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
-    return this.children.filter(section => !documentUri || section.uri === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
-  }
-
-  getSemanticTokens(documentUri: string) {
-    return this.children.filter(section => section.uri === documentUri).flatMap(section => section.getSemanticTokens());
-  }
-
-  getHoverInfo(offset: number, documentUri: string): HoverInfo[] {
-    return this.children.filter(section => section.uri === documentUri).flatMap(section => section.getHoverInfo(offset));
+    return this.getChildren<EventListSection>('EventList', section => !documentUri || section.getUri() === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
   }
 
   getLocations(yamlPath: string[], sourceUri: string) {
-    return this.children.flatMap(section => section.getLocations(yamlPath, sourceUri));
+    return this.children.flatMap(section => (section as EventListSection).getLocations(yamlPath, sourceUri));
   }
 
   getEventEntries(id: string, packageUri?: string): EventEntry[] {
     if (!packageUri || this.parent.isPackageUri(packageUri)) {
       return this.children
-        .flatMap(section => section.getEventEntries(id));
+        .flatMap(section => (section as EventListSection).getEventEntries(id));
     } else {
       return this.parent.getEventEntries(id, packageUri);
     }
@@ -71,25 +64,9 @@ export class EventListSection extends Document<EventListType, EventList> {
     } as PublishDiagnosticsParams;
   }
 
-  getSemanticTokens() {
-    return [
-      ...this.semanticTokens,
-      ...this.children.flatMap(e => {
-        return e.getSemanticTokens();
-      })
-    ];
-  }
-
-  getHoverInfo(offset: number) {
-    if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
-      return this.children.flatMap(e => e.getHoverInfo(offset));
-    }
-    return [];
-  }
-
   getLocations(yamlPath: string[], sourceUri: string) {
     const result: LocationsResponse = [];
-    const key = this.children.find(e => e.elementKey.value === yamlPath[1])?.elementKey;
+    const key = this.getChild<EventEntry>('EventEntry')?.getChild<EventKey>('EventKey', e => e.value === yamlPath[1]);
     if (key) {
       result.push({
         uri: this.uri!,
@@ -101,8 +78,7 @@ export class EventListSection extends Document<EventListType, EventList> {
 
   getEventEntries(id: string, packageUri?: string): EventEntry[] {
     if (!packageUri || this.parent.parent.isPackageUri(packageUri)) {
-      return this.children
-        .filter(entry => entry.elementKey.value === id);
+      return this.getChildren<EventEntry>('EventEntry', e => e.getChild<EventKey>('EventKey')?.value === id);
     } else {
       return this.parent.getEventEntries(id, packageUri);
     }

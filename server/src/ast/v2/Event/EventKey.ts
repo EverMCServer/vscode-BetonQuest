@@ -13,8 +13,8 @@ export class EventKey extends AbstractNodeV2<EventKeyType> {
   readonly offsetEnd: number;
   readonly parent: EventEntry;
 
-  private value: string;
-  private comment?: string;
+  readonly value: string;
+  readonly comment?: string;
 
   constructor(key: Scalar<string>, parent: EventEntry) {
     super();
