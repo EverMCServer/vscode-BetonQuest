@@ -3,11 +3,11 @@ import { DiagnosticSeverity } from "vscode-languageserver";
 
 import { ConversationQuesterTranslationsType } from "../../node";
 import { ConversationQuester } from "./ConversationQuester";
-import { AbstractNodeV1 } from "../../v1";
+import { AbstractNodeV2 } from "../../v2";
 import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 
-export class ConversationQuesterTranslations extends AbstractNodeV1<ConversationQuesterTranslationsType> {
+export class ConversationQuesterTranslations extends AbstractNodeV2<ConversationQuesterTranslationsType> {
   readonly type: ConversationQuesterTranslationsType = 'ConversationQuesterTranslations';
   readonly offsetStart?: number;
   readonly offsetEnd?: number;

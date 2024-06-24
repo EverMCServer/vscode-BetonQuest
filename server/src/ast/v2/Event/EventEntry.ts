@@ -18,7 +18,7 @@ export class EventEntry extends AbstractNodeV2<EventEntryType> {
   readonly offsetEnd?: number;
   readonly parent: EventListSection;
 
-  private yml: Pair<Scalar<string>, Scalar<string>>;
+  readonly yml: Pair<Scalar<string>, Scalar<string>>;
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: EventListSection) {
     super();

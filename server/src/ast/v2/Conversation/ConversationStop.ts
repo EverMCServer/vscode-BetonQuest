@@ -1,23 +1,23 @@
-import { Scalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
+import { Scalar } from "yaml";
 
-import { ConversationStopType } from "../../node";
-import { Conversation } from "./Conversation";
+import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
-import { AbstractNodeV1 } from "../../v1";
+import { ConversationStopType } from "../../node";
+import { AbstractNodeV2 } from "../../v2";
+import { ConversationSection } from "./Conversation";
 
-export class ConversationStop extends AbstractNodeV1<ConversationStopType> {
+export class ConversationStop extends AbstractNodeV2<ConversationStopType> {
   readonly type: ConversationStopType = 'ConversationStop';
   readonly offsetStart?: number;
   readonly offsetEnd?: number;
-  readonly parent: Conversation;
+  readonly parent: ConversationSection;
 
   // Cache the parsed yaml document
   private yml: Scalar;
   private value?: boolean;
 
-  constructor(yml: Scalar, parent: Conversation) {
+  constructor(yml: Scalar, parent: ConversationSection) {
     super();
     this.parent = parent;
     this.yml = yml;

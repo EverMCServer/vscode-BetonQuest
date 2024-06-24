@@ -1,13 +1,13 @@
 import { Pair, Scalar, YAMLMap, isScalar } from "yaml";
 
-import { ConversationPlayerOptionType } from "../../../node";
-import { Conversation } from "../Conversation";
 import { DiagnosticSeverity } from "vscode";
 import { SemanticTokenType } from "../../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
 import { HoverInfo } from "../../../../utils/hover";
 import { isStringScalar } from "../../../../utils/yaml";
+import { ConversationPlayerOptionType } from "../../../node";
 import { AbstractNodeV2 } from "../../../v2";
+import { ConversationSection } from "../Conversation";
 import { Conditions } from "./Player/Conditions";
 import { Events } from "./Player/Events";
 import { Pointers } from "./Player/Pointers";
@@ -17,14 +17,14 @@ export class PlayerOption extends AbstractNodeV2<ConversationPlayerOptionType> {
   readonly type: ConversationPlayerOptionType = "ConversationPlayerOption";
   readonly offsetStart: number;
   readonly offsetEnd: number;
-  readonly parent: Conversation;
+  readonly parent: ConversationSection;
 
   // Cache the parsed yaml document
   private yml: Pair<Scalar<string>, YAMLMap>;
   readonly id: string;
   readonly comment?: string;
 
-  constructor(yml: Pair<Scalar<string>, YAMLMap>, parent: Conversation) {
+  constructor(yml: Pair<Scalar<string>, YAMLMap>, parent: ConversationSection) {
     super();
     this.parent = parent;
     this.offsetStart = yml.key.range![0];

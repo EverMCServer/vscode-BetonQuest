@@ -1,30 +1,30 @@
 import { Pair, Scalar, YAMLMap, isScalar } from "yaml";
 
-import { ConversationNpcOptionType } from "../../../node";
-import { Conversation } from "../Conversation";
 import { DiagnosticSeverity } from "vscode";
 import { SemanticTokenType } from "../../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
+import { HoverInfo } from "../../../../utils/hover";
 import { isStringScalar } from "../../../../utils/yaml";
+import { ConversationNpcOptionType } from "../../../node";
 import { AbstractNodeV2 } from "../../../v2";
+import { ConversationSection } from "../Conversation";
 import { Conditions } from "./Npc/Conditions";
 import { Events } from "./Npc/Events";
 import { Pointers } from "./Npc/Pointers";
 import { Text } from "./Npc/Text";
-import { HoverInfo } from "../../../../utils/hover";
 
 export class NpcOption extends AbstractNodeV2<ConversationNpcOptionType> {
   readonly type: ConversationNpcOptionType = "ConversationNpcOption";
   readonly offsetStart: number;
   readonly offsetEnd: number;
-  readonly parent: Conversation;
+  readonly parent: ConversationSection;
 
   // Cache the parsed yaml document
   private yml: Pair<Scalar<string>, YAMLMap>;
   readonly id: string;
   readonly comment?: string;
 
-  constructor(yml: Pair<Scalar<string>, YAMLMap>, parent: Conversation) {
+  constructor(yml: Pair<Scalar<string>, YAMLMap>, parent: ConversationSection) {
     super();
     this.parent = parent;
     this.offsetStart = yml.key.range![0];

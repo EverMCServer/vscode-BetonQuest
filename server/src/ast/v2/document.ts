@@ -8,8 +8,8 @@ import { PackageV2 } from "./Package";
 
 export abstract class SectionCollection<T extends NodeType> extends AbstractNodeV2<T> {
   abstract type: T;
-  uri: string;
-  parent: PackageV2;
+  readonly uri: string;
+  readonly parent: PackageV2;
 
   constructor(uri: string, parent: PackageV2) {
     super();
@@ -26,8 +26,8 @@ export abstract class Document<T extends NodeType, PT extends SectionCollection<
   readonly parent: PT;
 
   // VSCode Document, for diagnostics / quick actions / goto definition, etc
-  document: TextDocument;
-  yml: YAMLMap<Scalar<string>>;
+  readonly document: TextDocument;
+  readonly yml: YAMLMap<Scalar<string>>;
 
   constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: PT) {
     super();

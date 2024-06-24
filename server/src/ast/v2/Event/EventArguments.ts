@@ -40,7 +40,7 @@ export class EventArguments extends AbstractNodeV2<EventArgumentsType> {
       argumentsStrs.push(matched[0]);
     }
 
-    // Search ArgumentsPatterns from V1 Element List
+    // Search ArgumentsPatterns from V2 Element List
     const argumentsPatterns: ArgumentsPatterns = kindConfig?.argumentsPatterns ?? { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] };
 
     // Cache arguments

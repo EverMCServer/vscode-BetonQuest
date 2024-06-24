@@ -18,10 +18,10 @@ import { NpcOption } from "./Option/NpcOption";
 import { PlayerOption } from "./Option/PlayerOption";
 
 export class Conversation extends SectionCollection<ConversationType> {
-  type: ConversationType = 'Conversation';
+  readonly type: ConversationType = 'Conversation';
 
   // Conversation sections
-  conversationID: string;
+  readonly conversationID: string;
 
   constructor(uri: string, conversationID: string, parent: PackageV2) {
     super(uri, parent);
@@ -43,12 +43,15 @@ export class Conversation extends SectionCollection<ConversationType> {
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
-    return this.children.filter(c => !documentUri || c.getUri()=== documentUri).flatMap(c => c.getPublishDiagnosticsParams());
+    return this.children.filter(c => !documentUri || c.getUri()=== documentUri).flatMap(c => ({
+      uri: c.getUri(),
+      diagnostics: c.getDiagnostics()
+    }));
   }
 }
 
 export class ConversationSection extends Document<ConversationType, Conversation> {
-  type: ConversationType = 'Conversation';
+  readonly type: ConversationType = 'Conversation';
 
   constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: Conversation) {
     super(uri, document, yml, parent);

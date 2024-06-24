@@ -23,7 +23,7 @@ export class ConditionList extends SectionCollection<ConditionListType> {
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
-    return this.getChildren<ConditionListSection>('ConditionList', section => !documentUri || section.getUri() === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
+    return this.getChildren<ConditionListSection>(ConditionListSection.prototype.type, section => !documentUri || section.getUri() === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
   }
 
   getLocations(yamlPath: string[], sourceUri: string) {

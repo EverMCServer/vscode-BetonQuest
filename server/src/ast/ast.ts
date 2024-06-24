@@ -1,7 +1,5 @@
 import { TextDocument } from "vscode-languageserver-textdocument";
 
-import { PackageV1 } from "./v1/Package";
-import { PackageV2 } from "./v2/Package";
 import { AllDocuments } from "../utils/document";
 import { HoverInfo } from "../utils/hover";
 import { LocationLinkOffset } from "../utils/location";
@@ -9,6 +7,10 @@ import { getParentUrl } from "../utils/url";
 import { ConversationOptionType } from "./node";
 import { NpcOption as V1NpcOption } from "./v1/Conversation/Option/NpcOption";
 import { PlayerOption as V1PlayerOption } from "./v1/Conversation/Option/PlayerOption";
+import { PackageV1 } from "./v1/Package";
+import { NpcOption as V2NpcOption } from "./v2/Conversation/Option/NpcOption";
+import { PlayerOption as V2PlayerOption } from "./v2/Conversation/Option/PlayerOption";
+import { PackageV2 } from "./v2/Package";
 
 // AST by workspace folders
 export class ASTs {
@@ -290,8 +292,8 @@ export class AST {
     return this.packagesV2.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getObjectiveEntries(id, packageUri));
   }
 
-  getV2ConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID: string, packageUri: string) {
-    return this.packagesV2.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions(type, optionID, conversationID, packageUri));
+  getV2ConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string) {
+    return this.packagesV2.filter(pkg => !packageUri || pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions<T>(type, optionID, conversationID, packageUri).flat()) as V2NpcOption[] | V2PlayerOption[];
   }
 
 }

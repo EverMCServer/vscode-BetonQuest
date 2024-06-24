@@ -1,8 +1,8 @@
 import { Scalar } from "yaml";
 import { NodeType } from "../../node";
-import { AbstractNodeV1 } from "../../v1";
+import { AbstractNodeV2 } from "../../v2";
 
-export abstract class AbstractString<T extends NodeType> extends AbstractNodeV1<T> {
+export abstract class AbstractString<T extends NodeType> extends AbstractNodeV2<T> {
   readonly offsetStart?: number;
   readonly offsetEnd?: number;
 

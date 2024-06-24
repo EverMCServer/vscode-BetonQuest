@@ -1,14 +1,14 @@
 import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
+import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
 import { ConversationPointerType, NodeType } from "../../node";
+import { AbstractNodeV2 } from "../../v2";
 import { First } from "./First";
-import { AbstractNodeV1 } from "../../v1";
 
-export class FirstPointer extends AbstractNodeV1<NodeType> {
+export class FirstPointer extends AbstractNodeV2<NodeType> {
   readonly type: ConversationPointerType = "ConversationPointer";
   readonly offsetStart: number;
   readonly offsetEnd: number;
@@ -55,7 +55,7 @@ export class FirstPointer extends AbstractNodeV1<NodeType> {
       this.conversationID = splited[1];
       this.optionID = splited[2];
     } else {
-      this.conversationID = this.parent.parent.conversationID;
+      this.conversationID = this.parent.parent.parent.conversationID;
       this.optionID = str;
     }
 

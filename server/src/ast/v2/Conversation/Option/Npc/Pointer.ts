@@ -55,7 +55,7 @@ export class Pointer extends AbstractNodeV2<ConversationPointerType> {
       this.conversationID = splited[1];
       this.optionID = splited[2];
     } else {
-      this.conversationID = this.parent.parent.parent.conversationID;
+      this.conversationID = this.parent.parent.parent.parent.conversationID;
       this.optionID = str;
     }
 

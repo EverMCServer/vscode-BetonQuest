@@ -2,11 +2,11 @@ import { Scalar, YAMLMap, isMap, isScalar } from "yaml";
 
 import { SemanticTokenType } from "../../../service/semanticTokens";
 import { ConversationQuesterType } from "../../node";
-import { AbstractNodeV1 } from "../../v1";
+import { AbstractNodeV2 } from "../../v2";
 import { ConversationSection } from "./Conversation";
 import { ConversationQuesterTranslations } from "./ConversationQuesterTranslations";
 
-export class ConversationQuester extends AbstractNodeV1<ConversationQuesterType> {
+export class ConversationQuester extends AbstractNodeV2<ConversationQuesterType> {
   readonly type: ConversationQuesterType = 'ConversationQuester';
   readonly offsetStart: number;
   readonly offsetEnd: number;

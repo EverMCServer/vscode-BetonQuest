@@ -1,24 +1,24 @@
-import { Scalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
+import { Scalar } from "yaml";
 
-import { ConversationFinalEventsType } from "../../node";
-import { DiagnosticCode } from "../../../utils/diagnostics";
 import { SemanticTokenType } from "../../../service/semanticTokens";
+import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
-import { Conversation } from "./Conversation";
+import { ConversationFinalEventsType } from "../../node";
+import { AbstractNodeV2 } from "../../v2";
+import { ConversationSection } from "./Conversation";
 import { ConversationFinalEvent } from "./ConversationFinalEvent";
-import { AbstractNodeV1 } from "../../v1";
 
-export class ConversationFinalEvents extends AbstractNodeV1<ConversationFinalEventsType> {
+export class ConversationFinalEvents extends AbstractNodeV2<ConversationFinalEventsType> {
   readonly type: ConversationFinalEventsType = 'ConversationFinalEvents';
   readonly offsetStart: number;
   readonly offsetEnd: number;
-  readonly parent: Conversation;
+  readonly parent: ConversationSection;
 
   // Cache the parsed yaml document
   private yml: Scalar;
 
-  constructor(yml: Scalar, parent: Conversation) {
+  constructor(yml: Scalar, parent: ConversationSection) {
     super();
     this.parent = parent;
     this.yml = yml;

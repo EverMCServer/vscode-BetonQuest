@@ -18,7 +18,7 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
   readonly offsetEnd?: number;
   readonly parent: ConditionListSection;
 
-  private yml: Pair<Scalar<string>, Scalar<string>>;
+  readonly yml: Pair<Scalar<string>, Scalar<string>>;
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: ConditionListSection) {
     super();

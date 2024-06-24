@@ -1,11 +1,10 @@
-import { CodeAction, PublishDiagnosticsParams } from "vscode-languageserver";
+import { PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { Scalar, YAMLMap, isMap, isSeq, parseDocument, visit } from "yaml";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
-import { SemanticToken, SemanticTokenType } from "../../service/semanticTokens";
-import { HoverInfo } from "../../utils/hover";
+import { SemanticTokenType } from "../../service/semanticTokens";
 import { LocationLinkOffset } from "../../utils/location";
 import { getParentUrl } from "../../utils/url";
 import { isStringScalar, isYamlMapPair } from "../../utils/yaml";
@@ -15,7 +14,8 @@ import { AbstractNodeV2 } from "../v2";
 import { ConditionEntry } from "./Condition/ConditionEntry";
 import { ConditionList } from "./Condition/ConditionList";
 import { Conversation } from "./Conversation/Conversation";
-import { Option } from "./Conversation/Option/Option";
+import { NpcOption } from "./Conversation/Option/NpcOption";
+import { PlayerOption } from "./Conversation/Option/PlayerOption";
 import { EventEntry } from "./Event/EventEntry";
 import { EventList } from "./Event/EventList";
 import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
@@ -131,7 +131,7 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
                   // Set key's Semantic Token
                   if (pair.key.range) {
                     this._getConversation(p.key.value)?.getChildren().find(section => section.getUri() === document.uri)?.
-                      semanticTokens.push({
+                      addSemanticTokens({
                         offsetStart: pair.key.range[0],
                         offsetEnd: pair.key.range[1],
                         tokenType: SemanticTokenType.SectionKeyword
@@ -227,11 +227,11 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
     }
   }
 
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID: string, packageUri: string): Option<T>[] {
-    if (!this.isPackageUri(packageUri)) {
-      return this.parentAst.getV2ConversationOptions(type, optionID, conversationID, packageUri);
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): NpcOption[] | PlayerOption[] {
+    if (packageUri && this.isPackageUri(packageUri)) {
+      return this.getChildren<Conversation>('Conversation').flatMap(c => c.getConversationOptions<T>(type, optionID).flat()) as NpcOption[] | PlayerOption[];
     }
-    return this._getConversation(conversationID)?.getConversationOptions<T>(type, optionID) || [];
+    return this.parentAst.getV2ConversationOptions(type, optionID, conversationID, packageUri);
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
@@ -270,9 +270,9 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
     return locations;
   }
 
-  getDefinitions(offset: number, uri: string): LocationLinkOffset[] {
+  getDefinitions(offset: number, uri?: string): LocationLinkOffset[] {
     const definitions: LocationLinkOffset[] = [];
-    if (!uri.startsWith(this.uri)) {
+    if (uri && !uri.startsWith(this.uri)) {
       return definitions;
     }
 

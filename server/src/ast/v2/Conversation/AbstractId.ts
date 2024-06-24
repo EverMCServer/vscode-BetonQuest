@@ -5,7 +5,7 @@ import { DiagnosticCode } from "../../../utils/diagnostics";
 import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
 import { NodeType } from "../../node";
-import { AbstractNodeV1 } from "../../v1";
+import { AbstractNodeV2 } from "../../v2";
 import { ConditionEntry } from "../Condition/ConditionEntry";
 import { ConditionKey } from "../Condition/ConditionKey";
 import { EventEntry } from "../Event/EventEntry";
@@ -13,7 +13,7 @@ import { EventKey } from "../Event/EventKey";
 import { ObjectiveEntry } from "../Objective/ObjectiveEntry";
 import { ObjectiveKey } from "../Objective/ObjectiveKey";
 
-export abstract class AbstractID<T extends NodeType, ET extends ConditionEntry | EventEntry | ObjectiveEntry> extends AbstractNodeV1<T> {
+export abstract class AbstractID<T extends NodeType, ET extends ConditionEntry | EventEntry | ObjectiveEntry> extends AbstractNodeV2<T> {
   readonly offsetStart: number;
   readonly offsetEnd: number;
 

@@ -1,24 +1,24 @@
-import { Scalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
+import { Scalar } from "yaml";
 
-import { ConversationFirstType } from "../../node";
-import { Conversation } from "./Conversation";
 import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getScalarSourceAndRange } from "../../../utils/yaml";
+import { ConversationFirstType } from "../../node";
+import { AbstractNodeV2 } from "../../v2";
+import { ConversationSection } from "./Conversation";
 import { FirstPointer } from "./FirstPointer";
-import { AbstractNodeV1 } from "../../v1";
 
-export class First extends AbstractNodeV1<ConversationFirstType> {
+export class First extends AbstractNodeV2<ConversationFirstType> {
   readonly type: ConversationFirstType = 'ConversationFirst';
   readonly offsetStart: number;
   readonly offsetEnd: number;
-  readonly parent: Conversation;
+  readonly parent: ConversationSection;
 
   private yml: Scalar;
   private entriesStr: string;
 
-  constructor(yml: Scalar, parent: Conversation) {
+  constructor(yml: Scalar, parent: ConversationSection) {
     super();
     this.parent = parent;
 
