@@ -1,22 +1,20 @@
-import { ConversationEventType, NodeType } from "../../../../node";
-import { AbstractID } from "../../AbstractId";
 import { SemanticToken, SemanticTokenType } from "../../../../../service/semanticTokens";
+import { ConversationEventType } from "../../../../node";
 import { EventEntry } from "../../../Event/EventEntry";
+import { AbstractID } from "../../AbstractId";
 import { Events } from "./Events";
 
-export class Event extends AbstractID<ConversationEventType, EventEntry> {
+export class Event extends AbstractID<ConversationEventType, Events, EventEntry> {
   readonly type: ConversationEventType = "ConversationEvent";
-  readonly parent: Events;
 
   constructor(idString: string, range: [offsetStart: number, offsetEnd: number], parent: Events) {
-    super(idString, range);
-    this.parent = parent;
+    super(idString, range, parent);
   }
 
   getSemanticTokens(): SemanticToken[] {
     const semanticTokens: SemanticToken[] = super.getSemanticTokens();
     semanticTokens.push({
-      offsetStart: this.offsetStart + (this.withExclamationMark ? 1 : 0), 
+      offsetStart: this.offsetStart + (this.withExclamationMark ? 1 : 0),
       offsetEnd: this.offsetEnd,
       tokenType: SemanticTokenType.EventID
     });

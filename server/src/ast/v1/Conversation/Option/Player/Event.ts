@@ -4,13 +4,11 @@ import { SemanticToken, SemanticTokenType } from "../../../../../service/semanti
 import { EventEntry } from "../../../Event/EventEntry";
 import { Events } from "./Events";
 
-export class Event extends AbstractID<ConversationEventType, EventEntry> {
+export class Event extends AbstractID<ConversationEventType, Events, EventEntry> {
   readonly type: ConversationEventType = "ConversationEvent";
-  readonly parent: Events;
 
   constructor(idString: string, range: [offsetStart: number, offsetEnd: number], parent: Events) {
-    super(idString, range);
-    this.parent = parent;
+    super(idString, range, parent);
   }
 
   getSemanticTokens(): SemanticToken[] {

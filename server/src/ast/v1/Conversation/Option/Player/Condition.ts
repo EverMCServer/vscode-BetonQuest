@@ -4,13 +4,11 @@ import { SemanticToken, SemanticTokenType } from "../../../../../service/semanti
 import { ConditionEntry } from "../../../Condition/ConditionEntry";
 import { Conditions } from "./Conditions";
 
-export class Condition extends AbstractID<ConversationConditionType, ConditionEntry> {
+export class Condition extends AbstractID<ConversationConditionType, Conditions, ConditionEntry> {
   readonly type: ConversationConditionType = "ConversationCondition";
-  readonly parent: Conditions;
 
   constructor(idString: string, range: [offsetStart: number, offsetEnd: number], parent: Conditions) {
-    super(idString, range);
-    this.parent = parent;
+    super(idString, range, parent);
   }
 
   getSemanticTokens(): SemanticToken[] {

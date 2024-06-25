@@ -12,20 +12,27 @@ import { EventEntry } from "../Event/EventEntry";
 import { EventKey } from "../Event/EventKey";
 import { ObjectiveEntry } from "../Objective/ObjectiveEntry";
 import { ObjectiveKey } from "../Objective/ObjectiveKey";
+import { ConversationFinalEvents } from "./ConversationFinalEvents";
+import { Conditions as NpcConditions } from "./Option/Npc/Conditions";
+import { Events as NpcEvents } from "./Option/Npc/Events";
+import { Conditions as PlayerConditions } from "./Option/Player/Conditions";
+import { Events as PlayerEvents } from "./Option/Player/Events";
 
-export abstract class AbstractID<T extends NodeType, ET extends ConditionEntry | EventEntry | ObjectiveEntry> extends AbstractNodeV1<T> {
+export abstract class AbstractID<T extends NodeType, PT extends ConversationFinalEvents | NpcConditions | NpcEvents | PlayerConditions | PlayerEvents, ET extends ConditionEntry | EventEntry | ObjectiveEntry> extends AbstractNodeV1<T> {
   readonly offsetStart: number;
   readonly offsetEnd: number;
+  readonly parent: PT;
 
   // Cache content
   protected withExclamationMark: boolean;
   protected package: string = "";
   protected id: string;
 
-  constructor(idString: string, range: [number, number]) {
+  constructor(idString: string, range: [number, number], parent: PT) {
     super();
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
+    this.parent = parent;
 
     // Parse ID string.
     let str = idString;
