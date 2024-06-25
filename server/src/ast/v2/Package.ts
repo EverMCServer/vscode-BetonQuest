@@ -122,15 +122,15 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
             if (isYamlMapPair(pair)) {
               pair.value?.items.forEach(p => {
                 if (isYamlMapPair(p) && isMap<Scalar<string>>(p.value)) {
-                  const conversation = this._getConversation(p.key.value);
-                  if (conversation) {
-                    conversation.addSection(document.uri, document, p.value);
-                  } else {
-                    this.addChild(new Conversation(this.uri, p.key.value, this));
+                  let conversation = this._getConversation(p.key.value);
+                  if (!conversation) {
+                    conversation = new Conversation(this.uri, p.key.value, this);
+                    this.addChild(conversation);
                   }
+                  conversation.addSection(document.uri, document, p.value);
                   // Set key's Semantic Token
                   if (pair.key.range) {
-                    this._getConversation(p.key.value)?.getChildren().find(section => section.getUri() === document.uri)?.
+                    conversation.getChildren().find(section => section.getUri() === document.uri)?.
                       addSemanticTokens({
                         offsetStart: pair.key.range[0],
                         offsetEnd: pair.key.range[1],
