@@ -98,7 +98,7 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
   getUri(): string {
     if (this.uri) {
       return this.uri;
-    } else if (typeof this.parent !== typeof this) {
+    } else if (this.parent.type !== this.type) {
       return this.parent.getUri();
     }
     return "";
