@@ -33,7 +33,7 @@ export class Conversation extends SectionCollection<ConversationType> {
   }
 
   getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string): NpcOption[] | PlayerOption[] {
-    return this.getChildren<ConversationSection>(ConversationSection.prototype.type).map(c => c.getConversationOptions(type, optionID)).flat() as NpcOption[] | PlayerOption[];
+    return this.getChildren<ConversationSection>('ConversationSection').map(c => c.getConversationOptions(type, optionID)).flat() as NpcOption[] | PlayerOption[];
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {

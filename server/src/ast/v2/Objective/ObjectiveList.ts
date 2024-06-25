@@ -4,7 +4,7 @@ import { Scalar, YAMLMap, isPair, isScalar } from "yaml";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
-import { ObjectiveListType } from "../../node";
+import { ObjectiveListSectionType, ObjectiveListType } from "../../node";
 import { PackageV2 } from "../Package";
 import { Document, SectionCollection } from "../document";
 import { ObjectiveEntry } from "./ObjectiveEntry";
@@ -22,7 +22,7 @@ export class ObjectiveList extends SectionCollection<ObjectiveListType> {
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
-    return this.getChildren<ObjectiveListSection>('ObjectiveList', section => !documentUri || section.getUri() === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
+    return this.getChildren<ObjectiveListSection>('ObjectiveListSection', section => !documentUri || section.getUri() === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
   }
 
   getLocations(yamlPath: string[], sourceUri: string) {
@@ -39,8 +39,8 @@ export class ObjectiveList extends SectionCollection<ObjectiveListType> {
   }
 }
 
-export class ObjectiveListSection extends Document<ObjectiveListType> {
-  type: ObjectiveListType = "ObjectiveList";
+export class ObjectiveListSection extends Document<ObjectiveListSectionType> {
+  type: ObjectiveListSectionType = "ObjectiveListSection";
   parent: ObjectiveList;
 
   constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: ObjectiveList) {

@@ -36,6 +36,7 @@ export type ConversationTextTranslationsType = 'ConversationTextTranslations';
 export type ConversationTypes = ConversationListType | ConversationType | ConversationSectionType | ConversationKeyType | ConversationQuesterType | ConversationQuesterTranslationsType | ConversationFirstType | ConversationStopType | ConversationFinalEventsType | ConversationInterceptorType | ConversationOptionType | ConversationTextType | ConversationConditionsType | ConversationConditionType | ConversationEventsType | ConversationEventType | ConversationPointersType | ConversationPointerType | ConversationTextTranslationsType;
 
 export type ConditionListType = 'ConditionList';
+export type ConditionListSectionType = 'ConditionListSection';
 export type ConditionEntryType = 'ConditionEntry';
 export type ConditionKeyType = 'ConditionKey';
 export type ConditionKindType = 'ConditionKind';
@@ -45,9 +46,10 @@ export type ConditionArgumentOptionalType = 'ConditionArgumentOptional';
 export type ConditionArgumentKeyType = 'ConditionArgumentKey';
 export type ConditionArgumentValueArrayType = 'ConditionArgumentValueArray';
 export type ConditionArgumentValueType = 'ConditionArgumentValue';
-export type ConditionTypes = ConditionListType | ConditionEntryType | ConditionKeyType | ConditionKindType | ConditionArgumentsType | ConditionArgumentMandatoryType | ConditionArgumentOptionalType | ConditionArgumentKeyType | ConditionArgumentValueArrayType | ConditionArgumentValueType;
+export type ConditionTypes = ConditionListType | ConditionListSectionType | ConditionEntryType | ConditionKeyType | ConditionKindType | ConditionArgumentsType | ConditionArgumentMandatoryType | ConditionArgumentOptionalType | ConditionArgumentKeyType | ConditionArgumentValueArrayType | ConditionArgumentValueType;
 
 export type EventListType = 'EventList';
+export type EventListSectionType = 'EventListSection';
 export type EventEntryType = 'EventEntry';
 export type EventKeyType = 'EventKey';
 export type EventKindType = 'EventKind';
@@ -58,9 +60,10 @@ export type EventArgumentKeyType = 'EventArgumentKey';
 export type EventArgumentValueArrayType = 'EventArgumentValueArray';
 export type EventArgumentValueType = 'EventArgumentValue';
 export type EventArgumentsListType = 'EventArgumentsList';
-export type EventTypes = EventListType | EventEntryType | EventKeyType | EventKindType | EventArgumentsType | EventArgumentMandatoryType | EventArgumentOptionalType | EventArgumentKeyType | EventArgumentValueArrayType | EventArgumentValueType;
+export type EventTypes = EventListType | EventListSectionType | EventEntryType | EventKeyType | EventKindType | EventArgumentsType | EventArgumentMandatoryType | EventArgumentOptionalType | EventArgumentKeyType | EventArgumentValueArrayType | EventArgumentValueType;
 
 export type ObjectiveListType = 'ObjectiveList';
+export type ObjectiveListSectionType = 'ObjectiveListSection';
 export type ObjectiveEntryType = 'ObjectiveEntry';
 export type ObjectiveKeyType = 'ObjectiveKey';
 export type ObjectiveKindType = 'ObjectiveKind';
@@ -70,7 +73,7 @@ export type ObjectiveArgumentOptionalType = 'ObjectiveArgumentOptional';
 export type ObjectiveArgumentKeyType = 'ObjectiveArgumentKey';
 export type ObjectiveArgumentValueArrayType = 'ObjectiveArgumentValueArray';
 export type ObjectiveArgumentValueType = 'ObjectiveArgumentValue';
-export type ObjectiveTypes = ObjectiveListType | ObjectiveEntryType | ObjectiveKeyType | ObjectiveKindType | ObjectiveArgumentsType | ObjectiveArgumentMandatoryType | ObjectiveArgumentOptionalType | ObjectiveArgumentKeyType | ObjectiveArgumentValueArrayType | ObjectiveArgumentValueType;
+export type ObjectiveTypes = ObjectiveListType | ObjectiveListSectionType | ObjectiveEntryType | ObjectiveKeyType | ObjectiveKindType | ObjectiveArgumentsType | ObjectiveArgumentMandatoryType | ObjectiveArgumentOptionalType | ObjectiveArgumentKeyType | ObjectiveArgumentValueArrayType | ObjectiveArgumentValueType;
 
 export type ElementListType = EventListType | ConditionListType | ObjectiveListType;
 export type ElementEntryType = EventEntryType | ConditionEntryType | ObjectiveEntryType;

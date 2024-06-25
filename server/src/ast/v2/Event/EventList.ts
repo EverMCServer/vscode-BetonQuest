@@ -4,7 +4,7 @@ import { Scalar, YAMLMap, isPair, isScalar } from "yaml";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
-import { EventListType } from "../../node";
+import { EventListSectionType, EventListType } from "../../node";
 import { PackageV2 } from "../Package";
 import { Document, SectionCollection } from "../document";
 import { EventEntry } from "./EventEntry";
@@ -22,7 +22,7 @@ export class EventList extends SectionCollection<EventListType> {
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
-    return this.getChildren<EventListSection>('EventList', section => !documentUri || section.getUri() === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
+    return this.getChildren<EventListSection>('EventListSection', section => !documentUri || section.getUri() === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
   }
 
   getLocations(yamlPath: string[], sourceUri: string) {
@@ -39,8 +39,8 @@ export class EventList extends SectionCollection<EventListType> {
   }
 }
 
-export class EventListSection extends Document<EventListType> {
-  type: EventListType = "EventList";
+export class EventListSection extends Document<EventListSectionType> {
+  type: EventListSectionType = "EventListSection";
   parent: EventList;
 
   constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: EventList) {

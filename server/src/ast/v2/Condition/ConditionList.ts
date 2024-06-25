@@ -4,7 +4,7 @@ import { Scalar, YAMLMap, isPair, isScalar } from "yaml";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
-import { ConditionListType } from "../../node";
+import { ConditionListSectionType, ConditionListType } from "../../node";
 import { PackageV2 } from "../Package";
 import { Document, SectionCollection } from "../document";
 import { ConditionEntry } from "./ConditionEntry";
@@ -22,7 +22,7 @@ export class ConditionList extends SectionCollection<ConditionListType> {
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
-    return this.getChildren<ConditionListSection>(ConditionListSection.prototype.type, section => !documentUri || section.getUri() === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
+    return this.getChildren<ConditionListSection>('ConditionListSection', section => !documentUri || section.getUri() === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
   }
 
   getLocations(yamlPath: string[], sourceUri: string) {
@@ -39,8 +39,8 @@ export class ConditionList extends SectionCollection<ConditionListType> {
   }
 }
 
-export class ConditionListSection extends Document<ConditionListType> {
-  type: ConditionListType = "ConditionList";
+export class ConditionListSection extends Document<ConditionListSectionType> {
+  type: ConditionListSectionType = "ConditionListSection";
   parent: ConditionList;
 
   constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: ConditionList) {
