@@ -14,6 +14,7 @@ export type PackageTypes = PackageV1Type | PackageV2Type;
 
 export type ConversationListType = 'ConversationList';
 export type ConversationType = 'Conversation';
+export type ConversationSectionType = 'ConversationSection';
 export type ConversationKeyType = 'ConversationKey';
 export type ConversationQuesterType = 'ConversationQuester';
 export type ConversationQuesterTranslationsType = 'ConversationQuesterTranslations';
@@ -32,7 +33,7 @@ export type ConversationEventType = 'ConversationEvent';
 export type ConversationPointersType = 'ConversationPointers';
 export type ConversationPointerType = 'ConversationPointer';
 export type ConversationTextTranslationsType = 'ConversationTextTranslations';
-export type ConversationTypes = ConversationListType | ConversationType | ConversationKeyType | ConversationQuesterType | ConversationQuesterTranslationsType | ConversationFirstType | ConversationStopType | ConversationFinalEventsType | ConversationInterceptorType | ConversationOptionType | ConversationTextType | ConversationConditionsType | ConversationConditionType | ConversationEventsType | ConversationEventType | ConversationPointersType | ConversationPointerType | ConversationTextTranslationsType;
+export type ConversationTypes = ConversationListType | ConversationType | ConversationSectionType | ConversationKeyType | ConversationQuesterType | ConversationQuesterTranslationsType | ConversationFirstType | ConversationStopType | ConversationFinalEventsType | ConversationInterceptorType | ConversationOptionType | ConversationTextType | ConversationConditionsType | ConversationConditionType | ConversationEventsType | ConversationEventType | ConversationPointersType | ConversationPointerType | ConversationTextTranslationsType;
 
 export type ConditionListType = 'ConditionList';
 export type ConditionEntryType = 'ConditionEntry';

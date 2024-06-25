@@ -6,7 +6,7 @@ import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getFilename } from "../../../utils/url";
 import { isYamlMapPair } from "../../../utils/yaml";
-import { ConversationOptionType, ConversationType } from "../../node";
+import { ConversationOptionType, ConversationType, ConversationSectionType } from "../../node";
 import { PackageV2 } from "../Package";
 import { Document, SectionCollection } from "../document";
 import { ConversationFinalEvents } from "./ConversationFinalEvents";
@@ -32,14 +32,8 @@ export class Conversation extends SectionCollection<ConversationType> {
     this.addChild(new ConversationSection(uri, document, yml, this));
   }
 
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string) {
-    switch (type) {
-      case "ConversationNpcOption":
-        return this.getChildren<NpcOption>('ConversationNpcOption').filter(o => o.id === optionID);
-      case "ConversationPlayerOption":
-        return this.getChildren<PlayerOption>('ConversationPlayerOption').filter(o => o.id === optionID);
-    }
-    return [];
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string): NpcOption[] | PlayerOption[] {
+    return this.getChildren<ConversationSection>(ConversationSection.prototype.type).map(c => c.getConversationOptions(type, optionID)).flat() as NpcOption[] | PlayerOption[];
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
@@ -50,8 +44,8 @@ export class Conversation extends SectionCollection<ConversationType> {
   }
 }
 
-export class ConversationSection extends Document<ConversationType> {
-  readonly type: ConversationType = 'Conversation';
+export class ConversationSection extends Document<ConversationSectionType> {
+  readonly type: ConversationSectionType = 'ConversationSection';
   parent: Conversation;
 
   constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: Conversation) {
@@ -219,5 +213,15 @@ export class ConversationSection extends Document<ConversationType> {
     const offsetStart = (pair.value as any).range?.[0] as number | undefined ?? pair.key.range?.[0];
     const offsetEnd = offsetStart ? (pair.value as any).range?.[1] as number : pair.key.range?.[1];
     this.addDiagnostic([offsetStart, offsetEnd], message, DiagnosticSeverity.Error, DiagnosticCode.ValueTypeIncorrect);
+  }
+
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string): NpcOption[] | PlayerOption[] {
+    switch (type) {
+      case "ConversationNpcOption":
+        return this.getChildren<NpcOption>('ConversationNpcOption').filter(o => o.id === optionID);
+      case "ConversationPlayerOption":
+        return this.getChildren<PlayerOption>('ConversationPlayerOption').filter(o => o.id === optionID);
+    }
+    return [];
   }
 }
