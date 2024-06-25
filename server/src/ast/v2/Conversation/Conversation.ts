@@ -50,11 +50,13 @@ export class Conversation extends SectionCollection<ConversationType> {
   }
 }
 
-export class ConversationSection extends Document<ConversationType, Conversation> {
+export class ConversationSection extends Document<ConversationType> {
   readonly type: ConversationType = 'Conversation';
+  parent: Conversation;
 
   constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: Conversation) {
-    super(uri, document, yml, parent);
+    super(uri, document, yml);
+    this.parent = parent;
 
     // Parse Elements
     this.yml.items.forEach(pair => {

@@ -4,7 +4,6 @@ import { Scalar, YAMLMap, isPair, isScalar } from "yaml";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
-import { HoverInfo } from "../../../utils/hover";
 import { EventListType } from "../../node";
 import { PackageV2 } from "../Package";
 import { Document, SectionCollection } from "../document";
@@ -40,11 +39,13 @@ export class EventList extends SectionCollection<EventListType> {
   }
 }
 
-export class EventListSection extends Document<EventListType, EventList> {
+export class EventListSection extends Document<EventListType> {
   type: EventListType = "EventList";
+  parent: EventList;
 
   constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: EventList) {
-    super(uri, document, yml, parent);
+    super(uri, document, yml);
+    this.parent = parent;
 
     // Parse Elements
     this.yml.items.forEach(pair => {

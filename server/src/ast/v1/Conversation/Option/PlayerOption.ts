@@ -2,7 +2,7 @@ import { Pair, Scalar, YAMLMap, isScalar } from "yaml";
 
 import { ConversationPlayerOptionType } from "../../../node";
 import { Conversation } from "../Conversation";
-import { DiagnosticSeverity } from "vscode";
+import { DiagnosticSeverity } from "vscode-languageserver";
 import { SemanticTokenType } from "../../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
 import { HoverInfo } from "../../../../utils/hover";

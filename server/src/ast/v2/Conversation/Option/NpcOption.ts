@@ -1,6 +1,6 @@
 import { Pair, Scalar, YAMLMap, isScalar } from "yaml";
 
-import { DiagnosticSeverity } from "vscode";
+import { DiagnosticSeverity } from "vscode-languageserver";
 import { SemanticTokenType } from "../../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
 import { HoverInfo } from "../../../../utils/hover";

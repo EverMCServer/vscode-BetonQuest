@@ -4,7 +4,6 @@ import { Scalar, YAMLMap, isPair, isScalar } from "yaml";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
-import { HoverInfo } from "../../../utils/hover";
 import { ConditionListType } from "../../node";
 import { PackageV2 } from "../Package";
 import { Document, SectionCollection } from "../document";
@@ -40,11 +39,13 @@ export class ConditionList extends SectionCollection<ConditionListType> {
   }
 }
 
-export class ConditionListSection extends Document<ConditionListType, ConditionList> {
+export class ConditionListSection extends Document<ConditionListType> {
   type: ConditionListType = "ConditionList";
+  parent: ConditionList;
 
   constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: ConditionList) {
-    super(uri, document, yml, parent);
+    super(uri, document, yml);
+    this.parent = parent;
 
     // Parse Elements
     this.yml.items.forEach(pair => {

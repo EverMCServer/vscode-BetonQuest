@@ -20,20 +20,19 @@ export abstract class SectionCollection<T extends NodeType> extends AbstractNode
   abstract addSection(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>): void;
 }
 
-export abstract class Document<T extends NodeType, PT extends SectionCollection<T>> extends AbstractNodeV2<T> {
+export abstract class Document<T extends NodeType> extends AbstractNodeV2<T> {
   readonly offsetStart?: number | undefined;
   readonly offsetEnd?: number | undefined;
-  readonly parent: PT;
 
   // VSCode Document, for diagnostics / quick actions / goto definition, etc
   readonly document: TextDocument;
   readonly yml: YAMLMap<Scalar<string>>;
 
-  constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: PT) {
+  constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>) {
     super();
 
     this.uri = uri;
-    this.parent = parent;
+    // this.parent = parent;
     this.document = document;
     this.yml = yml;
 

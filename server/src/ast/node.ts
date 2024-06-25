@@ -124,6 +124,13 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
    */
   abstract getAst(): AST;
 
+  getDiagnostics(): Diagnostic[] {
+    return [
+      ...this.diagnostics,
+      ...this.children.flatMap(c => c.getDiagnostics())
+    ];
+  }
+
   addDiagnostic(offsets: [offsetStart?: number, offsetEnd?: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode, codeActions?: { title: string, text: string, range?: [offsetStart: number, offsetEnd: number] }[]) {
     if (offsets[0] === undefined || offsets[1] === undefined) {
       return;
@@ -154,14 +161,7 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
     });
   }
 
-  getDiagnostics(): Diagnostic[] {
-    return [
-      ...this.diagnostics,
-      ...this.children.flatMap(c => c.getDiagnostics())
-    ];
-  }
-
-  addDiagnostics(...diag: Diagnostic[]) {
+  _addDiagnostic(...diag: Diagnostic[]) {
     this.diagnostics.push(...diag);
   }
 
@@ -170,6 +170,10 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
       ...this.codeActions,
       ...this.children.flatMap(c => c.getCodeActions(documentUri))
     ];
+  }
+
+  addCodeActions(...codeActions: CodeAction[]) {
+    this.codeActions.push(...codeActions);
   }
 
   addSemanticTokens(...token: SemanticToken[]) {
