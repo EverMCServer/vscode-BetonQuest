@@ -58,6 +58,10 @@ export class ConditionListSection extends Document<ConditionListSectionType> {
     });
   }
 
+  private _getConditionEntries(id: string) {
+    return this.getChildren<ConditionEntry>('ConditionEntry', e => e.getChild<ConditionKey>('ConditionKey', e => e.value === id));
+  }
+
   getPublishDiagnosticsParams() {
     return {
       uri: this.document.uri,
@@ -67,11 +71,12 @@ export class ConditionListSection extends Document<ConditionListSectionType> {
 
   getLocations(yamlPath: string[], sourceUri: string) {
     const result: LocationsResponse = [];
-    const key = this.getChild<ConditionEntry>('ConditionEntry')?.getChild<ConditionKey>('ConditionKey', e => e.value === yamlPath[1]);
-    if (key) {
+    // const entry = this.getChild<ConditionEntry>('ConditionEntry', e => e.getChild<ConditionKey>('ConditionKey', e => e.value === yamlPath[1]));
+    const entry = this._getConditionEntries(yamlPath[1])[0];
+    if (entry) {
       result.push({
         uri: this.uri,
-        offset: key.offsetStart,
+        offset: entry.offsetStart,
       });
     }
     return result;
@@ -79,7 +84,7 @@ export class ConditionListSection extends Document<ConditionListSectionType> {
 
   getConditionEntries(id: string, packageUri?: string): ConditionEntry[] {
     if (!packageUri || this.parent.parent.isPackageUri(packageUri)) {
-      return this.getChildren<ConditionEntry>('ConditionEntry', e => e.getChild<ConditionKey>('ConditionKey')?.value === id);
+      return this._getConditionEntries(id);
     } else {
       return this.parent.getConditionEntries(id, packageUri);
     }

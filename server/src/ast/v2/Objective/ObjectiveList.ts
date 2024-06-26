@@ -58,6 +58,10 @@ export class ObjectiveListSection extends Document<ObjectiveListSectionType> {
     });
   }
 
+  private _getObjectiveEntries(id: string) {
+    return this.getChildren<ObjectiveEntry>('ObjectiveEntry', e => e.getChild<ObjectiveKey>('ObjectiveKey', e => e.value === id));
+  }
+
   getPublishDiagnosticsParams() {
     return {
       uri: this.document.uri,
@@ -67,11 +71,12 @@ export class ObjectiveListSection extends Document<ObjectiveListSectionType> {
 
   getLocations(yamlPath: string[], sourceUri: string) {
     const result: LocationsResponse = [];
-    const key = this.getChild<ObjectiveEntry>('ObjectiveEntry')?.getChild<ObjectiveKey>('ObjectiveKey', e => e.value === yamlPath[1]);
-    if (key) {
+    // const entry = this.getChild<ObjectiveEntry>('ObjectiveEntry', e => e.getChild<ObjectiveKey>('ObjectiveKey', e => e.value === yamlPath[1]));
+    const entry = this._getObjectiveEntries(yamlPath[1])[0];
+    if (entry) {
       result.push({
         uri: this.uri,
-        offset: key.offsetStart,
+        offset: entry.offsetStart,
       });
     }
     return result;
@@ -79,7 +84,7 @@ export class ObjectiveListSection extends Document<ObjectiveListSectionType> {
 
   getObjectiveEntries(id: string, packageUri?: string): ObjectiveEntry[] {
     if (!packageUri || this.parent.parent.isPackageUri(packageUri)) {
-      return this.getChildren<ObjectiveEntry>('ObjectiveEntry', e => e.getChild<ObjectiveKey>('ObjectiveKey')?.value === id);
+      return this._getObjectiveEntries(id);
     } else {
       return this.parent.getObjectiveEntries(id, packageUri);
     }

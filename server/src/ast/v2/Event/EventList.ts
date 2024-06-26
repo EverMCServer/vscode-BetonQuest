@@ -58,6 +58,10 @@ export class EventListSection extends Document<EventListSectionType> {
     });
   }
 
+  private _getEventEntries(id: string) {
+    return this.getChildren<EventEntry>('EventEntry', e => e.getChild<EventKey>('EventKey', e => e.value === id));
+  }
+
   getPublishDiagnosticsParams() {
     return {
       uri: this.document.uri,
@@ -67,11 +71,12 @@ export class EventListSection extends Document<EventListSectionType> {
 
   getLocations(yamlPath: string[], sourceUri: string) {
     const result: LocationsResponse = [];
-    const key = this.getChild<EventEntry>('EventEntry')?.getChild<EventKey>('EventKey', e => e.value === yamlPath[1]);
-    if (key) {
+    // const entry = this.getChild<EventEntry>('EventEntry', e => e.getChild<EventKey>('EventKey', e => e.value === yamlPath[1]));
+    const entry = this._getEventEntries(yamlPath[1])[0];
+    if (entry) {
       result.push({
         uri: this.uri,
-        offset: key.offsetStart,
+        offset: entry.offsetStart,
       });
     }
     return result;
@@ -79,7 +84,7 @@ export class EventListSection extends Document<EventListSectionType> {
 
   getEventEntries(id: string, packageUri?: string): EventEntry[] {
     if (!packageUri || this.parent.parent.isPackageUri(packageUri)) {
-      return this.getChildren<EventEntry>('EventEntry', e => e.getChild<EventKey>('EventKey')?.value === id);
+      return this._getEventEntries(id);
     } else {
       return this.parent.getEventEntries(id, packageUri);
     }
