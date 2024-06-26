@@ -46,7 +46,7 @@ export class Conversation extends SectionCollection<ConversationType> {
 
 export class ConversationSection extends Document<ConversationSectionType> {
   readonly type: ConversationSectionType = 'ConversationSection';
-  parent: Conversation;
+  readonly parent: Conversation;
 
   constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: Conversation) {
     super(uri, document, yml);

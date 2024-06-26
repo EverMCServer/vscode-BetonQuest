@@ -18,7 +18,7 @@ import { NpcOption } from "./Option/NpcOption";
 import { PlayerOption } from "./Option/PlayerOption";
 
 export class Conversation extends Document<ConversationType> {
-  type: ConversationType = 'Conversation';
+  readonly type: ConversationType = 'Conversation';
 
   // Contents
   conversationID: string;

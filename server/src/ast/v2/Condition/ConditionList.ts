@@ -11,7 +11,7 @@ import { ConditionEntry } from "./ConditionEntry";
 import { ConditionKey } from "./ConditionKey";
 
 export class ConditionList extends SectionCollection<ConditionListType> {
-  type: ConditionListType = "ConditionList";
+  readonly type: ConditionListType = "ConditionList";
 
   constructor(uri: string, parent: PackageV2) {
     super(uri, parent);
@@ -40,8 +40,8 @@ export class ConditionList extends SectionCollection<ConditionListType> {
 }
 
 export class ConditionListSection extends Document<ConditionListSectionType> {
-  type: ConditionListSectionType = "ConditionListSection";
-  parent: ConditionList;
+  readonly type: ConditionListSectionType = "ConditionListSection";
+  readonly parent: ConditionList;
 
   constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: ConditionList) {
     super(uri, document, yml);
@@ -70,7 +70,7 @@ export class ConditionListSection extends Document<ConditionListSectionType> {
     const key = this.getChild<ConditionEntry>('ConditionEntry')?.getChild<ConditionKey>('ConditionKey', e => e.value === yamlPath[1]);
     if (key) {
       result.push({
-        uri: this.uri!,
+        uri: this.uri,
         offset: key.offsetStart,
       });
     }

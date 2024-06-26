@@ -8,12 +8,10 @@ import { PackageV2 } from "./Package";
 
 export abstract class SectionCollection<T extends NodeType> extends AbstractNodeV2<T> {
   abstract type: T;
-  readonly uri: string;
   readonly parent: PackageV2;
 
   constructor(uri: string, parent: PackageV2) {
     super();
-    this.uri = uri;
     this.parent = parent;
   }
 
@@ -21,6 +19,7 @@ export abstract class SectionCollection<T extends NodeType> extends AbstractNode
 }
 
 export abstract class Document<T extends NodeType> extends AbstractNodeV2<T> {
+  readonly uri: string;
   readonly offsetStart?: number | undefined;
   readonly offsetEnd?: number | undefined;
 

@@ -11,7 +11,7 @@ import { ObjectiveEntry } from "./ObjectiveEntry";
 import { ObjectiveKey } from "./ObjectiveKey";
 
 export class ObjectiveList extends SectionCollection<ObjectiveListType> {
-  type: ObjectiveListType = "ObjectiveList";
+  readonly type: ObjectiveListType = "ObjectiveList";
 
   constructor(uri: string, parent: PackageV2) {
     super(uri, parent);
@@ -40,8 +40,8 @@ export class ObjectiveList extends SectionCollection<ObjectiveListType> {
 }
 
 export class ObjectiveListSection extends Document<ObjectiveListSectionType> {
-  type: ObjectiveListSectionType = "ObjectiveListSection";
-  parent: ObjectiveList;
+  readonly type: ObjectiveListSectionType = "ObjectiveListSection";
+  readonly parent: ObjectiveList;
 
   constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: ObjectiveList) {
     super(uri, document, yml);
@@ -70,7 +70,7 @@ export class ObjectiveListSection extends Document<ObjectiveListSectionType> {
     const key = this.getChild<ObjectiveEntry>('ObjectiveEntry')?.getChild<ObjectiveKey>('ObjectiveKey', e => e.value === yamlPath[1]);
     if (key) {
       result.push({
-        uri: this.uri!,
+        uri: this.uri,
         offset: key.offsetStart,
       });
     }

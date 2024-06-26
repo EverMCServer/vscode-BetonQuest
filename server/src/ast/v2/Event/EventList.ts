@@ -11,7 +11,7 @@ import { EventEntry } from "./EventEntry";
 import { EventKey } from "./EventKey";
 
 export class EventList extends SectionCollection<EventListType> {
-  type: EventListType = "EventList";
+  readonly type: EventListType = "EventList";
 
   constructor(uri: string, parent: PackageV2) {
     super(uri, parent);
@@ -40,8 +40,8 @@ export class EventList extends SectionCollection<EventListType> {
 }
 
 export class EventListSection extends Document<EventListSectionType> {
-  type: EventListSectionType = "EventListSection";
-  parent: EventList;
+  readonly type: EventListSectionType = "EventListSection";
+  readonly parent: EventList;
 
   constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: EventList) {
     super(uri, document, yml);
@@ -70,7 +70,7 @@ export class EventListSection extends Document<EventListSectionType> {
     const key = this.getChild<EventEntry>('EventEntry')?.getChild<EventKey>('EventKey', e => e.value === yamlPath[1]);
     if (key) {
       result.push({
-        uri: this.uri!,
+        uri: this.uri,
         offset: key.offsetStart,
       });
     }

@@ -29,7 +29,7 @@ export class EventList extends Document<EventListType> {
     const key = this.getChild<EventEntry>('EventEntry')?.getChild<EventKey>('EventKey', e => e.value === yamlPath[1]);
     if (key) {
       result.push({
-        uri: this.uri!,
+        uri: this.uri,
         offset: key.offsetStart,
       });
     }

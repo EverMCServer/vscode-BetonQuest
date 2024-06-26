@@ -29,7 +29,7 @@ export class ObjectiveList extends Document<ObjectiveListType> {
     const key = this.getChild<ObjectiveEntry>('ObjectiveEntry')?.getChild<ObjectiveKey>('ObjectiveKey', e => e.value === yamlPath[1]);
     if (key) {
       result.push({
-        uri: this.uri!,
+        uri: this.uri,
         offset: key.offsetStart,
       });
     }

@@ -29,7 +29,7 @@ export class ConditionList extends Document<ConditionListType> {
     const key = this.getChild<ConditionEntry>('ConditionEntry')?.getChild<ConditionKey>('ConditionKey', e => e.value === yamlPath[1]);
     if (key) {
       result.push({
-        uri: this.uri!,
+        uri: this.uri,
         offset: key.offsetStart,
       });
     }

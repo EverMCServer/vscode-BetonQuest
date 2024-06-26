@@ -22,9 +22,9 @@ import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
 import { ObjectiveList } from "./Objective/ObjectiveList";
 
 export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
-  type: PackageV2Type = "PackageV2";
+  readonly type: PackageV2Type = "PackageV2";
   readonly uri: string;
-  parent: PackageV2 = this;
+  readonly parent: PackageV2 = this;
   readonly parentAst: AST;
   readonly packagePath: string[];
 
