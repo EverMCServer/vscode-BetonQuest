@@ -1,29 +1,25 @@
-import { Scalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
+import { Scalar } from "yaml";
 
-import { ConversationFinalEventsType, NodeV2 } from "../../node";
+import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { SemanticToken } from "../../../service/semanticTokens";
-import { HoverInfo } from "../../../utils/hover";
-import { LocationLinkOffset } from "../../../utils/location";
 import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
+import { ConversationFinalEventsType } from "../../node";
+import { AbstractNodeV2 } from "../../v2";
 import { ConversationSection } from "./Conversation";
-import { Event } from "./Option/Event";
+import { ConversationFinalEvent } from "./ConversationFinalEvent";
 
-export class ConversationFinalEvents extends NodeV2<ConversationFinalEventsType> {
-  type: ConversationFinalEventsType = 'ConversationFinalEvents';
-  uri: string;
-  offsetStart: number;
-  offsetEnd: number;
-  parent: ConversationSection;
+export class ConversationFinalEvents extends AbstractNodeV2<ConversationFinalEventsType> {
+  readonly type: ConversationFinalEventsType = 'ConversationFinalEvents';
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: ConversationSection;
 
   // Cache the parsed yaml document
-  yml: Scalar;
-  events: Event<this>[] = [];
+  private yml: Scalar;
 
   constructor(yml: Scalar, parent: ConversationSection) {
     super();
-    this.uri = parent.uri;
     this.parent = parent;
     this.yml = yml;
     [this.offsetStart, this.offsetEnd] = getScalarRangeByValue(this.yml);
@@ -81,47 +77,23 @@ export class ConversationFinalEvents extends NodeV2<ConversationFinalEventsType>
         }
 
         // Create Event
-        this.events.push(
-          new Event<this>(
+        this.addChild(
+          new ConversationFinalEvent(
             str,
             [offsetStart, offsetEnd],
             this
           )
         );
+
+        // Add semantic tokens for seprator ","
+        if (matched[1].length > 0) {
+          this.semanticTokens.push({
+            offsetStart: offsetStartWithComma,
+            offsetEnd: offsetStartWithComma + 1,
+            tokenType: SemanticTokenType.Operator
+          });
+        }
       }
     }
-  }
-
-  getDiagnostics() {
-    const diagnostics = this.diagnostics;
-    this.events.forEach(event => diagnostics.push(...event.getDiagnostics()));
-    return diagnostics;
-  }
-
-  getCodeActions() {
-    return this.codeActions;
-  }
-
-  getSemanticTokens(): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = [];
-    semanticTokens.push(...this.events.flatMap(event => event.getSemanticTokens()));
-    return semanticTokens;
-  };
-
-  getHoverInfo(offset: number): HoverInfo[] {
-    const hoverInfo: HoverInfo[] = [];
-    if (offset < this.offsetStart || offset > this.offsetEnd) {
-      return hoverInfo;
-    }
-    hoverInfo.push(...this.events.flatMap(e => e.getHoverInfo(offset)));
-    return hoverInfo;
-  }
-
-  getDefinitions(offset: number): LocationLinkOffset[] {
-    if (this.offsetStart! > offset || this.offsetEnd! < offset) {
-      return [];
-    }
-
-    return this.events.flatMap(c => c.getDefinitions(offset));
   }
 }

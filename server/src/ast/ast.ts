@@ -1,12 +1,16 @@
 import { TextDocument } from "vscode-languageserver-textdocument";
 
-import { PackageV1 } from "./v1/Package";
-import { PackageV2 } from "./v2/Package";
 import { AllDocuments } from "../utils/document";
 import { HoverInfo } from "../utils/hover";
 import { LocationLinkOffset } from "../utils/location";
 import { getParentUrl } from "../utils/url";
 import { ConversationOptionType } from "./node";
+import { NpcOption as V1NpcOption } from "./v1/Conversation/Option/NpcOption";
+import { PlayerOption as V1PlayerOption } from "./v1/Conversation/Option/PlayerOption";
+import { PackageV1 } from "./v1/Package";
+import { NpcOption as V2NpcOption } from "./v2/Conversation/Option/NpcOption";
+import { PlayerOption as V2PlayerOption } from "./v2/Conversation/Option/PlayerOption";
+import { PackageV2 } from "./v2/Package";
 
 // AST by workspace folders
 export class ASTs {
@@ -217,32 +221,32 @@ export class AST {
   // Get all diagnostics from parser
   getDiagnostics(documentUri?: string) {
     return [
-      ...this.packagesV1.filter(p => !documentUri || documentUri.startsWith(p.getUri())).flatMap(p => p.getPublishDiagnosticsParams(documentUri)),
-      ...this.packagesV2.filter(p => !documentUri || documentUri.startsWith(p.getUri())).flatMap(p => p.getPublishDiagnosticsParams(documentUri))
+      ...this.packagesV1.filter(p => !documentUri || documentUri.startsWith(p.uri)).flatMap(p => p.getPublishDiagnosticsParams(documentUri)),
+      ...this.packagesV2.filter(p => !documentUri || documentUri.startsWith(p.uri)).flatMap(p => p.getPublishDiagnosticsParams(documentUri))
     ];
   }
 
   // Get all CodeActions
   getCodeActions(documentUri?: string) {
     return [
-      ...this.packagesV1.filter(p => !documentUri || documentUri.startsWith(p.getUri())).flatMap(p => p.getCodeActions(documentUri)),
-      ...this.packagesV2.filter(p => !documentUri || documentUri.startsWith(p.getUri())).flatMap(p => p.getCodeActions(documentUri))
+      ...this.packagesV1.filter(p => !documentUri || documentUri.startsWith(p.uri)).flatMap(p => p.getCodeActions(documentUri)),
+      ...this.packagesV2.filter(p => !documentUri || documentUri.startsWith(p.uri)).flatMap(p => p.getCodeActions(documentUri))
     ];
   }
 
   // Get semantic tokens for embeded betonquest's instructions
   getSemanticTokens(documentUri: string) {
     return [
-      ...this.packagesV1.filter(p => documentUri.startsWith(p.getUri())).flatMap(p => p.getSemanticTokens(documentUri)),
-      ...this.packagesV2.filter(p => documentUri.startsWith(p.getUri())).flatMap(p => p.getSemanticTokens(documentUri))
+      ...this.packagesV1.filter(p => documentUri.startsWith(p.uri)).flatMap(p => p.getSemanticTokens(documentUri)),
+      ...this.packagesV2.filter(p => documentUri.startsWith(p.uri)).flatMap(p => p.getSemanticTokens(documentUri))
     ];
   }
 
   // Get all hover info
-  getHoverInfo(offset: number, uri: string): HoverInfo[] {
+  getHoverInfo(offset: number, documentUri: string): HoverInfo[] {
     return [
-      ...this.packagesV1.flatMap(p => p.getHoverInfo(offset, uri)),
-      ...this.packagesV2.flatMap(p => p.getHoverInfo(offset, uri))
+      ...this.packagesV1.flatMap(p => p.getHoverInfo(offset, documentUri)),
+      ...this.packagesV2.flatMap(p => p.getHoverInfo(offset, documentUri))
     ];
   }
 
@@ -272,8 +276,8 @@ export class AST {
     return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getObjectiveEntries(id, packageUri));
   }
 
-  getV1ConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID: string, packageUri: string) {
-    return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions(type, optionID, conversationID, packageUri));
+  getV1ConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string) {
+    return this.packagesV1.filter(pkg => !packageUri || pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions<T>(type, optionID, conversationID, packageUri).flat()) as  V1NpcOption[] | V1PlayerOption[];
   }
 
   getV2ConditionEntry(id: string, packageUri: string) {
@@ -288,8 +292,8 @@ export class AST {
     return this.packagesV2.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getObjectiveEntries(id, packageUri));
   }
 
-  getV2ConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID: string, packageUri: string) {
-    return this.packagesV2.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions(type, optionID, conversationID, packageUri));
+  getV2ConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string) {
+    return this.packagesV2.filter(pkg => !packageUri || pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions<T>(type, optionID, conversationID, packageUri).flat()) as V2NpcOption[] | V2PlayerOption[];
   }
 
 }

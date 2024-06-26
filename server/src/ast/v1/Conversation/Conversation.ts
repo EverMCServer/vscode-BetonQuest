@@ -1,41 +1,31 @@
-import { Pair, Scalar, isMap, isScalar } from "yaml";
-import { DiagnosticSeverity, PublishDiagnosticsParams } from "vscode-languageserver";
+import { DiagnosticSeverity } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
+import { Pair, Scalar, isMap, isScalar } from "yaml";
 
-import { PackageV1 } from "../Package";
-import { ConversationNpcOptionType, ConversationOptionType, ConversationPlayerOptionType, ConversationType } from "../../node";
-import { isYamlMapPair } from "../../../utils/yaml";
+import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { LocationLinkOffset } from "../../../utils/location";
-import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
-import { HoverInfo } from "../../../utils/hover";
 import { getFilename } from "../../../utils/url";
-import { ConversationQuester } from "./ConversationQuester";
-import { First } from "./First";
-import { ConversationStop } from "./ConversationStop";
+import { isYamlMapPair } from "../../../utils/yaml";
+import { ConversationOptionType, ConversationType } from "../../node";
+import { PackageV1 } from "../Package";
+import { Document } from "../document";
 import { ConversationFinalEvents } from "./ConversationFinalEvents";
 import { ConversationInterceptor } from "./ConversationInterceptor";
-import { Document } from "../document";
-import { Option } from "./Option/Option";
+import { ConversationQuester } from "./ConversationQuester";
+import { ConversationStop } from "./ConversationStop";
+import { First } from "./First";
+import { NpcOption } from "./Option/NpcOption";
+import { PlayerOption } from "./Option/PlayerOption";
 
 export class Conversation extends Document<ConversationType> {
-  type: ConversationType = 'Conversation';
+  readonly type: ConversationType = 'Conversation';
 
   // Contents
   conversationID: string;
-  quester?: ConversationQuester;
-  first?: First;
-  stop?: ConversationStop;
-  finalEvents?: ConversationFinalEvents;
-  interceptor?: ConversationInterceptor;
-  npcOptions: Option<ConversationNpcOptionType>[] = [];
-  playerOptions: Option<ConversationPlayerOptionType>[] = [];
-
-  semanticTokens: SemanticToken[] = [];
 
   constructor(uri: string, document: TextDocument, parent: PackageV1) {
     super(uri, document, parent);
-    this.conversationID = this.uri.match(/([^\/]+)\.yml$/m)![1];
+    this.conversationID = this.getUri().match(/([^\/]+)\.yml$/m)![1];
 
     // Parse Elements
     this.yml.items.forEach(pair => {
@@ -62,7 +52,7 @@ export class Conversation extends Document<ConversationType> {
       switch (pair.key.value) {
         case "quester":
           if (isScalar(pair.value) || isMap<Scalar<string>>(pair.value)) {
-            this.quester = new ConversationQuester(pair.value, this);
+            this.addChild(new ConversationQuester(pair.value, this));
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string or a translation list.`);
@@ -70,7 +60,7 @@ export class Conversation extends Document<ConversationType> {
           break;
         case "first":
           if (isScalar(pair.value)) {
-            this.first = new First(pair.value, this);
+            this.addChild(new First(pair.value, this));
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
@@ -78,7 +68,7 @@ export class Conversation extends Document<ConversationType> {
           break;
         case "stop":
           if (isScalar(pair.value)) {
-            this.stop = new ConversationStop(pair.value, this);
+            this.addChild(new ConversationStop(pair.value, this));
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
@@ -86,7 +76,7 @@ export class Conversation extends Document<ConversationType> {
           break;
         case "final_events":
           if (isScalar(pair.value)) {
-            this.finalEvents = new ConversationFinalEvents(pair.value, this);
+            this.addChild(new ConversationFinalEvents(pair.value, this));
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
@@ -94,7 +84,7 @@ export class Conversation extends Document<ConversationType> {
           break;
         case "interceptor":
           if (isScalar(pair.value)) {
-            this.interceptor = new ConversationInterceptor(pair.value, this);
+            this.addChild(new ConversationInterceptor(pair.value, this));
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
@@ -105,7 +95,7 @@ export class Conversation extends Document<ConversationType> {
             pair.value.items.forEach(option => {
               // Check YAML value type
               if (isYamlMapPair(option) && option.value) {
-                this.npcOptions.push(new Option("ConversationNpcOption", option, this));
+                this.addChild(new NpcOption(option, this));
               } else {
                 // TODO: throw diagnostics error.
               }
@@ -120,7 +110,7 @@ export class Conversation extends Document<ConversationType> {
             pair.value.items.forEach(option => {
               // Check YAML value type
               if (isYamlMapPair(option) && option.value) {
-                this.playerOptions.push(new Option("ConversationPlayerOption", option, this));
+                this.addChild(new PlayerOption(option, this));
               } else {
                 // TODO: throw diagnostics error.
               }
@@ -176,7 +166,7 @@ export class Conversation extends Document<ConversationType> {
     });
 
     // Check missing elements
-    if (!this.quester) {
+    if (!this.getChild('ConversationQuester')) {
       this.addDiagnostic(
         [0, 0],
         `Missing element "quester".`,
@@ -200,82 +190,12 @@ export class Conversation extends Document<ConversationType> {
     this.addDiagnostic([offsetStart, offsetEnd], message, DiagnosticSeverity.Error, DiagnosticCode.ValueTypeIncorrect);
   }
 
-  getPublishDiagnosticsParams() {
-    return {
-      uri: this.uri,
-      diagnostics: [
-        ...this.diagnostics,
-        ...this.quester?.getDiagnostics() ?? [],
-        ...this.first?.getDiagnostics() ?? [],
-        ...this.stop?.getDiagnostics() ?? [],
-        ...this.finalEvents?.getDiagnostics() ?? [],
-        ...this.interceptor?.getDiagnostics() ?? [],
-        ...this.npcOptions?.flatMap(npc => npc.getDiagnostics()) ?? [],
-        ...this.playerOptions?.flatMap(player => player.getDiagnostics()) ?? [],
-      ]
-    } as PublishDiagnosticsParams;
-  }
-
-  // Get all CodeActions, quick fixes etc
-  getCodeActions() {
-    return [
-      ...this.codeActions,
-      ...this.quester?.getCodeActions() ?? [],
-      ...this.first?.getCodeActions() ?? [],
-      ...this.stop?.getCodeActions() ?? [],
-      ...this.finalEvents?.getCodeActions() ?? [],
-      ...this.interceptor?.getCodeActions() ?? [],
-      ...this.npcOptions?.flatMap(npc => npc.getCodeActions()) ?? [],
-      ...this.playerOptions?.flatMap(player => player.getCodeActions()) ?? [],
-    ];
-  }
-
-  getSemanticTokens(documentUri: string): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = [];
-    if (documentUri !== this.uri) {
-      return semanticTokens;
-    }
-    semanticTokens.push(...this.semanticTokens);
-    semanticTokens.push(...this.quester?.getSemanticTokens() || []);
-    semanticTokens.push(...this.first?.getSemanticTokens() || []);
-    semanticTokens.push(...this.stop?.getSemanticTokens() || []);
-    semanticTokens.push(...this.finalEvents?.getSemanticTokens() || []);
-    semanticTokens.push(...this.npcOptions.flatMap(o => o.getSemanticTokens()));
-    semanticTokens.push(...this.playerOptions.flatMap(o => o.getSemanticTokens()));
-    return semanticTokens;
-  };
-
-  getHoverInfo(offset: number, documentUri: string): HoverInfo[] {
-    const hoverInfo: HoverInfo[] = [];
-    if (documentUri !== this.uri) {
-      return hoverInfo;
-    }
-    hoverInfo.push(...this.first?.getHoverInfo(offset) || []);
-    hoverInfo.push(...this.finalEvents?.getHoverInfo(offset) || []);
-    hoverInfo.push(...this.npcOptions.flatMap(o => o.getHoverInfo(offset)));
-    hoverInfo.push(...this.playerOptions.flatMap(o => o.getHoverInfo(offset)));
-    return hoverInfo;
-  }
-
-  getDefinitions(offset: number, uri: string): LocationLinkOffset[] {
-    if (uri !== this.uri) {
-      return [];
-    }
-
-    return [
-      ...this.first?.getDefinitions(offset) || [],
-      ...this.finalEvents?.getDefinitions(offset) || [],
-      ...this.npcOptions.flatMap(o => o.getDefinitions(offset)),
-      ...this.playerOptions.flatMap(o => o.getDefinitions(offset)),
-    ];
-  }
-
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string): Option<T>[] {
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string) {
     switch (type) {
       case "ConversationNpcOption":
-        return this.npcOptions.filter(o => o.id === optionID) as Option<T>[];
+        return this.getChildren<NpcOption>('ConversationNpcOption').filter(o => o.id === optionID);
       case "ConversationPlayerOption":
-        return this.playerOptions.filter(o => o.id === optionID) as Option<T>[];
+        return this.getChildren<PlayerOption>('ConversationPlayerOption').filter(o => o.id === optionID);
     }
     return [];
   }

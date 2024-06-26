@@ -1,21 +1,44 @@
-import { Pair, Scalar } from "yaml";
+import { TextDocument } from "vscode-languageserver-textdocument";
+import { Scalar, isPair, isScalar } from "yaml";
 
-import Event from "betonquest-utils/betonquest/Event";
-
+import { LocationsResponse } from "betonquest-utils/lsp/file";
 import { EventListType } from "../../node";
+import { PackageV1 } from "../Package";
+import { Document } from "../document";
 import { EventEntry } from "./EventEntry";
-import { ElementList } from "../Element/ElementList";
+import { EventKey } from "./EventKey";
 
-export class EventList extends ElementList<Event, EventEntry> {
-  type: EventListType = "EventList";
+export class EventList extends Document<EventListType> {
+  readonly type: EventListType = "EventList";
 
-  newEntry(pair: Pair<Scalar<string>, Scalar<string>>): EventEntry {
-    return new EventEntry(pair, this);
+  constructor(uri: string, document: TextDocument, parent: PackageV1) {
+    super(uri, document, parent);
+
+    // Parse Elements
+    this.yml.items.forEach(pair => {
+      if (isScalar<string>(pair.value) && isPair<Scalar<string>, Scalar<string>>(pair)) {
+        this.addChild(new EventEntry(pair, this));
+      } else {
+        // TODO: Add diagnostic
+      }
+    });
   }
 
-  getEventEntries(id: string, packageUri: string): EventEntry[] {
+  getLocations(yamlPath: string[], sourceUri: string) {
+    const result: LocationsResponse = [];
+    const key = this.getChild<EventEntry>('EventEntry')?.getChild<EventKey>('EventKey', e => e.value === yamlPath[1]);
+    if (key) {
+      result.push({
+        uri: this.uri,
+        offset: key.offsetStart,
+      });
+    }
+    return result;
+  }
+
+  getEventEntries(id: string, packageUri: string): EventEntry[] { // TODO: optimize let packageUri be optional
     if (this.parent.isPackageUri(packageUri)) {
-      return this.entries.filter(entry => entry.elementKey.value === id);
+      return this.getChildren<EventEntry>('EventEntry', e => e.getChild<EventKey>('EventKey')?.value === id);
     } else {
       return this.parent.getEventEntries(id, packageUri);
     }

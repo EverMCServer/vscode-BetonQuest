@@ -1,18 +1,18 @@
 import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
+import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
-import { ConversationPointerType, NodeType, NodeV2 } from "../../node";
+import { ConversationPointerType, NodeType } from "../../node";
+import { AbstractNodeV2 } from "../../v2";
 import { First } from "./First";
 
-export class FirstPointer extends NodeV2<NodeType> {
-  type: ConversationPointerType = "ConversationPointer";
-  protected uri: string;
-  protected offsetStart: number;
-  protected offsetEnd: number;
-  protected parent: First;
+export class FirstPointer extends AbstractNodeV2<NodeType> {
+  readonly type: ConversationPointerType = "ConversationPointer";
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: First;
 
   // Cache content
   protected withExclamationMark: boolean;
@@ -20,11 +20,8 @@ export class FirstPointer extends NodeV2<NodeType> {
   protected conversationID: string;
   protected optionID: string;
 
-  private semanticTokens: SemanticToken[] = [];
-
   constructor(idString: string, range: [offsetStart: number, offsetEnd: number], parent: First) {
     super();
-    this.uri = parent.getUri();
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
     this.parent = parent;
@@ -69,22 +66,6 @@ export class FirstPointer extends NodeV2<NodeType> {
       tokenType: SemanticTokenType.ConversationOptionNpcID
     });
   }
-
-  // getDiagnostics(): Diagnostic[] {
-  //   return [
-  //     ...this.diagnostics,
-  //   ];
-  // }
-
-  // getCodeActions(): CodeAction[] {
-  //   return [
-  //     ...this.codeActions,
-  //   ];
-  // }
-
-  getSemanticTokens(): SemanticToken[] {
-    return this.semanticTokens;
-  };
 
   getHoverInfo(offset: number): HoverInfo[] {
     if (offset < this.offsetStart || offset > this.offsetEnd) {

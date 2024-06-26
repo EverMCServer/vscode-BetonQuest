@@ -1,26 +1,37 @@
-import { Scalar, YAMLMap } from "yaml";
 import { Range } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
+import { Scalar, YAMLMap } from "yaml";
 
-import { NodeV2, NodeType } from "../node";
+import { NodeType } from "../node";
+import { AbstractNodeV2 } from "../v2";
 import { PackageV2 } from "./Package";
-import { SemanticToken } from "../../service/semanticTokens";
 
-export abstract class Document<T extends NodeType, PT extends SectionCollection<T>> extends NodeV2<T> {
-  uri: string;
-  parent: PT;
+export abstract class SectionCollection<T extends NodeType> extends AbstractNodeV2<T> {
+  abstract type: T;
+  readonly parent: PackageV2;
+
+  constructor(uri: string, parent: PackageV2) {
+    super();
+    this.parent = parent;
+  }
+
+  abstract addSection(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>): void;
+}
+
+export abstract class Document<T extends NodeType> extends AbstractNodeV2<T> {
+  readonly uri: string;
+  readonly offsetStart?: number | undefined;
+  readonly offsetEnd?: number | undefined;
 
   // VSCode Document, for diagnostics / quick actions / goto definition, etc
-  document: TextDocument;
-  yml: YAMLMap<Scalar<string>>;
+  readonly document: TextDocument;
+  readonly yml: YAMLMap<Scalar<string>>;
 
-  semanticTokens: SemanticToken[] = [];
-
-  constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: PT) {
+  constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>) {
     super();
 
     this.uri = uri;
-    this.parent = parent;
+    // this.parent = parent;
     this.document = document;
     this.yml = yml;
 
@@ -35,18 +46,34 @@ export abstract class Document<T extends NodeType, PT extends SectionCollection<
       end: this.document.positionAt(offsetEnd)
     } as Range;
   }
-}
 
-export abstract class SectionCollection<T extends NodeType> extends NodeV2<T> {
-  abstract type: T;
-  protected uri: string;
-  parent: PackageV2;
-
-  constructor(uri: string, parent: PackageV2) {
-    super();
-    this.uri = uri;
-    this.parent = parent;
+  // Get all CodeActions, quick fixes etc
+  getCodeActions(documentUri?: string) {
+    if (documentUri && documentUri !== this.uri) {
+      return [];
+    }
+    return super.getCodeActions();
   }
 
-  abstract addSection(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>): void;
+  getSemanticTokens(documentUri?: string) {
+    if (documentUri && documentUri !== this.uri) {
+      return [];
+    }
+    return super.getSemanticTokens();
+  }
+
+  getHoverInfo(offset: number, documentUri?: string) {
+    if (documentUri && documentUri !== this.uri) {
+      return [];
+    }
+    return super.getHoverInfo(offset, documentUri);
+  }
+
+  getDefinitions(offset: number, documentUri?: string) {
+    if (documentUri && documentUri !== this.uri) {
+      return [];
+    }
+
+    return super.getDefinitions(offset);
+  }
 }

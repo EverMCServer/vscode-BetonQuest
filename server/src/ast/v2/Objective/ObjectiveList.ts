@@ -1,40 +1,90 @@
-import { Pair, Scalar, YAMLMap } from "yaml";
-
-import Objective from "betonquest-utils/betonquest/Objective";
-
-import { ObjectiveListType } from "../../node";
-import { ObjectiveEntry } from "./ObjectiveEntry";
-import { ElementList, ElementListSection } from "../Element/ElementList";
+import { PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
+import { Scalar, YAMLMap, isPair, isScalar } from "yaml";
 
-export class ObjectiveList extends ElementList<Objective> {
-  type: ObjectiveListType = "ObjectiveList";
+import { LocationsResponse } from "betonquest-utils/lsp/file";
+
+import { ObjectiveListSectionType, ObjectiveListType } from "../../node";
+import { PackageV2 } from "../Package";
+import { Document, SectionCollection } from "../document";
+import { ObjectiveEntry } from "./ObjectiveEntry";
+import { ObjectiveKey } from "./ObjectiveKey";
+
+export class ObjectiveList extends SectionCollection<ObjectiveListType> {
+  readonly type: ObjectiveListType = "ObjectiveList";
+
+  constructor(uri: string, parent: PackageV2) {
+    super(uri, parent);
+  }
 
   addSection(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>, unknown>): void {
-    this.entriesSections.push(new ObjectiveListSection(uri, document, yml, this));
+    this.children.push(new ObjectiveListSection(uri, document, yml, this));
+  }
+
+  getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
+    return this.getChildren<ObjectiveListSection>('ObjectiveListSection', section => !documentUri || section.getUri() === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
+  }
+
+  getLocations(yamlPath: string[], sourceUri: string) {
+    return this.children.flatMap(section => (section as ObjectiveListSection).getLocations(yamlPath, sourceUri));
   }
 
   getObjectiveEntries(id: string, packageUri?: string): ObjectiveEntry[] {
     if (!packageUri || this.parent.isPackageUri(packageUri)) {
-      return this.entriesSections
-        .flatMap(section => section.getObjectiveEntries(id));
+      return this.children
+        .flatMap(section => (section as ObjectiveListSection).getObjectiveEntries(id));
     } else {
       return this.parent.getObjectiveEntries(id, packageUri);
     }
   }
 }
 
-export class ObjectiveListSection extends ElementListSection<Objective, ObjectiveEntry> {
-  type: ObjectiveListType = "ObjectiveList";
+export class ObjectiveListSection extends Document<ObjectiveListSectionType> {
+  readonly type: ObjectiveListSectionType = "ObjectiveListSection";
+  readonly parent: ObjectiveList;
 
-  newEntry(pair: Pair<Scalar<string>, Scalar<string>>): ObjectiveEntry {
-    return new ObjectiveEntry(pair, this);
+  constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: ObjectiveList) {
+    super(uri, document, yml);
+    this.parent = parent;
+
+    // Parse Elements
+    this.yml.items.forEach(pair => {
+      if (isScalar<string>(pair.value) && isPair<Scalar<string>, Scalar<string>>(pair)) {
+        // this.entries.push(new ElementEntry<U>(pair, this));
+        this.addChild(new ObjectiveEntry(pair, this));
+      } else {
+        // TODO: Add diagnostic
+      }
+    });
+  }
+
+  private _getObjectiveEntries(id: string) {
+    return this.getChildren<ObjectiveEntry>('ObjectiveEntry', e => e.getChild<ObjectiveKey>('ObjectiveKey', e => e.value === id));
+  }
+
+  getPublishDiagnosticsParams() {
+    return {
+      uri: this.document.uri,
+      diagnostics: this.children.flatMap(e => e.getDiagnostics())
+    } as PublishDiagnosticsParams;
+  }
+
+  getLocations(yamlPath: string[], sourceUri: string) {
+    const result: LocationsResponse = [];
+    // const entry = this.getChild<ObjectiveEntry>('ObjectiveEntry', e => e.getChild<ObjectiveKey>('ObjectiveKey', e => e.value === yamlPath[1]));
+    const entry = this._getObjectiveEntries(yamlPath[1])[0];
+    if (entry) {
+      result.push({
+        uri: this.uri,
+        offset: entry.offsetStart,
+      });
+    }
+    return result;
   }
 
   getObjectiveEntries(id: string, packageUri?: string): ObjectiveEntry[] {
     if (!packageUri || this.parent.parent.isPackageUri(packageUri)) {
-      return this.entries
-        .filter(entry => entry.elementKey.value === id);
+      return this._getObjectiveEntries(id);
     } else {
       return this.parent.getObjectiveEntries(id, packageUri);
     }

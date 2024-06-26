@@ -1,12 +1,12 @@
-import { CodeAction, Command, Connection, DidChangeConfigurationNotification, FileChangeType, HandlerResult, InitializeParams, InitializeResult, LocationLink, SemanticTokensParams, SemanticTokensRequest, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
-import { TextDocument } from 'vscode-languageserver-textdocument';
 import { FilesResponse, LocationsParams } from 'betonquest-utils/lsp/file';
-import { AllDocuments, getAllDocuments } from './utils/document';
+import { CodeAction, Command, Connection, DidChangeConfigurationNotification, FileChangeType, HandlerResult, InitializeParams, InitializeResult, SemanticTokensParams, SemanticTokensRequest, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { ASTs } from './ast/ast';
 import { legend } from './semantics/legend';
-import { semanticTokensHandler } from './service/semanticTokens';
 import { hoverHandler } from './service/hover';
 import { locationsHandler } from './service/locations';
+import { semanticTokensHandler } from './service/semanticTokens';
+import { AllDocuments, getAllDocuments } from './utils/document';
 
 // Create a simple text document manager.
 let documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);

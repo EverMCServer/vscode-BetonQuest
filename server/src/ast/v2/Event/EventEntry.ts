@@ -1,32 +1,85 @@
+import { DiagnosticSeverity } from "vscode-languageserver";
 import { Pair, Scalar } from "yaml";
 
-import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v2/Element";
 import { kinds } from "betonquest-utils/betonquest/v2/Events";
-import Event from "betonquest-utils/betonquest/Event";
 
+import { DiagnosticCode } from "../../../utils/diagnostics";
+import { getScalarSourceAndRange } from "../../../utils/yaml";
 import { EventEntryType } from "../../node";
-import { EventKind } from "./EventKind";
-import { EventKey } from "./EventKey";
+import { AbstractNodeV2 } from "../../v2";
 import { EventArguments } from "./EventArguments";
+import { EventKey } from "./EventKey";
+import { EventKind } from "./EventKind";
 import { EventListSection } from "./EventList";
-import { ElementEntry } from "../Element/ElementEntry";
 
-export class EventEntry extends ElementEntry<Event> {
-  type: EventEntryType = "EventEntry";
+export class EventEntry extends AbstractNodeV2<EventEntryType> {
+  readonly type: EventEntryType = "EventEntry";
+  readonly offsetStart?: number;
+  readonly offsetEnd?: number;
+  readonly parent: EventListSection;
+
+  readonly yml: Pair<Scalar<string>, Scalar<string>>;
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: EventListSection) {
-    super(pair, kinds, parent);
-  }
+    super();
+    this.offsetStart = pair.key?.range?.[0];
+    this.offsetEnd = pair.value?.range?.[1];
+    this.parent = parent;
+    this.yml = pair;
 
-  newKey(key: Scalar<string>): EventKey {
-    return new EventKey(key, this);
-  }
+    // Parse YAML key
+    this.addChild(new EventKey(pair.key, this));
 
-  newKind(value: string, range: [number?, number?], kindConfig: _ElementKind<Event>): EventKind {
-    return new EventKind(value, range, kindConfig, this);
-  }
+    // Parse kind and arguments
+    const [source, [offsetStart, offsetEnd, indent]] = getScalarSourceAndRange(pair.value);
+    if (!source || typeof source !== 'string') {
+      // Missing or incorrect instructions
+      this.addDiagnostic(
+        [offsetStart, offsetEnd],
+        `Missing or incorrect instructions: ${source}`,
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ElementInstructionMissing,
+      );
+      return;
+    }
+    const regex = /(\S+)(\s*)(.*)/s;
+    let matched = regex.exec(source);
 
-  newArguments(argumentsSourceStr: string, range: [number?, number?], indent: number, kindConfig: _ElementKind<Event>): EventArguments {
-    return new EventArguments(argumentsSourceStr, range, indent, kindConfig, this);
+    // Parse kind
+    if (!matched || matched.length < 2) {
+      // Missing kind
+      this.addDiagnostic(
+        [offsetStart, offsetEnd],
+        `Missing or incorrect instructions: ${source}`,
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ElementInstructionMissing,
+      );
+      return;
+    }
+    const kindStr = matched[1];
+    const kind = kinds.find(k => k.value === kindStr.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
+    const offsetKindStart = offsetStart + matched.index;
+    const offsetKindEnd = offsetKindStart + kindStr.length;
+    this.addChild(new EventKind(kindStr, [offsetKindStart, offsetKindEnd], kind, this));
+
+    // Parse Arguments
+    const argumentsSourceStr = matched[3];
+    if (!argumentsSourceStr) {
+      // Check if the arguments missing any arguments by kinds list,
+      // If so, throw diagnostic
+      if (kind && kind.value !== "*" && kind.argumentsPatterns.mandatory.length > 0) {
+        const _offsetStart = offsetKindEnd;
+        this.addDiagnostic(
+          [_offsetStart, offsetEnd],
+          `Missing mandatory argument(s) for "${kindStr}"`,
+          DiagnosticSeverity.Error,
+          DiagnosticCode.ElementArgumentsMissing,
+        );
+      }
+      return;
+    }
+    const offsetArgumentsStart = offsetKindEnd ? offsetKindEnd + matched[2].length : undefined;
+    // Parse each individual arguments
+    this.addChild(new EventArguments(argumentsSourceStr, [offsetArgumentsStart, offsetEnd], indent, kind, this));
   }
 }

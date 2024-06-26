@@ -2,12 +2,15 @@ import { Scalar, YAMLMap, isSeq, parseDocument, visit } from "yaml";
 import { Range } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
-import { NodeV1, NodeType } from "../node";
+import { NodeType } from "../node";
 import { PackageV1 } from "./Package";
+import { AbstractNodeV1 } from "../v1";
 
-export abstract class Document<T extends NodeType> extends NodeV1<T> {
-  uri: string;
-  protected parent: PackageV1;
+export abstract class Document<T extends NodeType> extends AbstractNodeV1<T> {
+  readonly uri: string;
+  readonly offsetStart?: number;
+  readonly offsetEnd?: number;
+  readonly parent: PackageV1;
 
   // VSCode Document, for diagnostics / quick actions / goto definition, etc
   document: TextDocument;
@@ -54,4 +57,35 @@ export abstract class Document<T extends NodeType> extends NodeV1<T> {
       end: this.document.positionAt(offsetEnd)
     } as Range;
   }
+
+  // Get all CodeActions, quick fixes etc
+  getCodeActions(documentUri?: string) {
+    if (documentUri && documentUri !== this.uri) {
+      return [];
+    }
+    return super.getCodeActions();
+  }
+
+  getSemanticTokens(documentUri?: string) {
+    if (documentUri && documentUri !== this.uri) {
+      return [];
+    }
+    return super.getSemanticTokens();
+  }
+
+  getHoverInfo(offset: number, documentUri?: string) {
+    if (documentUri && documentUri !== this.uri) {
+      return [];
+    }
+    return super.getHoverInfo(offset, documentUri);
+  }
+
+  getDefinitions(offset: number, documentUri?: string) {
+    if (documentUri && documentUri !== this.uri) {
+      return [];
+    }
+
+    return super.getDefinitions(offset);
+  }
+
 }

@@ -1,21 +1,44 @@
-import { Pair, Scalar } from "yaml";
+import { TextDocument } from "vscode-languageserver-textdocument";
+import { Scalar, isPair, isScalar } from "yaml";
 
-import Objective from "betonquest-utils/betonquest/Objective";
-
+import { LocationsResponse } from "betonquest-utils/lsp/file";
 import { ObjectiveListType } from "../../node";
+import { PackageV1 } from "../Package";
+import { Document } from "../document";
 import { ObjectiveEntry } from "./ObjectiveEntry";
-import { ElementList } from "../Element/ElementList";
+import { ObjectiveKey } from "./ObjectiveKey";
 
-export class ObjectiveList extends ElementList<Objective, ObjectiveEntry> {
-  type: ObjectiveListType = "ObjectiveList";
+export class ObjectiveList extends Document<ObjectiveListType> {
+  readonly type: ObjectiveListType = "ObjectiveList";
 
-  newEntry(pair: Pair<Scalar<string>, Scalar<string>>): ObjectiveEntry {
-    return new ObjectiveEntry(pair, this);
+  constructor(uri: string, document: TextDocument, parent: PackageV1) {
+    super(uri, document, parent);
+
+    // Parse Elements
+    this.yml.items.forEach(pair => {
+      if (isScalar<string>(pair.value) && isPair<Scalar<string>, Scalar<string>>(pair)) {
+        this.addChild(new ObjectiveEntry(pair, this));
+      } else {
+        // TODO: Add diagnostic
+      }
+    });
   }
 
-  getObjectiveEntries(id: string, packageUri: string): ObjectiveEntry[] {
+  getLocations(yamlPath: string[], sourceUri: string) {
+    const result: LocationsResponse = [];
+    const key = this.getChild<ObjectiveEntry>('ObjectiveEntry')?.getChild<ObjectiveKey>('ObjectiveKey', e => e.value === yamlPath[1]);
+    if (key) {
+      result.push({
+        uri: this.uri,
+        offset: key.offsetStart,
+      });
+    }
+    return result;
+  }
+
+  getObjectiveEntries(id: string, packageUri: string): ObjectiveEntry[] { // TODO: optimize let packageUri be optional
     if (this.parent.isPackageUri(packageUri)) {
-      return this.entries.filter(entry => entry.elementKey.value === id);
+      return this.getChildren<ObjectiveEntry>('ObjectiveEntry', e => e.getChild<ObjectiveKey>('ObjectiveKey')?.value === id);
     } else {
       return this.parent.getObjectiveEntries(id, packageUri);
     }

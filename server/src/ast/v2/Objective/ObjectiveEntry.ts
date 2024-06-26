@@ -1,32 +1,85 @@
+import { DiagnosticSeverity } from "vscode-languageserver";
 import { Pair, Scalar } from "yaml";
 
-import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v2/Element";
 import { kinds } from "betonquest-utils/betonquest/v2/Objectives";
-import Objective from "betonquest-utils/betonquest/Objective";
 
+import { DiagnosticCode } from "../../../utils/diagnostics";
+import { getScalarSourceAndRange } from "../../../utils/yaml";
 import { ObjectiveEntryType } from "../../node";
-import { ObjectiveKind } from "./ObjectiveKind";
-import { ObjectiveKey } from "./ObjectiveKey";
+import { AbstractNodeV2 } from "../../v2";
 import { ObjectiveArguments } from "./ObjectiveArguments";
+import { ObjectiveKey } from "./ObjectiveKey";
+import { ObjectiveKind } from "./ObjectiveKind";
 import { ObjectiveListSection } from "./ObjectiveList";
-import { ElementEntry } from "../Element/ElementEntry";
 
-export class ObjectiveEntry extends ElementEntry<Objective> {
-  type: ObjectiveEntryType = "ObjectiveEntry";
+export class ObjectiveEntry extends AbstractNodeV2<ObjectiveEntryType> {
+  readonly type: ObjectiveEntryType = "ObjectiveEntry";
+  readonly offsetStart?: number;
+  readonly offsetEnd?: number;
+  readonly parent: ObjectiveListSection;
+
+  readonly yml: Pair<Scalar<string>, Scalar<string>>;
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: ObjectiveListSection) {
-    super(pair, kinds, parent);
-  }
+    super();
+    this.offsetStart = pair.key?.range?.[0];
+    this.offsetEnd = pair.value?.range?.[1];
+    this.parent = parent;
+    this.yml = pair;
 
-  newKey(key: Scalar<string>): ObjectiveKey {
-    return new ObjectiveKey(key, this);
-  }
+    // Parse YAML key
+    this.addChild(new ObjectiveKey(pair.key, this));
 
-  newKind(value: string, range: [number?, number?], kindConfig: _ElementKind<Objective>): ObjectiveKind {
-    return new ObjectiveKind(value, range, kindConfig, this);
-  }
+    // Parse kind and arguments
+    const [source, [offsetStart, offsetEnd, indent]] = getScalarSourceAndRange(pair.value);
+    if (!source || typeof source !== 'string') {
+      // Missing or incorrect instructions
+      this.addDiagnostic(
+        [offsetStart, offsetEnd],
+        `Missing or incorrect instructions: ${source}`,
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ElementInstructionMissing,
+      );
+      return;
+    }
+    const regex = /(\S+)(\s*)(.*)/s;
+    let matched = regex.exec(source);
 
-  newArguments(argumentsSourceStr: string, range: [number?, number?], indent: number, kindConfig: _ElementKind<Objective>): ObjectiveArguments {
-    return new ObjectiveArguments(argumentsSourceStr, range, indent, kindConfig, this);
+    // Parse kind
+    if (!matched || matched.length < 2) {
+      // Missing kind
+      this.addDiagnostic(
+        [offsetStart, offsetEnd],
+        `Missing or incorrect instructions: ${source}`,
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ElementInstructionMissing,
+      );
+      return;
+    }
+    const kindStr = matched[1];
+    const kind = kinds.find(k => k.value === kindStr.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
+    const offsetKindStart = offsetStart + matched.index;
+    const offsetKindEnd = offsetKindStart + kindStr.length;
+    this.addChild(new ObjectiveKind(kindStr, [offsetKindStart, offsetKindEnd], kind, this));
+
+    // Parse Arguments
+    const argumentsSourceStr = matched[3];
+    if (!argumentsSourceStr) {
+      // Check if the arguments missing any arguments by kinds list,
+      // If so, throw diagnostic
+      if (kind && kind.value !== "*" && kind.argumentsPatterns.mandatory.length > 0) {
+        const _offsetStart = offsetKindEnd;
+        this.addDiagnostic(
+          [_offsetStart, offsetEnd],
+          `Missing mandatory argument(s) for "${kindStr}"`,
+          DiagnosticSeverity.Error,
+          DiagnosticCode.ElementArgumentsMissing,
+        );
+      }
+      return;
+    }
+    const offsetArgumentsStart = offsetKindEnd ? offsetKindEnd + matched[2].length : undefined;
+    // Parse each individual arguments
+    this.addChild(new ObjectiveArguments(argumentsSourceStr, [offsetArgumentsStart, offsetEnd], indent, kind, this));
   }
 }

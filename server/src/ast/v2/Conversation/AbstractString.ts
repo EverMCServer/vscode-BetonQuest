@@ -1,12 +1,14 @@
 import { Scalar } from "yaml";
-import { NodeV2, NodeType } from "../../node";
-import { AbstractText } from "./AbstractText";
+import { NodeType } from "../../node";
+import { AbstractNodeV2 } from "../../v2";
 
-export abstract class AbstractString<T extends NodeType> extends NodeV2<T> {
+export abstract class AbstractString<T extends NodeType> extends AbstractNodeV2<T> {
+  readonly offsetStart?: number;
+  readonly offsetEnd?: number;
 
-  yml: Scalar;
+  private yml: Scalar;
 
-  value?: string;
+  private value?: string;
 
   constructor(yml: Scalar, parent: string) {
     super();

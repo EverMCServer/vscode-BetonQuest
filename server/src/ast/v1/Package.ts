@@ -1,34 +1,28 @@
-import { CodeAction, PublishDiagnosticsParams } from "vscode-languageserver";
+import { PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
-import { AST } from "../ast";
-import { ConversationOptionType, NodeV1, PackageV1Type } from "../node";
-import { HoverInfo } from "../../utils/hover";
-import { LocationLinkOffset } from "../../utils/location";
 import { getParentUrl } from "../../utils/url";
-import { ConditionList } from "./Condition/ConditionList";
-import { EventList } from "./Event/EventList";
-import { ObjectiveList } from "./Objective/ObjectiveList";
-import { SemanticToken } from "../../service/semanticTokens";
-import { Conversation } from "./Conversation/Conversation";
+import { AST } from "../ast";
+import { ConversationOptionType, PackageV1Type } from "../node";
+import { AbstractNodeV1 } from "../v1";
 import { ConditionEntry } from "./Condition/ConditionEntry";
+import { ConditionList } from "./Condition/ConditionList";
+import { Conversation } from "./Conversation/Conversation";
+import { NpcOption } from "./Conversation/Option/NpcOption";
+import { PlayerOption } from "./Conversation/Option/PlayerOption";
 import { EventEntry } from "./Event/EventEntry";
+import { EventList } from "./Event/EventList";
 import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
-import { Option } from "./Conversation/Option/Option";
+import { ObjectiveList } from "./Objective/ObjectiveList";
 
-export class PackageV1 extends NodeV1<PackageV1Type> {
-  protected type: PackageV1Type = "PackageV1";
-  protected uri: string;
-  protected parent: PackageV1 = this;
-  private parentAst: AST;
+export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
+  readonly type: PackageV1Type = "PackageV1";
+  readonly uri: string;
+  readonly parent: PackageV1 = this;
+  readonly parentAst: AST;
   readonly packagePath: string[];
-
-  conditionList?: ConditionList;
-  eventList?: EventList;
-  objectiveList?: ObjectiveList;
-  conversations: Conversation[] = [];
 
   constructor(packageUri: string, documents: TextDocument[], parent: AST) {
     super();
@@ -46,13 +40,13 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
         case 'main.yml':
           break;
         case 'conditions.yml':
-          this.conditionList = new ConditionList(document.uri, document, this);
+          this.addChild(new ConditionList(document.uri, document, this));
           break;
         case 'events.yml':
-          this.eventList = new EventList(document.uri, document, this);
+          this.addChild(new EventList(document.uri, document, this));
           break;
         case 'objectives.yml':
-          this.objectiveList = new ObjectiveList(document.uri, document, this);
+          this.addChild(new ObjectiveList(document.uri, document, this));
           break;
         case 'journal.yml':
           break;
@@ -62,7 +56,7 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
           break;
         default:
           if (p[p.length - 2] === 'conversations') {
-            this.conversations?.push(new Conversation(document.uri, document, this));
+            this.addChild(new Conversation(document.uri, document, this));
           }
           break;
       }
@@ -100,7 +94,7 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
   // Get Condition entries from child or parent
   getConditionEntries(id: string, packageUri: string): ConditionEntry[] {
     if (this.isPackageUri(packageUri)) {
-      return this.conditionList?.getConditionEntries(id, packageUri) ?? [];
+      return this.getChild('ConditionList')?.getConditionEntries(id, packageUri) ?? [];
     } else {
       return this.parentAst.getV1ConditionEntry(id, packageUri);
     }
@@ -109,7 +103,7 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
   // Get Event entries from child or parent
   getEventEntries(id: string, packageUri: string): EventEntry[] {
     if (this.isPackageUri(packageUri)) {
-      return this.eventList?.getEventEntries(id, packageUri) ?? [];
+      return this.getChild('EventList')?.getEventEntries(id, packageUri) ?? [];
     } else {
       return this.parentAst.getV1EventEntry(id, packageUri);
     }
@@ -118,80 +112,27 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
   // Get Objective entries from child or parent
   getObjectiveEntries(id: string, packageUri: string): ObjectiveEntry[] {
     if (this.isPackageUri(packageUri)) {
-      return this.objectiveList?.getObjectiveEntries(id, packageUri) ?? [];
+      const t = this.getChild<ObjectiveList>('ObjectiveList');
+      return this.getChild('ObjectiveList')?.getObjectiveEntries(id, packageUri) ?? [];
     } else {
       return this.parentAst.getV1ObjectiveEntry(id, packageUri);
     }
   }
 
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID: string, packageUri: string): Option<T>[] {
-    if (this.isPackageUri(packageUri)) {
-      return this.conversations.filter(c => c.conversationID === conversationID).flatMap(c => c.getConversationOptions(type, optionID));
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): NpcOption[] | PlayerOption[] {
+    if (packageUri && this.isPackageUri(packageUri)) {
+      return this.getChildren<Conversation>('Conversation', c => c.conversationID === conversationID).flatMap(c => c.getConversationOptions<T>(type, optionID).flat()) as NpcOption[] | PlayerOption[];
     }
-    return this.parentAst.getV1ConversationOptions(type, optionID, conversationID, packageUri);
+    return this.parentAst.getV1ConversationOptions<T>(type, optionID, conversationID, packageUri);
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
-    const diagnostics: PublishDiagnosticsParams[] = [];
-    if (this.conditionList && (!documentUri || this.conditionList.uri === documentUri)) {
-      diagnostics.push(this.conditionList.getPublishDiagnosticsParams());
-    }
-    if (this.eventList && (!documentUri || this.eventList.uri === documentUri)) {
-      diagnostics.push(this.eventList.getPublishDiagnosticsParams());
-    }
-    if (this.objectiveList && (!documentUri || this.objectiveList.uri === documentUri)) {
-      diagnostics.push(this.objectiveList.getPublishDiagnosticsParams());
-    }
-    this.conversations?.forEach(conversation => {
-      if (!documentUri || conversation.uri === documentUri) {
-        diagnostics.push(conversation.getPublishDiagnosticsParams());
-      }
+    return this.children.filter(c => !documentUri || c.getUri() === documentUri).flatMap(c => {
+      return {
+        uri: c.getUri(),
+        diagnostics: c.getDiagnostics()
+      };
     });
-    return diagnostics;
-  }
-
-  getCodeActions(documentUri?: string) {
-    const codeActions: CodeAction[] = [];
-    // Get Conversations' code actions
-    this.conversations?.forEach(c => {
-      if (!documentUri || c.uri === documentUri) {
-        codeActions.push(...c.getCodeActions());
-      }
-    });
-    return codeActions;
-  }
-
-  getSemanticTokens(documentUri: string) {
-    const semanticTokens: SemanticToken[] = [];
-    if (this.conditionList) {
-      semanticTokens.push(...this.conditionList.getSemanticTokens(documentUri));
-    }
-    if (this.eventList) {
-      semanticTokens.push(...this.eventList.getSemanticTokens(documentUri));
-    }
-    if (this.objectiveList) {
-      semanticTokens.push(...this.objectiveList.getSemanticTokens(documentUri));
-    }
-    semanticTokens.push(...this.conversations.flatMap(c => c.getSemanticTokens(documentUri)) || []);
-    return semanticTokens.sort((a, b) => a.offsetStart - b.offsetStart);
-  }
-
-  getHoverInfo(offset: number, uri: string) {
-    const hoverInfo: HoverInfo[] = [];
-    if (!uri.startsWith(this.uri)) {
-      return hoverInfo;
-    }
-    if (this.conditionList) {
-      hoverInfo.push(...this.conditionList.getHoverInfo(offset, uri));
-    }
-    if (this.eventList) {
-      hoverInfo.push(...this.eventList.getHoverInfo(offset, uri));
-    }
-    if (this.objectiveList) {
-      hoverInfo.push(...this.objectiveList.getHoverInfo(offset, uri));
-    }
-    hoverInfo.push(...this.conversations?.flatMap(c => c.getHoverInfo(offset, uri)) || []);
-    return hoverInfo;
   }
 
   getLocations(yamlPath: string[], sourceUri: string) {
@@ -199,29 +140,19 @@ export class PackageV1 extends NodeV1<PackageV1Type> {
     if (!sourceUri.startsWith(this.uri)) {
       return locations;
     }
-    if (yamlPath[0] === '@conditions' && this.conditionList) {
-      locations.push(...this.conditionList.getLocations(yamlPath, sourceUri));
+    // switch (yamlPath[0]) {
+    //   case '@conditions':
+    //     locations.push
+    // }
+    if (yamlPath[0] === '@conditions') {
+      locations.push(...this.getChild<ConditionList>('ConditionList')?.getLocations(yamlPath, sourceUri) || []);
     }
-    if (yamlPath[0] === '@events' && this.eventList) {
-      locations.push(...this.eventList.getLocations(yamlPath, sourceUri));
+    if (yamlPath[0] === '@events') {
+      locations.push(...this.getChild<EventList>('EventList')?.getLocations(yamlPath, sourceUri) || []);
     }
-    if (yamlPath[0] === '@objectives' && this.objectiveList) {
-      locations.push(...this.objectiveList.getLocations(yamlPath, sourceUri));
+    if (yamlPath[0] === '@objectives') {
+      locations.push(...this.getChild<ObjectiveList>('ObjectiveList')?.getLocations(yamlPath, sourceUri) || []);
     }
     return locations;
-  }
-
-  getDefinitions(offset: number, uri: string): LocationLinkOffset[] {
-    if (!uri.startsWith(this.uri)) {
-      return [];
-    }
-
-    return [
-      ...this.conditionList?.getDefinitions(offset, uri) || [],
-      ...this.eventList?.getDefinitions(offset, uri) || [],
-      ...this.objectiveList?.getDefinitions(offset, uri) || [],
-      ...this.conversations?.flatMap(c => c.getDefinitions(offset, uri)) || [],
-      // TODO...
-    ];
   }
 }

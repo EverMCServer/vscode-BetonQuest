@@ -1,31 +1,25 @@
 import { Scalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationFinalEventsType, NodeV1 } from "../../node";
+import { ConversationFinalEventsType } from "../../node";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
-import { HoverInfo } from "../../../utils/hover";
-import { LocationLinkOffset } from "../../../utils/location";
+import { SemanticTokenType } from "../../../service/semanticTokens";
 import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
 import { Conversation } from "./Conversation";
-import { Event } from "./Option/Event";
+import { ConversationFinalEvent } from "./ConversationFinalEvent";
+import { AbstractNodeV1 } from "../../v1";
 
-export class ConversationFinalEvents extends NodeV1<ConversationFinalEventsType> {
-  type: ConversationFinalEventsType = 'ConversationFinalEvents';
-  uri: string;
-  offsetStart: number;
-  offsetEnd: number;
-  parent: Conversation;
+export class ConversationFinalEvents extends AbstractNodeV1<ConversationFinalEventsType> {
+  readonly type: ConversationFinalEventsType = 'ConversationFinalEvents';
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: Conversation;
 
   // Cache the parsed yaml document
-  yml: Scalar;
-  events: Event<this>[] = [];
-
-  private semanticTokens: SemanticToken[] = [];
+  private yml: Scalar;
 
   constructor(yml: Scalar, parent: Conversation) {
     super();
-    this.uri = parent.uri;
     this.parent = parent;
     this.yml = yml;
     [this.offsetStart, this.offsetEnd] = getScalarRangeByValue(this.yml);
@@ -83,8 +77,8 @@ export class ConversationFinalEvents extends NodeV1<ConversationFinalEventsType>
         }
 
         // Create Event
-        this.events.push(
-          new Event<this>(
+        this.addChild(
+          new ConversationFinalEvent(
             str,
             [offsetStart, offsetEnd],
             this
@@ -101,38 +95,5 @@ export class ConversationFinalEvents extends NodeV1<ConversationFinalEventsType>
         }
       }
     }
-  }
-
-  getDiagnostics() {
-    const diagnostics = this.diagnostics;
-    this.events.forEach(event => diagnostics.push(...event.getDiagnostics()));
-    return diagnostics;
-  }
-
-  getCodeActions() {
-    return this.codeActions;
-  }
-
-  getSemanticTokens(): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = [...this.semanticTokens];
-    semanticTokens.push(...this.events.flatMap(event => event.getSemanticTokens()));
-    return semanticTokens;
-  };
-
-  getHoverInfo(offset: number): HoverInfo[] {
-    const hoverInfo: HoverInfo[] = [];
-    if (offset < this.offsetStart || offset > this.offsetEnd) {
-      return hoverInfo;
-    }
-    hoverInfo.push(...this.events.flatMap(e => e.getHoverInfo(offset)));
-    return hoverInfo;
-  }
-
-  getDefinitions(offset: number): LocationLinkOffset[] {
-    if (this.offsetStart! > offset || this.offsetEnd! < offset) {
-      return [];
-    }
-
-    return this.events.flatMap(c => c.getDefinitions(offset));
   }
 }

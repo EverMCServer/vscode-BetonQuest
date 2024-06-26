@@ -1,31 +1,25 @@
 import { Scalar } from "yaml";
-import { CodeAction, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { ConversationFirstType, NodeV1 } from "../../node";
+import { ConversationFirstType } from "../../node";
 import { Conversation } from "./Conversation";
-import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
+import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { HoverInfo } from "../../../utils/hover";
-import { LocationLinkOffset } from "../../../utils/location";
 import { getScalarSourceAndRange } from "../../../utils/yaml";
 import { FirstPointer } from "./FirstPointer";
+import { AbstractNodeV1 } from "../../v1";
 
-export class First extends NodeV1<ConversationFirstType> {
-  type: ConversationFirstType = 'ConversationFirst';
-  protected uri: string;
-  offsetStart: number;
-  offsetEnd: number;
-  parent: Conversation;
+export class First extends AbstractNodeV1<ConversationFirstType> {
+  readonly type: ConversationFirstType = 'ConversationFirst';
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: Conversation;
 
   private yml: Scalar;
   private entriesStr: string;
-  private entries: FirstPointer[] = [];
-
-  private semanticTokens: SemanticToken[] = [];
 
   constructor(yml: Scalar, parent: Conversation) {
     super();
-    this.uri = parent.getUri();
     this.parent = parent;
 
     [this.entriesStr, [this.offsetStart, this.offsetEnd]] = getScalarSourceAndRange(yml);
@@ -75,7 +69,7 @@ export class First extends NodeV1<ConversationFirstType> {
       }
 
       // Parse the Option ID
-      this.entries.push(new FirstPointer(strTrimed, [offsetStartTrimed, offsetEndTrimed], this));
+      this.addChild(new FirstPointer(strTrimed, [offsetStartTrimed, offsetEndTrimed], this));
 
       // Add semantic tokens for seprator ","
       if (matched[1].length > 0) {
@@ -86,42 +80,5 @@ export class First extends NodeV1<ConversationFirstType> {
         });
       }
     }
-  }
-
-  getDiagnostics(): Diagnostic[] {
-    return [
-      ...this.diagnostics,
-      ...this.entries.flatMap(c => c.getDiagnostics())
-    ];
-  }
-
-  getCodeActions(): CodeAction[] {
-    return [
-      ...this.codeActions,
-      ...this.entries.flatMap(e => e.getCodeActions())
-    ];
-  }
-
-  getSemanticTokens(): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = [...this.semanticTokens];
-    semanticTokens.push(...this.entries.flatMap(c => c.getSemanticTokens()));
-    return semanticTokens;
-  };
-
-  getHoverInfo(offset: number): HoverInfo[] {
-    const hoverInfo: HoverInfo[] = [];
-    if (offset < this.offsetStart || offset > this.offsetEnd) {
-      return hoverInfo;
-    }
-    hoverInfo.push(...this.entries.flatMap(e => e.getHoverInfo(offset)));
-    return hoverInfo;
-  }
-
-  getDefinitions(offset: number): LocationLinkOffset[] {
-    if (this.offsetStart! > offset || this.offsetEnd! < offset) {
-      return [];
-    }
-
-    return this.entries.flatMap(c => c.getDefinitions(offset));
   }
 }

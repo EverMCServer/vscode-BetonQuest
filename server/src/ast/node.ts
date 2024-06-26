@@ -1,14 +1,12 @@
 import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
 
+import { SemanticToken } from "../service/semanticTokens";
 import { DiagnosticCode } from "../utils/diagnostics";
-import { ConditionEntry as ConditionEntryV1 } from "./v1/Condition/ConditionEntry";
-import { ConditionEntry as ConditionEntryV2 } from "./v2/Condition/ConditionEntry";
-import { EventEntry as EventEntryV1 } from "./v1/Event/EventEntry";
-import { EventEntry as EventEntryV2 } from "./v2/Event/EventEntry";
-import { ObjectiveEntry as ObjectiveEntryV1 } from "./v1/Objective/ObjectiveEntry";
-import { ObjectiveEntry as ObjectiveEntryV2 } from "./v2/Objective/ObjectiveEntry";
-import { Option as OptionV1 } from "./v1/Conversation/Option/Option";
-import { Option as OptionV2 } from "./v2/Conversation/Option/Option";
+import { HoverInfo } from "../utils/hover";
+import { LocationLinkOffset } from "../utils/location";
+import { AST } from "./ast";
+import { NodeV1 } from "./v1";
+import { NodeV2 } from "./v2";
 
 export type PackageV1Type = 'PackageV1';
 export type PackageV2Type = 'PackageV2';
@@ -16,6 +14,7 @@ export type PackageTypes = PackageV1Type | PackageV2Type;
 
 export type ConversationListType = 'ConversationList';
 export type ConversationType = 'Conversation';
+export type ConversationSectionType = 'ConversationSection';
 export type ConversationKeyType = 'ConversationKey';
 export type ConversationQuesterType = 'ConversationQuester';
 export type ConversationQuesterTranslationsType = 'ConversationQuesterTranslations';
@@ -34,48 +33,54 @@ export type ConversationEventType = 'ConversationEvent';
 export type ConversationPointersType = 'ConversationPointers';
 export type ConversationPointerType = 'ConversationPointer';
 export type ConversationTextTranslationsType = 'ConversationTextTranslations';
-export type ConversationTypes = ConversationListType | ConversationType | ConversationKeyType | ConversationQuesterType | ConversationQuesterTranslationsType | ConversationFirstType | ConversationStopType | ConversationFinalEventsType | ConversationInterceptorType | ConversationOptionType | ConversationTextType | ConversationConditionsType | ConversationConditionType | ConversationEventsType | ConversationEventType | ConversationPointersType | ConversationPointerType | ConversationTextTranslationsType;
-
-export type EventListType = 'EventList';
-export type EventEntryType = 'EventEntry';
-export type EventKeyType = 'EventKey';
-export type EventKindType = 'EventKind';
-export type EventArgumentsType = 'EventArguments';
-export type EventArgumentType = 'EventArgument';
-export type EventArgumentKeyType = 'EventArgumentKey';
-export type EventArgumentValueArrayType = 'EventArgumentValueArray';
-export type EventArgumentValueType = 'EventArgumentValue';
-export type EventArgumentsListType = 'EventArgumentsList';
-export type EventTypes = EventListType | EventEntryType | EventKeyType | EventKindType | EventArgumentsType | EventArgumentType | EventArgumentKeyType | EventArgumentValueArrayType | EventArgumentValueType;
+export type ConversationTypes = ConversationListType | ConversationType | ConversationSectionType | ConversationKeyType | ConversationQuesterType | ConversationQuesterTranslationsType | ConversationFirstType | ConversationStopType | ConversationFinalEventsType | ConversationInterceptorType | ConversationOptionType | ConversationTextType | ConversationConditionsType | ConversationConditionType | ConversationEventsType | ConversationEventType | ConversationPointersType | ConversationPointerType | ConversationTextTranslationsType;
 
 export type ConditionListType = 'ConditionList';
+export type ConditionListSectionType = 'ConditionListSection';
 export type ConditionEntryType = 'ConditionEntry';
 export type ConditionKeyType = 'ConditionKey';
 export type ConditionKindType = 'ConditionKind';
 export type ConditionArgumentsType = 'ConditionArguments';
-export type ConditionArgumentType = 'ConditionArgument';
+export type ConditionArgumentMandatoryType = 'ConditionArgumentMandatory';
+export type ConditionArgumentOptionalType = 'ConditionArgumentOptional';
 export type ConditionArgumentKeyType = 'ConditionArgumentKey';
 export type ConditionArgumentValueArrayType = 'ConditionArgumentValueArray';
 export type ConditionArgumentValueType = 'ConditionArgumentValue';
-export type ConditionTypes = ConditionListType | ConditionEntryType | ConditionKeyType | ConditionKindType | ConditionArgumentsType | ConditionArgumentType | ConditionArgumentKeyType | ConditionArgumentValueArrayType | ConditionArgumentValueType;
+export type ConditionTypes = ConditionListType | ConditionListSectionType | ConditionEntryType | ConditionKeyType | ConditionKindType | ConditionArgumentsType | ConditionArgumentMandatoryType | ConditionArgumentOptionalType | ConditionArgumentKeyType | ConditionArgumentValueArrayType | ConditionArgumentValueType;
+
+export type EventListType = 'EventList';
+export type EventListSectionType = 'EventListSection';
+export type EventEntryType = 'EventEntry';
+export type EventKeyType = 'EventKey';
+export type EventKindType = 'EventKind';
+export type EventArgumentsType = 'EventArguments';
+export type EventArgumentMandatoryType = 'EventArgumentMandatory';
+export type EventArgumentOptionalType = 'EventArgumentOptional';
+export type EventArgumentKeyType = 'EventArgumentKey';
+export type EventArgumentValueArrayType = 'EventArgumentValueArray';
+export type EventArgumentValueType = 'EventArgumentValue';
+export type EventArgumentsListType = 'EventArgumentsList';
+export type EventTypes = EventListType | EventListSectionType | EventEntryType | EventKeyType | EventKindType | EventArgumentsType | EventArgumentMandatoryType | EventArgumentOptionalType | EventArgumentKeyType | EventArgumentValueArrayType | EventArgumentValueType;
 
 export type ObjectiveListType = 'ObjectiveList';
+export type ObjectiveListSectionType = 'ObjectiveListSection';
 export type ObjectiveEntryType = 'ObjectiveEntry';
 export type ObjectiveKeyType = 'ObjectiveKey';
 export type ObjectiveKindType = 'ObjectiveKind';
 export type ObjectiveArgumentsType = 'ObjectiveArguments';
-export type ObjectiveArgumentType = 'ObjectiveArgument';
+export type ObjectiveArgumentMandatoryType = 'ObjectiveArgumentMandatory';
+export type ObjectiveArgumentOptionalType = 'ObjectiveArgumentOptional';
 export type ObjectiveArgumentKeyType = 'ObjectiveArgumentKey';
 export type ObjectiveArgumentValueArrayType = 'ObjectiveArgumentValueArray';
 export type ObjectiveArgumentValueType = 'ObjectiveArgumentValue';
-export type ObjectiveTypes = ObjectiveListType | ObjectiveEntryType | ObjectiveKeyType | ObjectiveKindType | ObjectiveArgumentsType | ObjectiveArgumentType | ObjectiveArgumentKeyType | ObjectiveArgumentValueArrayType | ObjectiveArgumentValueType;
+export type ObjectiveTypes = ObjectiveListType | ObjectiveListSectionType | ObjectiveEntryType | ObjectiveKeyType | ObjectiveKindType | ObjectiveArgumentsType | ObjectiveArgumentMandatoryType | ObjectiveArgumentOptionalType | ObjectiveArgumentKeyType | ObjectiveArgumentValueArrayType | ObjectiveArgumentValueType;
 
 export type ElementListType = EventListType | ConditionListType | ObjectiveListType;
 export type ElementEntryType = EventEntryType | ConditionEntryType | ObjectiveEntryType;
 export type ElementKeyType = EventKeyType | ConditionKeyType | ObjectiveKeyType;
 export type ElementKindType = EventKindType | ConditionKindType | ObjectiveKindType;
 export type ElementArgumentsType = EventArgumentsType | ConditionArgumentsType | ObjectiveArgumentsType;
-export type ElementArgumentType = EventArgumentType | ConditionArgumentType | ObjectiveArgumentType;
+export type ElementArgumentType = EventArgumentMandatoryType | EventArgumentOptionalType | ConditionArgumentMandatoryType | ConditionArgumentOptionalType | ObjectiveArgumentMandatoryType | ObjectiveArgumentOptionalType;
 export type ElementArgumentKeyType = EventArgumentKeyType | ConditionArgumentKeyType | ObjectiveArgumentKeyType;
 export type ElementArgumentValueArrayType = EventArgumentValueArrayType | ConditionArgumentValueArrayType | ObjectiveArgumentValueArrayType;
 export type ElementArgumentValueType = EventArgumentValueType | ConditionArgumentValueType | ObjectiveArgumentValueType;
@@ -83,24 +88,52 @@ export type ElementTypes = ElementListType | ElementEntryType | ElementKeyType |
 
 export type NodeType = PackageTypes | ConversationTypes | EventTypes | ConditionTypes | ObjectiveTypes;
 
-export abstract class Node<T extends NodeType> {
-  protected abstract type: T;
-  protected abstract uri: string;
-  protected offsetStart?: number;
-  protected offsetEnd?: number;
-  protected abstract parent: Node<NodeType>;
+export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2> {
+  readonly abstract type: T;
+  protected uri?: string;
+  readonly offsetStart?: number;
+  readonly offsetEnd?: number;
+  readonly abstract parent: N;
+  protected children: N[] = [];
   protected diagnostics: Diagnostic[] = [];
   protected codeActions: CodeAction[] = [];
-  // children?: Node<NodeType>[],
+  protected semanticTokens: SemanticToken[] = [];
 
-  // name?: string,
-  // value?: string,
-  // [key: string]: any,
+  getUri(): string {
+    if (this.uri) {
+      return this.uri;
+    } else if (this.parent.type !== this.type) {
+      return this.parent.getUri();
+    }
+    return "";
+  }
 
-  // findByOffset(uri: string, offset: number): Node<T>;
-  // findByType(uri: string, type: T): Node<T>;
+  addChild(child: N) {
+    this.children.push(child);
+  }
 
-  // getParent(): Node<NodeType>;
+  getChild<Node extends N>(type: NodeType | NodeType[], additionalCheck?: (child: Node) => any | boolean) {
+    return this.children.find<Node>((c): c is Node => (c.type === type || type.includes(c.type)) && (!additionalCheck || additionalCheck(c as Node)));
+  }
+
+  getChildren<Node extends N>(type?: NodeType, additionalCheck?: (child: Node) => any | boolean) {
+    if (type) {
+      return this.children.filter<Node>((c): c is Node => c.type === type && (!additionalCheck || additionalCheck(c as Node)));
+    }
+    return this.children as Node[];
+  }
+
+  /**
+   * Get the root AST node
+   */
+  abstract getAst(): AST;
+
+  getDiagnostics(): Diagnostic[] {
+    return [
+      ...this.diagnostics,
+      ...this.children.flatMap(c => c.getDiagnostics())
+    ];
+  }
 
   addDiagnostic(offsets: [offsetStart?: number, offsetEnd?: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode, codeActions?: { title: string, text: string, range?: [offsetStart: number, offsetEnd: number] }[]) {
     if (offsets[0] === undefined || offsets[1] === undefined) {
@@ -122,7 +155,7 @@ export abstract class Node<T extends NodeType> {
         diagnostics: [diagnostic],
         edit: {
           changes: {
-            [this.uri]: [{
+            [this.getUri()]: [{
               range: r ? this.getRangeByOffset(r[0], r[1]) : range,
               newText: text
             }]
@@ -132,24 +165,47 @@ export abstract class Node<T extends NodeType> {
     });
   }
 
-  getUri() {
-    return this.uri;
+  _addDiagnostic(...diag: Diagnostic[]) {
+    this.diagnostics.push(...diag);
   }
 
-  getOffsetStart() {
-    return this.offsetStart;
+  getCodeActions(documentUri?: string): CodeAction[] {
+    return [
+      ...this.codeActions,
+      ...this.children.flatMap(c => c.getCodeActions(documentUri))
+    ];
   }
 
-  getOffsetEnd() {
-    return this.offsetEnd;
+  addCodeActions(...codeActions: CodeAction[]) {
+    this.codeActions.push(...codeActions);
   }
 
-  getDiagnostics() {
-    return this.diagnostics;
+  addSemanticTokens(...token: SemanticToken[]) {
+    this.semanticTokens.push(...token);
   }
 
-  getCodeActions() {
-    return this.codeActions;
+  getSemanticTokens(documentUri?: string): SemanticToken[] {
+    return [
+      ...this.semanticTokens,
+      ...this.children.flatMap(c => c.getSemanticTokens(documentUri))
+    ];
+  };
+
+  getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
+    if (this.offsetStart && this.offsetEnd && (offset < this.offsetStart || offset > this.offsetEnd)) {
+      return [];
+    }
+    return this.children.flatMap(c => c.getHoverInfo(offset, documentUri));
+  }
+
+  getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
+    // if (documentUri && !documentUri.startsWith(this.uri)) {
+    //   return [];
+    // }
+    if (this.offsetStart && this.offsetEnd && (offset < this.offsetStart || offset > this.offsetEnd)) {
+      return [];
+    }
+    return this.children.flatMap(c => c.getDefinitions(offset, documentUri));
   }
 
   // Get range by offset.
@@ -164,60 +220,3 @@ export abstract class Node<T extends NodeType> {
     return this.parent.getPackageUri(targetPackagePath);
   }
 };
-
-export abstract class NodeV1<T extends NodeType> extends Node<T> {
-  protected abstract parent: NodeV1<NodeType>;
-
-  // Get all target package's Condition entries.
-  // This method must be overrided / hijacked by the top-level class.
-  getConditionEntries(id: string, packageUri: string): ConditionEntryV1[] {
-    return this.parent.getConditionEntries(id, packageUri);
-  }
-
-  // Get all target package's Event entries.
-  // This method must be overrided / hijacked by the top-level class.
-  getEventEntries(id: string, packageUri: string): EventEntryV1[] {
-    return this.parent.getEventEntries(id, packageUri);
-  }
-
-  // Get all target package's Objective entries.
-  // This method must be overrided / hijacked by the top-level class.
-  getObjectiveEntries(id: string, packageUri: string): ObjectiveEntryV1[] {
-    return this.parent.getObjectiveEntries(id, packageUri);
-  }
-
-  // Get all target package's conversation options.
-  // This method must be overrided / hijacked by the top-level class.
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): OptionV1<T>[] {
-    return this.parent.getConversationOptions<T>(type, optionID, conversationID, packageUri);
-  }
-
-}
-
-export abstract class NodeV2<T extends NodeType> extends Node<T> {
-  protected abstract parent: NodeV2<NodeType>;
-
-  // Get all target package's Condition entries.
-  // This method must be overrided / hijacked by the top-level class.
-  getConditionEntries(id: string, packageUri?: string): ConditionEntryV2[] {
-    return this.parent.getConditionEntries(id, packageUri);
-  }
-
-  // Get all target package's Event entries.
-  // This method must be overrided / hijacked by the top-level class.
-  getEventEntries(id: string, packageUri?: string): EventEntryV2[] {
-    return this.parent.getEventEntries(id, packageUri);
-  }
-
-  // Get all target package's Objective entries.
-  // This method must be overrided / hijacked by the top-level class.
-  getObjectiveEntries(id: string, packageUri?: string): ObjectiveEntryV2[] {
-    return this.parent.getObjectiveEntries(id, packageUri);
-  }
-
-  // Get all target package's conversation options.
-  // This method must be overrided / hijacked by the top-level class.
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): OptionV2<T>[] {
-    return this.parent.getConversationOptions(type, optionID, conversationID, packageUri);
-  }
-}
