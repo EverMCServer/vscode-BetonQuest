@@ -4,21 +4,21 @@ import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
-import { ConversationPointerType, NodeType } from "../../node";
+import { ConversationFirstPointerType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
 import { First } from "./First";
 
-export class FirstPointer extends AbstractNodeV2<NodeType> {
-  readonly type: ConversationPointerType = "ConversationPointer";
+export class FirstPointer extends AbstractNodeV2<ConversationFirstPointerType> {
+  readonly type: ConversationFirstPointerType = "ConversationFirstPointer";
   readonly offsetStart: number;
   readonly offsetEnd: number;
   readonly parent: First;
 
   // Cache content
-  protected withExclamationMark: boolean;
-  protected package: string = "";
-  protected conversationID: string;
-  protected optionID: string;
+  readonly withExclamationMark: boolean;
+  readonly package: string = "";
+  readonly conversationID: string;
+  readonly optionID: string;
 
   constructor(idString: string, range: [offsetStart: number, offsetEnd: number], parent: First) {
     super();

@@ -70,10 +70,10 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
         switch (pair.key.value) {
           case 'conditions':
             if (isMap<Scalar<string>>(pair.value) && isStringScalar(pair.key)) {
-              this._getConditionList().addSection(document.uri, document, pair.value);
+              this.getConditionList().addSection(document.uri, document, pair.value);
               // Set key's Semantic Token
               if (pair.key.range) {
-                this._getConditionList().getChildren().find(section => section.getUri() === document.uri)?.
+                this.getConditionList().getChildren().find(section => section.getUri() === document.uri)?.
                   addSemanticTokens({
                     offsetStart: pair.key.range[0],
                     offsetEnd: pair.key.range[1],
@@ -86,10 +86,10 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
             break;
           case 'events':
             if (isMap<Scalar<string>>(pair.value) && isStringScalar(pair.key)) {
-              this._getEventList().addSection(document.uri, document, pair.value);
+              this.getEventList().addSection(document.uri, document, pair.value);
               // Set key's Semantic Token
               if (pair.key.range) {
-                this._getEventList().getChildren().find(section => section.getUri() === document.uri)?.
+                this.getEventList().getChildren().find(section => section.getUri() === document.uri)?.
                   addSemanticTokens({
                     offsetStart: pair.key.range[0],
                     offsetEnd: pair.key.range[1],
@@ -102,10 +102,10 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
             break;
           case 'objectives':
             if (isMap<Scalar<string>>(pair.value) && isStringScalar(pair.key)) {
-              this._getObjectiveList().addSection(document.uri, document, pair.value);
+              this.getObjectiveList().addSection(document.uri, document, pair.value);
               // Set key's Semantic Token
               if (pair.key.range) {
-                this._getObjectiveList().getChildren().find(section => section.getUri() === document.uri)?.
+                this.getObjectiveList().getChildren().find(section => section.getUri() === document.uri)?.
                   addSemanticTokens({
                     offsetStart: pair.key.range[0],
                     offsetEnd: pair.key.range[1],
@@ -122,7 +122,7 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
             if (isYamlMapPair(pair)) {
               pair.value?.items.forEach(p => {
                 if (isYamlMapPair(p) && isMap<Scalar<string>>(p.value)) {
-                  let conversation = this._getConversation(p.key.value);
+                  let conversation = this.getConversations(p.key.value)[0];
                   if (!conversation) {
                     conversation = new Conversation(this.uri, p.key.value, this);
                     this.addChild(conversation);
@@ -152,31 +152,27 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
     });
   }
 
-  private _getConditionList() {
+  getConditionList() {
     return this.getChild<ConditionList>('ConditionList')!;
   }
 
-  private _getEventList() {
+  getEventList() {
     return this.getChild<EventList>('EventList')!;
   }
 
-  private _getObjectiveList() {
+  getObjectiveList() {
     return this.getChild<ObjectiveList>('ObjectiveList')!;
   }
 
-  private _getConversation(conversationID: string) {
-    return this.getChild<Conversation>('Conversation', c => c.conversationID === conversationID);
-  }
-
-  private _getConversations() {
-    return this.getChildren<Conversation>('Conversation');
+  getConversations(conversationID?: string) {
+    return this.getChildren<Conversation>('Conversation', c => !conversationID || c.conversationID === conversationID);
   }
 
   // Calculate the target package's uri by absolute / relative package path
-  getPackageUri(targetPackagePath: string) {
+  getPackageUri(targetPackagePath?: string) {
     let packageUri = this.uri;
     // Empty
-    if (targetPackagePath.length === 0) {
+    if (!targetPackagePath || targetPackagePath.length === 0) {
       return packageUri;
     }
     const packagePathArray = targetPackagePath.split("-");
@@ -203,7 +199,7 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
   // Get Condition entries from child or parent
   getConditionEntries(id: string, packageUri: string): ConditionEntry[] {
     if (this.isPackageUri(packageUri)) {
-      return this._getConditionList().getConditionEntries(id);
+      return this.getConditionList().getConditionEntries(id);
     } else {
       return this.parentAst.getV2ConditionEntry(id, packageUri);
     }
@@ -212,7 +208,7 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
   // Get Event entries from child or parent
   getEventEntries(id: string, packageUri: string): EventEntry[] {
     if (this.isPackageUri(packageUri)) {
-      return this._getEventList().getEventEntries(id, packageUri);
+      return this.getEventList().getEventEntries(id, packageUri);
     } else {
       return this.parentAst.getV2EventEntry(id, packageUri);
     }
@@ -221,7 +217,7 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
   // Get Objective entries from child or parent
   getObjectiveEntries(id: string, packageUri: string): ObjectiveEntry[] {
     if (this.isPackageUri(packageUri)) {
-      return this._getObjectiveList().getObjectiveEntries(id, packageUri);
+      return this.getObjectiveList().getObjectiveEntries(id, packageUri);
     } else {
       return this.parentAst.getV2ObjectiveEntry(id, packageUri);
     }
@@ -229,9 +225,13 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
 
   getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): NpcOption[] | PlayerOption[] {
     if (packageUri && this.isPackageUri(packageUri)) {
-      return this.getChildren<Conversation>('Conversation').flatMap(c => c.getConversationOptions<T>(type, optionID).flat()) as NpcOption[] | PlayerOption[];
+      return this.getConversations().flatMap(c => c.getConversationOptions<T>(type, optionID).flat()) as NpcOption[] | PlayerOption[];
     }
     return this.parentAst.getV2ConversationOptions(type, optionID, conversationID, packageUri);
+  }
+
+  getConversationPointers(type: ConversationOptionType, optionID: string, conversationID?: string, packageUri?: string) {
+    return this.parentAst.getV2ConversationPointers(type, optionID, conversationID, packageUri);
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
@@ -244,10 +244,10 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
         diagnostics.set(d.uri, d);
       }
     };
-    this._getConditionList().getPublishDiagnosticsParams(documentUri).forEach(cb);
-    this._getEventList().getPublishDiagnosticsParams(documentUri).forEach(cb);
-    this._getObjectiveList().getPublishDiagnosticsParams(documentUri).forEach(cb);
-    this._getConversations().forEach(conversation => {
+    this.getConditionList().getPublishDiagnosticsParams(documentUri).forEach(cb);
+    this.getEventList().getPublishDiagnosticsParams(documentUri).forEach(cb);
+    this.getObjectiveList().getPublishDiagnosticsParams(documentUri).forEach(cb);
+    this.getConversations().forEach(conversation => {
       conversation.getPublishDiagnosticsParams(documentUri).forEach(cb);
     });
     return Array.from(diagnostics, ([_, d]) => d);
@@ -259,26 +259,30 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
       return locations;
     }
     if (yamlPath[0] === 'conditions') {
-      locations.push(...this._getConditionList().getLocations(yamlPath, sourceUri));
+      locations.push(...this.getConditionList().getLocations(yamlPath, sourceUri));
     }
     if (yamlPath[0] === 'events') {
-      locations.push(...this._getEventList().getLocations(yamlPath, sourceUri));
+      locations.push(...this.getEventList().getLocations(yamlPath, sourceUri));
     }
     if (yamlPath[0] === 'objectives') {
-      locations.push(...this._getObjectiveList().getLocations(yamlPath, sourceUri));
+      locations.push(...this.getObjectiveList().getLocations(yamlPath, sourceUri));
     }
     return locations;
   }
 
   getDefinitions(offset: number, uri?: string): LocationLinkOffset[] {
-    const definitions: LocationLinkOffset[] = [];
     if (uri && !uri.startsWith(this.uri)) {
-      return definitions;
+      return [];
     }
 
-    this._getConversations().forEach(c => definitions.push(...c.getDefinitions(offset, uri)));
-    // TODO: Condition / Event / Objective list
+    return super.getDefinitions(offset, uri);
+  }
 
-    return definitions;
+  getReferences(offset: number, uri?: string): LocationLinkOffset[] {
+    if (uri && !uri.startsWith(this.uri)) {
+      return [];
+    }
+
+    return super.getReferences(offset, uri);
   }
 }

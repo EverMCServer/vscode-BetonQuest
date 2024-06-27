@@ -91,4 +91,10 @@ export abstract class AbstractNodeV1<T extends NodeType> extends AbstractNode<T,
     return this.parent.getConversationOptions<T>(type, optionID, conversationID, packageUri);
   }
 
+  // Get all target package's conversation options.
+  // This method must be overrided / hijacked by the top-level class.
+  getConversationPointers(type: ConversationOptionType, optionID: string, conversationID?: string, packageUri?: string): (FirstPointer | NpcPointer | PlayerPointer)[] {
+    return this.parent.getConversationPointers(type, optionID, conversationID, packageUri);
+  }
+
 }

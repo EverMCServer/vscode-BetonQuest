@@ -1,13 +1,14 @@
 import { Pair, Scalar, YAMLMap, isScalar } from "yaml";
 
-import { ConversationPlayerOptionType } from "../../../node";
-import { Conversation } from "../Conversation";
 import { DiagnosticSeverity } from "vscode-languageserver";
 import { SemanticTokenType } from "../../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
 import { HoverInfo } from "../../../../utils/hover";
+import { LocationLinkOffset } from "../../../../utils/location";
 import { isStringScalar } from "../../../../utils/yaml";
+import { ConversationPlayerOptionType } from "../../../node";
 import { AbstractNodeV1 } from "../../../v1";
+import { Conversation } from "../Conversation";
 import { Conditions } from "./Player/Conditions";
 import { Events } from "./Player/Events";
 import { Pointers } from "./Player/Pointers";
@@ -132,6 +133,10 @@ export class PlayerOption extends AbstractNodeV1<ConversationPlayerOptionType> {
     // ...
   }
 
+  getPointers() {
+    return this.getChildren<Pointers>('ConversationPointers');
+  }
+
   getHoverInfo(offset: number): HoverInfo[] {
     const hoverInfo: HoverInfo[] = super.getHoverInfo(offset);
     if (offset < this.offsetStart || offset > this.offsetEnd) {
@@ -144,6 +149,25 @@ export class PlayerOption extends AbstractNodeV1<ConversationPlayerOptionType> {
       });
     }
     return hoverInfo;
+  }
+
+  getReferences(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
+    // TODO: create "Key" node and move it into the node.
+    if (offset < this.yml.key.range![0] || offset > this.yml.key.range![1]) {
+      return [];
+    }
+    return this.getConversationPointers(
+      "ConversationPlayerOption",
+      this.id,
+      this.parent.conversationID,
+      this.getPackageUri()
+    )
+      .flatMap(n => ({
+        originSelectionRange: [this.offsetStart, this.offsetEnd],
+        targetUri: n.getUri(),
+        targetRange: [n.offsetStart!, n.offsetEnd!],
+        targetSelectionRange: [n.offsetStart!, n.offsetEnd!]
+      }));
   }
 
 }

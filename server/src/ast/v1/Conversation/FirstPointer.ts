@@ -1,24 +1,24 @@
 import { DiagnosticSeverity } from "vscode-languageserver";
 
-import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
+import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { HoverInfo } from "../../../utils/hover";
 import { LocationLinkOffset } from "../../../utils/location";
-import { ConversationPointerType, NodeType } from "../../node";
-import { First } from "./First";
+import { ConversationFirstPointerType } from "../../node";
 import { AbstractNodeV1 } from "../../v1";
+import { First } from "./First";
 
-export class FirstPointer extends AbstractNodeV1<NodeType> {
-  readonly type: ConversationPointerType = "ConversationPointer";
+export class FirstPointer extends AbstractNodeV1<ConversationFirstPointerType> {
+  readonly type: ConversationFirstPointerType = "ConversationFirstPointer";
   readonly offsetStart: number;
   readonly offsetEnd: number;
   readonly parent: First;
 
   // Cache content
-  protected withExclamationMark: boolean;
-  protected package: string = "";
-  protected conversationID: string;
-  protected optionID: string;
+  readonly withExclamationMark: boolean;
+  readonly package: string = "";
+  readonly conversationID: string;
+  readonly optionID: string;
 
   constructor(idString: string, range: [offsetStart: number, offsetEnd: number], parent: First) {
     super();

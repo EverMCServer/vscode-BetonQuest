@@ -5,10 +5,16 @@ import { HoverInfo } from "../utils/hover";
 import { LocationLinkOffset } from "../utils/location";
 import { getParentUrl } from "../utils/url";
 import { ConversationOptionType } from "./node";
+import { FirstPointer as V1FirstPointer } from "./v1/Conversation/FirstPointer";
+import { Pointer as V1NpcPointer } from "./v1/Conversation/Option/Npc/Pointer";
 import { NpcOption as V1NpcOption } from "./v1/Conversation/Option/NpcOption";
+import { Pointer as V1PlayerPointer } from "./v1/Conversation/Option/Player/Pointer";
 import { PlayerOption as V1PlayerOption } from "./v1/Conversation/Option/PlayerOption";
 import { PackageV1 } from "./v1/Package";
+import { FirstPointer as V2FirstPointer } from "./v2/Conversation/FirstPointer";
+import { Pointer as V2NpcPointer } from "./v2/Conversation/Option/Npc/Pointer";
 import { NpcOption as V2NpcOption } from "./v2/Conversation/Option/NpcOption";
+import { Pointer as V2PlayerPointer } from "./v2/Conversation/Option/Player/Pointer";
 import { PlayerOption as V2PlayerOption } from "./v2/Conversation/Option/PlayerOption";
 import { PackageV2 } from "./v2/Package";
 
@@ -67,6 +73,10 @@ export class ASTs {
 
   getDefinitions(offset: number, documentUri: string): LocationLinkOffset[] {
     return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getDefinitions(offset, documentUri));
+  }
+
+  getReferences(offset: number, documentUri: string): LocationLinkOffset[] {
+    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getReferences(offset, documentUri));
   }
 
 }
@@ -264,6 +274,13 @@ export class AST {
     ];
   }
 
+  getReferences(offset: number, uri: string): LocationLinkOffset[] {
+    return [
+      ...this.packagesV1.flatMap(pkg => pkg.getReferences(offset, uri)),
+      ...this.packagesV2.flatMap(pkg => pkg.getReferences(offset, uri))
+    ];
+  }
+
   getV1ConditionEntry(id: string, packageUri: string) {
     return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getConditionEntries(id, packageUri));
   }
@@ -277,7 +294,35 @@ export class AST {
   }
 
   getV1ConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string) {
-    return this.packagesV1.filter(pkg => !packageUri || pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions<T>(type, optionID, conversationID, packageUri).flat()) as  V1NpcOption[] | V1PlayerOption[];
+    return this.packagesV1.filter(pkg => !packageUri || pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions<T>(type, optionID, conversationID, packageUri).flat()) as V1NpcOption[] | V1PlayerOption[];
+  }
+
+  getV1ConversationPointers(type: ConversationOptionType, optionID: string, conversationID?: string, packageUri?: string) {
+    return this.packagesV1.filter(pkg => !packageUri || pkg.isPackageUri(packageUri))
+      .flatMap(p => p.getConversations(conversationID)
+        .flatMap(c => {
+          let pointers: (V1FirstPointer | V1NpcPointer | V1PlayerPointer)[] = [];
+          switch (type) {
+            case 'ConversationNpcOption':
+              // Search conversation first pointers
+              c.getFirst().forEach(f => f.getFirstPointers(optionID).forEach(p => pointers.push(p)));
+              // Search pointers from conversation Player Options
+              c.getConversationOptions('ConversationPlayerOption')
+                .forEach(o => o.getPointers()
+                  .forEach(ps => pointers.push(...ps.getPointers(optionID)))
+                );
+              break;
+            case 'ConversationPlayerOption':
+              // Search pointers from conversation NPC Options
+              c.getConversationOptions('ConversationNpcOption')
+                .forEach(o => o.getPointers()
+                  .forEach(ps => pointers.push(...ps.getPointers(optionID)))
+                );
+              break;
+          }
+          return pointers;
+        })
+      );
   }
 
   getV2ConditionEntry(id: string, packageUri: string) {
@@ -294,6 +339,36 @@ export class AST {
 
   getV2ConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string) {
     return this.packagesV2.filter(pkg => !packageUri || pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions<T>(type, optionID, conversationID, packageUri).flat()) as V2NpcOption[] | V2PlayerOption[];
+  }
+
+  getV2ConversationPointers(type: ConversationOptionType, optionID: string, conversationID?: string, packageUri?: string) {
+    return this.packagesV2.filter(pkg => !packageUri || pkg.isPackageUri(packageUri))
+      .flatMap(p => p.getConversations(conversationID)
+        .flatMap(c => c.getConversationSections()
+          .flatMap(c => {
+            let pointers: (V2FirstPointer | V2NpcPointer | V2PlayerPointer)[] = [];
+            switch (type) {
+              case 'ConversationNpcOption':
+                // Search conversation first pointers
+                c.getFirst().forEach(f => f.getFirstPointers(optionID).forEach(p => pointers.push(p)));
+                // Search pointers from conversation Player Options
+                c.getConversationOptions('ConversationPlayerOption')
+                  .forEach(o => o.getPointers()
+                    .forEach(ps => pointers.push(...ps.getPointers(optionID)))
+                  );
+                break;
+              case 'ConversationPlayerOption':
+                // Search pointers from conversation NPC Options
+                c.getConversationOptions('ConversationNpcOption')
+                  .forEach(o => o.getPointers()
+                    .forEach(ps => pointers.push(...ps.getPointers(optionID)))
+                  );
+                break;
+            }
+            return pointers;
+          })
+        )
+      );
   }
 
 }

@@ -68,4 +68,8 @@ export class Pointers extends AbstractNodeV2<ConversationPointersType> {
     }
   }
 
+  getPointers(optionID?: string) {
+    return this.getChildren<Pointer>('ConversationPlayerPointer', p => !optionID || p.optionID === optionID);
+  }
+
 }

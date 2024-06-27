@@ -16,6 +16,7 @@ import { EventEntry } from "./Event/EventEntry";
 import { EventList } from "./Event/EventList";
 import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
 import { ObjectiveList } from "./Objective/ObjectiveList";
+import { LocationLinkOffset } from "../../utils/location";
 
 export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
   readonly type: PackageV1Type = "PackageV1";
@@ -64,10 +65,10 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
   }
 
   // Calculate the target package's uri by absolute / relative package path
-  getPackageUri(targetPackagePath: string) {
+  getPackageUri(targetPackagePath?: string) {
     let packageUri = this.uri;
     // Empty
-    if (targetPackagePath.length === 0) {
+    if (!targetPackagePath || targetPackagePath.length === 0) {
       return packageUri;
     }
     const packagePathArray = targetPackagePath.split("-");
@@ -119,11 +120,23 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
     }
   }
 
+  getConversation(conversationID?: string) {
+    return this.getChild<Conversation>('Conversation', c => !conversationID || c.conversationID === conversationID);
+  }
+
+  getConversations(conversationID?: string) {
+    return this.getChildren<Conversation>('Conversation', c => !conversationID || c.conversationID === conversationID);
+  }
+
   getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): NpcOption[] | PlayerOption[] {
     if (packageUri && this.isPackageUri(packageUri)) {
-      return this.getChildren<Conversation>('Conversation', c => c.conversationID === conversationID).flatMap(c => c.getConversationOptions<T>(type, optionID).flat()) as NpcOption[] | PlayerOption[];
+      return this.getConversations(conversationID).flatMap(c => c.getConversationOptions<T>(type, optionID).flat()) as NpcOption[] | PlayerOption[];
     }
     return this.parentAst.getV1ConversationOptions<T>(type, optionID, conversationID, packageUri);
+  }
+
+  getConversationPointers(type: ConversationOptionType, optionID: string, conversationID?: string, packageUri?: string) {
+    return this.parentAst.getV1ConversationPointers(type, optionID, conversationID, packageUri);
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
@@ -154,5 +167,21 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
       locations.push(...this.getChild<ObjectiveList>('ObjectiveList')?.getLocations(yamlPath, sourceUri) || []);
     }
     return locations;
+  }
+
+  getDefinitions(offset: number, uri?: string): LocationLinkOffset[] {
+    if (uri && !uri.startsWith(this.uri)) {
+      return [];
+    }
+
+    return super.getDefinitions(offset, uri);
+  }
+
+  getReferences(offset: number, uri?: string): LocationLinkOffset[] {
+    if (uri && !uri.startsWith(this.uri)) {
+      return [];
+    }
+
+    return super.getReferences(offset, uri);
   }
 }

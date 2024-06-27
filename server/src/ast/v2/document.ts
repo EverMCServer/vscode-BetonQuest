@@ -76,4 +76,12 @@ export abstract class Document<T extends NodeType> extends AbstractNodeV2<T> {
 
     return super.getDefinitions(offset);
   }
+
+  getReferences(offset: number, documentUri?: string) {
+    if (documentUri && documentUri !== this.uri) {
+      return [];
+    }
+
+    return super.getReferences(offset);
+  }
 }

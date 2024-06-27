@@ -4,12 +4,12 @@ import { SemanticTokenType } from "../../../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../../../utils/diagnostics";
 import { HoverInfo } from "../../../../../utils/hover";
 import { LocationLinkOffset } from "../../../../../utils/location";
-import { ConversationPointerType } from "../../../../node";
-import { Pointers } from "./Pointers";
+import { ConversationPlayerPointerType } from "../../../../node";
 import { AbstractNodeV1 } from "../../../../v1";
+import { Pointers } from "./Pointers";
 
-export class Pointer extends AbstractNodeV1<ConversationPointerType> {
-  readonly type: ConversationPointerType = "ConversationPointer";
+export class Pointer extends AbstractNodeV1<ConversationPlayerPointerType> {
+  readonly type: ConversationPlayerPointerType = "ConversationPlayerPointer";
   readonly offsetStart: number;
   readonly offsetEnd: number;
   readonly parent: Pointers;

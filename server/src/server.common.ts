@@ -62,6 +62,9 @@ export function server(connection: Connection): void {
 
         // Tell the client that this server provides definitions searching.
         definitionProvider: true,
+
+        // Tell the client that this server provides references searching.
+        referencesProvider: true,
       }
     };
     if (hasWorkspaceFolderCapability) {
@@ -198,14 +201,21 @@ export function server(connection: Connection): void {
   // Listen on Definitions requests
   connection.onDefinition((params, token, workDoneProgress, resultProgress) => {
     const position = allDocuments.getOffsetByPosition(params.textDocument.uri, params.position);
-    return asts.getDefinitions(position, params.textDocument.uri).map(l => {
-      return {
-        originSelectionRange: l.originSelectionRange ? allDocuments.getRangeByOffsets(params.textDocument.uri, l.originSelectionRange) : undefined,
-        targetUri: l.targetUri,
-        targetRange: allDocuments.getRangeByOffsets(l.targetUri, l.targetRange),
-        targetSelectionRange: allDocuments.getRangeByOffsets(l.targetUri, l.targetSelectionRange),
-      };
-    });
+    return asts.getDefinitions(position, params.textDocument.uri).map(l => ({
+      originSelectionRange: l.originSelectionRange ? allDocuments.getRangeByOffsets(params.textDocument.uri, l.originSelectionRange) : undefined,
+      targetUri: l.targetUri,
+      targetRange: allDocuments.getRangeByOffsets(l.targetUri, l.targetRange),
+      targetSelectionRange: allDocuments.getRangeByOffsets(l.targetUri, l.targetSelectionRange),
+    }));
+  });
+
+  // Listen on References requests
+  connection.onReferences((params, token, workDoneProgress, resultProgress) => {
+    const position = allDocuments.getOffsetByPosition(params.textDocument.uri, params.position);
+    return asts.getReferences(position, params.textDocument.uri).map(l => ({
+      uri: l.targetUri,
+      range: allDocuments.getRangeByOffsets(l.targetUri, l.targetRange)
+    }));
   });
 
   // Register custom handlers

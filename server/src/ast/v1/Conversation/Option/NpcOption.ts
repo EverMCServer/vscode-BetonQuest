@@ -12,6 +12,7 @@ import { Events } from "./Npc/Events";
 import { Pointers } from "./Npc/Pointers";
 import { Text } from "./Npc/Text";
 import { HoverInfo } from "../../../../utils/hover";
+import { LocationLinkOffset } from "../../../../utils/location";
 
 export class NpcOption extends AbstractNodeV1<ConversationNpcOptionType> {
   readonly type: ConversationNpcOptionType = "ConversationNpcOption";
@@ -132,6 +133,10 @@ export class NpcOption extends AbstractNodeV1<ConversationNpcOptionType> {
     // ...
   }
 
+  getPointers() {
+    return this.getChildren<Pointers>('ConversationPointers');
+  }
+
   getHoverInfo(offset: number): HoverInfo[] {
     const hoverInfo: HoverInfo[] = super.getHoverInfo(offset);
     if (offset < this.offsetStart || offset > this.offsetEnd) {
@@ -146,4 +151,22 @@ export class NpcOption extends AbstractNodeV1<ConversationNpcOptionType> {
     return hoverInfo;
   }
 
+  getReferences(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
+    // TODO: create "Key" node and move it into the node.
+    if (offset < this.yml.key.range![0] || offset > this.yml.key.range![1]) {
+      return [];
+    }
+    return this.getConversationPointers(
+      "ConversationNpcOption",
+      this.id,
+      this.parent.conversationID,
+      this.getPackageUri()
+    )
+      .flatMap(n => ({
+        originSelectionRange: [this.offsetStart, this.offsetEnd],
+        targetUri: n.getUri(),
+        targetRange: [n.offsetStart!, n.offsetEnd!],
+        targetSelectionRange: [n.offsetStart!, n.offsetEnd!]
+      }));
+  }
 }

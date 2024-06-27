@@ -6,7 +6,7 @@ import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getFilename } from "../../../utils/url";
 import { isYamlMapPair } from "../../../utils/yaml";
-import { ConversationOptionType, ConversationType, ConversationSectionType } from "../../node";
+import { ConversationOptionType, ConversationSectionType, ConversationType } from "../../node";
 import { PackageV2 } from "../Package";
 import { Document, SectionCollection } from "../document";
 import { ConversationFinalEvents } from "./ConversationFinalEvents";
@@ -32,12 +32,16 @@ export class Conversation extends SectionCollection<ConversationType> {
     this.addChild(new ConversationSection(uri, document, yml, this));
   }
 
+  getConversationSections() {
+    return this.getChildren<ConversationSection>('ConversationSection');
+  }
+
   getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string): NpcOption[] | PlayerOption[] {
     return this.getChildren<ConversationSection>('ConversationSection').map(c => c.getConversationOptions(type, optionID)).flat() as NpcOption[] | PlayerOption[];
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
-    return this.children.filter(c => !documentUri || c.getUri()=== documentUri).flatMap(c => ({
+    return this.children.filter(c => !documentUri || c.getUri() === documentUri).flatMap(c => ({
       uri: c.getUri(),
       diagnostics: c.getDiagnostics()
     }));
@@ -215,12 +219,16 @@ export class ConversationSection extends Document<ConversationSectionType> {
     this.addDiagnostic([offsetStart, offsetEnd], message, DiagnosticSeverity.Error, DiagnosticCode.ValueTypeIncorrect);
   }
 
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string): NpcOption[] | PlayerOption[] {
+  getFirst() {
+    return this.getChildren<First>('ConversationFirst');
+  }
+
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID?: string): NpcOption[] | PlayerOption[] {
     switch (type) {
       case "ConversationNpcOption":
-        return this.getChildren<NpcOption>('ConversationNpcOption').filter(o => o.id === optionID);
+        return this.getChildren<NpcOption>('ConversationNpcOption').filter(o => !optionID || o.id === optionID);
       case "ConversationPlayerOption":
-        return this.getChildren<PlayerOption>('ConversationPlayerOption').filter(o => o.id === optionID);
+        return this.getChildren<PlayerOption>('ConversationPlayerOption').filter(o => !optionID || o.id === optionID);
     }
     return [];
   }

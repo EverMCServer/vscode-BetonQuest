@@ -31,7 +31,10 @@ export type ConversationConditionType = 'ConversationCondition';
 export type ConversationEventsType = 'ConversationEvents';
 export type ConversationEventType = 'ConversationEvent';
 export type ConversationPointersType = 'ConversationPointers';
-export type ConversationPointerType = 'ConversationPointer';
+export type ConversationFirstPointerType = 'ConversationFirstPointer';
+export type ConversationNpcPointerType = 'ConversationNpcPointer';
+export type ConversationPlayerPointerType = 'ConversationPlayerPointer';
+export type ConversationPointerType = ConversationFirstPointerType | ConversationNpcPointerType | ConversationPlayerPointerType;
 export type ConversationTextTranslationsType = 'ConversationTextTranslations';
 export type ConversationTypes = ConversationListType | ConversationType | ConversationSectionType | ConversationKeyType | ConversationQuesterType | ConversationQuesterTranslationsType | ConversationFirstType | ConversationStopType | ConversationFinalEventsType | ConversationInterceptorType | ConversationOptionType | ConversationTextType | ConversationConditionsType | ConversationConditionType | ConversationEventsType | ConversationEventType | ConversationPointersType | ConversationPointerType | ConversationTextTranslationsType;
 
@@ -208,6 +211,16 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
     return this.children.flatMap(c => c.getDefinitions(offset, documentUri));
   }
 
+  getReferences(offset: number, documentUri?: string): LocationLinkOffset[] {
+    // if (documentUri && !documentUri.startsWith(this.uri)) {
+    //   return [];
+    // }
+    if (this.offsetStart && this.offsetEnd && (offset < this.offsetStart || offset > this.offsetEnd)) {
+      return [];
+    }
+    return this.children.flatMap(c => c.getReferences(offset, documentUri));
+  }
+
   // Get range by offset.
   // This method must be overrided / hijacked by the top-level class.
   getRangeByOffset(offsetStart: number, offsetEnd: number): Range {
@@ -216,7 +229,7 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
 
   // Get target package's uri by package path.
   // This method must be overrided / hijacked by the top-level class.
-  getPackageUri(targetPackagePath: string): string {
+  getPackageUri(targetPackagePath?: string): string {
     return this.parent.getPackageUri(targetPackagePath);
   }
 };
