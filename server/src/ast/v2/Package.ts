@@ -39,7 +39,7 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
     this.addChild(new ObjectiveList(this.uri, this));
 
     // Calculate package's path
-    this.packagePath = this.uri.slice(this.parentAst.wsFolderUri.length).replace(/^QuestPackages\//m, "").replace(/(?:\/)$/m, "").split('/');
+    this.packagePath = this.uri.slice(this.parentAst.wsFolderUri.length).replace(/^\/?QuestPackages\//m, "").replace(/(?:\/)$/m, "").split('/');
 
     // Iterate all files and create nodes.
     documents.forEach((document) => {

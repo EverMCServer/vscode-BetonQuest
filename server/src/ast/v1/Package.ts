@@ -31,7 +31,7 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
     this.parentAst = parent;
 
     // Calculate package's path
-    this.packagePath = this.uri.slice(this.parentAst.wsFolderUri.length).replace(/(?:\/)$/m, "").split('/');
+    this.packagePath = this.uri.slice(this.parentAst.wsFolderUri.length).replace(/^\/?|\/?$/gm, "").split('/');
 
     // Parse sub Nodes by types
     documents.forEach((document) => {
