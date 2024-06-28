@@ -73,10 +73,12 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
     }
     const packagePathArray = targetPackagePath.split("-");
     // Handle relative path
-    if (packagePathArray[0] === '_') {
+    if (packagePathArray[0] === '_' || packagePathArray[0] === '') {
       packagePathArray.forEach(p => {
         if (p === '_') {
           packageUri = getParentUrl(packageUri);
+        } else if (p === '') {
+          // Skip
         } else {
           packageUri += p + '/';
         }
@@ -84,7 +86,7 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
       return packageUri;
     }
     // Handle absolute path
-    packageUri = this.parentAst.wsFolderUri + packagePathArray.join('/') + '/';
+    packageUri = this.parentAst.packageRootUriV1 + packagePathArray.join('/') + '/';
     return packageUri;
   }
 

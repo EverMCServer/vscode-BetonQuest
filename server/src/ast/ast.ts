@@ -84,8 +84,8 @@ export class ASTs {
 // AST structure for BetonQuest V1 & V2
 export class AST {
   readonly wsFolderUri: string; // The dir of the workspace folder
-  // private packageRootUriV1: string; // The base dir of the package root
-  // private packageRootUriV2: string; // The base dir of the package root
+  readonly packageRootUriV1: string; // The base dir of the package root
+  readonly packageRootUriV2: string; // The base dir of the package root
   private packagesV1: PackageV1[] = [];
   private packagesV2: PackageV2[] = [];
 
@@ -94,8 +94,8 @@ export class AST {
     const [filesV1, filesV2] = this.classifyAllDocuments(documents);
 
     // // Set the base dir of the package
-    // this.packageRootUriV1 = wsFolderUri;
-    // this.packageRootUriV2 = wsFolderUri + "QuestPackages/";
+    this.packageRootUriV1 = wsFolderUri;
+    this.packageRootUriV2 = wsFolderUri + "QuestPackages/";
 
     // Create AST by versions and packages
     this.parseAllDocumentsV1(filesV1);
