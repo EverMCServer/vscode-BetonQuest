@@ -297,7 +297,7 @@ export class AST {
     return this.packagesV1.filter(pkg => !packageUri || pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions<T>(type, optionID, conversationID, packageUri).flat()) as V1NpcOption[] | V1PlayerOption[];
   }
 
-  getV1ConversationPointers(type: ConversationOptionType, optionID: string, conversationID?: string, packageUri?: string) {
+  getV1ConversationOptionPointers(type: ConversationOptionType, optionID: string, conversationID?: string, packageUri?: string) {
     return this.packagesV1.filter(pkg => !packageUri || pkg.isPackageUri(packageUri))
       .flatMap(p => p.getConversations(conversationID)
         .flatMap(c => {
@@ -325,6 +325,31 @@ export class AST {
       );
   }
 
+  getV1ConversationConditionPointers(conditionID?: string, packageUri?: string) {
+    return this.packagesV1
+      .flatMap(p => p.getConversations()
+        .flatMap(c => c.getConversationAllOptions()
+          .flatMap(o => o.getConditions()
+            .flatMap(c => c.getConditions(conditionID, packageUri).flat())
+          )
+        )
+      );
+  }
+
+  getV1ConversationEventPointers(eventID?: string, packageUri?: string) {
+    return this.packagesV1
+      .flatMap(p => p.getConversations()
+        .flatMap(c => [
+          ...c.getConversationAllOptions()
+            .flatMap(o => o.getEvents()
+              .flatMap(c => c.getEvents(eventID, packageUri).flat())
+            ),
+          ...c.getFinalEvents()
+            .flatMap(f => f.getFinalEvents(eventID, packageUri))
+        ])
+      );
+  }
+
   getV2ConditionEntry(id: string, packageUri: string) {
     return this.packagesV2.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getConditionEntries(id, packageUri));
   }
@@ -341,7 +366,7 @@ export class AST {
     return this.packagesV2.filter(pkg => !packageUri || pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions<T>(type, optionID, conversationID, packageUri).flat()) as V2NpcOption[] | V2PlayerOption[];
   }
 
-  getV2ConversationPointers(type: ConversationOptionType, optionID: string, conversationID?: string, packageUri?: string) {
+  getV2ConversationOptionPointers(type: ConversationOptionType, optionID: string, conversationID?: string, packageUri?: string) {
     return this.packagesV2.filter(pkg => !packageUri || pkg.isPackageUri(packageUri))
       .flatMap(p => p.getConversations(conversationID)
         .flatMap(c => c.getConversationSections()
@@ -367,6 +392,35 @@ export class AST {
             }
             return pointers;
           })
+        )
+      );
+  }
+
+  getV2ConversationConditionPointers(conditionID?: string, packageUri?: string) {
+    return this.packagesV2
+      .flatMap(p => p.getConversations()
+        .flatMap(c => c.getConversationSections()
+          .flatMap(c => c.getConversationAllOptions()
+            .flatMap(o => o.getConditions()
+              .flatMap(c => c.getConditions(conditionID, packageUri).flat())
+            )
+          )
+        )
+      );
+  }
+
+  getV2ConversationEventPointers(eventID?: string, packageUri?: string) {
+    return this.packagesV2
+      .flatMap(p => p.getConversations()
+        .flatMap(c => c.getConversationSections()
+          .flatMap(c => [
+            ...c.getConversationAllOptions()
+              .flatMap(o => o.getEvents()
+                .flatMap(c => c.getEvents(eventID, packageUri).flat())
+              ),
+            ...c.getFinalEvents()
+              .flatMap(f => f.getFinalEvents(eventID, packageUri))
+          ])
         )
       );
   }

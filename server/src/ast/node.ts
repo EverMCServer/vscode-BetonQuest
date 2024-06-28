@@ -202,7 +202,7 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
   }
 
   getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
-    // if (documentUri && !documentUri.startsWith(this.uri)) {
+    // if (documentUri && !documentUri.startsWith(this.getUri())) {
     //   return [];
     // }
     if (this.offsetStart && this.offsetEnd && (offset < this.offsetStart || offset > this.offsetEnd)) {
@@ -212,7 +212,7 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
   }
 
   getReferences(offset: number, documentUri?: string): LocationLinkOffset[] {
-    // if (documentUri && !documentUri.startsWith(this.uri)) {
+    // if (documentUri && !documentUri.startsWith(this.getUri())) {
     //   return [];
     // }
     if (this.offsetStart && this.offsetEnd && (offset < this.offsetStart || offset > this.offsetEnd)) {

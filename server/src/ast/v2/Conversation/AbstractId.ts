@@ -25,8 +25,8 @@ export abstract class AbstractID<T extends NodeType, PT extends ConversationFina
 
   // Cache content
   protected withExclamationMark: boolean;
-  protected package: string = "";
-  protected id: string;
+  readonly package: string = "";
+  readonly id: string;
 
   constructor(idString: string, range: [number, number], parent: PT) {
     super();

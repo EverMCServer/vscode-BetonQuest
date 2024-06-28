@@ -232,8 +232,16 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
     return this.parentAst.getV2ConversationOptions(type, optionID, conversationID, packageUri);
   }
 
-  getConversationPointers(type: ConversationOptionType, optionID: string, conversationID?: string, packageUri?: string) {
-    return this.parentAst.getV2ConversationPointers(type, optionID, conversationID, packageUri);
+  getConversationOptionPointers(type: ConversationOptionType, optionID: string, conversationID?: string, packageUri?: string) {
+    return this.parentAst.getV2ConversationOptionPointers(type, optionID, conversationID, packageUri);
+  }
+
+  getConversationConditionPointers(conditionID?: string, packageUri?: string) {
+    return this.parentAst.getV2ConversationConditionPointers(conditionID, packageUri);
+  }
+
+  getConversationEventPointers(eventID?: string, packageUri?: string) {
+    return this.parentAst.getV2ConversationEventPointers(eventID, packageUri);
   }
 
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {

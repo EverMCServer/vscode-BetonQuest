@@ -91,10 +91,22 @@ export abstract class AbstractNodeV1<T extends NodeType> extends AbstractNode<T,
     return this.parent.getConversationOptions<T>(type, optionID, conversationID, packageUri);
   }
 
-  // Get all target package's conversation options.
+  // Get all target package's conversation option pointers.
   // This method must be overrided / hijacked by the top-level class.
-  getConversationPointers(type: ConversationOptionType, optionID: string, conversationID?: string, packageUri?: string): (FirstPointer | NpcPointer | PlayerPointer)[] {
-    return this.parent.getConversationPointers(type, optionID, conversationID, packageUri);
+  getConversationOptionPointers(type: ConversationOptionType, optionID: string, conversationID?: string, packageUri?: string): (FirstPointer | NpcPointer | PlayerPointer)[] {
+    return this.parent.getConversationOptionPointers(type, optionID, conversationID, packageUri);
+  }
+
+  // Get all target package's conversation condition pointers.
+  // This method must be overrided / hijacked by the top-level class.
+  getConversationConditionPointers(conditionID?: string, packageUri?: string): (NpcCondition | PlayerCondition)[] {
+    return this.parent.getConversationConditionPointers(conditionID, packageUri);
+  }
+
+  // Get all target package's conversation event pointers.
+  // This method must be overrided / hijacked by the top-level class.
+  getConversationEventPointers(eventID?: string, packageUri?: string): (ConversationFinalEvent | NpcEvent | PlayerEvent)[] {
+    return this.parent.getConversationEventPointers(eventID, packageUri);
   }
 
 }

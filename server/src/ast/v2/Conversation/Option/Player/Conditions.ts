@@ -68,4 +68,8 @@ export class Conditions extends AbstractNodeV2<ConversationConditionsType> {
     }
   }
 
+  getConditions(conditionID?: string, packageUri?: string) {
+    return this.getChildren<Condition>('ConversationCondition', e => (!conditionID || e.id === conditionID) && (!packageUri || this.getPackageUri(e.package) === packageUri));
+  }
+
 }

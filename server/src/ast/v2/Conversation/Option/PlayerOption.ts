@@ -137,6 +137,14 @@ export class PlayerOption extends AbstractNodeV2<ConversationPlayerOptionType> {
     return this.getChildren<Pointers>('ConversationPointers');
   }
 
+  getConditions() {
+    return this.getChildren<Conditions>('ConversationConditions');
+  }
+
+  getEvents() {
+    return this.getChildren<Events>('ConversationEvents');
+  }
+
   getHoverInfo(offset: number): HoverInfo[] {
     const hoverInfo: HoverInfo[] = super.getHoverInfo(offset);
     if (offset < this.offsetStart || offset > this.offsetEnd) {
@@ -153,10 +161,10 @@ export class PlayerOption extends AbstractNodeV2<ConversationPlayerOptionType> {
 
   getReferences(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
     // TODO: create "Key" node and move it into the node.
-    if (offset < this.yml.key.range![0] || offset > this.yml.key.range![1]) {
+    if (offset < this.yml.key.range![0] || offset > this.yml.key.range![1]) { // Should be removed when moved into "Key"
       return [];
     }
-    return this.getConversationPointers(
+    return this.getConversationOptionPointers(
       "ConversationPlayerOption",
       this.id,
       this.parent.parent.conversationID,

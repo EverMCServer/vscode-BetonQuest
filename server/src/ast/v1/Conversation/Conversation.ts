@@ -194,13 +194,32 @@ export class Conversation extends Document<ConversationType> {
     return this.getChildren<First>('ConversationFirst');
   }
 
+  getFinalEvents() {
+    return this.getChildren<ConversationFinalEvents>('ConversationFinalEvents');
+  }
+
+  getNpcOptions(optionID?: string) {
+    return this.getChildren<NpcOption>('ConversationNpcOption', o => !optionID || o.id === optionID);
+  }
+
+  getPlayerOptions(optionID?: string) {
+    return this.getChildren<PlayerOption>('ConversationPlayerOption', o => !optionID || o.id === optionID);
+  }
+
   getConversationOptions<T extends ConversationOptionType>(type: T, optionID?: string) {
     switch (type) {
       case "ConversationNpcOption":
-        return this.getChildren<NpcOption>('ConversationNpcOption').filter(o => !optionID || o.id === optionID);
+        return this.getNpcOptions(optionID);
       case "ConversationPlayerOption":
-        return this.getChildren<PlayerOption>('ConversationPlayerOption').filter(o => !optionID || o.id === optionID);
+        return this.getPlayerOptions(optionID);
     }
     return [];
+  }
+
+  getConversationAllOptions() {
+    return [
+      ...this.getNpcOptions(),
+      ...this.getPlayerOptions()
+    ];
   }
 }

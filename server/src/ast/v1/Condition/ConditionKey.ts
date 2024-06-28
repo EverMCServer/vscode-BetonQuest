@@ -1,7 +1,9 @@
 
 import { Scalar } from "yaml";
+
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { HoverInfo } from "../../../utils/hover";
+import { LocationLinkOffset } from "../../../utils/location";
 import { ConditionKeyType } from "../../node";
 import { AbstractNodeV1 } from "../../v1";
 import { ConditionEntry } from "./ConditionEntry";
@@ -51,5 +53,18 @@ export class ConditionKey extends AbstractNodeV1<ConditionKeyType> {
       return hoverInfo;
     }
     return [];
+  }
+
+  getReferences(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
+    return this.getConversationConditionPointers(
+      this.value,
+      this.getPackageUri()
+    )
+      .flatMap(n => ({
+        originSelectionRange: [this.offsetStart, this.offsetEnd],
+        targetUri: n.getUri(),
+        targetRange: [n.offsetStart!, n.offsetEnd!],
+        targetSelectionRange: [n.offsetStart!, n.offsetEnd!]
+      }));
   }
 }

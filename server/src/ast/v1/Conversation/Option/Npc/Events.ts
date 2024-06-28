@@ -68,4 +68,8 @@ export class Events extends AbstractNodeV1<ConversationEventsType> {
     }
   }
 
+  getEvents(eventID?: string, packageUri?: string) {
+    return this.getChildren<Event>('ConversationEvent', e => (!eventID || e.id === eventID) && (!packageUri || this.getPackageUri(e.package) === packageUri));
+  }
+
 }

@@ -96,4 +96,8 @@ export class ConversationFinalEvents extends AbstractNodeV2<ConversationFinalEve
       }
     }
   }
+
+  getFinalEvents(eventID?: string, packageUri?: string) {
+    return this.getChildren<ConversationFinalEvent>('ConversationEvent', e => (!eventID || e.id === eventID) && (!packageUri || this.getPackageUri(e.package) === packageUri));
+  }
 }

@@ -2,6 +2,7 @@
 import { Scalar } from "yaml";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { HoverInfo } from "../../../utils/hover";
+import { LocationLinkOffset } from "../../../utils/location";
 import { EventKeyType } from "../../node";
 import { AbstractNodeV1 } from "../../v1";
 import { EventEntry } from "./EventEntry";
@@ -51,5 +52,18 @@ export class EventKey extends AbstractNodeV1<EventKeyType> {
       return hoverInfo;
     }
     return [];
+  }
+
+  getReferences(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
+    return this.getConversationEventPointers(
+      this.value,
+      this.getPackageUri()
+    )
+      .flatMap(n => ({
+        originSelectionRange: [this.offsetStart, this.offsetEnd],
+        targetUri: n.getUri(),
+        targetRange: [n.offsetStart!, n.offsetEnd!],
+        targetSelectionRange: [n.offsetStart!, n.offsetEnd!]
+      }));
   }
 }
