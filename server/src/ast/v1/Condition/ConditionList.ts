@@ -26,13 +26,15 @@ export class ConditionList extends Document<ConditionListType> {
 
   getLocations(yamlPath: string[], sourceUri: string) {
     const result: LocationsResponse = [];
-    const key = this.getChild<ConditionEntry>('ConditionEntry')?.getChild<ConditionKey>('ConditionKey', e => e.value === yamlPath[1]);
-    if (key) {
-      result.push({
-        uri: this.uri,
-        offset: key.offsetStart,
+    this
+      .getChildren<ConditionEntry>('ConditionEntry')
+      .flatMap(e => e.getChildren<ConditionKey>('ConditionKey', k => k.value === yamlPath[1]))
+      .forEach(k => {
+        result.push({
+          uri: this.uri,
+          offset: k.offsetStart
+        });
       });
-    }
     return result;
   }
 

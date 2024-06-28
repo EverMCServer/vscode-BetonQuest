@@ -26,13 +26,15 @@ export class EventList extends Document<EventListType> {
 
   getLocations(yamlPath: string[], sourceUri: string) {
     const result: LocationsResponse = [];
-    const key = this.getChild<EventEntry>('EventEntry')?.getChild<EventKey>('EventKey', e => e.value === yamlPath[1]);
-    if (key) {
-      result.push({
-        uri: this.uri,
-        offset: key.offsetStart,
+    this
+      .getChildren<EventEntry>('EventEntry')
+      .flatMap(e => e.getChildren<EventKey>('EventKey', k => k.value === yamlPath[1]))
+      .forEach(k => {
+        result.push({
+          uri: this.uri,
+          offset: k.offsetStart
+        });
       });
-    }
     return result;
   }
 

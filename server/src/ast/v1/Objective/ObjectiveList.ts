@@ -26,13 +26,15 @@ export class ObjectiveList extends Document<ObjectiveListType> {
 
   getLocations(yamlPath: string[], sourceUri: string) {
     const result: LocationsResponse = [];
-    const key = this.getChild<ObjectiveEntry>('ObjectiveEntry')?.getChild<ObjectiveKey>('ObjectiveKey', e => e.value === yamlPath[1]);
-    if (key) {
-      result.push({
-        uri: this.uri,
-        offset: key.offsetStart,
+    this
+      .getChildren<ObjectiveEntry>('ObjectiveEntry')
+      .flatMap(e => e.getChildren<ObjectiveKey>('ObjectiveKey', k => k.value === yamlPath[1]))
+      .forEach(k => {
+        result.push({
+          uri: this.uri,
+          offset: k.offsetStart
+        });
       });
-    }
     return result;
   }
 

@@ -64,6 +64,22 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
     });
   }
 
+  getConditionList() {
+    return this.getChild<ConditionList>('ConditionList');
+  }
+
+  getEventList() {
+    return this.getChild<EventList>('EventList');
+  }
+
+  getObjectiveList() {
+    return this.getChild<ObjectiveList>('ObjectiveList');
+  }
+
+  getConversations(conversationID?: string) {
+    return this.getChildren<Conversation>('Conversation', c => !conversationID || c.conversationID === conversationID);
+  }
+
   // Calculate the target package's uri by absolute / relative package path
   getPackageUri(targetPackagePath?: string) {
     let packageUri = this.uri;
@@ -122,14 +138,6 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
     }
   }
 
-  getConversation(conversationID?: string) {
-    return this.getChild<Conversation>('Conversation', c => !conversationID || c.conversationID === conversationID);
-  }
-
-  getConversations(conversationID?: string) {
-    return this.getChildren<Conversation>('Conversation', c => !conversationID || c.conversationID === conversationID);
-  }
-
   getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): NpcOption[] | PlayerOption[] {
     if (packageUri && this.isPackageUri(packageUri)) {
       return this.getConversations(conversationID).flatMap(c => c.getConversationOptions<T>(type, optionID).flat()) as NpcOption[] | PlayerOption[];
@@ -168,13 +176,13 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
     //     locations.push
     // }
     if (yamlPath[0] === '@conditions') {
-      locations.push(...this.getChild<ConditionList>('ConditionList')?.getLocations(yamlPath, sourceUri) || []);
+      locations.push(...this.getConditionList()?.getLocations(yamlPath, sourceUri) || []);
     }
     if (yamlPath[0] === '@events') {
-      locations.push(...this.getChild<EventList>('EventList')?.getLocations(yamlPath, sourceUri) || []);
+      locations.push(...this.getEventList()?.getLocations(yamlPath, sourceUri) || []);
     }
     if (yamlPath[0] === '@objectives') {
-      locations.push(...this.getChild<ObjectiveList>('ObjectiveList')?.getLocations(yamlPath, sourceUri) || []);
+      locations.push(...this.getObjectiveList()?.getLocations(yamlPath, sourceUri) || []);
     }
     return locations;
   }
