@@ -67,6 +67,12 @@ export abstract class AbstractNodeV1<T extends NodeType> extends AbstractNode<T,
     }
   }
 
+  // Get absolute Package path.
+  // This method must be overrided / hijacked by the top-level class.
+  getPackagePath(): string[] {
+    return this.parent.getPackagePath();
+  }
+
   // Get all target package's Condition entries.
   // This method must be overrided / hijacked by the top-level class.
   getConditionEntries(id: string, packageUri: string): ConditionEntry[] {

@@ -40,7 +40,7 @@ export class ConditionKey extends AbstractNodeV2<ConditionKeyType> {
   getHoverInfo(offset?: number): HoverInfo[] {
     if (!offset || this.offsetStart <= offset && this.offsetEnd >= offset) {
       const hoverInfo: HoverInfo[] = [{
-        content: "(full path: " + this.value + ")",
+        content: "Full path: " + this.getPackagePath().join("-") + "." + this.value,
         offset: [this.offsetStart, this.offsetEnd]
       }];
       if (this.comment) {

@@ -64,6 +64,11 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
     });
   }
 
+  // Get absolute Package path
+  getPackagePath() {
+    return this.packagePath;
+  }
+
   getConditionList() {
     return this.getChild<ConditionList>('ConditionList');
   }
