@@ -49,6 +49,7 @@ export class Pointer extends AbstractNodeV2<ConversationNpcPointerType> {
       );
     }
     // Parse package package, Conversation ID, Pointer ID
+    // https://betonquest.org/2.0/Documentation/Features/Conversations/#cross-conversation-pointers
     if (str.includes(".")) {
       const splited = str.split(".", 3); // TODO: check number of "."
       this.package = splited[0];

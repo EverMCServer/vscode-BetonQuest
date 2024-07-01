@@ -16,7 +16,6 @@ export class Pointer extends AbstractNodeV1<ConversationNpcPointerType> {
 
   // Cache content
   readonly withExclamationMark: boolean;
-  readonly package: string = "";
   readonly conversationID: string;
   readonly optionID: string;
 
@@ -49,11 +48,11 @@ export class Pointer extends AbstractNodeV1<ConversationNpcPointerType> {
       );
     }
     // Parse package package, Conversation ID, Pointer ID
+    // https://betonquest.org/1.12/User-Documentation/Conversations/#cross-conversation-pointers
     if (str.includes(".")) {
-      const splited = str.split(".", 3); // TODO: check number of "."
-      this.package = splited[0];
-      this.conversationID = splited[1];
-      this.optionID = splited[2];
+      const splited = str.split(".", 2); // TODO: check number of "."
+      this.conversationID = splited[0];
+      this.optionID = splited[1];
     } else {
       this.conversationID = this.parent.parent.parent.conversationID;
       this.optionID = str;
@@ -96,6 +95,6 @@ export class Pointer extends AbstractNodeV1<ConversationNpcPointerType> {
       "ConversationPlayerOption",
       this.optionID,
       this.conversationID,
-      this.getPackageUri(this.package));
+      this.getPackageUri());
   }
 }
