@@ -143,7 +143,7 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
     }
   }
 
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): NpcOption[] | PlayerOption[] {
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID?: string, conversationID?: string, packageUri?: string): NpcOption[] | PlayerOption[] {
     if (packageUri && this.isPackageUri(packageUri)) {
       return this.getConversations(conversationID).flatMap(c => c.getConversationOptions<T>(type, optionID).flat()) as NpcOption[] | PlayerOption[];
     }

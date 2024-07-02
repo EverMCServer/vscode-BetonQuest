@@ -36,10 +36,6 @@ export class Conversation extends SectionCollection<ConversationType> {
     return this.getChildren<ConversationSection>('ConversationSection');
   }
 
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string): NpcOption[] | PlayerOption[] {
-    return this.getChildren<ConversationSection>('ConversationSection').map(c => c.getConversationOptions(type, optionID)).flat() as NpcOption[] | PlayerOption[];
-  }
-
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
     return this.children.filter(c => !documentUri || c.getUri() === documentUri).flatMap(c => ({
       uri: c.getUri(),
@@ -233,16 +229,6 @@ export class ConversationSection extends Document<ConversationSectionType> {
 
   getPlayerOptions(optionID?: string) {
     return this.getChildren<PlayerOption>('ConversationPlayerOption', o => !optionID || o.id === optionID);
-  }
-
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID?: string): NpcOption[] | PlayerOption[] {
-    switch (type) {
-      case "ConversationNpcOption":
-        return this.getNpcOptions(optionID);
-      case "ConversationPlayerOption":
-        return this.getPlayerOptions(optionID);
-    }
-    return [];
   }
 
   getConversationAllOptions() {

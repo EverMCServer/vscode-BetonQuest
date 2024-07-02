@@ -230,10 +230,7 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
     }
   }
 
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string): NpcOption[] | PlayerOption[] {
-    if (packageUri && this.isPackageUri(packageUri)) {
-      return this.getConversations().flatMap(c => c.getConversationOptions<T>(type, optionID).flat()) as NpcOption[] | PlayerOption[];
-    }
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID?: string, conversationID?: string, packageUri?: string) {
     return this.parentAst.getV2ConversationOptions(type, optionID, conversationID, packageUri);
   }
 

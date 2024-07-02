@@ -206,7 +206,10 @@ export class Conversation extends Document<ConversationType> {
     return this.getChildren<PlayerOption>('ConversationPlayerOption', o => !optionID || o.id === optionID);
   }
 
-  getConversationOptions<T extends ConversationOptionType>(type: T, optionID?: string) {
+  getConversationOptions<T extends ConversationOptionType>(type: T, optionID?: string, conversationID?: string, packageUri?: string) {
+    if (conversationID && this.conversationID !== conversationID) {
+      return super.getConversationOptions(type, optionID, conversationID, packageUri);
+    }
     switch (type) {
       case "ConversationNpcOption":
         return this.getNpcOptions(optionID);

@@ -293,15 +293,15 @@ export class AST {
     return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getObjectiveEntries(id, packageUri));
   }
 
-  getV1ConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string) {
+  getV1ConversationOptions<T extends ConversationOptionType>(type: T, optionID?: string, conversationID?: string, packageUri?: string) {
     return this.packagesV1.filter(pkg => !packageUri || pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions<T>(type, optionID, conversationID, packageUri).flat()) as V1NpcOption[] | V1PlayerOption[];
   }
 
   getV1ConversationOptionPointers(type: ConversationOptionType, optionID: string, conversationID?: string, packageUri?: string) {
     return this.packagesV1.filter(pkg => !packageUri || pkg.isPackageUri(packageUri))
-      .flatMap(p => p.getConversations(conversationID)
+      .flatMap(p => p.getConversations()
         .flatMap(c => {
-          let pointers: (V1FirstPointer | V1NpcPointer | V1PlayerPointer)[] = [];
+          const pointers: (V1FirstPointer | V1NpcPointer | V1PlayerPointer)[] = [];
           switch (type) {
             case 'ConversationNpcOption':
               // Search conversation first pointers
@@ -309,14 +309,14 @@ export class AST {
               // Search pointers from conversation Player Options
               c.getConversationOptions('ConversationPlayerOption')
                 .forEach(o => o.getPointers()
-                  .forEach(ps => pointers.push(...ps.getPointers(optionID)))
+                  .forEach(ps => pointers.push(...ps.getPointers(optionID, conversationID)))
                 );
               break;
             case 'ConversationPlayerOption':
               // Search pointers from conversation NPC Options
               c.getConversationOptions('ConversationNpcOption')
                 .forEach(o => o.getPointers()
-                  .forEach(ps => pointers.push(...ps.getPointers(optionID)))
+                  .forEach(ps => pointers.push(...ps.getPointers(optionID, conversationID)))
                 );
               break;
           }
@@ -362,16 +362,29 @@ export class AST {
     return this.packagesV2.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getObjectiveEntries(id, packageUri));
   }
 
-  getV2ConversationOptions<T extends ConversationOptionType>(type: T, optionID: string, conversationID?: string, packageUri?: string) {
-    return this.packagesV2.filter(pkg => !packageUri || pkg.isPackageUri(packageUri)).flatMap(p => p.getConversationOptions<T>(type, optionID, conversationID, packageUri).flat()) as V2NpcOption[] | V2PlayerOption[];
-  }
-
-  getV2ConversationOptionPointers(type: ConversationOptionType, optionID: string, conversationID?: string, packageUri?: string) {
+  getV2ConversationOptions<T extends ConversationOptionType>(type: T, optionID?: string, conversationID?: string, packageUri?: string) {
     return this.packagesV2.filter(pkg => !packageUri || pkg.isPackageUri(packageUri))
       .flatMap(p => p.getConversations(conversationID)
         .flatMap(c => c.getConversationSections()
           .flatMap(c => {
-            let pointers: (V2FirstPointer | V2NpcPointer | V2PlayerPointer)[] = [];
+            switch (type) {
+              case 'ConversationNpcOption':
+                return c.getNpcOptions(optionID).flat();
+              case 'ConversationPlayerOption':
+                return c.getPlayerOptions(optionID).flat();
+            }
+            return [] as (V2NpcOption | V2PlayerOption)[];
+          })
+        )
+      );
+  }
+
+  getV2ConversationOptionPointers(type: ConversationOptionType, optionID: string, conversationID?: string, packageUri?: string) {
+    return this.packagesV2
+      .flatMap(p => p.getConversations()
+        .flatMap(c => c.getConversationSections()
+          .flatMap(c => {
+            const pointers: (V2FirstPointer | V2NpcPointer | V2PlayerPointer)[] = [];
             switch (type) {
               case 'ConversationNpcOption':
                 // Search conversation first pointers
@@ -379,14 +392,14 @@ export class AST {
                 // Search pointers from conversation Player Options
                 c.getConversationOptions('ConversationPlayerOption')
                   .forEach(o => o.getPointers()
-                    .forEach(ps => pointers.push(...ps.getPointers(optionID)))
+                    .forEach(ps => pointers.push(...ps.getPointers(optionID, conversationID, packageUri)))
                   );
                 break;
               case 'ConversationPlayerOption':
                 // Search pointers from conversation NPC Options
                 c.getConversationOptions('ConversationNpcOption')
                   .forEach(o => o.getPointers()
-                    .forEach(ps => pointers.push(...ps.getPointers(optionID)))
+                    .forEach(ps => pointers.push(...ps.getPointers(optionID, conversationID, packageUri)))
                   );
                 break;
             }
