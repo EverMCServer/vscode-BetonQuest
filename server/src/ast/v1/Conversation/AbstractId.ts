@@ -42,7 +42,6 @@ export abstract class AbstractID<T extends NodeType, PT extends ConversationFina
     }
     // Check illigal characters
     if (str.match(/\s/)) {
-      // TODO this._addDiagnostic();
       this.addDiagnostic(
         [this.offsetStart + (this.withExclamationMark ? 1 : 0), this.offsetEnd],
         "An ID cannot contains any spaces",
@@ -61,6 +60,15 @@ export abstract class AbstractID<T extends NodeType, PT extends ConversationFina
       const splited = str.split(".", 2);
       this.package = splited[0];
       this.id = splited[1];
+      // Check number of "."
+      if ((str.match(/\./g) || []).length > 1) {
+        this.addDiagnostic(
+          [this.offsetStart, this.offsetEnd],
+          `Extra seprator "." founded in path. Please make sure special characters like ".", "-" or "_" are NOT being used when naming a Package, Conversation or Pointer.`,
+          DiagnosticSeverity.Error,
+          DiagnosticCode.CrossPackageCrossConversationPointerInvalidCharacter
+        );
+      }
     } else {
       this.id = str;
     }

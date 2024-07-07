@@ -99,5 +99,10 @@ export enum DiagnosticCode {
   /**
    * The value of "first" section is incorrect.
    */
-  ConversationFirstIncorrect = "3012",
+  ConversationFirstIncorrect = "BQ-3012",
+
+  /**
+   * Invalid character founded in a cross-package or cross-conversation pointer.
+   */
+  CrossPackageCrossConversationPointerInvalidCharacter = "BQ-4001",
 }

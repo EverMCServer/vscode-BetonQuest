@@ -33,7 +33,6 @@ export class Pointer extends AbstractNodeV1<ConversationPlayerPointerType> {
     }
     // Check illigal characters
     if (str.match(/\s/)) {
-      // TODO this._addDiagnostic();
       this.addDiagnostic(
         [this.offsetStart + (this.withExclamationMark ? 1 : 0), this.offsetEnd],
         "An ID cannot contains any spaces",
@@ -50,9 +49,18 @@ export class Pointer extends AbstractNodeV1<ConversationPlayerPointerType> {
     // Parse package package, Conversation ID, Pointer ID
     // https://betonquest.org/1.12/User-Documentation/Conversations/#cross-conversation-pointers
     if (str.includes(".")) {
-      const splited = str.split(".", 2); // TODO: check number of "."
+      const splited = str.split(".", 2);
       this.conversationID = splited[0];
       this.optionID = splited[1];
+      // Check number of "."
+      if ((str.match(/\./g) || []).length > 1) {
+        this.addDiagnostic(
+          [this.offsetStart, this.offsetEnd],
+          `Extra seprator "." founded in path. Please make sure special characters like ".", "-" or "_" are NOT being used when naming a Package, Conversation or Pointer.`,
+          DiagnosticSeverity.Error,
+          DiagnosticCode.CrossPackageCrossConversationPointerInvalidCharacter
+        );
+      }
     } else {
       this.conversationID = this.parent.parent.parent.conversationID;
       this.optionID = str;
