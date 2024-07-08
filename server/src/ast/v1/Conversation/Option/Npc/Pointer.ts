@@ -1,4 +1,4 @@
-import { DiagnosticSeverity } from "vscode-languageserver";
+import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { SemanticTokenType } from "../../../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../../../utils/diagnostics";
@@ -72,6 +72,19 @@ export class Pointer extends AbstractNodeV1<ConversationNpcPointerType> {
       offsetEnd: this.offsetEnd,
       tokenType: SemanticTokenType.ConversationOptionPlayerID
     });
+  }
+
+  getDiagnostics(): Diagnostic[] {
+    const diagnostics = super.getDiagnostics();
+    if (this.getTargetNodes().length < 1) {
+      diagnostics.push(this.makeDiagnostic(
+        [this.offsetStart, this.offsetEnd],
+        `The Conversation Option "${this.optionID}" does not exist.`,
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ConversationOptionPointerUndefined
+      ));
+    }
+    return diagnostics;
   }
 
   getHoverInfo(offset: number): HoverInfo[] {

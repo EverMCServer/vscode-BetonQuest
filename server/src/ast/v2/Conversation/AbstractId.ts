@@ -44,7 +44,7 @@ export abstract class AbstractID<T extends NodeType, PT extends ConversationFina
     if (str.match(/\s/)) {
       this.addDiagnostic(
         [this.offsetStart + (this.withExclamationMark ? 1 : 0), this.offsetEnd],
-        "An ID cannot contains any spaces",
+        "An ID cannot contains any spaces...",
         DiagnosticSeverity.Error,
         DiagnosticCode.ValueIdContainsSpace,
         [

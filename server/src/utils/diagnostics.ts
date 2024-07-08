@@ -102,6 +102,11 @@ export enum DiagnosticCode {
   ConversationFirstIncorrect = "BQ-3012",
 
   /**
+   * Pointer in a Conversation Option is not defined.
+   */
+  ConversationOptionPointerUndefined = "BQ-3021",
+
+  /**
    * Invalid character founded in a cross-package or cross-conversation pointer.
    */
   CrossPackageCrossConversationPointerInvalidCharacter = "BQ-4001",

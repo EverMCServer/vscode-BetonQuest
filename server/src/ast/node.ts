@@ -168,8 +168,15 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
     });
   }
 
-  _addDiagnostic(...diag: Diagnostic[]) {
-    this.diagnostics.push(...diag);
+  makeDiagnostic(offsets: [offsetStart: number, offsetEnd: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode) {
+    const range = this.getRangeByOffset(offsets[0], offsets[1]);
+    return {
+      range: range,
+      message: message,
+      severity: severity,
+      source: 'BetonQuest',
+      code: code
+    } as Diagnostic;
   }
 
   getCodeActions(documentUri?: string): CodeAction[] {
