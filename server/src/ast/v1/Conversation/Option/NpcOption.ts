@@ -159,6 +159,20 @@ export class NpcOption extends AbstractNodeV1<ConversationNpcOptionType> {
     return hoverInfo;
   }
 
+  getDefinitions(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
+    // TODO: create "Key" node and move it into the node.
+    if (offset < this.yml.key.range![0] || offset > this.yml.key.range![1]) { // Should be removed when moved into "Key"
+      return [];
+    }
+    // Return self so VSCode will show its References instead
+    return [{
+      originSelectionRange: [this.yml.key.range![0], this.yml.key.range![1]],
+      targetUri: this.getUri(),
+      targetRange: [this.offsetStart, this.offsetEnd],
+      targetSelectionRange: [this.yml.key.range![0], this.yml.key.range![1]],
+    }];
+  }
+
   getReferences(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
     // TODO: create "Key" node and move it into the node.
     if (offset < this.yml.key.range![0] || offset > this.yml.key.range![1]) { // Should be removed when moved into "Key"

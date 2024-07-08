@@ -2,6 +2,7 @@
 import { Scalar } from "yaml";
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { HoverInfo } from "../../../utils/hover";
+import { LocationLinkOffset } from "../../../utils/location";
 import { ObjectiveKeyType } from "../../node";
 import { AbstractNodeV1 } from "../../v1";
 import { ObjectiveEntry } from "./ObjectiveEntry";
@@ -51,5 +52,15 @@ export class ObjectiveKey extends AbstractNodeV1<ObjectiveKeyType> {
       return hoverInfo;
     }
     return [];
+  }
+
+  getDefinitions(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
+    // Return self so VSCode will show its References instead
+    return [{
+      originSelectionRange: [this.offsetStart, this.offsetEnd],
+      targetUri: this.getUri(),
+      targetRange: [this.offsetStart, this.offsetEnd],
+      targetSelectionRange: [this.offsetStart, this.offsetEnd],
+    }];
   }
 }

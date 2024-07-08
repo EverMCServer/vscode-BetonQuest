@@ -55,6 +55,16 @@ export class ConditionKey extends AbstractNodeV1<ConditionKeyType> {
     return [];
   }
 
+  getDefinitions(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
+    // Return self so VSCode will show its References instead
+    return [{
+      originSelectionRange: [this.offsetStart, this.offsetEnd],
+      targetUri: this.getUri(),
+      targetRange: [this.offsetStart, this.offsetEnd],
+      targetSelectionRange: [this.offsetStart, this.offsetEnd],
+    }];
+  }
+
   getReferences(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
     return this.getConversationConditionPointers(
       this.value,
