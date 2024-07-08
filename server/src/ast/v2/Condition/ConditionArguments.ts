@@ -212,9 +212,6 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
   }
 
   getHoverInfo(offset: number): HoverInfo[] {
-    if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
-      return [];
-    }
     return [];
   }
 }

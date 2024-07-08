@@ -145,11 +145,8 @@ export class NpcOption extends AbstractNodeV2<ConversationNpcOptionType> {
     return this.getChildren<Events>('ConversationEvents');
   }
 
-  getHoverInfo(offset: number): HoverInfo[] {
-    const hoverInfo: HoverInfo[] = super.getHoverInfo(offset);
-    if (offset < this.offsetStart || offset > this.offsetEnd) {
-      return hoverInfo;
-    }
+  getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
+    const hoverInfo: HoverInfo[] = super.getHoverInfo(offset, documentUri);
     if (offset >= this.yml.key.range![0] && offset <= this.yml.key.range![1] && this.comment) {
       hoverInfo.push({
         content: this.comment,
@@ -159,10 +156,10 @@ export class NpcOption extends AbstractNodeV2<ConversationNpcOptionType> {
     return hoverInfo;
   }
 
-  getDefinitions(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
+  getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
     // TODO: create "Key" node and move it into the node.
     if (offset < this.yml.key.range![0] || offset > this.yml.key.range![1]) { // Should be removed when moved into "Key"
-      return [];
+      return super.getDefinitions(offset, documentUri);
     }
     // Return self so VSCode will show its References instead
     return [{
@@ -173,10 +170,10 @@ export class NpcOption extends AbstractNodeV2<ConversationNpcOptionType> {
     }];
   }
 
-  getReferences(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
+  getReferences(offset: number, documentUri?: string): LocationLinkOffset[] {
     // TODO: create "Key" node and move it into the node.
     if (offset < this.yml.key.range![0] || offset > this.yml.key.range![1]) { // Should be removed when moved into "Key"
-      return [];
+      return super.getReferences(offset, documentUri);
     }
     return this.getConversationOptionPointers(
       "ConversationNpcOption",

@@ -212,9 +212,6 @@ export class EventArguments extends AbstractNodeV2<EventArgumentsType> {
   }
 
   getHoverInfo(offset: number): HoverInfo[] {
-    if (this.offsetStart !== undefined && this.offsetEnd !== undefined && this.offsetStart <= offset && this.offsetEnd >= offset) {
-      return [];
-    }
     return [];
   }
 }

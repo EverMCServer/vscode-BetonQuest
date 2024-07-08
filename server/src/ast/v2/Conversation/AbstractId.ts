@@ -114,10 +114,6 @@ export abstract class AbstractID<T extends NodeType, PT extends ConversationFina
   }
 
   getDefinitions(offset: number): LocationLinkOffset[] {
-    if (this.offsetStart! > offset || this.offsetEnd! < offset) {
-      return [];
-    }
-
     return this.getTargetNodes().flatMap(n => ({
       originSelectionRange: [this.offsetStart + (this.withExclamationMark ? 1 : 0), this.offsetEnd],
       targetUri: n.getUri(),

@@ -36,22 +36,20 @@ export class ConditionKey extends AbstractNodeV2<ConditionKeyType> {
       offsetEnd: this.offsetEnd,
       tokenType: SemanticTokenType.ConditionID
     }];
-  };
+  }
+
   getHoverInfo(offset?: number): HoverInfo[] {
-    if (!offset || this.offsetStart <= offset && this.offsetEnd >= offset) {
-      const hoverInfo: HoverInfo[] = [{
-        content: "Full path: " + this.getPackagePath().join("-") + "." + this.value,
-        offset: [this.offsetStart, this.offsetEnd]
-      }];
-      if (this.comment) {
-        hoverInfo.unshift({
-          content: this.comment,
-          offset: [this.offsetStart!, this.offsetEnd!]
-        });
-      }
-      return hoverInfo;
+    const hoverInfo: HoverInfo[] = [{
+      content: "Full path: " + this.getPackagePath().join("-") + "." + this.value,
+      offset: [this.offsetStart, this.offsetEnd]
+    }];
+    if (this.comment) {
+      hoverInfo.unshift({
+        content: this.comment,
+        offset: [this.offsetStart!, this.offsetEnd!]
+      });
     }
-    return [];
+    return hoverInfo;
   }
 
   getDefinitions(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
@@ -64,7 +62,7 @@ export class ConditionKey extends AbstractNodeV2<ConditionKeyType> {
     }];
   }
 
-  getReferences(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
+  getReferences(offset: number, documentUri?: string): LocationLinkOffset[] {
     return this.getConversationConditionPointers(
       this.value,
       this.getPackageUri()

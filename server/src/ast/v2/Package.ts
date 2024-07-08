@@ -5,6 +5,7 @@ import { Scalar, YAMLMap, isMap, isSeq, parseDocument, visit } from "yaml";
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
 import { SemanticTokenType } from "../../service/semanticTokens";
+import { HoverInfo } from "../../utils/hover";
 import { LocationLinkOffset } from "../../utils/location";
 import { getParentUrl } from "../../utils/url";
 import { isStringScalar, isYamlMapPair } from "../../utils/yaml";
@@ -14,8 +15,6 @@ import { AbstractNodeV2 } from "../v2";
 import { ConditionEntry } from "./Condition/ConditionEntry";
 import { ConditionList } from "./Condition/ConditionList";
 import { Conversation } from "./Conversation/Conversation";
-import { NpcOption } from "./Conversation/Option/NpcOption";
-import { PlayerOption } from "./Conversation/Option/PlayerOption";
 import { EventEntry } from "./Event/EventEntry";
 import { EventList } from "./Event/EventList";
 import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
@@ -282,19 +281,27 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
     return locations;
   }
 
-  getDefinitions(offset: number, uri?: string): LocationLinkOffset[] {
-    if (uri && !uri.startsWith(this.uri)) {
+  getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
+    if (documentUri && !documentUri.startsWith(this.uri)) {
       return [];
     }
-
-    return super.getDefinitions(offset, uri);
+    return this.children
+      .flatMap(c => c.getHoverInfo(offset, documentUri));
   }
 
-  getReferences(offset: number, uri?: string): LocationLinkOffset[] {
-    if (uri && !uri.startsWith(this.uri)) {
+  getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
+    if (documentUri && !documentUri.startsWith(this.uri)) {
       return [];
     }
+    return this.children
+      .flatMap(c => c.getDefinitions(offset, documentUri));
+  }
 
-    return super.getReferences(offset, uri);
+  getReferences(offset: number, documentUri?: string): LocationLinkOffset[] {
+    if (documentUri && !documentUri.startsWith(this.uri)) {
+      return [];
+    }
+    return this.children
+      .flatMap(c => c.getReferences(offset, documentUri));
   }
 }

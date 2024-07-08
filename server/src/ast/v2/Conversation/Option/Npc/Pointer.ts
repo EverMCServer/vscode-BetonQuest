@@ -77,9 +77,6 @@ export class Pointer extends AbstractNodeV2<ConversationNpcPointerType> {
   }
 
   getHoverInfo(offset: number): HoverInfo[] {
-    if (offset < this.offsetStart || offset > this.offsetEnd) {
-      return [];
-    }
     const hoverInfos: HoverInfo[] = this.getTargetNodes().filter(n => n.comment).flatMap(n => ({
       content: n.comment!,
       offset: [this.offsetStart, this.offsetEnd]
@@ -88,9 +85,6 @@ export class Pointer extends AbstractNodeV2<ConversationNpcPointerType> {
   }
 
   getDefinitions(offset: number): LocationLinkOffset[] {
-    if (this.offsetStart! > offset || this.offsetEnd! < offset) {
-      return [];
-    }
     const locations: LocationLinkOffset[] = this.getTargetNodes().flatMap(n => ({
       originSelectionRange: [this.offsetStart, this.offsetEnd],
       targetUri: n.getUri(),

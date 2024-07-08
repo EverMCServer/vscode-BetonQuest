@@ -195,30 +195,21 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
   };
 
   getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
-    if (this.offsetStart && this.offsetEnd && (offset < this.offsetStart || offset > this.offsetEnd)) {
-      return [];
-    }
-    return this.children.flatMap(c => c.getHoverInfo(offset, documentUri));
+    return this.children
+      .filter(c => !c.offsetStart || !c.offsetEnd || (offset >= c.offsetStart && offset <= c.offsetEnd))
+      .flatMap(c => c.getHoverInfo(offset, documentUri));
   }
 
   getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
-    // if (documentUri && !documentUri.startsWith(this.getUri())) {
-    //   return [];
-    // }
-    if (this.offsetStart && this.offsetEnd && (offset < this.offsetStart || offset > this.offsetEnd)) {
-      return [];
-    }
-    return this.children.flatMap(c => c.getDefinitions(offset, documentUri));
+    return this.children
+      .filter(c => !c.offsetStart || !c.offsetEnd || (offset >= c.offsetStart && offset <= c.offsetEnd))
+      .flatMap(c => c.getDefinitions(offset, documentUri));
   }
 
   getReferences(offset: number, documentUri?: string): LocationLinkOffset[] {
-    // if (documentUri && !documentUri.startsWith(this.getUri())) {
-    //   return [];
-    // }
-    if (this.offsetStart && this.offsetEnd && (offset < this.offsetStart || offset > this.offsetEnd)) {
-      return [];
-    }
-    return this.children.flatMap(c => c.getReferences(offset, documentUri));
+    return this.children
+      .filter(c => !c.offsetStart || !c.offsetEnd || (offset >= c.offsetStart && offset <= c.offsetEnd))
+      .flatMap(c => c.getReferences(offset, documentUri));
   }
 
   // Get range by offset.

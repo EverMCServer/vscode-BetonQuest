@@ -3,6 +3,8 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
+import { HoverInfo } from "../../utils/hover";
+import { LocationLinkOffset } from "../../utils/location";
 import { getParentUrl } from "../../utils/url";
 import { AST } from "../ast";
 import { ConversationOptionType, PackageV1Type } from "../node";
@@ -16,7 +18,6 @@ import { EventEntry } from "./Event/EventEntry";
 import { EventList } from "./Event/EventList";
 import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
 import { ObjectiveList } from "./Objective/ObjectiveList";
-import { LocationLinkOffset } from "../../utils/location";
 
 export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
   readonly type: PackageV1Type = "PackageV1";
@@ -192,19 +193,27 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
     return locations;
   }
 
-  getDefinitions(offset: number, uri?: string): LocationLinkOffset[] {
-    if (uri && !uri.startsWith(this.uri)) {
+  getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
+    if (documentUri && !documentUri.startsWith(this.uri)) {
       return [];
     }
-
-    return super.getDefinitions(offset, uri);
+    return this.children
+      .flatMap(c => c.getHoverInfo(offset, documentUri));
   }
 
-  getReferences(offset: number, uri?: string): LocationLinkOffset[] {
-    if (uri && !uri.startsWith(this.uri)) {
+  getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
+    if (documentUri && !documentUri.startsWith(this.uri)) {
       return [];
     }
+    return this.children
+      .flatMap(c => c.getDefinitions(offset, documentUri));
+  }
 
-    return super.getReferences(offset, uri);
+  getReferences(offset: number, documentUri?: string): LocationLinkOffset[] {
+    if (documentUri && !documentUri.startsWith(this.uri)) {
+      return [];
+    }
+    return this.children
+      .flatMap(c => c.getReferences(offset, documentUri));
   }
 }
