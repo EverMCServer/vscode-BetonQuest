@@ -50,15 +50,21 @@ export class Pointer extends AbstractNodeV2<ConversationNpcPointerType> {
     // Parse package package, Conversation ID, Pointer ID
     // https://betonquest.org/2.0/Documentation/Features/Conversations/#cross-conversation-pointers
     if (str.includes(".")) {
-      const splited = str.split(".", 3);
-      this.package = splited[0];
-      this.conversationID = splited[1];
-      this.optionID = splited[2];
+      const pos = str.indexOf(".");
+      this.conversationID = str.slice(0, pos);
+      this.optionID = str.slice(pos + 1);
+      if (this.optionID.includes(".")) {
+        // 2+ seprators ".", resolve for Package
+        const pos = this.optionID.indexOf(".");
+        this.package = this.conversationID;
+        this.conversationID = this.optionID.slice(0, pos);
+        this.optionID = this.optionID.slice(pos + 1);
+      }
       // Check number of "."
-      if ((str.match(/\./g) || []).length > 2) {
+      if (this.optionID.includes(".")) {
         this.addDiagnostic(
           [this.offsetStart, this.offsetEnd],
-          `Extra seprator "." founded in path. Please make sure special characters like ".", "-" or "_" are NOT being used when naming a Package, Conversation or Pointer.`,
+          `Extra seprator "." founded in path. Special characters "." is NOT allowed when naming a Package, Conversation or Option.`,
           DiagnosticSeverity.Error,
           DiagnosticCode.CrossPackageCrossConversationPointerInvalidCharacter
         );
@@ -98,6 +104,12 @@ export class Pointer extends AbstractNodeV2<ConversationNpcPointerType> {
   }
 
   getDefinitions(offset: number): LocationLinkOffset[] {
+    // Check empty optionID
+    if (this.optionID === "" && this.conversationID !== "") {
+      return [];
+    } else if (this.optionID === "") {
+      // TODO: return "first" of the target Conversation.
+    }
     const locations: LocationLinkOffset[] = this.getTargetNodes().flatMap(n => ({
       originSelectionRange: [this.offsetStart, this.offsetEnd],
       targetUri: n.getUri(),

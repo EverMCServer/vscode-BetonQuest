@@ -49,14 +49,14 @@ export class Pointer extends AbstractNodeV1<ConversationPlayerPointerType> {
     // Parse package package, Conversation ID, Pointer ID
     // https://betonquest.org/1.12/User-Documentation/Conversations/#cross-conversation-pointers
     if (str.includes(".")) {
-      const splited = str.split(".", 2);
-      this.conversationID = splited[0];
-      this.optionID = splited[1];
+      const pos = str.indexOf(".");
+      this.conversationID = str.slice(0, pos);
+      this.optionID = str.slice(pos + 1);
       // Check number of "."
-      if ((str.match(/\./g) || []).length > 1) {
+      if (this.optionID.includes(".")) {
         this.addDiagnostic(
           [this.offsetStart, this.offsetEnd],
-          `Extra seprator "." founded in path. Please make sure special characters like ".", "-" or "_" are NOT being used when naming a Package, Conversation or Pointer.`,
+          `Extra seprator "." founded in path. Please avoide using special characters like ".", "-" or "_" when naming a Conversation or Pointer.`,
           DiagnosticSeverity.Error,
           DiagnosticCode.CrossPackageCrossConversationPointerInvalidCharacter
         );
@@ -96,6 +96,10 @@ export class Pointer extends AbstractNodeV1<ConversationPlayerPointerType> {
   }
 
   getDefinitions(offset: number): LocationLinkOffset[] {
+    // Check empty optionID
+    if (this.optionID === "") {
+      return [];
+    }
     const locations: LocationLinkOffset[] = this.getTargetNodes().flatMap(n => ({
       originSelectionRange: [this.offsetStart, this.offsetEnd],
       targetUri: n.getUri(),

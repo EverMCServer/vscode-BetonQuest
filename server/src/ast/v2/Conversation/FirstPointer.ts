@@ -34,7 +34,6 @@ export class FirstPointer extends AbstractNodeV2<ConversationFirstPointerType> {
     }
     // Check illigal characters
     if (str.match(/\s/)) {
-      // TODO this._addDiagnostic();
       this.addDiagnostic(
         [this.offsetStart + (this.withExclamationMark ? 1 : 0), this.offsetEnd],
         "An ID cannot contains any spaces",
@@ -50,10 +49,25 @@ export class FirstPointer extends AbstractNodeV2<ConversationFirstPointerType> {
     }
     // Parse package package, Conversation ID, Pointer ID
     if (str.includes(".")) {
-      const splited = str.split(".", 3); // TODO: check number of "."
-      this.package = splited[0];
-      this.conversationID = splited[1];
-      this.optionID = splited[2];
+      const pos = str.indexOf(".");
+      this.conversationID = str.slice(0, pos);
+      this.optionID = str.slice(pos + 1);
+      if (this.optionID.includes(".")) {
+        // 2+ seprators ".", resolve for Package
+        const pos = this.optionID.indexOf(".");
+        this.package = this.conversationID;
+        this.conversationID = this.optionID.slice(0, pos);
+        this.optionID = this.optionID.slice(pos + 1);
+      }
+      // Check number of "."
+      if (this.optionID.includes(".")) {
+        this.addDiagnostic(
+          [this.offsetStart, this.offsetEnd],
+          `Extra seprator "." founded in path. Special characters "." is NOT allowed when naming a Package, Conversation or Option.`,
+          DiagnosticSeverity.Error,
+          DiagnosticCode.CrossPackageCrossConversationPointerInvalidCharacter
+        );
+      }
     } else {
       this.conversationID = this.parent.parent.parent.conversationID;
       this.optionID = str;
@@ -89,6 +103,12 @@ export class FirstPointer extends AbstractNodeV2<ConversationFirstPointerType> {
   }
 
   getDefinitions(offset: number): LocationLinkOffset[] {
+    // Check empty optionID
+    if (this.optionID === "" && this.conversationID !== "") {
+      return [];
+    } else if (this.optionID === "") {
+      // TODO: return "first" of the target Conversation.
+    }
     const locations: LocationLinkOffset[] = this.getTargetNodes().flatMap(n => ({
       originSelectionRange: [this.offsetStart, this.offsetEnd],
       targetUri: n.getUri(),

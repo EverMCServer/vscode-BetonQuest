@@ -57,14 +57,23 @@ export abstract class AbstractID<T extends NodeType, PT extends ConversationFina
     }
     // Parse package path
     if (str.includes(".")) {
-      const splited = str.split(".", 2);
-      this.package = splited[0];
-      this.id = splited[1];
+      const pos = str.indexOf(".");
+      this.package = str.slice(0, pos);
+      this.id = str.slice(pos + 1);
       // Check number of "."
-      if ((str.match(/\./g) || []).length > 1) {
+      if (this.id.includes(".")) {
         this.addDiagnostic(
           [this.offsetStart, this.offsetEnd],
-          `Extra seprator "." founded in path. Please make sure special characters like ".", "-" or "_" are NOT being used when naming a Package, Conversation or Pointer.`,
+          `Extra seprator "." founded in path. Please avoide using special characters like ".", "-" or "_" when naming a Condition, Event or Objective.`,
+          DiagnosticSeverity.Warning,
+          DiagnosticCode.CrossPackageCrossConversationPointerInvalidCharacter
+        );
+      }
+      // Check invalid patterns in the package-path, e.g. "--"
+      if (this.package.includes("--")) {
+        this.addDiagnostic(
+          [this.offsetStart, this.offsetEnd],
+          `Invalid pattern is found in package naming. Special characters like ".", "-" or "_" are NOT allowed when naming a Package.`,
           DiagnosticSeverity.Error,
           DiagnosticCode.CrossPackageCrossConversationPointerInvalidCharacter
         );

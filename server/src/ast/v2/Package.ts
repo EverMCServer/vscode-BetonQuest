@@ -180,21 +180,23 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
       return packageUri;
     }
     const packagePathArray = targetPackagePath.split("-");
-    // Handle relative path
-    if (packagePathArray[0] === '_' || packagePathArray[0] === '') {
-      packagePathArray.forEach(p => {
-        if (p === '_') {
+    if (packagePathArray[0] === '_') {
+      // Relative path going up
+      for (let i = 0; i < packagePathArray.length; i++) {
+        if (packagePathArray[i] === '_') {
           packageUri = getParentUrl(packageUri);
-        } else if (p === '') {
-          // Skip
         } else {
-          packageUri += p + '/';
+          packageUri += packagePathArray.slice(i).join('/') + '/';
+          break;
         }
-      });
-      return packageUri;
+      }
+    } else if (packagePathArray[0] === '') {
+      // Relative path going down
+      packageUri += packagePathArray.slice(1).join('/') + '/';
+    } else {
+      // Absolute path
+      packageUri = this.parentAst.packageRootUriV2 + packagePathArray.join('/') + '/';
     }
-    // Handle absolute path
-    packageUri = this.parentAst.packageRootUriV2 + packagePathArray.join('/') + '/';
     return packageUri;
   }
 

@@ -114,7 +114,7 @@ export function server(connection: Connection): void {
   // Right now it only works on node environment (not browser).
   // It requires `synchronize.fileEvents: vscode.workspace.createFileSystemWatcher('glob pattern')` registration in the client.
   connection.onDidChangeWatchedFiles(async (params) => {
-    connection.console.log("connection.onDidChangeWatchedFiles: " + params.changes.map(e => e.type + ":" + e.uri).join(" "));
+    // connection.console.log("connection.onDidChangeWatchedFiles: " + params.changes.map(e => e.type + ":" + e.uri).join(" "));
 
     // const changes = await Promise.all(params.changes.map<Promise<[FileEvent, string]>>(async change => {
     //   // Get files uri
@@ -156,7 +156,7 @@ export function server(connection: Connection): void {
 
   // Listen to file editing on VSCode.
   documents.onDidChangeContent(e => {
-    connection.console.log("document " + e.document.uri + " changed. version:" + e.document.version);
+    // connection.console.log("document " + e.document.uri + " changed. version:" + e.document.version);
     // TODO: only update the changed file
     // 1. Update the changed document on allDocuments cache
     allDocuments.updateDocument(e.document);
