@@ -1,5 +1,5 @@
 import { DiagnosticSeverity } from "vscode-languageserver";
-import { Scalar } from "yaml";
+import { Pair, Scalar } from "yaml";
 
 import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
@@ -14,21 +14,21 @@ export class ConversationStop extends AbstractNodeV2<ConversationStopType> {
   readonly parent: ConversationSection;
 
   // Cache the parsed yaml document
-  private yml: Scalar;
+  private yml: Pair<Scalar<string>, Scalar>;
   private value?: boolean;
 
-  constructor(yml: Scalar, parent: ConversationSection) {
+  constructor(yml: Pair<Scalar<string>, Scalar>, offset: [offsetStart: number, offsetEnd: number], parent: ConversationSection) {
     super();
+    this.offsetStart = offset[0];
+    this.offsetEnd = offset[1];
     this.parent = parent;
+
     this.yml = yml;
 
-    this.offsetStart = yml.range?.[0];
-    this.offsetEnd = yml.range?.[1];
-
     // Check YAML value type
-    if (typeof this.yml.value === 'string') {
+    if (typeof this.yml.value?.value === 'string') {
       // Parse string
-      switch (this.yml.value.trim().toLowerCase()) {
+      switch (this.yml.value.value.trim().toLowerCase()) {
         case 'true':
           this.value = true;
           break;
@@ -46,20 +46,20 @@ export class ConversationStop extends AbstractNodeV2<ConversationStopType> {
 
       // Add Semantic Tokens
       this.semanticTokens.push({
-        offsetStart: this.offsetStart!,
-        offsetEnd: this.offsetEnd!,
+        offsetStart: this.yml.value.range![0],
+        offsetEnd: this.yml.value.range![1],
         tokenType: SemanticTokenType.Boolean
       });
-    } else if (typeof this.yml.value === 'boolean') {
-      this.value = this.yml.value;
+    } else if (typeof this.yml.value?.value === 'boolean') {
+      this.value = this.yml.value.value;
 
       // Add Semantic Tokens
       this.semanticTokens.push({
-        offsetStart: this.offsetStart!,
-        offsetEnd: this.offsetEnd!,
+        offsetStart: this.yml.value.range![0],
+        offsetEnd: this.yml.value.range![1],
         tokenType: SemanticTokenType.Boolean
       });
-    } else if (this.yml.value === null) {
+    } else if (this.yml.value?.value === null) {
     } else {
       // Incorecct value, throw diagnostics warning + quick actions
       this._addDiagnosticValueTypeIncorrect();
@@ -68,8 +68,8 @@ export class ConversationStop extends AbstractNodeV2<ConversationStopType> {
 
   private _addDiagnosticValueTypeIncorrect() {
     this.addDiagnostic(
-      [this.offsetStart!, this.offsetEnd!],
-      `Incorrect value "${this.yml.value}"`,
+      [this.yml.value!.range![0]!, this.yml.value!.range![1]],
+      `Incorrect value "${this.yml.value?.value}"`,
       DiagnosticSeverity.Error,
       DiagnosticCode.ValueContentIncorrect,
       [

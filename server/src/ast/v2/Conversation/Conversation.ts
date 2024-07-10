@@ -1,6 +1,6 @@
 import { DiagnosticSeverity, PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { Pair, Scalar, YAMLMap, isMap, isScalar } from "yaml";
+import { Pair, Scalar, YAMLMap } from "yaml";
 
 import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
@@ -55,7 +55,7 @@ export class ConversationSection extends Document<ConversationSectionType> {
     // Parse Elements
     this.yml.items.forEach(pair => {
       const offsetStart = pair.key.range?.[0] ?? 0;
-      const offsetEnd = (pair.value as Scalar)?.range?.[1] ?? offsetStart;
+      const offsetEnd = (pair.value as Scalar | YAMLMap)?.range?.[1] ?? offsetStart;
       // Set key's Semantic Token
       if (pair.key.range) {
         switch (pair.key.value) {
@@ -76,8 +76,8 @@ export class ConversationSection extends Document<ConversationSectionType> {
       // Parse value
       switch (pair.key.value) {
         case "quester":
-          if (isScalar(pair.value) || isMap<Scalar<string>>(pair.value)) {
-            this.addChild(new ConversationQuester(pair.value, this));
+          if (isStringScalarPair(pair) || isYamlMapPair(pair)) {
+            this.addChild(new ConversationQuester(pair, [offsetStart, offsetEnd], this));
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string or a translation list.`);
@@ -85,31 +85,31 @@ export class ConversationSection extends Document<ConversationSectionType> {
           break;
         case "first":
           if (isStringScalarPair(pair)) {
-            this.addChild(new First(pair, this));
+            this.addChild(new First(pair, [offsetStart, offsetEnd], this));
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
           }
           break;
         case "stop":
-          if (isScalar(pair.value)) {
-            this.addChild(new ConversationStop(pair.value, this));
+          if (isStringScalarPair(pair)) {
+            this.addChild(new ConversationStop(pair, [offsetStart, offsetEnd], this));
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
           }
           break;
         case "final_events":
-          if (isScalar(pair.value)) {
-            this.addChild(new ConversationFinalEvents(pair.value, this));
+          if (isStringScalarPair(pair)) {
+            this.addChild(new ConversationFinalEvents(pair, [offsetStart, offsetEnd], this));
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);
           }
           break;
         case "interceptor":
-          if (isScalar(pair.value)) {
-            this.addChild(new ConversationInterceptor(pair.value, this));
+          if (isStringScalarPair(pair)) {
+            this.addChild(new ConversationInterceptor(pair, [offsetStart, offsetEnd], this));
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);

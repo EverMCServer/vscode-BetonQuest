@@ -115,6 +115,8 @@ export class NpcOption extends AbstractNodeV1<ConversationNpcOptionType> {
               // TODO
             }
             break;
+          case "extends":
+          // TODO
           default:
             this.addDiagnostic(
               [pair.key.range![0], pair.key.range![1]],

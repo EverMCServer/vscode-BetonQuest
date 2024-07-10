@@ -1,13 +1,13 @@
-import { Scalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
+import { Pair, Scalar } from "yaml";
 
-import { ConversationFinalEventsType } from "../../node";
-import { DiagnosticCode } from "../../../utils/diagnostics";
 import { SemanticTokenType } from "../../../service/semanticTokens";
-import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
+import { DiagnosticCode } from "../../../utils/diagnostics";
+import { getScalarSourceAndRange } from "../../../utils/yaml";
+import { ConversationFinalEventsType } from "../../node";
+import { AbstractNodeV1 } from "../../v1";
 import { Conversation } from "./Conversation";
 import { ConversationFinalEvent } from "./ConversationFinalEvent";
-import { AbstractNodeV1 } from "../../v1";
 
 export class ConversationFinalEvents extends AbstractNodeV1<ConversationFinalEventsType> {
   readonly type: ConversationFinalEventsType = 'ConversationFinalEvents';
@@ -16,15 +16,17 @@ export class ConversationFinalEvents extends AbstractNodeV1<ConversationFinalEve
   readonly parent: Conversation;
 
   // Cache the parsed yaml document
-  private yml: Scalar;
+  private yml: Pair<Scalar<string>, Scalar>;
 
-  constructor(yml: Scalar, parent: Conversation) {
+  constructor(yml: Pair<Scalar<string>, Scalar>, offset: [offsetStart: number, offsetEnd: number], parent: Conversation) {
     super();
+    this.offsetStart = offset[0];
+    this.offsetEnd = offset[1];
     this.parent = parent;
-    this.yml = yml;
-    [this.offsetStart, this.offsetEnd] = getScalarRangeByValue(this.yml);
 
-    const str = getSourceByValue(this.yml);
+    this.yml = yml;
+    const [str, [valueOffsetStart, valueOffsetEnd]] = getScalarSourceAndRange(yml.value);
+
     // Check value type
     if (typeof str === 'string') {
       // Parse Events with RegEx
@@ -33,7 +35,7 @@ export class ConversationFinalEvents extends AbstractNodeV1<ConversationFinalEve
       while ((matched = regex.exec(str)) !== null && matched[0].length > 0) {
         const str = matched[2];
         const strTrimed = str.trim();
-        const offsetStartWithComma = this.offsetStart + matched.index;
+        const offsetStartWithComma = valueOffsetStart + matched.index;
         const offsetStart = offsetStartWithComma + matched[1].length;
         const offsetEnd = offsetStart + str.length;
 

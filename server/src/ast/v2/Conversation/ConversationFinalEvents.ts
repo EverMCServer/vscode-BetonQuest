@@ -1,9 +1,9 @@
 import { DiagnosticSeverity } from "vscode-languageserver";
-import { Scalar } from "yaml";
+import { Pair, Scalar } from "yaml";
 
 import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
+import { getScalarSourceAndRange } from "../../../utils/yaml";
 import { ConversationFinalEventsType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
 import { ConversationSection } from "./Conversation";
@@ -16,15 +16,17 @@ export class ConversationFinalEvents extends AbstractNodeV2<ConversationFinalEve
   readonly parent: ConversationSection;
 
   // Cache the parsed yaml document
-  private yml: Scalar;
+  private yml: Pair<Scalar<string>, Scalar>;
 
-  constructor(yml: Scalar, parent: ConversationSection) {
+  constructor(yml: Pair<Scalar<string>, Scalar>, offset: [offsetStart: number, offsetEnd: number], parent: ConversationSection) {
     super();
+    this.offsetStart = offset[0];
+    this.offsetEnd = offset[1];
     this.parent = parent;
-    this.yml = yml;
-    [this.offsetStart, this.offsetEnd] = getScalarRangeByValue(this.yml);
 
-    const str = getSourceByValue(this.yml);
+    this.yml = yml;
+    const [str, [valueOffsetStart, valueOffsetEnd]] = getScalarSourceAndRange(yml.value);
+
     // Check value type
     if (typeof str === 'string') {
       // Parse Events with RegEx
@@ -33,7 +35,7 @@ export class ConversationFinalEvents extends AbstractNodeV2<ConversationFinalEve
       while ((matched = regex.exec(str)) !== null && matched[0].length > 0) {
         const str = matched[2];
         const strTrimed = str.trim();
-        const offsetStartWithComma = this.offsetStart + matched.index;
+        const offsetStartWithComma = valueOffsetStart + matched.index;
         const offsetStart = offsetStartWithComma + matched[1].length;
         const offsetEnd = offsetStart + str.length;
 

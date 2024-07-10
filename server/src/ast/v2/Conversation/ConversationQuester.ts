@@ -1,4 +1,4 @@
-import { Scalar, YAMLMap, isMap, isScalar } from "yaml";
+import { Pair, Scalar, YAMLMap, isMap, isScalar } from "yaml";
 
 import { SemanticTokenType } from "../../../service/semanticTokens";
 import { ConversationQuesterType } from "../../node";
@@ -12,33 +12,33 @@ export class ConversationQuester extends AbstractNodeV2<ConversationQuesterType>
   readonly offsetEnd: number;
   readonly parent: ConversationSection;
 
-  private yml: Scalar | YAMLMap;
+  private yml: Pair<Scalar<string>, Scalar<string> | YAMLMap>;
   private contentType?: 'string' | 'translations';
   private contentString?: string;
   private contentTranslations?: ConversationQuesterTranslations; // TODO
 
-  constructor(yml: Scalar | YAMLMap, parent: ConversationSection) {
+  constructor(yml: Pair<Scalar<string>, Scalar<string> | YAMLMap>, offset: [offsetStart: number, offsetEnd: number], parent: ConversationSection) {
     super();
+    this.offsetStart = offset[0];
+    this.offsetEnd = offset[1];
     this.parent = parent;
 
     this.yml = yml;
-    this.offsetStart = this.yml.range![0];
-    this.offsetEnd = this.yml.range![1];
 
     // Parse YAML
-    if (isScalar(yml) && typeof yml.value === 'string') {
+    if (isScalar(yml.value) && typeof yml.value.value === 'string') {
       this.contentType = 'string';
-      this.contentString = yml.value;
+      this.contentString = yml.value.value;
 
       // Add Semantic Tokens
       this.semanticTokens.push({
-        offsetStart: this.offsetStart,
-        offsetEnd: this.offsetEnd,
+        offsetStart: yml.value.range![0],
+        offsetEnd: yml.value.range![1],
         tokenType: SemanticTokenType.String
       });
-    } else if (isMap<Scalar<string>>(yml)) {
+    } else if (isMap<Scalar<string>>(yml.value)) {
       this.contentType = 'translations';
-      this.contentTranslations = new ConversationQuesterTranslations(yml, this); // TODO: replace
+      this.contentTranslations = new ConversationQuesterTranslations(yml.value, this); // TODO: replace
     }
 
   }

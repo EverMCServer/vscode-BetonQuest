@@ -1,13 +1,13 @@
-import { Scalar } from "yaml";
 import { DiagnosticSeverity } from "vscode-languageserver";
+import { Pair, Scalar } from "yaml";
 
-import { ConversationFirstType } from "../../node";
-import { Conversation } from "./Conversation";
 import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getScalarSourceAndRange } from "../../../utils/yaml";
-import { FirstPointer } from "./FirstPointer";
+import { ConversationFirstType } from "../../node";
 import { AbstractNodeV1 } from "../../v1";
+import { Conversation } from "./Conversation";
+import { FirstPointer } from "./FirstPointer";
 
 export class First extends AbstractNodeV1<ConversationFirstType> {
   readonly type: ConversationFirstType = 'ConversationFirst';
@@ -15,17 +15,22 @@ export class First extends AbstractNodeV1<ConversationFirstType> {
   readonly offsetEnd: number;
   readonly parent: Conversation;
 
-  private yml: Scalar;
-  private entriesStr: string;
+  readonly yml: Pair<Scalar<string>, Scalar<string>>;
+  readonly entriesStr: string;
 
-  constructor(yml: Scalar, parent: Conversation) {
+  constructor(yml: Pair<Scalar<string>, Scalar<string>>, offset: [offsetStart: number, offsetEnd: number], parent: Conversation) {
     super();
+    this.offsetStart = offset[0];
+    this.offsetEnd = offset[1];
     this.parent = parent;
 
-    [this.entriesStr, [this.offsetStart, this.offsetEnd]] = getScalarSourceAndRange(yml);
-    if (typeof yml.value !== 'string') {
+    this.yml = yml;
+
+    const [entriesStr, [valueOffsetStart, valueOffsetEnd]] = getScalarSourceAndRange(yml.value);
+    this.entriesStr = entriesStr;
+    if (typeof yml.value?.value !== 'string') {
       this.addDiagnostic(
-        [this.offsetStart, this.offsetEnd],
+        [valueOffsetStart, valueOffsetEnd],
         "Invalid string value",
         DiagnosticSeverity.Error,
         DiagnosticCode.ValueContentIncorrect,
@@ -37,14 +42,13 @@ export class First extends AbstractNodeV1<ConversationFirstType> {
         ]
       );
     }
-    this.yml = yml;
 
     // Split and parse IDs
     const regex = /(,?)([^,]*)/g; // /(,?)([^,]*)/g
     let matched: RegExpExecArray | null;
     while ((matched = regex.exec(this.entriesStr)) !== null && matched[0].length > 0) {
       const str = matched[2];
-      const offsetStartWithComma = this.offsetStart + matched.index;
+      const offsetStartWithComma = valueOffsetStart + matched.index;
       const offsetStart = offsetStartWithComma + matched[1].length;
       const offsetEnd = offsetStart + str.length;
       const strTrimedStart = str.trimStart();

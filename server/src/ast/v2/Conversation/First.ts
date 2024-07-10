@@ -19,11 +19,13 @@ export class First extends AbstractNodeV2<ConversationFirstType> {
   readonly yml: Pair<Scalar<string>, Scalar<string>>;
   readonly entriesStr: string;
 
-  constructor(yml: Pair<Scalar<string>, Scalar<string>>, parent: ConversationSection) {
+  constructor(yml: Pair<Scalar<string>, Scalar<string>>, offset: [offsetStart: number, offsetEnd: number], parent: ConversationSection) {
     super();
+    this.offsetStart = offset[0];
+    this.offsetEnd = offset[1];
     this.parent = parent;
-    this.offsetStart = yml.key.range![0];
-    this.offsetEnd = yml.value?.range![1] || yml.key.range![1];
+
+    this.yml = yml;
 
     const [entriesStr, [valueOffsetStart, valueOffsetEnd]] = getScalarSourceAndRange(yml.value);
     this.entriesStr = entriesStr;
@@ -41,12 +43,11 @@ export class First extends AbstractNodeV2<ConversationFirstType> {
         ]
       );
     }
-    this.yml = yml;
 
     // Split and parse IDs
     const regex = /(,?)([^,]*)/g; // /(,?)([^,]*)/g
     let matched: RegExpExecArray | null;
-    while ((matched = regex.exec(entriesStr)) !== null && matched[0].length > 0) {
+    while ((matched = regex.exec(this.entriesStr)) !== null && matched[0].length > 0) {
       const str = matched[2];
       const offsetStartWithComma = valueOffsetStart + matched.index;
       const offsetStart = offsetStartWithComma + matched[1].length;

@@ -1,8 +1,8 @@
 import { DiagnosticSeverity } from "vscode-languageserver";
-import { Scalar } from "yaml";
+import { Pair, Scalar } from "yaml";
 
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { getScalarRangeByValue, getSourceByValue } from "../../../utils/yaml";
+import { getScalarSourceAndRange } from "../../../utils/yaml";
 import { ConversationInterceptorType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
 import { ConversationSection } from "./Conversation";
@@ -14,7 +14,7 @@ export class ConversationInterceptor extends AbstractNodeV2<ConversationIntercep
   readonly parent: ConversationSection;
 
   // Cache the parsed yaml document
-  private yml: Scalar;
+  private yml: Pair<Scalar<string>, Scalar>;
   private interceptors: string[] = [];
 
   readonly availableInterceptors = [
@@ -38,13 +38,15 @@ export class ConversationInterceptor extends AbstractNodeV2<ConversationIntercep
     },
   ];
 
-  constructor(yml: Scalar, parent: ConversationSection) {
+  constructor(yml: Pair<Scalar<string>, Scalar>, offset: [offsetStart: number, offsetEnd: number], parent: ConversationSection) {
     super();
+    this.offsetStart = offset[0];
+    this.offsetEnd = offset[1];
     this.parent = parent;
-    this.yml = yml;
-    [this.offsetStart, this.offsetEnd] = getScalarRangeByValue(this.yml);
 
-    const str = getSourceByValue(this.yml);
+    this.yml = yml;
+    const [str, [valueOffsetStart, valueOffsetEnd]] = getScalarSourceAndRange(yml.value);
+
     if (typeof str === "string") {
       // Parse values
       if (str.trim() !== "") {
@@ -67,7 +69,7 @@ export class ConversationInterceptor extends AbstractNodeV2<ConversationIntercep
               severity = DiagnosticSeverity.Warning;
               code = DiagnosticCode.ValueContentEmpty;
             }
-            const offsetStart = this.offsetStart + matched.index + matched[1].length;
+            const offsetStart = valueOffsetStart + matched.index + matched[1].length;
             const offsetEnd = offsetStart + matched[2].length;
             this.addDiagnostic(
               [offsetStart, offsetEnd],
@@ -78,7 +80,7 @@ export class ConversationInterceptor extends AbstractNodeV2<ConversationIntercep
                 {
                   title: "Remove value",
                   text: "",
-                  range: [this.offsetStart + matched.index, offsetEnd]
+                  range: [valueOffsetStart + matched.index, offsetEnd]
                 },
                 ...this.defaultCodeActions
               ]
@@ -88,7 +90,7 @@ export class ConversationInterceptor extends AbstractNodeV2<ConversationIntercep
       }
     } else if (typeof str !== "string" && str !== null) {
       this.addDiagnostic(
-        [this.offsetStart, this.offsetEnd],
+        [valueOffsetStart, valueOffsetEnd],
         `Incorrect value type. It should be a string.`,
         DiagnosticSeverity.Error,
         DiagnosticCode.ValueTypeIncorrect,
