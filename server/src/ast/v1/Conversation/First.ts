@@ -82,7 +82,10 @@ export class First extends AbstractNodeV1<ConversationFirstType> {
     }
   }
 
-  getFirstPointers(optionID?: string) {
-    return this.getChildren<FirstPointer>('ConversationFirstPointer', p => !optionID || p.optionID === optionID);
+  getFirstPointers(optionID?: string, conversationID?: string) {
+    return this.getChildren<FirstPointer>('ConversationFirstPointer', p =>
+      (!optionID || p.optionID === optionID) &&
+      (!conversationID || p.conversationID === conversationID)
+    );
   }
 }

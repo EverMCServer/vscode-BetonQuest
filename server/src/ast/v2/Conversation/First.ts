@@ -86,8 +86,12 @@ export class First extends AbstractNodeV2<ConversationFirstType> {
     }
   }
 
-  getFirstPointers(optionID?: string) {
-    return this.getChildren<FirstPointer>('ConversationFirstPointer', p => !optionID || p.optionID === optionID);
+  getFirstPointers(optionID?: string, conversationID?: string, packageUri?: string) {
+    return this.getChildren<FirstPointer>('ConversationFirstPointer', p =>
+      (!optionID || p.optionID === optionID) &&
+      (!conversationID || p.conversationID === conversationID) &&
+      (!packageUri || p.getPackageUri(p.package) === packageUri)
+    );
   }
 
   getDefinitions(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {

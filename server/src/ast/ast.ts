@@ -309,7 +309,7 @@ export class AST {
           switch (type) {
             case 'ConversationNpcOption':
               // Search conversation first pointers
-              c.getFirst().forEach(f => f.getFirstPointers(optionID).forEach(p => pointers.push(p)));
+              c.getFirst().forEach(f => f.getFirstPointers(optionID, conversationID).forEach(p => pointers.push(p)));
               // Search pointers from conversation Player Options
               c.getConversationOptions('ConversationPlayerOption')
                 .forEach(o => o.getPointers()
@@ -396,7 +396,7 @@ export class AST {
             switch (type) {
               case 'ConversationNpcOption':
                 // Search conversation first pointers
-                c.getFirst().forEach(f => f.getFirstPointers(optionID).forEach(p => pointers.push(p)));
+                c.getFirst().forEach(f => f.getFirstPointers(optionID, conversationID, packageUri).forEach(p => pointers.push(p)));
                 // Search pointers from conversation Player Options
                 c.getConversationOptions('ConversationPlayerOption')
                   .forEach(o => o.getPointers()
