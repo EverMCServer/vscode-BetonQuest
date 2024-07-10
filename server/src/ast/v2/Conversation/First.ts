@@ -1,8 +1,9 @@
 import { DiagnosticSeverity } from "vscode-languageserver";
-import { Scalar } from "yaml";
+import { Pair, Scalar } from "yaml";
 
 import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
+import { LocationLinkOffset } from "../../../utils/location";
 import { getScalarSourceAndRange } from "../../../utils/yaml";
 import { ConversationFirstType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
@@ -15,17 +16,20 @@ export class First extends AbstractNodeV2<ConversationFirstType> {
   readonly offsetEnd: number;
   readonly parent: ConversationSection;
 
-  private yml: Scalar;
-  private entriesStr: string;
+  readonly yml: Pair<Scalar<string>, Scalar<string>>;
+  readonly entriesStr: string;
 
-  constructor(yml: Scalar, parent: ConversationSection) {
+  constructor(yml: Pair<Scalar<string>, Scalar<string>>, parent: ConversationSection) {
     super();
     this.parent = parent;
+    this.offsetStart = yml.key.range![0];
+    this.offsetEnd = yml.value?.range![1] || yml.key.range![1];
 
-    [this.entriesStr, [this.offsetStart, this.offsetEnd]] = getScalarSourceAndRange(yml);
-    if (typeof yml.value !== 'string') {
+    const [entriesStr, [valueOffsetStart, valueOffsetEnd]] = getScalarSourceAndRange(yml.value);
+    this.entriesStr = entriesStr;
+    if (typeof yml.value?.value !== 'string') {
       this.addDiagnostic(
-        [this.offsetStart, this.offsetEnd],
+        [valueOffsetStart, valueOffsetEnd],
         "Invalid string value",
         DiagnosticSeverity.Error,
         DiagnosticCode.ValueContentIncorrect,
@@ -42,9 +46,9 @@ export class First extends AbstractNodeV2<ConversationFirstType> {
     // Split and parse IDs
     const regex = /(,?)([^,]*)/g; // /(,?)([^,]*)/g
     let matched: RegExpExecArray | null;
-    while ((matched = regex.exec(this.entriesStr)) !== null && matched[0].length > 0) {
+    while ((matched = regex.exec(entriesStr)) !== null && matched[0].length > 0) {
       const str = matched[2];
-      const offsetStartWithComma = this.offsetStart + matched.index;
+      const offsetStartWithComma = valueOffsetStart + matched.index;
       const offsetStart = offsetStartWithComma + matched[1].length;
       const offsetEnd = offsetStart + str.length;
       const strTrimedStart = str.trimStart();
@@ -84,5 +88,53 @@ export class First extends AbstractNodeV2<ConversationFirstType> {
 
   getFirstPointers(optionID?: string) {
     return this.getChildren<FirstPointer>('ConversationFirstPointer', p => !optionID || p.optionID === optionID);
+  }
+
+  getDefinitions(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
+    // TODO: create a standalone node for the YAML key
+    if (offset < this.yml.key.range![0] || offset > this.yml.key.range![1]) {
+      return super.getDefinitions(offset, documentUri);
+    }
+    // Return self so VSCode will show its References instead
+    return [{
+      originSelectionRange: [this.yml.key.range![0], this.yml.key.range![1]],
+      targetUri: this.getUri(),
+      targetRange: [this.yml.key.range![0], this.yml.key.range![1]],
+      targetSelectionRange: [this.yml.key.range![0], this.yml.key.range![1]],
+    }];
+  }
+
+  getReferences(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
+    // TODO: create a standalone node for the YAML key
+    if (offset < this.yml.key.range![0] || offset > this.yml.key.range![1]) {
+      return [];
+    }
+    return [
+      ...this.getPackages()
+        .flatMap(p => p.getConversations())
+        .flatMap(c => c.getConversationSections())
+        .flatMap(s => s.getFirst())
+        .flatMap(f => f.getFirstPointers())
+        .filter(p => this.getPackageUri(p.package) === this.getPackageUri() && p.conversationID === this.parent.parent.conversationID && p.optionID === "")
+        .flatMap(p => ({
+          originSelectionRange: [this.offsetStart, this.offsetEnd],
+          targetUri: p.getUri(),
+          targetRange: [p.offsetStart, p.offsetEnd],
+          targetSelectionRange: [p.offsetStart, p.offsetEnd],
+        } as LocationLinkOffset)),
+      ...this.getPackages()
+        .flatMap(p => p.getConversations())
+        .flatMap(c => c.getConversationSections())
+        .flatMap(s => s.getPlayerOptions())
+        .flatMap(o => o.getPointers())
+        .flatMap(p => p.getPointers())
+        .filter(p => this.getPackageUri(p.package) === this.getPackageUri() && p.conversationID === this.parent.parent.conversationID && p.optionID === "")
+        .flatMap(p => ({
+          originSelectionRange: [this.offsetStart, this.offsetEnd],
+          targetUri: p.getUri(),
+          targetRange: [p.offsetStart, p.offsetEnd],
+          targetSelectionRange: [p.offsetStart, p.offsetEnd],
+        } as LocationLinkOffset)),
+    ];
   }
 }

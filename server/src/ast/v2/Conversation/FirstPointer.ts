@@ -95,27 +95,44 @@ export class FirstPointer extends AbstractNodeV2<ConversationFirstPointerType> {
   }
 
   getHoverInfo(offset: number): HoverInfo[] {
-    const hoverInfos: HoverInfo[] = this.getTargetNodes().filter(n => n.comment).flatMap(n => ({
-      content: n.comment!,
-      offset: [this.offsetStart, this.offsetEnd]
-    }));
-    return hoverInfos;
-  }
-
-  getDefinitions(offset: number): LocationLinkOffset[] {
-    // Check empty optionID
     if (this.optionID === "" && this.conversationID !== "") {
       return [];
     } else if (this.optionID === "") {
       // TODO: return "first" of the target Conversation.
+      return [];
+    } else {
+      return this.getTargetNodes().filter(n => n.comment).flatMap(n => ({
+        content: n.comment!,
+        offset: [this.offsetStart, this.offsetEnd]
+      } as HoverInfo));
     }
-    const locations: LocationLinkOffset[] = this.getTargetNodes().flatMap(n => ({
-      originSelectionRange: [this.offsetStart, this.offsetEnd],
-      targetUri: n.getUri(),
-      targetRange: [n.offsetStart!, n.offsetEnd!],
-      targetSelectionRange: [n.offsetStart!, n.offsetEnd!]
-    }));
-    return locations;
+  }
+
+  getDefinitions(offset: number): LocationLinkOffset[] {
+    // Check empty optionID
+    if (this.optionID === "" && this.conversationID === "") {
+      return [];
+    } else if (this.optionID === "") {
+      // Return "first" of the target Conversation.
+      return this.getPackages(this.getPackageUri(this.package))
+        .flatMap(p => p.getConversations(this.conversationID))
+        .flatMap(c => c.getConversationSections())
+        .flatMap(s => s.getFirst())
+        .flatMap(f => ({
+          originSelectionRange: [this.offsetStart, this.offsetEnd],
+          targetUri: f.getUri(),
+          targetRange: [f.offsetStart, f.offsetEnd],
+          targetSelectionRange: [f.yml.key.range![0], f.yml.key.range![1]],
+        } as LocationLinkOffset));
+    } else {
+      // Return the actural Option of the target Conversation.
+      return this.getTargetNodes().flatMap(n => ({
+        originSelectionRange: [this.offsetStart, this.offsetEnd],
+        targetUri: n.getUri(),
+        targetRange: [n.offsetStart!, n.offsetEnd!],
+        targetSelectionRange: [n.offsetStart!, n.offsetEnd!]
+      } as LocationLinkOffset));
+    }
   }
 
   getTargetNodes() {

@@ -68,6 +68,10 @@ export abstract class AbstractNodeV2<T extends NodeType> extends AbstractNode<T,
     }
   }
 
+  getPackages(packageUri?: string) {
+    return this.getAst().getV2Packages(packageUri);
+  }
+
   // Get absolute Package path.
   // This method must be overrided / hijacked by the top-level class.
   getPackagePath(): string[] {

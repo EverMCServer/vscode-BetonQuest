@@ -5,8 +5,8 @@ import { Pair, Scalar, YAMLMap, isMap, isScalar } from "yaml";
 import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getFilename } from "../../../utils/url";
-import { isYamlMapPair } from "../../../utils/yaml";
-import { ConversationOptionType, ConversationSectionType, ConversationType } from "../../node";
+import { isStringScalarPair, isYamlMapPair } from "../../../utils/yaml";
+import { ConversationSectionType, ConversationType } from "../../node";
 import { PackageV2 } from "../Package";
 import { Document, SectionCollection } from "../document";
 import { ConversationFinalEvents } from "./ConversationFinalEvents";
@@ -84,8 +84,8 @@ export class ConversationSection extends Document<ConversationSectionType> {
           }
           break;
         case "first":
-          if (isScalar(pair.value)) {
-            this.addChild(new First(pair.value, this));
+          if (isStringScalarPair(pair)) {
+            this.addChild(new First(pair, this));
           } else {
             // Throw incorrect value diagnostics
             this.addDiagnosticValueTypeIncorrect(pair, `Incorrect value type. It should be a string.`);

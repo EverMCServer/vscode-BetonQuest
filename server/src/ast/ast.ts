@@ -281,6 +281,10 @@ export class AST {
     ];
   }
 
+  getV1Packages(packageUri?: string) {
+    return this.packagesV1.filter(pkg => !packageUri || pkg.isPackageUri(packageUri));
+  }
+
   getV1ConditionEntry(id: string, packageUri: string) {
     return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getConditionEntries(id, packageUri));
   }
@@ -348,6 +352,10 @@ export class AST {
             .flatMap(f => f.getFinalEvents(eventID, packageUri))
         ])
       );
+  }
+
+  getV2Packages(packageUri?: string) {
+    return this.packagesV2.filter(pkg => !packageUri || pkg.isPackageUri(packageUri));
   }
 
   getV2ConditionEntry(id: string, packageUri: string) {

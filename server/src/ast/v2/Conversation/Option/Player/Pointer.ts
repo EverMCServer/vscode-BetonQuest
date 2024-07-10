@@ -105,10 +105,20 @@ export class Pointer extends AbstractNodeV2<ConversationPlayerPointerType> {
 
   getDefinitions(offset: number): LocationLinkOffset[] {
     // Check empty optionID
-    if (this.optionID === "" && this.conversationID !== "") {
+    if (this.optionID === "" && this.conversationID === "") {
       return [];
     } else if (this.optionID === "") {
-      // TODO: return "first" of the target Conversation.
+      // Return "first" of the target Conversation.
+      return this.getPackages(this.getPackageUri(this.package))
+        .flatMap(p => p.getConversations(this.conversationID))
+        .flatMap(c => c.getConversationSections())
+        .flatMap(s => s.getFirst())
+        .flatMap(f => ({
+          originSelectionRange: [this.offsetStart, this.offsetEnd],
+          targetUri: f.getUri(),
+          targetRange: [f.offsetStart, f.offsetEnd],
+          targetSelectionRange: [f.offsetStart, f.offsetEnd],
+        } as LocationLinkOffset));
     }
     const locations: LocationLinkOffset[] = this.getTargetNodes().flatMap(n => ({
       originSelectionRange: [this.offsetStart, this.offsetEnd],
