@@ -106,7 +106,7 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
       }
     } else {
       // Absolute path
-      packageUri = this.parentAst.packageRootUriV2 + packagePathArray.join('/') + '/';
+      packageUri = this.parentAst.packageRootUriV1 + packagePathArray.join('/') + '/';
     }
     return packageUri;
   }
