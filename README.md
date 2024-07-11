@@ -20,7 +20,7 @@ It is the recommended setup for daily development.
 For quick trial. Also works on your tablet and even cellphone!
 1. Goto [https://vscode.dev](https://vscode.dev).
 1. Click on the Extensions tab on the left.
-1. Search `evermc.betonquest` and install it
+1. Search `EverMC.betonquest` and install it
 1. Open the whole `BetonQuest` folder with VSCode.
 
 ## IntelliSense Showcase
@@ -131,11 +131,12 @@ Helps on translating this extension are welcomed. Please consider submitting you
 
 ## Release Notes
 
-### 0.5.0 pre-release
+### 0.5.x pre-release
 
 - Add Language Server for BetonQuest v1 and v2 scripts
 - Add Definitions and References searching
 - Add Semantic Highlight
+- Fix various bugs
 
 ### 0.4.1
 
