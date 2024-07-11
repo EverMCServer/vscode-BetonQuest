@@ -134,7 +134,7 @@ export async function getAllDocuments(connection: Connection, workspaceFolders: 
         return TextDocument.create(uri, 'yaml', 0, content);
       });
 
-      return [wsFolder.uri, documents];
+      return [wsFolder.uri.replace(/[\/\\]+$/, '') + "/", documents];
     } catch (e) {
       if (e instanceof ResponseError) {
         connection.console.log("request file tree failed: " + e);
