@@ -11,6 +11,10 @@ export class ConversationFinalEvent extends AbstractID<ConversationEventType, Co
     super(idString, range, parent);
   }
 
+  getIdKindName() {
+    return "Event";
+  }
+
   getSemanticTokens(): SemanticToken[] {
     const semanticTokens: SemanticToken[] = super.getSemanticTokens();
     semanticTokens.push({

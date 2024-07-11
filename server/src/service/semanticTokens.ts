@@ -139,7 +139,7 @@ export enum SemanticTokenType {
   Boolean = SemanticTokenTypes.macro,
 
   /**
-   * Operator / Seprator, e.g.: , : !
+   * Operator / separator, e.g.: , : !
    */
   Operator = SemanticTokenTypes.operator,
 

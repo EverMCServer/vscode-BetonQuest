@@ -87,7 +87,7 @@ export class ConversationFinalEvents extends AbstractNodeV2<ConversationFinalEve
           )
         );
 
-        // Add semantic tokens for seprator ","
+        // Add semantic tokens for separator ","
         if (matched[1].length > 0) {
           this.semanticTokens.push({
             offsetStart: offsetStartWithComma,

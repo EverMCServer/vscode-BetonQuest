@@ -11,6 +11,10 @@ export class Condition extends AbstractID<ConversationConditionType, Conditions,
     super(idString, range, parent);
   }
 
+  getIdKindName() {
+    return "Condition";
+  }
+
   getSemanticTokens(): SemanticToken[] {
     const semanticTokens: SemanticToken[] = super.getSemanticTokens();
     semanticTokens.push({

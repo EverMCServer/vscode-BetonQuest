@@ -56,7 +56,7 @@ export class FirstPointer extends AbstractNodeV1<ConversationFirstPointerType> {
       if (this.optionID.includes(".")) {
         this.addDiagnostic(
           [this.offsetStart, this.offsetEnd],
-          `Extra seprator "." founded in path. Please avoide using special characters like ".", "-" or "_" when naming a Conversation or Pointer.`,
+          `Extra separator "." founded in path. Please avoide using special characters like ".", "-" or "_" when naming a Conversation or Pointer.`,
           DiagnosticSeverity.Error,
           DiagnosticCode.CrossPackageCrossConversationPointerInvalidCharacter
         );

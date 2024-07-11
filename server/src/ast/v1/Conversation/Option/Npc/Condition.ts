@@ -1,7 +1,7 @@
-import { ConversationConditionType } from "../../../../node";
-import { AbstractID } from "../../AbstractId";
 import { SemanticToken, SemanticTokenType } from "../../../../../service/semanticTokens";
+import { ConversationConditionType } from "../../../../node";
 import { ConditionEntry } from "../../../Condition/ConditionEntry";
+import { AbstractID } from "../../AbstractId";
 import { Conditions } from "./Conditions";
 
 export class Condition extends AbstractID<ConversationConditionType, Conditions, ConditionEntry> {
@@ -9,6 +9,10 @@ export class Condition extends AbstractID<ConversationConditionType, Conditions,
 
   constructor(idString: string, range: [offsetStart: number, offsetEnd: number], parent: Conditions) {
     super(idString, range, parent);
+  }
+
+  getIdKindName() {
+    return "Condition";
   }
 
   getSemanticTokens(): SemanticToken[] {

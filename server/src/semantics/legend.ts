@@ -41,7 +41,7 @@ const tokenTypes = [
   'keyword', // tag / point
   'number', // number
   'regexp',
-  'operator', // seprator,:^!
+  'operator', // separator,:^!
 ];
 
 const tokenModifiers = [

@@ -107,7 +107,12 @@ export enum DiagnosticCode {
   ConversationOptionPointerUndefined = "BQ-3021",
 
   /**
+   * Package path is empty in a cross-package or cross-conversation pointer.
+   */
+  CrossPackageCrossConversationPackagePathIsEmpty = "BQ-4001",
+
+  /**
    * Invalid character founded in a cross-package or cross-conversation pointer.
    */
-  CrossPackageCrossConversationPointerInvalidCharacter = "BQ-4001",
+  CrossPackageCrossConversationPointerInvalidCharacter = "BQ-4002",
 }

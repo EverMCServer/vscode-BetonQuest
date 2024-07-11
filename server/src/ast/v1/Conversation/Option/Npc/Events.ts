@@ -57,7 +57,7 @@ export class Events extends AbstractNodeV1<ConversationEventsType> {
       // Parse the Event ID
       this.addChild(new Event(strTrimed, [offsetStartTrimed, offsetEndTrimed], this));
 
-      // Add semantic tokens for seprator ","
+      // Add semantic tokens for separator ","
       if (matched[1].length > 0) {
         this.semanticTokens.push({
           offsetStart: offsetStartWithComma,

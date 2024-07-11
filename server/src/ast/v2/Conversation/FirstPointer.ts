@@ -53,7 +53,7 @@ export class FirstPointer extends AbstractNodeV2<ConversationFirstPointerType> {
       this.conversationID = str.slice(0, pos);
       this.optionID = str.slice(pos + 1);
       if (this.optionID.includes(".")) {
-        // 2+ seprators ".", resolve for Package
+        // 2+ separators ".", resolve for Package
         const pos = this.optionID.indexOf(".");
         this.package = this.conversationID;
         this.conversationID = this.optionID.slice(0, pos);
@@ -63,7 +63,7 @@ export class FirstPointer extends AbstractNodeV2<ConversationFirstPointerType> {
       if (this.optionID.includes(".")) {
         this.addDiagnostic(
           [this.offsetStart, this.offsetEnd],
-          `Extra seprator "." founded in path. Special characters "." is NOT allowed when naming a Package, Conversation or Option.`,
+          `Extra separator "." founded in path. Special characters "." is NOT allowed when naming a Package, Conversation or Option.`,
           DiagnosticSeverity.Error,
           DiagnosticCode.CrossPackageCrossConversationPointerInvalidCharacter
         );

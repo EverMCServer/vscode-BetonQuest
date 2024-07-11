@@ -1,4 +1,4 @@
-import { DiagnosticSeverity } from "vscode-languageserver";
+import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
@@ -17,6 +17,7 @@ import { Conditions as NpcConditions } from "./Option/Npc/Conditions";
 import { Events as NpcEvents } from "./Option/Npc/Events";
 import { Conditions as PlayerConditions } from "./Option/Player/Conditions";
 import { Events as PlayerEvents } from "./Option/Player/Events";
+import { title } from "process";
 
 export abstract class AbstractID<T extends NodeType, PT extends ConversationFinalEvents | NpcConditions | NpcEvents | PlayerConditions | PlayerEvents, ET extends ConditionEntry | EventEntry | ObjectiveEntry> extends AbstractNodeV1<T> {
   readonly offsetStart: number;
@@ -64,7 +65,7 @@ export abstract class AbstractID<T extends NodeType, PT extends ConversationFina
       if (this.id.includes(".")) {
         this.addDiagnostic(
           [this.offsetStart, this.offsetEnd],
-          `Extra seprator "." founded in path. Please avoide using special characters like ".", "-" or "_" when naming a Condition, Event or Objective.`,
+          `Extra separator "." founded in path. Please avoide using special characters like ".", "-" or "_" when naming a Condition, Event or Objective.`,
           DiagnosticSeverity.Warning,
           DiagnosticCode.CrossPackageCrossConversationPointerInvalidCharacter
         );
@@ -78,10 +79,27 @@ export abstract class AbstractID<T extends NodeType, PT extends ConversationFina
           DiagnosticCode.CrossPackageCrossConversationPointerInvalidCharacter
         );
       }
+      // Check empty package name
+      if (this.package === "") {
+        this.addDiagnostic(
+          [this.offsetStart, this.offsetEnd],
+          `Package path is empty.`,
+          DiagnosticSeverity.Error,
+          DiagnosticCode.CrossPackageCrossConversationPackagePathIsEmpty,
+          [{
+            title: `Remove separator "."`,
+            text: `${this.withExclamationMark ? "!" : ""}${this.id}`,
+            range: [this.offsetStart, this.offsetEnd]
+          }]
+        );
+      }
     } else {
       this.id = str;
     }
   }
+
+  // Method to get the kind of the AbstractID, e.g. "Event" or "Condition"
+  abstract getIdKindName(): string;
 
   // Method to get the target nodes that this ID points to.
   abstract getTargetNodes(): ET[];
@@ -97,6 +115,19 @@ export abstract class AbstractID<T extends NodeType, PT extends ConversationFina
     }
     return semanticTokens;
   };
+
+  getDiagnostics(): Diagnostic[] {
+    const diagnostics = super.getDiagnostics();
+    if (this.getTargetNodes().length < 1) {
+      diagnostics.push(this.makeDiagnostic(
+        [this.offsetStart, this.offsetEnd],
+        `The target ${this.getIdKindName()} "${this.id}" is not defined${this.package ? " in package \"" + this.package + "\"" : ""}.`,
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ConversationOptionPointerUndefined
+      ));
+    }
+    return diagnostics;
+  }
 
   getHoverInfo(offset: number): HoverInfo[] {
     const hoverInfo: HoverInfo[] = [];

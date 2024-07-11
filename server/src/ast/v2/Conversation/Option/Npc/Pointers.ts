@@ -57,7 +57,7 @@ export class Pointers extends AbstractNodeV2<ConversationPointersType> {
       // Parse the Option ID
       this.addChild(new Pointer(strTrimed, [offsetStartTrimed, offsetEndTrimed], this));
 
-      // Add semantic tokens for seprator ","
+      // Add semantic tokens for separator ","
       if (matched[1].length > 0) {
         this.semanticTokens.push({
           offsetStart: offsetStartWithComma,
