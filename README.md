@@ -1,20 +1,32 @@
-# BetonQuest Visual Editor
+# BetonQuest IntelliSense and GUI Editor
 
 [![VS Marketplace](https://img.shields.io/visual-studio-marketplace/v/EverMC.betonquest?color=brightgreen&label=VS%20Marketplace&logo=visual-studio-code&style=flat-square)](https://marketplace.visualstudio.com/items?itemName=EverMC.betonquest)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue?style=flat-square)](https://github.com/EverMCServer/vscode-BetonQuest/blob/main/LICENSE)
 
 
-A GUI based editor for [BetonQuest](https://github.com/BetonQuest/BetonQuest) scripting.
+IntelliSense and GUI editor for [BetonQuest](https://github.com/BetonQuest/BetonQuest) scripting.
 
 ![conversation editor](assets/screenshot-conversation-light.jpg)
 
 ## How to use
 
+### Local installation
+It is the recommended setup for daily development.
 1. Download and install [VSCode](https://code.visualstudio.com/).
-1. Install this extension from [VS Marketplace](https://marketplace.visualstudio.com/items?itemName=EverMC.betonquest).
+1. Install this extension from [Marketplace](https://marketplace.visualstudio.com/items?itemName=EverMC.betonquest).
 1. Open the whole `BetonQuest` folder with VSCode.
 
-## Showcase
+### Web editing
+For quick trial. Also works on your tablet and even cellphone!
+1. Goto [https://vscode.dev](https://vscode.dev).
+1. Click on the Extensions tab on the left.
+1. Search `evermc.betonquest` and install it
+1. Open the whole `BetonQuest` folder with VSCode.
+
+## IntelliSense Showcase
+(See the screenshot above)
+
+## GUI Editor Showcase
 
 ### Edit `Conversations` with drag-and-drop:
 ![demo](assets/screenshot-demo-conversation-new-option.gif)
@@ -29,38 +41,38 @@ A GUI based editor for [BetonQuest](https://github.com/BetonQuest/BetonQuest) sc
 ![demo](assets/screenshot-demo-theme.gif)
 
 ## Feature Roadmap
-- ✅ Web extension support. Just go to https://vscode.dev and try it.
-- ✅ Edit `Conversations` with an interactive flowchart UI.
-- ✅ The legacy **1.x file structure** \[[1](https://betonquest.org/1.12/User-Documentation/Reference/#packages)\] \[[2](https://betonquest.org/1.12/User-Documentation/Conversations/)\] support.
-- ✅ The new **2.0 file structure** \[[1](https://betonquest.org/2.0/Documentation/Scripting/Packages-%26-Templates/)\] \[[2](https://betonquest.org/2.0/Tutorials/Syntax/Quest-Packages/)\] support.
-- ✅ Formated `Events` Editors with built-in [documentation](https://betonquest.org/2.0/Documentation/Overview/) support.
-- ✅ Formated `Conditions` Editors
-- ✅ Formated `Objectives` Editors
-- ✅ Formated `Events`, `Conditions`, `Objectives` Editors for the **1.x file structure**
-- ✅ Supports [Variables](https://betonquest.org/2.0/Documentation/Scripting/Building-Blocks/Variables-List) in `Events`, `Conditions`, `Objectives` Editors.
+- ✅ Web extension support! Just go to https://vscode.dev and install it through the Extensions tab.
+- IntelliSense
+    - ✅ Right click and Go To Definitions / References of `Pointers`, `Events`, `Conditions`, `Objectives`.
+    - ✅ Code semantic highlight.
+    - ⬜ Hint / errors translation.
+    - ⬜ Semantic highlight and references for instructions.
+    - ⬜ Code completion.
+- GUI editor
+    - ✅ GUI editor for `Conversations`, `Events`, `Conditions`, `Objectives` with built-in [documentation](https://betonquest.org/2.1/Documentation/Overview/) support.
+    - ⬜ [Journal](https://betonquest.org/2.1/Documentation/Features/Journal/) editing.
+    - ⬜ [Items](https://betonquest.org/2.1/Documentation/Features/Items/) editing.
+    - ⬜ [Intergrated plugins](https://betonquest.org/2.1/Documentation/Scripting/Building-Blocks/Integration-List/) support.
+    - ⬜ Advanced Variable editor.
+    - ⬜ Package configuration.
+    - ⬜ [Menu](https://betonquest.org/2.1/Documentation/Features/Menus/Menu/) editing.
+    - and more. Please [suggest](https://github.com/EverMCServer/vscode-BetonQuest/issues).
+    - ⬜ [Global Variables](https://betonquest.org/2.1/Documentation/Scripting/Building-Blocks/Variables-List/#global-variables) support.
+- ✅ Click and jump between the code / flowchart / editor.
 - ✅ i18n support.
     - English
     - Simplified Chinese 简体中文
     - Japanese 日本語 (contributed by shanaOP [@dusty01534](https://github.com/dusty01534))
-- ✅ Click and jump to the code / flowchart / editor.
-- ⬜ Advanced Variable editor.
-- ⬜ [Journal](https://betonquest.org/2.0/Documentation/Features/Journal/) editing.
-- ⬜ [Items](https://betonquest.org/2.0/Documentation/Features/Items/) editing.
-- ⬜ [Intergrated plugins](https://betonquest.org/2.0/Documentation/Scripting/Building-Blocks/Integration-List/) support.
-- ⬜ Package configuration.
-- ⬜ [Menu](https://betonquest.org/2.0/Documentation/Features/Menus/Menu/) editing.
-- and more. Please [suggest](https://github.com/EverMCServer/vscode-BetonQuest/issues).
-- ⬜ Code referencing with LSP. Click any Events, Condiitons or Objectives then jump to the definition.
-- ⬜ [Global Variables](https://betonquest.org/2.0/Documentation/Scripting/Building-Blocks/Variables-List/#global-variables) support.
 
 ## Limitations
 
-- `Conversations` Editor does not support [cross-conversation pointers](https://betonquest.org/2.0/Documentation/Features/Conversations/#cross-conversation-pointers) at this moment.
-- [Global Variables](https://betonquest.org/2.0/Documentation/Scripting/Building-Blocks/Variables-List/#global-variables) conflict with this extension. Please consider convert your scripts before using this extension. Support for Global Variables may be added in the far future.
+- Code semantic highlight colors is subject to be changed anytime during development.
+- `Conversations` GUI editor does not support [cross-conversation pointers](https://betonquest.org/2.1/Documentation/Features/Conversations/#cross-conversation-pointers) at this moment.
+- [Global Variables](https://betonquest.org/2.1/Documentation/Scripting/Building-Blocks/Variables-List/#global-variables) conflicted with this extension. Please consider convert your scripts before using this extension. Support for Global Variables may be added in the far future.
 
 ## Extension Settings
 
-- Translation Selection - The translation selection for conversation flowchart. Default to 'en'.
+- Translation Selection - The translation selected for conversation flowchart. Default to 'en'.
 
 ## Known Issues
 
@@ -119,6 +131,12 @@ Helps on translating this extension are welcomed. Please consider submitting you
 
 ## Release Notes
 
+### 0.5.0 pre-release
+
+- Add Language Server for BetonQuest v1 and v2 scripts
+- Add Definitions and References searching
+- Add Semantic Highlight
+
 ### 0.4.1
 
 - Fully supports Japanese 日本語に完全対応 (contributed by shanaOP [@dusty01534](https://github.com/dusty01534))
@@ -128,12 +146,5 @@ Helps on translating this extension are welcomed. Please consider submitting you
 - Add "goto" support, now you can jump between the code and the editor when clicking on an Events / Objectives / Conditions
 - Adjust flowchart style to better suite VSCode's color theme
 - Fix missing translation
-
-### 0.3.0
-- i18n supported!
-- Fully supports Simplified Chinese 完全支持简体中文
-- Optimize initial loading speed
-- Minimize extension
-- Removes the `thunder` option from the `weather` Event BetonQuest/BetonQuest/pull/2671
 
 (For more detailes, please check [CHANGELOG.md](CHANGELOG.md))
