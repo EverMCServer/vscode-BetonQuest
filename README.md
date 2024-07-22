@@ -11,13 +11,13 @@ IntelliSense and GUI editor for [BetonQuest](https://github.com/BetonQuest/Beton
 ## How to use
 
 ### Local installation
-It is the recommended setup for daily development.
+It is the recommended setup for daily developments.
 1. Download and install [VSCode](https://code.visualstudio.com/).
 1. Install this extension from [Marketplace](https://marketplace.visualstudio.com/items?itemName=EverMC.betonquest).
 1. Open the whole `BetonQuest` folder with VSCode.
 
 ### Web editing
-For quick trial. Also works on your tablet and even cellphone!
+For a quick trial. It works on your tablet and even a cellphone!
 1. Goto [https://vscode.dev](https://vscode.dev).
 1. Click on the Extensions tab on the left.
 1. Search `EverMC.betonquest` and install it

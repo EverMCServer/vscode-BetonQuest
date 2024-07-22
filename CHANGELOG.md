@@ -4,12 +4,14 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [0.5.1 pre-release]
+## [0.5.1 pre-release] - 2024-07-11
 
+### Fixed
 - Fix cross-conversation/package pointers failed on Windows and Linux
 
-## [0.5.0 pre-release]
+## [0.5.0 pre-release] - 2024-07-11
 
+### Added
 - Add Language Server for BetonQuest v1 and v2 scripts
 - Add Definitions and References searching
 - Add Semantic Highlighting

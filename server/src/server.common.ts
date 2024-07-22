@@ -1,5 +1,5 @@
 import { FilesResponse, LocationsParams } from 'betonquest-utils/lsp/file';
-import { CodeAction, Command, Connection, DidChangeConfigurationNotification, FileChangeType, HandlerResult, InitializeParams, InitializeResult, SemanticTokensParams, SemanticTokensRequest, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
+import { CodeAction, Command, CompletionItem, CompletionItemKind, Connection, DidChangeConfigurationNotification, FileChangeType, HandlerResult, InitializeParams, InitializeResult, SemanticTokensParams, SemanticTokensRequest, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { ASTs } from './ast/ast';
 import { legend } from './semantics/legend';
@@ -65,6 +65,15 @@ export function server(connection: Connection): void {
 
         // Tell the client that this server provides references searching.
         referencesProvider: true,
+
+        // Tell the client that this server provides code completion.
+        completionProvider: {
+          // triggerCharacters: [",", ":", ": ", ": \"", ": '"],
+          // resolveProvider: true,
+          // completionItem: {
+          //   labelDetailsSupport: true
+          // }
+        },
       }
     };
     if (hasWorkspaceFolderCapability) {
@@ -217,6 +226,50 @@ export function server(connection: Connection): void {
       range: allDocuments.getRangeByOffsets(l.targetUri, l.targetRange)
     }));
   });
+
+  // Listen on Completion requests
+  connection.onCompletion((params, token, workDoneProgress, resultProgress) => {
+    // return {
+    //   isIncomplete: true,
+    //   items: [
+    //     {
+    //       label: "class",
+    //       kind: CompletionItemKind.Class,
+    //       data: 1,
+    //     }
+    //   ]
+    // };
+    // params.partialResultToken
+    // params.position
+    // params.textDocument
+    // params.workDoneToken
+    // return [
+    //   {
+    //     // insertText: "Class",
+    //     label: "class",
+    //     kind: CompletionItemKind.Class,
+    //     data: 1,
+    //     range: ""
+    //   }
+    // ];
+    const position = allDocuments.getOffsetByPosition(params.textDocument.uri, params.position);
+    return asts.getCompletions(position, params.textDocument.uri);
+  });
+
+  // // This handler resolves additional information for the item selected in
+  // // the completion list.
+  // connection.onCompletionResolve(
+  //   (item: CompletionItem): CompletionItem => {
+  //     if (item.data === 1) {
+  //       item.detail = 'BetonQuest details';
+  //       item.documentation = 'BetonQuest documentation';
+  //     } else if (item.data === 2) {
+  //       item.detail = 'JavaScript details';
+  //       item.documentation = 'JavaScript documentation';
+  //     }
+  //     return item;
+  //   }
+  // );
 
   // Register custom handlers
   connection.onRequest("custom/locations", (params: LocationsParams) => {

@@ -1,4 +1,4 @@
-import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
+import { CodeAction, CodeActionKind, CompletionItem, Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
 
 import { SemanticToken } from "../service/semanticTokens";
 import { DiagnosticCode } from "../utils/diagnostics";
@@ -217,6 +217,12 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
     return this.children
       .filter(c => !c.offsetStart || !c.offsetEnd || (offset >= c.offsetStart && offset <= c.offsetEnd))
       .flatMap(c => c.getReferences(offset, documentUri));
+  }
+
+  getCompletions(offset: number, documentUri?: string): CompletionItem[] {
+    return this.children
+      .filter(c => !c.offsetStart || !c.offsetEnd || (offset >= c.offsetStart && offset <= c.offsetEnd))
+      .flatMap(c => c.getCompletions(offset, documentUri));
   }
 
   // Get range by offset.

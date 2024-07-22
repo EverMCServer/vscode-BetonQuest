@@ -1,3 +1,4 @@
+import { CompletionItem } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { AllDocuments } from "../utils/document";
@@ -77,6 +78,10 @@ export class ASTs {
 
   getReferences(offset: number, documentUri: string): LocationLinkOffset[] {
     return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getReferences(offset, documentUri));
+  }
+
+  getCompletions(offset: number, documentUri: string): CompletionItem[] {
+    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getCompletions(offset, documentUri));
   }
 
 }
@@ -278,6 +283,13 @@ export class AST {
     return [
       ...this.packagesV1.flatMap(pkg => pkg.getReferences(offset, uri)),
       ...this.packagesV2.flatMap(pkg => pkg.getReferences(offset, uri))
+    ];
+  }
+
+  getCompletions(offset: number, uri: string): CompletionItem[] {
+    return [
+      ...this.packagesV1.flatMap(pkg => pkg.getCompletions(offset, uri)),
+      ...this.packagesV2.flatMap(pkg => pkg.getCompletions(offset, uri))
     ];
   }
 

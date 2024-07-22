@@ -35,6 +35,14 @@ export async function _activate(context: vscode.ExtensionContext, lspClient: Bas
     // Send files in bulk
     lspClient.onRequest('custom/files', filesHandler);
 
+    // Request completions on every keystroke
+    vscode.workspace.onDidChangeTextDocument(event => {
+      let editor = vscode.window.activeTextEditor;
+      if (editor && event.document === editor.document) {
+        vscode.commands.executeCommand('editor.action.triggerSuggest');
+      }
+    });
+
   }).catch(reason => {
     console.error('BQLS: betonquest-server failed to start', reason);
   });

@@ -1,4 +1,7 @@
+import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
+
 import Condition from "betonquest-utils/betonquest/Condition";
+import { kinds } from "betonquest-utils/betonquest/v2/Conditions";
 import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v2/Element";
 
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
@@ -54,5 +57,17 @@ export class ConditionKind extends AbstractNodeV2<ConditionKindType> {
       infos.push(info);
     }
     return infos;
+  }
+
+  getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
+    if (this.offsetStart && this.offsetEnd && this.offsetStart <= offset && this.offsetEnd >= offset) {
+      return kinds.filter(k => k.value.startsWith(this.value.toLowerCase())).flatMap(k => ({
+        label: k.value,
+        kind: CompletionItemKind.Constructor, // TODO: move it onto SemanticTokenType etc.
+        detail: k.display,
+        documentation: k.description?.toString()
+      }));
+    }
+    return [];
   }
 }
