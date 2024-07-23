@@ -95,7 +95,7 @@ export class First extends AbstractNodeV2<ConversationFirstType> {
     );
   }
 
-  getDefinitions(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
+  getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
     // TODO: create a standalone node for the YAML key
     if (offset < this.yml.key.range![0] || offset > this.yml.key.range![1]) {
       return super.getDefinitions(offset, documentUri);
@@ -109,7 +109,7 @@ export class First extends AbstractNodeV2<ConversationFirstType> {
     }];
   }
 
-  getReferences(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
+  getReferences(offset: number, documentUri?: string): LocationLinkOffset[] {
     // TODO: create a standalone node for the YAML key
     if (offset < this.yml.key.range![0] || offset > this.yml.key.range![1]) {
       return [];

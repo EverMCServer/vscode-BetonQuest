@@ -39,7 +39,7 @@ export async function _activate(context: vscode.ExtensionContext, lspClient: Bas
     vscode.workspace.onDidChangeTextDocument(event => {
       let editor = vscode.window.activeTextEditor;
       if (editor && event.document === editor.document) {
-        vscode.commands.executeCommand('editor.action.triggerSuggest');
+        // vscode.commands.executeCommand('editor.action.triggerSuggest');
       }
     });
 

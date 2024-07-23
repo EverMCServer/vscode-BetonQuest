@@ -51,7 +51,7 @@ export class EventKey extends AbstractNodeV1<EventKeyType> {
     return hoverInfo;
   }
 
-  getDefinitions(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
+  getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
     // Return self so VSCode will show its References instead
     return [{
       originSelectionRange: [this.offsetStart, this.offsetEnd],

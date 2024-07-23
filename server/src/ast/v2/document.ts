@@ -20,8 +20,8 @@ export abstract class SectionCollection<T extends NodeType> extends AbstractNode
 
 export abstract class Document<T extends NodeType> extends AbstractNodeV2<T> {
   readonly uri: string;
-  readonly offsetStart?: number | undefined;
-  readonly offsetEnd?: number | undefined;
+  readonly offsetStart?: number;
+  readonly offsetEnd?: number;
 
   // VSCode Document, for diagnostics / quick actions / goto definition, etc
   readonly document: TextDocument;
@@ -81,5 +81,12 @@ export abstract class Document<T extends NodeType> extends AbstractNodeV2<T> {
       return [];
     }
     return super.getReferences(offset, documentUri);
+  }
+
+  getCompletions(offset: number, documentUri?: string) {
+    if (documentUri && documentUri !== this.uri) {
+      return [];
+    }
+    return super.getCompletions(offset, documentUri);
   }
 }

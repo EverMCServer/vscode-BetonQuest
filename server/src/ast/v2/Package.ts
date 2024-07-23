@@ -1,4 +1,4 @@
-import { PublishDiagnosticsParams } from "vscode-languageserver";
+import { CompletionItem, PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { Scalar, YAMLMap, isMap, isSeq, parseDocument, visit } from "yaml";
 
@@ -305,5 +305,13 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
     }
     return this.children
       .flatMap(c => c.getReferences(offset, documentUri));
+  }
+
+  getCompletions(offset: number, documentUri?: string): CompletionItem[] {
+    if (documentUri && !documentUri.startsWith(this.uri)) {
+      return [];
+    }
+    return this.children
+      .flatMap(c => c.getCompletions(offset, documentUri));
   }
 }

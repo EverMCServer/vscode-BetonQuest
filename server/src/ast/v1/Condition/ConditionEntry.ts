@@ -1,4 +1,4 @@
-import { DiagnosticSeverity } from "vscode-languageserver";
+import { CompletionItem, CompletionItemKind, DiagnosticSeverity } from "vscode-languageserver";
 import { Pair, Scalar } from "yaml";
 
 import { kinds } from "betonquest-utils/betonquest/v1/Conditions";
@@ -19,6 +19,7 @@ export class ConditionEntry extends AbstractNodeV1<ConditionEntryType> {
   readonly parent: ConditionList;
 
   yml: Pair<Scalar<string>, Scalar<string>>;
+  offsetKindEnd?: number;
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: ConditionList) {
     super();
@@ -26,6 +27,7 @@ export class ConditionEntry extends AbstractNodeV1<ConditionEntryType> {
     this.offsetStart = pair.key?.range?.[0];
     this.offsetEnd = pair.value?.range?.[1];
     this.yml = pair;
+    this.offsetKindEnd = this.offsetEnd;
 
     // Parse YAML key
     this.addChild(new ConditionKey(this.yml.key, this));
@@ -59,8 +61,8 @@ export class ConditionEntry extends AbstractNodeV1<ConditionEntryType> {
     const kindStr = matched[1];
     const kind = kinds.find(k => k.value === kindStr.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
     const offsetKindStart = offsetStart + matched.index;
-    const offsetKindEnd = offsetKindStart + kindStr.length;
-    this.addChild(new ConditionKind(kindStr, [offsetKindStart, offsetKindEnd], kind, this));
+    this.offsetKindEnd = offsetKindStart + kindStr.length;
+    this.addChild(new ConditionKind(kindStr, [offsetKindStart, this.offsetKindEnd], kind, this));
 
     // Parse Arguments
     const argumentsSourceStr = matched[3];
@@ -69,7 +71,7 @@ export class ConditionEntry extends AbstractNodeV1<ConditionEntryType> {
       // If so, throw diagnostic
       if (kind && kind.value !== "*" && kind.argumentsPatterns.mandatory.length > 0) {
         this.addDiagnostic(
-          [offsetKindEnd, offsetEnd],
+          [this.offsetKindEnd, offsetEnd],
           `Missing mandatory argument(s) for "${kindStr}"`,
           DiagnosticSeverity.Error,
           DiagnosticCode.ElementArgumentsMissing,
@@ -77,8 +79,21 @@ export class ConditionEntry extends AbstractNodeV1<ConditionEntryType> {
       }
       return;
     }
-    const offsetArgumentsStart = offsetKindEnd ? offsetKindEnd + matched[2].length : undefined;
+    const offsetArgumentsStart = this.offsetKindEnd ? this.offsetKindEnd + matched[2].length : undefined;
     // Parse each individual arguments
     this.addChild(new ConditionArguments(argumentsSourceStr, [offsetArgumentsStart, offsetEnd], indent, kind, this));
+  }
+
+  getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
+    // Prompt the Condition list
+    if (this.offsetKindEnd && offset <= this.offsetKindEnd) {
+      return kinds.filter(k => k.value !== "*").flatMap(k => ({
+        label: k.value,
+        kind: CompletionItemKind.Constructor, // TODO: move it onto SemanticTokenType etc.
+        detail: k.display,
+        documentation: k.description?.toString()
+      }));
+    }
+    return [];
   }
 }

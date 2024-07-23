@@ -1,4 +1,4 @@
-import { PublishDiagnosticsParams } from "vscode-languageserver";
+import { CompletionItem, PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
@@ -214,5 +214,13 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
     }
     return this.children
       .flatMap(c => c.getReferences(offset, documentUri));
+  }
+
+  getCompletions(offset: number, documentUri?: string): CompletionItem[] {
+    if (documentUri && !documentUri.startsWith(this.uri)) {
+      return [];
+    }
+    return this.children
+      .flatMap(c => c.getCompletions(offset, documentUri));
   }
 }

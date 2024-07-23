@@ -52,7 +52,7 @@ export class ConditionKey extends AbstractNodeV2<ConditionKeyType> {
     return hoverInfo;
   }
 
-  getDefinitions(offset: number, documentUri?: string | undefined): LocationLinkOffset[] {
+  getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
     // Return self so VSCode will show its References instead
     return [{
       originSelectionRange: [this.offsetStart, this.offsetEnd],

@@ -94,4 +94,11 @@ export abstract class Document<T extends NodeType> extends AbstractNodeV1<T> {
     return super.getReferences(offset, documentUri);
   }
 
+  getCompletions(offset: number, documentUri?: string) {
+    if (documentUri && documentUri !== this.uri) {
+      return [];
+    }
+    return super.getCompletions(offset, documentUri);
+  }
+
 }
