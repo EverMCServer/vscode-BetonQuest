@@ -1,14 +1,14 @@
-import { useEffect, useRef, useState } from "react";
 import { Col, Divider, Row, Tooltip } from "antd";
-import { VscQuestion } from "react-icons/vsc";
+import { useEffect, useRef, useState } from "react";
 import { TbVariableOff, TbVariablePlus } from "react-icons/tb";
+import { VscQuestion } from "react-icons/vsc";
 
-import L from "betonquest-utils/i18n/i18n";
+import { MandatoryArgumentDataFormat, OptionalArgumentDataFormat } from "betonquest-utils/betonquest/Arguments";
 import Event from "betonquest-utils/betonquest/Event";
-import { MandatoryArgumentDataType, OptionalArgumentDataType } from "betonquest-utils/betonquest/Arguments";
-import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
-
+import L from "betonquest-utils/i18n/i18n";
 import Variable from "betonquest-utils/ui/Input/Variable";
+
+import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
 
 const colSpanLeft1 = 10;
 const colSpanRight1 = 14;
@@ -64,12 +64,12 @@ export default function (props: ListElementEditorBodyProps<Event>) {
     useEffect(() => {
         const map = new Map<number | string, boolean>();
         for (let i = 0; i < props.argumentsPatterns.mandatory.length; i++) {
-            map.set(i, args.getMandatoryArgument(i).getType() === 'variable');
+            map.set(i, args.getMandatoryArgument(i).getFormat() === 'variable');
         }
         if (props.argumentsPatterns.optional) {
             for (let i = 0; i < props.argumentsPatterns.optional.length; i++) {
                 const key = props.argumentsPatterns.optional[i].key;
-                map.set(key, args.getOptionalArgument(key)?.getType() === 'variable');
+                map.set(key, args.getOptionalArgument(key)?.getFormat() === 'variable');
             }
         }
         setVariableEnabled(map);
@@ -121,7 +121,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                             {pat.jsx && (pat.allowVariable && variableEnabled.get(index) &&
                                 <Variable
                                     placeholder={L("*.commonList.editor.default.toggleVariablePlaceholder")}
-                                    value={arg.getType() === 'variable' ? argValue as string : "%%"}
+                                    value={arg.getFormat() === 'variable' ? argValue as string : "%%"}
                                     onChange={(str) => {
                                         args.setMandatoryArgument(index, str);
                                         props.syncYaml();
@@ -133,7 +133,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                     value={argValue}
                                     defaultValue={pat.defaultValue}
                                     placeholder={pat.placeholder}
-                                    onChange={(value: MandatoryArgumentDataType) => {
+                                    onChange={(value: MandatoryArgumentDataFormat) => {
                                         args.setMandatoryArgument(index, value);
                                         props.syncYaml();
                                         refreshUI(); // Refresh states, if component uses useEffect() inside
@@ -188,7 +188,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                     {pat.jsx && (pat.allowVariable && variableEnabled.get(pat.key) &&
                                         <Variable
                                             placeholder={L("*.commonList.editor.default.toggleVariablePlaceholder")}
-                                            value={arg?.getType() === 'variable' ? argValue as string : "%%"}
+                                            value={arg?.getFormat() === 'variable' ? argValue as string : "%%"}
                                             onChange={(str) => {
                                                 args.setOptionalArgument(pat.key, str);
                                                 props.syncYaml();
@@ -199,7 +199,7 @@ export default function (props: ListElementEditorBodyProps<Event>) {
                                         <pat.jsx
                                             value={argValue}
                                             placeholder={pat.placeholder}
-                                            onChange={(value: OptionalArgumentDataType) => {
+                                            onChange={(value: OptionalArgumentDataFormat) => {
                                                 args.setOptionalArgument(pat.key, value);
                                                 props.syncYaml();
                                                 refreshUI(); // Refresh states, if component uses useEffect() inside

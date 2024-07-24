@@ -41,7 +41,7 @@ export class EventArguments extends AbstractNodeV1<EventArgumentsType> {
     }
 
     // Search ArgumentsPatterns from V1 Element List
-    const argumentsPatterns: ArgumentsPatterns = kindConfig?.argumentsPatterns ?? { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] };
+    const argumentsPatterns: ArgumentsPatterns = kindConfig?.argumentsPatterns ?? { mandatory: [{ name: 'unspecified', format: '*', defaultValue: '' }] };
 
     // Cache arguments
     let argumentOptionalStrs: string[] = [];

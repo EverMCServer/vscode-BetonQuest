@@ -41,7 +41,7 @@ export class ObjectiveArguments extends AbstractNodeV2<ObjectiveArgumentsType> {
     }
 
     // Search ArgumentsPatterns from V2 Element List
-    const argumentsPatterns: ArgumentsPatterns = kindConfig?.argumentsPatterns ?? { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] };
+    const argumentsPatterns: ArgumentsPatterns = kindConfig?.argumentsPatterns ?? { mandatory: [{ name: 'unspecified', format: '*', defaultValue: '' }] };
 
     // Cache arguments
     let argumentOptionalStrs: string[] = [];

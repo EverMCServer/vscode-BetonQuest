@@ -1,7 +1,7 @@
 import { Pair, Scalar } from "yaml";
 
 /**
- * Mandatory arguments' type
+ * Mandatory arguments' value format
  * 
  * * string - string
  * * int - interger
@@ -9,11 +9,11 @@ import { Pair, Scalar } from "yaml";
  * * string[,] - string array, separated by comma
  * * string[|] - string array, separated by "|"
  * * string[^] - string array, separated by "^"
- * * string:number[,] - Items sepprated by ","
+ * * [string:number?][,] - Items / entities sepprated by ","
  * * \* - all string till the end, including spaces and optional arguments
  * * 'variable' - variable quoted by %%
  */
-type MandatoryArgumentType = (
+type MandatoryArgumentFormat = (
     'string' |
     'int' |
     'float' |
@@ -25,7 +25,7 @@ type MandatoryArgumentType = (
     'variable'
 );
 
-export type MandatoryArgumentDataType =
+export type MandatoryArgumentDataFormat =
     string |
     number |
     string[] |
@@ -34,17 +34,17 @@ export type MandatoryArgumentDataType =
 type MandatoryArguments = Array<MandatoryArgument>;
 
 /**
- * Optional arguments' type
+ * Optional arguments' value format
  * 
  * * string - string
  * * int - interger
  * * float - number with a decimal point
  * * string[,] - string array, separated by comma
  * * boolean - argument only, no value
- * * string:number[,] - Items sepprated by ","
+ * * [string:number?][,] - Items / entities sepprated by ","
  * * 'variable' - variable quoted by %%
  */
-type OptionalArgumentType = (
+type OptionalArgumentFormat = (
     'string' |
     'int' |
     'float' |
@@ -55,7 +55,7 @@ type OptionalArgumentType = (
     'variable'
 );
 
-export type OptionalArgumentDataType =
+export type OptionalArgumentDataFormat =
     string |
     number |
     string[] |
@@ -78,13 +78,13 @@ type ArgumentsPattern = {
 
 export type ArgumentsPatternMandatory = ArgumentsPattern & {
     key?: string,
-    type: MandatoryArgumentType,
-    defaultValue: MandatoryArgumentDataType,
+    format: MandatoryArgumentFormat,
+    defaultValue: MandatoryArgumentDataFormat,
 };
 
 export type ArgumentsPatternOptional = ArgumentsPattern & {
     key: string,
-    type: OptionalArgumentType,
+    format: OptionalArgumentFormat,
 };
 
 export type ArgumentsPatterns = {
@@ -94,21 +94,21 @@ export type ArgumentsPatterns = {
     keepWhitespaces?: boolean, // Do not split by whitespaces. Used by "chat", "command", "sudo", "opsudo", "notify" etc.
 };
 
-class Argument<T = MandatoryArgumentType | OptionalArgumentType, V = MandatoryArgumentDataType | OptionalArgumentDataType> {
+class Argument<F = MandatoryArgumentFormat | OptionalArgumentFormat, V = MandatoryArgumentDataFormat | OptionalArgumentDataFormat> {
     private value: V;
-    private type: T;
+    private format: F;
 
-    constructor(type: T, value: V) {
-        this.type = type;
+    constructor(format: F, value: V) {
+        this.format = format;
         this.value = value;
     }
 
     get() {
-        return [this.value, this.type];
+        return [this.value, this.format];
     }
 
-    set(type: T, value: V) {
-        this.type = type;
+    set(format: F, value: V) {
+        this.format = format;
         this.value = value;
     }
 
@@ -120,18 +120,18 @@ class Argument<T = MandatoryArgumentType | OptionalArgumentType, V = MandatoryAr
         this.value = value;
     }
 
-    getType() {
-        return this.type;
+    getFormat() {
+        return this.format;
     }
 
-    setType(type: T) {
-        this.type = type;
+    setFormat(format: F) {
+        this.format = format;
     }
 }
 
-export class MandatoryArgument extends Argument<MandatoryArgumentType, MandatoryArgumentDataType> { }
+export class MandatoryArgument extends Argument<MandatoryArgumentFormat, MandatoryArgumentDataFormat> { }
 
-export class OptionalArgument extends Argument<OptionalArgumentType, OptionalArgumentDataType> { }
+export class OptionalArgument extends Argument<OptionalArgumentFormat, OptionalArgumentDataFormat> { }
 
 export abstract class ArgumentsAbstract {
     // Pattern
@@ -142,7 +142,7 @@ export abstract class ArgumentsAbstract {
     protected optional: OptionalArguments = new Map();
 
     constructor(
-        pattern: ArgumentsPatterns = { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] }
+        pattern: ArgumentsPatterns = { mandatory: [{ name: 'unspecified', format: '*', defaultValue: '' }] }
     ) {
         this.pattern = pattern;
     }
@@ -248,7 +248,7 @@ export abstract class ArgumentsAbstract {
 
         // Prepare default mandatory values
         for (let i = 0; i < pattern.mandatory.length; i++) {
-            this.mandatory[i] = new MandatoryArgument(pattern.mandatory[i].type, pattern.mandatory[i].defaultValue);
+            this.mandatory[i] = new MandatoryArgument(pattern.mandatory[i].format, pattern.mandatory[i].defaultValue);
         }
 
         // Parse mandatory arguments
@@ -282,7 +282,7 @@ export abstract class ArgumentsAbstract {
             // Check if variable and parse it
             const variableArray = /^%.*%$/m.exec(argStr);
             if (variableArray && variableArray[0]) {
-                this.mandatory[i].setType('variable');
+                this.mandatory[i].setFormat('variable');
                 this.mandatory[i].setValue(variableArray[0]);
                 continue;
             }
@@ -290,26 +290,26 @@ export abstract class ArgumentsAbstract {
             // Un-Escape special characters
             const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [];
 
-            // Set value by type
-            if (pat.type === 'string') {
+            // Set value by format
+            if (pat.format === 'string') {
                 this.mandatory[i].setValue(this.unescapeCharacters(escapeCharacters, argStr ? argStr : pat.defaultValue as string));
-            } else if (pat.type === 'int') {
+            } else if (pat.format === 'int') {
                 this.mandatory[i].setValue(argStr ? parseInt(argStr) : pat.defaultValue);
-            } else if (pat.type === 'float') {
+            } else if (pat.format === 'float') {
                 this.mandatory[i].setValue(argStr ? parseFloat(argStr) : pat.defaultValue);
-            } else if (pat.type === 'string[,]') {
+            } else if (pat.format === 'string[,]') {
                 this.mandatory[i].setValue(argStr?.split(/(?<!\\),/g)
                     .map(v => this.unescapeCharacters([...escapeCharacters, ','], v))
                     || pat.defaultValue);
-            } else if (pat.type === 'string[|]') {
+            } else if (pat.format === 'string[|]') {
                 this.mandatory[i].setValue(argStr?.split(/(?<!\\)\|/g)
                     .map(v => this.unescapeCharacters([...escapeCharacters, '|'], v))
                     || pat.defaultValue);
-            } else if (pat.type === 'string[^]') {
+            } else if (pat.format === 'string[^]') {
                 this.mandatory[i].setValue(argStr?.replace(/^\^/, "").split(/(?<!\\)\s?\^/g)
                     .map(v => this.unescapeCharacters([...escapeCharacters, '^'], v))
                     || pat.defaultValue);
-            } else if (pat.type === '[string:number?][,]') {
+            } else if (pat.format === '[string:number?][,]') {
                 let parseError = false;
                 const parsedArg: [string, number?][] = argStr?.split(/(?<!\\),/g).map(v => {
                     const arg = /(.*?)(?<!\\):?(\d*)$/.exec(v);
@@ -320,7 +320,7 @@ export abstract class ArgumentsAbstract {
                     return [this.unescapeCharacters([...escapeCharacters, ',', ':'], arg[1]), arg[2].length ? parseInt(arg[2]) : undefined];
                 }) || pat.defaultValue;
                 this.mandatory[i].setValue(parseError ? pat.defaultValue : parsedArg);
-            } else if (pat.type === '*') {
+            } else if (pat.format === '*') {
                 this.mandatory[i].setValue(argStrsMandatoryUnKeyed.slice(i)
                     .map(v => this.unescapeCharacters(escapeCharacters, v))
                     .join(" ") || pat.defaultValue);
@@ -331,7 +331,7 @@ export abstract class ArgumentsAbstract {
         // Parse optional arguments
         if (pattern.optional
             && pattern.optional.length > 0
-            // && !(!pattern.optionalAtFirst && pattern.mandatory.some(v => v.type === '*')) // Skip when mandatory pattern is "*"
+            // && !(!pattern.optionalAtFirst && pattern.mandatory.some(v => v.format === '*')) // Skip when mandatory pattern is "*"
         ) {
             const optionalArguments: OptionalArguments = new Map();
             let iFrom = 0;
@@ -349,34 +349,34 @@ export abstract class ArgumentsAbstract {
                     // Un-Escape special characters
                     const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [];
 
-                    // Set value by type
+                    // Set value by format
                     const argStrSplit = argStr.split(/(?<!\\):/);
                     const argStrValue = argStrSplit.slice(1).join(":");
                     if (pat.key === argStrSplit[0]) {
                         // Set value
-                        optionalArguments.set(pat.key, new OptionalArgument(pat.type, argStrValue));
+                        optionalArguments.set(pat.key, new OptionalArgument(pat.format, argStrValue));
 
                         const optionalArgument = optionalArguments.get(pat.key)!;
 
                         // Check if variable and parse it
                         const variableArray = /^%.*%$/m.exec(argStrValue);
                         if (variableArray && variableArray[0]) {
-                            optionalArgument.setType('variable');
+                            optionalArgument.setFormat('variable');
                             optionalArgument.setValue(variableArray[0]);
                             break;
                         }
 
                         // Parse value
-                        if (pat.type === 'int') {
+                        if (pat.format === 'int') {
                             optionalArgument.setValue(parseInt(argStrValue));
-                        } else if (pat.type === 'float') {
+                        } else if (pat.format === 'float') {
                             optionalArgument.setValue(parseFloat(argStrValue));
-                        } else if (pat.type === 'string[,]') {
+                        } else if (pat.format === 'string[,]') {
                             optionalArgument.setValue(argStrValue.split(/(?<!\\),/g)
                                 .map(v => this.unescapeCharacters([...escapeCharacters, ','], v)));
-                        } else if (pat.type === 'boolean') {
+                        } else if (pat.format === 'boolean') {
                             optionalArgument.setValue(true);
-                        } else if (pat.type === '[string:number?][,]') {
+                        } else if (pat.format === '[string:number?][,]') {
                             let parseError = false;
                             const parsedArg: [string, number?][] = argStrValue?.split(/(?<!\\),/g).map(v => {
                                 const arg = /(.*?)(?<!\\):?(\d*)$/.exec(v);
@@ -440,7 +440,7 @@ export abstract class ArgumentsAbstract {
     private marshalMandatoryArguments(): string {
         const mandatoryStrs: string[] = [];
 
-        // Set value by type
+        // Set value by format
         for (let i = 0; i < this.pattern.mandatory.length; i++) {
             let element = "";
             const pat = this.pattern.mandatory[i];
@@ -454,33 +454,33 @@ export abstract class ArgumentsAbstract {
             // Escape special characters
             const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [];
 
-            // Set value by type
-            if (pat.type === 'int') {
+            // Set value by format
+            if (pat.format === 'int') {
                 element += (value as number).toString();
-            } else if (pat.type === 'float') {
+            } else if (pat.format === 'float') {
                 element += (value as number).toString();
-            } else if (pat.type === 'string[,]') {
+            } else if (pat.format === 'string[,]') {
                 element += (value as string[])
                     .map(str => this.escapeCharacters([...escapeCharacters, ','], str))
                     .join(",");
-            } else if (pat.type === 'string[|]') {
+            } else if (pat.format === 'string[|]') {
                 element += (value as string[])
                     .map(str => this.escapeCharacters([...escapeCharacters, '|'], str))
                     .join("|");
-            } else if (pat.type === 'string[^]') {
+            } else if (pat.format === 'string[^]') {
                 element += "^" + (value as string[])
                     .map(str => this.escapeCharacters([...escapeCharacters, '^'], str))
                     .join(" ^");
-            } else if (pat.type === '[string:number?][,]') {
+            } else if (pat.format === '[string:number?][,]') {
                 element += (value as [string, number?][])
                     .map(([s, n]) => {
                         s = this.escapeCharacters([...escapeCharacters, ',', ':'], s);
                         return n !== undefined ? `${s}:${n}` : s;
                     })
                     .join(",");
-            } else if (pat.type === 'variable') {
+            } else if (pat.format === 'variable') {
                 element += value as string;
-            } else { // if (type === 'string' || '*')
+            } else { // if (format === 'string' || '*')
                 element += this.escapeCharacters(escapeCharacters, value as string);
             }
 
@@ -499,27 +499,27 @@ export abstract class ArgumentsAbstract {
             // Escape special characters
             const escapeCharacters = pat.escapeCharacters ? pat.escapeCharacters : [];
 
-            // Set value by type
+            // Set value by format
             if (value === undefined) {
             } else if (value === null) {
                 optionalStrs.push(`${pat.key}`);
             } else {
-                if (pat.type === 'int') {
+                if (pat.format === 'int') {
                     optionalStrs.push(`${pat.key}:${(value as number).toString()}`);
-                } else if (pat.type === 'float') {
+                } else if (pat.format === 'float') {
                     optionalStrs.push(`${pat.key}:${(value as number).toString()}`);
-                } else if (pat.type === 'string[,]') {
+                } else if (pat.format === 'string[,]') {
                     const valueArray = value as string[];
                     if (valueArray.length > 1 || valueArray[0].length > 0) {
                         optionalStrs.push(`${pat.key}:${valueArray
                             .map(v => this.escapeCharacters([...escapeCharacters, ','], v))
                             .join(",")}`);
                     }
-                } else if (pat.type === 'boolean') {
+                } else if (pat.format === 'boolean') {
                     if (value) {
                         optionalStrs.push(`${pat.key}`);
                     }
-                } else if (pat.type === '[string:number?][,]') {
+                } else if (pat.format === '[string:number?][,]') {
                     optionalStrs.push(`${pat.key}:${(value as [string, number?][])
                         .map(([s, n]) => {
                             s = this.escapeCharacters([...escapeCharacters, ',', ':'], s);
@@ -527,9 +527,9 @@ export abstract class ArgumentsAbstract {
                         })
                         .join(",")
                         }`);
-                } else if (pat.type === 'variable') {
+                } else if (pat.format === 'variable') {
                     optionalStrs.push(`${pat.key}:${value}`);
-                } else { // if (type === 'string' || 'variable')
+                } else { // if (format === 'string' || 'variable')
                     const valueStr = value as string;
                     if (valueStr.length > 0) {
                         optionalStrs.push(`${pat.key}:${this.escapeCharacters(escapeCharacters, valueStr)}`);
@@ -587,7 +587,7 @@ export abstract class ArgumentsAbstract {
 
 export class ArgumentsString extends ArgumentsAbstract {
     private str: string;
-    constructor(str: string, pattern: ArgumentsPatterns = { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] }) {
+    constructor(str: string, pattern: ArgumentsPatterns = { mandatory: [{ name: 'unspecified', format: '*', defaultValue: '' }] }) {
         super(pattern);
         this.str = str;
 
@@ -604,7 +604,7 @@ export default class Arguments extends ArgumentsAbstract {
 
     constructor(
         pair: Pair<Scalar<string>, Scalar<string>>,
-        pattern: ArgumentsPatterns = { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] }
+        pattern: ArgumentsPatterns = { mandatory: [{ name: 'unspecified', format: '*', defaultValue: '' }] }
     ) {
         super(pattern);
         this.yaml = pair;
@@ -612,18 +612,18 @@ export default class Arguments extends ArgumentsAbstract {
         this.parse();
     }
 
-    setMandatoryArgument(index: number, value: MandatoryArgumentDataType, type?: MandatoryArgumentType) {
+    setMandatoryArgument(index: number, value: MandatoryArgumentDataFormat, format?: MandatoryArgumentFormat) {
         this.getMandatoryArgument(index).setValue(value);
-        if (type) {
-            this.getMandatoryArgument(index).setType(type);
+        if (format) {
+            this.getMandatoryArgument(index).setFormat(format);
         }
 
         // Update YAML
         this.updateYaml();
     }
 
-    setOptionalArgument(name: string, value: OptionalArgumentDataType, type: OptionalArgumentType = 'string') {
-        this.getOptionalArgument(name)?.setValue(value) || this.optional?.set(name, new OptionalArgument(type, value));
+    setOptionalArgument(name: string, value: OptionalArgumentDataFormat, format: OptionalArgumentFormat = 'string') {
+        this.getOptionalArgument(name)?.setValue(value) || this.optional?.set(name, new OptionalArgument(format, value));
 
         // Update YAML
         this.updateYaml();

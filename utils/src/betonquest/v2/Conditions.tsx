@@ -31,7 +31,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: undefined,
         argumentsPatterns: {
             mandatory: [
-                { jsx: TextArea, name: L("betonquest.v2.condition.*.mandatory.value.name"), type: '*', defaultValue: '' },
+                { jsx: TextArea, name: L("betonquest.v2.condition.*.mandatory.value.name"), format: '*', defaultValue: '' },
             ],
             keepWhitespaces: true
         }
@@ -43,7 +43,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.advancement.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Input, name: L("betonquest.v2.condition.advancement.mandatory.name.name"), type: 'string', defaultValue: 'minecraft:adventure/some_advancement', placeholder: 'e.g. minecraft:adventure/kill_a_mob', tooltip: L("betonquest.v2.condition.advancement.mandatory.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.advancement.mandatory.name.name"), format: 'string', defaultValue: 'minecraft:adventure/some_advancement', placeholder: 'e.g. minecraft:adventure/kill_a_mob', tooltip: L("betonquest.v2.condition.advancement.mandatory.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -54,7 +54,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.and.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: InputList, name: L("betonquest.v2.condition.and.mandatory.conditionList.name"), type: 'string[,]', defaultValue: ['some_condition_1'], placeholder: 'e.g. some_condition_1', tooltip: L("betonquest.v2.condition.and.mandatory.conditionList.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: L("betonquest.v2.condition.and.mandatory.conditionList.name"), format: 'string[,]', defaultValue: ['some_condition_1'], placeholder: 'e.g. some_condition_1', tooltip: L("betonquest.v2.condition.and.mandatory.conditionList.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -65,7 +65,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.armor.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Input, name: L("betonquest.v2.condition.armor.mandatory.item.name"), type: 'string', defaultValue: 'a_quest_item_1', placeholder: 'e.g. a_quest_item_1', tooltip: L("betonquest.v2.condition.armor.mandatory.item.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.armor.mandatory.item.name"), format: 'string', defaultValue: 'a_quest_item_1', placeholder: 'e.g. a_quest_item_1', tooltip: L("betonquest.v2.condition.armor.mandatory.item.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -76,7 +76,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.biome.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Biome, name: L("betonquest.v2.condition.biome.mandatory.biomeType.name"), type: 'string', defaultValue: 'CUSTOM', placeholder: 'e.g. SAVANNA_ROCK', tooltip: '', config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Biome, name: L("betonquest.v2.condition.biome.mandatory.biomeType.name"), format: 'string', defaultValue: 'CUSTOM', placeholder: 'e.g. SAVANNA_ROCK', tooltip: '', config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -96,7 +96,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.check.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: TextAreaList, name: L("betonquest.v2.condition.check.mandatory.conditions.name"), type: 'string[^]', defaultValue: [''] },
+                { jsx: TextAreaList, name: L("betonquest.v2.condition.check.mandatory.conditions.name"), format: 'string[^]', defaultValue: [''] },
             ],
             keepWhitespaces: true
         }
@@ -108,9 +108,9 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.chestitem.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: BaseLocation, name: L("betonquest.v2.condition.chestitem.mandatory.location.name"), type: 'string', defaultValue: '0.5;64;0.5;world', tooltip: L("betonquest.v2.condition.chestitem.mandatory.location.tooltip"), allowVariable: true },
+                { jsx: BaseLocation, name: L("betonquest.v2.condition.chestitem.mandatory.location.name"), format: 'string', defaultValue: '0.5;64;0.5;world', tooltip: L("betonquest.v2.condition.chestitem.mandatory.location.tooltip"), allowVariable: true },
                 // TODO: Item ID itself not support variable, but amount does. Variable editing should be done inside ItemList.tsx
-                { jsx: ItemList, name: L("betonquest.v2.condition.chestitem.mandatory.itemList.name"), type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
+                { jsx: ItemList, name: L("betonquest.v2.condition.chestitem.mandatory.itemList.name"), format: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
             ]
         }
     },
@@ -121,7 +121,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.conversation.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Input, name: L("betonquest.v2.condition.conversation.mandatory.conversationName.name"), type: 'string', defaultValue: 'a_conversation_1', placeholder: 'e.g. innkeeper', tooltip: L("betonquest.v2.condition.conversation.mandatory.conversationName.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.conversation.mandatory.conversationName.name"), format: 'string', defaultValue: 'a_conversation_1', placeholder: 'e.g. innkeeper', tooltip: L("betonquest.v2.condition.conversation.mandatory.conversationName.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -133,7 +133,7 @@ export const kinds: ElementKind<Condition>[] = [
         argumentsPatterns: {
             mandatory: [
                 {
-                    jsx: Select, name: L("betonquest.v2.condition.dayofweek.mandatory.action.name"), type: 'string', defaultValue: 'monday', placeholder: 'e.g. any', tooltip: L("betonquest.v2.condition.dayofweek.mandatory.action.tooltip"), config: {
+                    jsx: Select, name: L("betonquest.v2.condition.dayofweek.mandatory.action.name"), format: 'string', defaultValue: 'monday', placeholder: 'e.g. any', tooltip: L("betonquest.v2.condition.dayofweek.mandatory.action.tooltip"), config: {
                         options: [
                             { label: 'Monday', value: 'monday' },
                             { label: 'Tuesday', value: 'tuesday' },
@@ -155,7 +155,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.effect.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: PotionEffectType, name: L("betonquest.v2.condition.effect.mandatory.effect.name"), type: 'string', defaultValue: 'SPEED', tooltip: L("betonquest.v2.condition.effect.mandatory.effect.tooltip") },
+                { jsx: PotionEffectType, name: L("betonquest.v2.condition.effect.mandatory.effect.name"), format: 'string', defaultValue: 'SPEED', tooltip: L("betonquest.v2.condition.effect.mandatory.effect.tooltip") },
             ]
         }
     },
@@ -166,10 +166,10 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.empty.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Number, name: L("betonquest.v2.condition.empty.mandatory.amount.name"), type: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
+                { jsx: Number, name: L("betonquest.v2.condition.empty.mandatory.amount.name"), format: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
             ],
             optional: [
-                { jsx: Checkbox, name: L("betonquest.v2.condition.empty.optional.equal.name"), key: 'equal', type: 'boolean', tooltip: L("betonquest.v2.condition.empty.optional.equal.tooltip") },
+                { jsx: Checkbox, name: L("betonquest.v2.condition.empty.optional.equal.name"), key: 'equal', format: 'boolean', tooltip: L("betonquest.v2.condition.empty.optional.equal.tooltip") },
             ]
         }
     },
@@ -180,13 +180,13 @@ export const kinds: ElementKind<Condition>[] = [
         argumentsPatterns: {
             mandatory: [
                 // TODO: variable amount
-                { jsx: EntityTypeListWithAmount, name: L("betonquest.v2.condition.entities.mandatory.type.name"), type: '[string:number?][,]', defaultValue: [['ZOMBIE', 1]], placeholder: ['', '1'] },
-                { jsx: BaseLocation, name: L("betonquest.v2.condition.entities.mandatory.location.name"), type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
-                { jsx: Number, name: L("betonquest.v2.condition.entities.mandatory.radius.name"), type: 'float', defaultValue: 1.0, tooltip: L("betonquest.v2.condition.entities.mandatory.radius.tooltip"), config: { min: 0 }, allowVariable: true },
+                { jsx: EntityTypeListWithAmount, name: L("betonquest.v2.condition.entities.mandatory.type.name"), format: '[string:number?][,]', defaultValue: [['ZOMBIE', 1]], placeholder: ['', '1'] },
+                { jsx: BaseLocation, name: L("betonquest.v2.condition.entities.mandatory.location.name"), format: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
+                { jsx: Number, name: L("betonquest.v2.condition.entities.mandatory.radius.name"), format: 'float', defaultValue: 1.0, tooltip: L("betonquest.v2.condition.entities.mandatory.radius.tooltip"), config: { min: 0 }, allowVariable: true },
             ],
             optional: [
-                { jsx: Input, name: L("betonquest.v2.condition.entities.optional.name.name"), key: 'name', type: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: L("betonquest.v2.condition.entities.optional.name.tooltip"), escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
-                { jsx: Input, name: L("betonquest.v2.condition.entities.optional.marked.name"), key: 'marked', type: 'string', placeholder: 'e.g. quest_mob', tooltip: L("betonquest.v2.condition.entities.optional.marked.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.entities.optional.name.name"), key: 'name', format: 'string', placeholder: 'e.g. "Super Zombie"', tooltip: L("betonquest.v2.condition.entities.optional.name.tooltip"), escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.entities.optional.marked.name"), key: 'marked', format: 'string', placeholder: 'e.g. quest_mob', tooltip: L("betonquest.v2.condition.entities.optional.marked.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -196,7 +196,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.experience.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Number, name: L("betonquest.v2.condition.experience.mandatory.level.name"), type: 'float', defaultValue: 1.0, tooltip: L("betonquest.v2.condition.experience.mandatory.level.tooltip"), config: { min: 0 }, allowVariable: true },
+                { jsx: Number, name: L("betonquest.v2.condition.experience.mandatory.level.name"), format: 'float', defaultValue: 1.0, tooltip: L("betonquest.v2.condition.experience.mandatory.level.tooltip"), config: { min: 0 }, allowVariable: true },
             ]
         }
     },
@@ -207,7 +207,7 @@ export const kinds: ElementKind<Condition>[] = [
         argumentsPatterns: {
             mandatory: [
                 {
-                    jsx: Select, name: L("betonquest.v2.condition.facing.mandatory.direction.name"), type: 'string', defaultValue: 'UP', placeholder: 'e.g. UP', tooltip: L("betonquest.v2.condition.facing.mandatory.direction.tooltip"),  config: {
+                    jsx: Select, name: L("betonquest.v2.condition.facing.mandatory.direction.name"), format: 'string', defaultValue: 'UP', placeholder: 'e.g. UP', tooltip: L("betonquest.v2.condition.facing.mandatory.direction.tooltip"), config: {
                         options: [
                             { label: 'North', value: 'NORTH' },
                             { label: 'East', value: 'EAST' },
@@ -236,7 +236,7 @@ export const kinds: ElementKind<Condition>[] = [
         argumentsPatterns: {
             mandatory: [
                 {
-                    jsx: Select, name: L("betonquest.v2.condition.gamemode.mandatory.gameMode.name"), type: 'string', defaultValue: 'survival', placeholder: 'e.g. Survival', tooltip: L("betonquest.v2.condition.gamemode.mandatory.gameMode.tooltip"),  config: {
+                    jsx: Select, name: L("betonquest.v2.condition.gamemode.mandatory.gameMode.name"), format: 'string', defaultValue: 'survival', placeholder: 'e.g. Survival', tooltip: L("betonquest.v2.condition.gamemode.mandatory.gameMode.tooltip"), config: {
                         options: [
                             { label: 'Survival', value: 'survival' },
                             { label: 'Creative', value: 'creative' },
@@ -254,11 +254,11 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.globalpoint.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Input, name: L("betonquest.v2.condition.globalpoint.mandatory.name.name"), type: 'string', defaultValue: 'a_global_point_1', placeholder: 'e.g. a_global_point_1', tooltip: L("betonquest.v2.condition.globalpoint.mandatory.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: L("betonquest.v2.condition.globalpoint.mandatory.point.name"), type: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
+                { jsx: Input, name: L("betonquest.v2.condition.globalpoint.mandatory.name.name"), format: 'string', defaultValue: 'a_global_point_1', placeholder: 'e.g. a_global_point_1', tooltip: L("betonquest.v2.condition.globalpoint.mandatory.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: L("betonquest.v2.condition.globalpoint.mandatory.point.name"), format: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
             ],
             optional: [
-                { jsx: Checkbox, name: L("betonquest.v2.condition.globalpoint.optional.equal.name"), key: 'equal', type: 'boolean', tooltip: L("betonquest.v2.condition.globalpoint.optional.equal.tooltip") },
+                { jsx: Checkbox, name: L("betonquest.v2.condition.globalpoint.optional.equal.name"), key: 'equal', format: 'boolean', tooltip: L("betonquest.v2.condition.globalpoint.optional.equal.tooltip") },
             ]
         }
     },
@@ -268,7 +268,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.globaltag.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Input, name: L("betonquest.v2.condition.globaltag.mandatory.name.name"), type: 'string', defaultValue: 'a_global_tag_1', placeholder: 'e.g. a_global_tag_1', tooltip: L("betonquest.v2.condition.globaltag.mandatory.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.globaltag.mandatory.name.name"), format: 'string', defaultValue: 'a_global_tag_1', placeholder: 'e.g. a_global_tag_1', tooltip: L("betonquest.v2.condition.globaltag.mandatory.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -278,10 +278,10 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.hand.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Input, name: L("betonquest.v2.condition.hand.mandatory.item.name"), type: 'string', defaultValue: 'a_quest_item_1', placeholder: 'e.g. a_quest_item_1', tooltip: L("betonquest.v2.condition.hand.mandatory.item.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.hand.mandatory.item.name"), format: 'string', defaultValue: 'a_quest_item_1', placeholder: 'e.g. a_quest_item_1', tooltip: L("betonquest.v2.condition.hand.mandatory.item.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
-                { jsx: Checkbox, name: L("betonquest.v2.condition.hand.optional.offhand.name"), key: 'offhand', type: 'boolean', tooltip: L("betonquest.v2.condition.hand.optional.offhand.tooltip") },
+                { jsx: Checkbox, name: L("betonquest.v2.condition.hand.optional.offhand.name"), key: 'offhand', format: 'boolean', tooltip: L("betonquest.v2.condition.hand.optional.offhand.tooltip") },
             ]
         }
     },
@@ -291,7 +291,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.health.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Number, name: L("betonquest.v2.condition.health.mandatory.health.name"), type: 'float', defaultValue: 0.0, tooltip: L("betonquest.v2.condition.health.mandatory.health.tooltip"), config: { min: 0 }, allowVariable: true },
+                { jsx: Number, name: L("betonquest.v2.condition.health.mandatory.health.name"), format: 'float', defaultValue: 0.0, tooltip: L("betonquest.v2.condition.health.mandatory.health.tooltip"), config: { min: 0 }, allowVariable: true },
             ]
         }
     },
@@ -301,7 +301,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.height.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Number, name: L("betonquest.v2.condition.height.mandatory.height.name"), type: 'float', defaultValue: 255.0, tooltip: L("betonquest.v2.condition.height.mandatory.height.tooltip"), allowVariable: true },
+                { jsx: Number, name: L("betonquest.v2.condition.height.mandatory.height.name"), format: 'float', defaultValue: 255.0, tooltip: L("betonquest.v2.condition.height.mandatory.height.tooltip"), allowVariable: true },
             ]
         }
     },
@@ -311,7 +311,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.hunger.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Number, name: L("betonquest.v2.condition.hunger.mandatory.hungerLevel.name"), type: 'float', defaultValue: 0.0, tooltip: L("betonquest.v2.condition.hunger.mandatory.hungerLevel.tooltip"), config: { min: 0 }, allowVariable: true },
+                { jsx: Number, name: L("betonquest.v2.condition.hunger.mandatory.hungerLevel.name"), format: 'float', defaultValue: 0.0, tooltip: L("betonquest.v2.condition.hunger.mandatory.hungerLevel.tooltip"), config: { min: 0 }, allowVariable: true },
             ]
         }
     },
@@ -322,7 +322,7 @@ export const kinds: ElementKind<Condition>[] = [
         argumentsPatterns: {
             mandatory: [],
             optional: [
-                { jsx: Input, name: L("betonquest.v2.condition.inconversation.optional.conversation.name"), key: 'conversation', type: 'string', placeholder: 'e.g. "innkeeper"', tooltip: L("betonquest.v2.condition.inconversation.optional.conversation.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.inconversation.optional.conversation.name"), key: 'conversation', format: 'string', placeholder: 'e.g. "innkeeper"', tooltip: L("betonquest.v2.condition.inconversation.optional.conversation.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -332,7 +332,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.item.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: ItemList, name: L("betonquest.v2.condition.item.mandatory.itemList.name"), type: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
+                { jsx: ItemList, name: L("betonquest.v2.condition.item.mandatory.itemList.name"), format: '[string:number?][,]', defaultValue: [["", 0]], placeholder: ['e.g. emerald', '1'] },
             ]
         }
     },
@@ -343,7 +343,7 @@ export const kinds: ElementKind<Condition>[] = [
         argumentsPatterns: {
             mandatory: [
                 {
-                    jsx: Select, name: L("betonquest.v2.condition.itemdurability.mandatory.slot.name"), type: 'string', defaultValue: 'HAND', placeholder: 'e.g. HAND', config: {
+                    jsx: Select, name: L("betonquest.v2.condition.itemdurability.mandatory.slot.name"), format: 'string', defaultValue: 'HAND', placeholder: 'e.g. HAND', config: {
                         options: [
                             { label: 'Hand', value: 'HAND' },
                             { label: 'Off-Hand', value: 'OFF_HAND' },
@@ -354,10 +354,10 @@ export const kinds: ElementKind<Condition>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: Number, name: L("betonquest.v2.condition.itemdurability.mandatory.durability.name"), type: 'float', defaultValue: 0.0, tooltip: L("betonquest.v2.condition.itemdurability.mandatory.durability.tooltip"), config: { min: 0 }, allowVariable: true },
+                { jsx: Number, name: L("betonquest.v2.condition.itemdurability.mandatory.durability.name"), format: 'float', defaultValue: 0.0, tooltip: L("betonquest.v2.condition.itemdurability.mandatory.durability.tooltip"), config: { min: 0 }, allowVariable: true },
             ],
             optional: [
-                { jsx: Checkbox, name: L("betonquest.v2.condition.itemdurability.optional.relative.name"), key: 'relative', type: 'boolean', tooltip: L("betonquest.v2.condition.itemdurability.optional.relative.tooltip") },
+                { jsx: Checkbox, name: L("betonquest.v2.condition.itemdurability.optional.relative.name"), key: 'relative', format: 'boolean', tooltip: L("betonquest.v2.condition.itemdurability.optional.relative.tooltip") },
             ]
         }
     },
@@ -367,7 +367,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.journal.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Input, name: L("betonquest.v2.condition.journal.mandatory.journalName.name"), type: 'string', defaultValue: 'a_journal_entry_1', placeholder: 'e.g. a_journal_entry_1', tooltip: L("betonquest.v2.condition.journal.mandatory.journalName.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.journal.mandatory.journalName.name"), format: 'string', defaultValue: 'a_journal_entry_1', placeholder: 'e.g. a_journal_entry_1', tooltip: L("betonquest.v2.condition.journal.mandatory.journalName.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -377,7 +377,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.language.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: InputList, name: L("betonquest.v2.condition.language.mandatory.languageID.name"), type: 'string[,]', defaultValue: ['en'], placeholder: 'e.g. en', tooltip: L("betonquest.v2.condition.language.mandatory.languageID.tooltip"), config: { allowedPatterns: [/^[a-zA-Z_-]*$/] } },
+                { jsx: InputList, name: L("betonquest.v2.condition.language.mandatory.languageID.name"), format: 'string[,]', defaultValue: ['en'], placeholder: 'e.g. en', tooltip: L("betonquest.v2.condition.language.mandatory.languageID.tooltip"), config: { allowedPatterns: [/^[a-zA-Z_-]*$/] } },
             ]
         }
     },
@@ -387,8 +387,8 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.location.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: BaseLocation, name: L("betonquest.v2.condition.location.mandatory.location.name"), type: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
-                { jsx: Number, name: L("betonquest.v2.condition.location.mandatory.radius.name"), type: 'float', defaultValue: 1.0, tooltip: L("betonquest.v2.condition.location.mandatory.radius.tooltip"), config: { min: 0 }, allowVariable: true },
+                { jsx: BaseLocation, name: L("betonquest.v2.condition.location.mandatory.location.name"), format: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
+                { jsx: Number, name: L("betonquest.v2.condition.location.mandatory.radius.name"), format: 'float', defaultValue: 1.0, tooltip: L("betonquest.v2.condition.location.mandatory.radius.tooltip"), config: { min: 0 }, allowVariable: true },
             ]
         }
     },
@@ -400,9 +400,9 @@ export const kinds: ElementKind<Condition>[] = [
         argumentsPatterns: {
             mandatory: [],
             optional: [
-                { jsx: BaseLocation, name: L("betonquest.v2.condition.looking.optional.loc.name"), key: 'loc', type: 'string', placeholder: 'e.g. 12.0;14.0;-15.0;world', config: { optional: true }, allowVariable: true },
-                { jsx: BlockSelector, name: L("betonquest.v2.condition.looking.optional.type.name"), key: 'type', type: 'string', placeholder: 'e.g. AIR', tooltip: L("betonquest.v2.condition.looking.optional.type.tooltip") },
-                { jsx: Checkbox, name: L("betonquest.v2.condition.looking.optional.exactMatch.name"), key: 'exactMatch', type: 'boolean', tooltip: L("betonquest.v2.condition.looking.optional.exactMatch.tooltip") },
+                { jsx: BaseLocation, name: L("betonquest.v2.condition.looking.optional.loc.name"), key: 'loc', format: 'string', placeholder: 'e.g. 12.0;14.0;-15.0;world', config: { optional: true }, allowVariable: true },
+                { jsx: BlockSelector, name: L("betonquest.v2.condition.looking.optional.type.name"), key: 'type', format: 'string', placeholder: 'e.g. AIR', tooltip: L("betonquest.v2.condition.looking.optional.type.tooltip") },
+                { jsx: Checkbox, name: L("betonquest.v2.condition.looking.optional.exactMatch.name"), key: 'exactMatch', format: 'boolean', tooltip: L("betonquest.v2.condition.looking.optional.exactMatch.tooltip") },
             ]
         }
     },
@@ -413,7 +413,7 @@ export const kinds: ElementKind<Condition>[] = [
         argumentsPatterns: {
             mandatory: [
                 {
-                    jsx: Select, name: L("betonquest.v2.condition.mooncycle.mandatory.phase.name"), type: 'int', defaultValue: '1', placeholder: 'e.g. Full Moon', config: {
+                    jsx: Select, name: L("betonquest.v2.condition.mooncycle.mandatory.phase.name"), format: 'int', defaultValue: '1', placeholder: 'e.g. Full Moon', config: {
                         options: [
                             { label: '🌕 Full Moon', value: 1 },
                             { label: '🌖 Waning Gibbous', value: 2 },
@@ -435,9 +435,9 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.numbercompare.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Input, name: L("betonquest.v2.condition.numbercompare.mandatory.numberA.name"), type: 'string', defaultValue: '0', placeholder: 'e.g. %ph.other_plugin:points%', tooltip: L("betonquest.v2.condition.numbercompare.mandatory.numberA.tooltip"), config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
+                { jsx: Input, name: L("betonquest.v2.condition.numbercompare.mandatory.numberA.name"), format: 'string', defaultValue: '0', placeholder: 'e.g. %ph.other_plugin:points%', tooltip: L("betonquest.v2.condition.numbercompare.mandatory.numberA.tooltip"), config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
                 {
-                    jsx: Select, name: L("betonquest.v2.condition.numbercompare.mandatory.compare.name"), type: 'string', defaultValue: '=', placeholder: 'e.g. =', config: {
+                    jsx: Select, name: L("betonquest.v2.condition.numbercompare.mandatory.compare.name"), format: 'string', defaultValue: '=', placeholder: 'e.g. =', config: {
                         options: [
                             { label: '<  less than', value: '<' },
                             { label: '<= less or equals to', value: '<=' },
@@ -448,7 +448,7 @@ export const kinds: ElementKind<Condition>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: Input, name: L("betonquest.v2.condition.numbercompare.mandatory.numberA.name"), type: 'string', defaultValue: '0', placeholder: 'e.g. %ph.other_plugin:points%', tooltip: L("betonquest.v2.condition.numbercompare.mandatory.numberA.tooltip"), config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
+                { jsx: Input, name: L("betonquest.v2.condition.numbercompare.mandatory.numberA.name"), format: 'string', defaultValue: '0', placeholder: 'e.g. %ph.other_plugin:points%', tooltip: L("betonquest.v2.condition.numbercompare.mandatory.numberA.tooltip"), config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
             ]
         }
     },
@@ -458,7 +458,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.objective.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Input, name: L("betonquest.v2.condition.objective.mandatory.objectiveName.name"), type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: L("betonquest.v2.condition.objective.mandatory.objectiveName.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.objective.mandatory.objectiveName.name"), format: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: L("betonquest.v2.condition.objective.mandatory.objectiveName.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -468,7 +468,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.or.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: InputList, name: L("betonquest.v2.condition.or.mandatory.conditionList.name"), type: 'string[,]', defaultValue: ['some_condition_1'], placeholder: 'e.g. some_condition_1', tooltip: L("betonquest.v2.condition.or.mandatory.conditionList.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: L("betonquest.v2.condition.or.mandatory.conditionList.name"), format: 'string[,]', defaultValue: ['some_condition_1'], placeholder: 'e.g. some_condition_1', tooltip: L("betonquest.v2.condition.or.mandatory.conditionList.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -479,9 +479,9 @@ export const kinds: ElementKind<Condition>[] = [
         argumentsPatterns: {
             mandatory: [],
             optional: [
-                { jsx: Input, name: L("betonquest.v2.condition.partialdate.optional.day.name"), key: 'day', type: 'string[,]', placeholder: 'e.g. 2-4', tooltip: L("betonquest.v2.condition.partialdate.optional.day.tooltip"), config: { allowedPatterns: [/^[0-9-]*$/] } },
-                { jsx: Input, name: L("betonquest.v2.condition.partialdate.optional.month.name"), key: 'month', type: 'string[,]', placeholder: 'e.g. 2-4', tooltip: L("betonquest.v2.condition.partialdate.optional.month.tooltip"), config: { allowedPatterns: [/^[0-9-]*$/] } },
-                { jsx: Input, name: L("betonquest.v2.condition.partialdate.optional.year.name"), key: 'year', type: 'string[,]', placeholder: 'e.g. 2-4', tooltip: L("betonquest.v2.condition.partialdate.optional.year.tooltip"), config: { allowedPatterns: [/^[0-9-]*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.partialdate.optional.day.name"), key: 'day', format: 'string[,]', placeholder: 'e.g. 2-4', tooltip: L("betonquest.v2.condition.partialdate.optional.day.tooltip"), config: { allowedPatterns: [/^[0-9-]*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.partialdate.optional.month.name"), key: 'month', format: 'string[,]', placeholder: 'e.g. 2-4', tooltip: L("betonquest.v2.condition.partialdate.optional.month.tooltip"), config: { allowedPatterns: [/^[0-9-]*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.partialdate.optional.year.name"), key: 'year', format: 'string[,]', placeholder: 'e.g. 2-4', tooltip: L("betonquest.v2.condition.partialdate.optional.year.tooltip"), config: { allowedPatterns: [/^[0-9-]*$/] } },
             ]
         }
     },
@@ -491,13 +491,13 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.party.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Number, name: L("betonquest.v2.condition.party.mandatory.distance.name"), type: 'float', defaultValue: 0.0, tooltip: L("betonquest.v2.condition.party.mandatory.distance.tooltip"), config: { min: 0 }, allowVariable: true },
-                { jsx: InputList, name: L("betonquest.v2.condition.party.mandatory.conditionNames.name"), type: 'string[,]', defaultValue: ['a_condition_1'], tooltip: L("betonquest.v2.condition.party.mandatory.conditionNames.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: L("betonquest.v2.condition.party.mandatory.distance.name"), format: 'float', defaultValue: 0.0, tooltip: L("betonquest.v2.condition.party.mandatory.distance.tooltip"), config: { min: 0 }, allowVariable: true },
+                { jsx: InputList, name: L("betonquest.v2.condition.party.mandatory.conditionNames.name"), format: 'string[,]', defaultValue: ['a_condition_1'], tooltip: L("betonquest.v2.condition.party.mandatory.conditionNames.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ],
             optional: [
-                { jsx: InputList, name: L("betonquest.v2.condition.party.optional.every.name"), key: 'every', type: 'string[,]', placeholder: 'e.g. some_condition_1', tooltip: L("betonquest.v2.condition.party.optional.every.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: InputList, name: L("betonquest.v2.condition.party.optional.any.name"), key: 'any', type: 'string[,]', placeholder: 'e.g. some_condition_1', tooltip: L("betonquest.v2.condition.party.optional.any.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: L("betonquest.v2.condition.party.optional.count.name"), key: 'count', type: 'int', placeholder: '0', tooltip: L("betonquest.v2.condition.party.optional.count.tooltip"), config: { min: 0 }, allowVariable: true },
+                { jsx: InputList, name: L("betonquest.v2.condition.party.optional.every.name"), key: 'every', format: 'string[,]', placeholder: 'e.g. some_condition_1', tooltip: L("betonquest.v2.condition.party.optional.every.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: L("betonquest.v2.condition.party.optional.any.name"), key: 'any', format: 'string[,]', placeholder: 'e.g. some_condition_1', tooltip: L("betonquest.v2.condition.party.optional.any.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: L("betonquest.v2.condition.party.optional.count.name"), key: 'count', format: 'int', placeholder: '0', tooltip: L("betonquest.v2.condition.party.optional.count.tooltip"), config: { min: 0 }, allowVariable: true },
             ]
         }
     },
@@ -507,7 +507,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.permission.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Input, name: L("betonquest.v2.condition.permission.mandatory.permissionNode.name"), type: 'string', defaultValue: 'minecraft.command.op', placeholder: 'e.g. essentials.tpa', tooltip: L("betonquest.v2.condition.permission.mandatory.permissionNode.tooltip"), config: { allowedPatterns: [/^[a-zA-Z0-9\.!_-]*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.permission.mandatory.permissionNode.name"), format: 'string', defaultValue: 'minecraft.command.op', placeholder: 'e.g. essentials.tpa', tooltip: L("betonquest.v2.condition.permission.mandatory.permissionNode.tooltip"), config: { allowedPatterns: [/^[a-zA-Z0-9\.!_-]*$/] } },
             ]
         }
     },
@@ -517,11 +517,11 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.point.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Input, name: L("betonquest.v2.condition.point.mandatory.name.name"), type: 'string', defaultValue: 'a_point_1', placeholder: 'e.g. a_point_1', tooltip: L("betonquest.v2.condition.point.mandatory.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: L("betonquest.v2.condition.point.mandatory.point.name"), type: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
+                { jsx: Input, name: L("betonquest.v2.condition.point.mandatory.name.name"), format: 'string', defaultValue: 'a_point_1', placeholder: 'e.g. a_point_1', tooltip: L("betonquest.v2.condition.point.mandatory.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: L("betonquest.v2.condition.point.mandatory.point.name"), format: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
             ],
             optional: [
-                { jsx: Checkbox, name: L("betonquest.v2.condition.point.optional.equal.name"), key: 'equal', type: 'boolean', tooltip: L("betonquest.v2.condition.point.optional.equal.tooltip") },
+                { jsx: Checkbox, name: L("betonquest.v2.condition.point.optional.equal.name"), key: 'equal', format: 'boolean', tooltip: L("betonquest.v2.condition.point.optional.equal.tooltip") },
             ]
         }
     },
@@ -531,7 +531,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.ride.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: EntityType, name: L("betonquest.v2.condition.ride.mandatory.type.name"), type: 'string', defaultValue: 'any', tooltip: L("betonquest.v2.condition.ride.mandatory.type.tooltip") },
+                { jsx: EntityType, name: L("betonquest.v2.condition.ride.mandatory.type.name"), format: 'string', defaultValue: 'any', tooltip: L("betonquest.v2.condition.ride.mandatory.type.tooltip") },
             ]
         }
     },
@@ -543,7 +543,7 @@ export const kinds: ElementKind<Condition>[] = [
         argumentsPatterns: {
             mandatory: [
                 // TODO: Custom editor with variables support
-                { jsx: Input, name: L("betonquest.v2.condition.random.mandatory.probability.name"), type: 'string', defaultValue: '0-100', placeholder: 'e.g. 12-100', tooltip: L("betonquest.v2.condition.random.mandatory.probability.tooltip"), config: { allowedPatterns: [/^[0-9-]*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.random.mandatory.probability.name"), format: 'string', defaultValue: '0-100', placeholder: 'e.g. 12-100', tooltip: L("betonquest.v2.condition.random.mandatory.probability.tooltip"), config: { allowedPatterns: [/^[0-9-]*$/] } },
             ]
         }
     },
@@ -553,7 +553,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.rating.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Number, name: L("betonquest.v2.condition.rating.mandatory.amount.name"), type: 'int', defaultValue: 0, tooltip: L("betonquest.v2.condition.rating.mandatory.amount.tooltip"), config: { min: 0 }, allowVariable: true },
+                { jsx: Number, name: L("betonquest.v2.condition.rating.mandatory.amount.name"), format: 'int', defaultValue: 0, tooltip: L("betonquest.v2.condition.rating.mandatory.amount.tooltip"), config: { min: 0 }, allowVariable: true },
             ]
         }
     },
@@ -565,7 +565,7 @@ export const kinds: ElementKind<Condition>[] = [
         argumentsPatterns: {
             mandatory: [
                 // TODO: Custom editor with variables support
-                { jsx: Input, name: L("betonquest.v2.condition.realtime.mandatory.timeRange.name"), type: 'string', defaultValue: '0:00-23:59', placeholder: 'e.g. 8:00-13:30', tooltip: L("betonquest.v2.condition.realtime.mandatory.timeRange.tooltip"), config: { allowedPatterns: [/^[0-9:-]*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.realtime.mandatory.timeRange.name"), format: 'string', defaultValue: '0:00-23:59', placeholder: 'e.g. 8:00-13:30', tooltip: L("betonquest.v2.condition.realtime.mandatory.timeRange.tooltip"), config: { allowedPatterns: [/^[0-9:-]*$/] } },
             ]
         }
     },
@@ -575,8 +575,8 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.score.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Input, name: L("betonquest.v2.condition.score.mandatory.objectiveName.name"), type: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: L("betonquest.v2.condition.score.mandatory.objectiveName.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
-                { jsx: Number, name: L("betonquest.v2.condition.score.mandatory.score.name"), type: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
+                { jsx: Input, name: L("betonquest.v2.condition.score.mandatory.objectiveName.name"), format: 'string', defaultValue: 'an_objective_1', placeholder: 'e.g. objective_wood', tooltip: L("betonquest.v2.condition.score.mandatory.objectiveName.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Number, name: L("betonquest.v2.condition.score.mandatory.score.name"), format: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
             ]
         }
     },
@@ -594,9 +594,9 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.stage.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Input, name: L("betonquest.v2.condition.stage.mandatory.objectiveName.name"), type: 'string', defaultValue: ['an_objective_1'], placeholder: 'e.g. an_objective_1', tooltip: L("betonquest.v2.condition.stage.mandatory.objectiveName.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.stage.mandatory.objectiveName.name"), format: 'string', defaultValue: ['an_objective_1'], placeholder: 'e.g. an_objective_1', tooltip: L("betonquest.v2.condition.stage.mandatory.objectiveName.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                 {
-                    jsx: Select, name: L("betonquest.v2.condition.stage.mandatory.compare.name"), type: 'string', defaultValue: '=', placeholder: 'e.g. =', config: {
+                    jsx: Select, name: L("betonquest.v2.condition.stage.mandatory.compare.name"), format: 'string', defaultValue: '=', placeholder: 'e.g. =', config: {
                         options: [
                             { label: '<  less than', value: '<' },
                             { label: '<= less or equals to', value: '<=' },
@@ -607,7 +607,7 @@ export const kinds: ElementKind<Condition>[] = [
                         ] as DefaultOptionType[]
                     }
                 },
-                { jsx: Input, name: L("betonquest.v2.condition.stage.mandatory.stageName.name"), type: 'string', defaultValue: ['some_stage_1'], placeholder: 'e.g. stage_1', tooltip: L("betonquest.v2.condition.stage.mandatory.stageName.tooltip"), config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
+                { jsx: Input, name: L("betonquest.v2.condition.stage.mandatory.stageName.name"), format: 'string', defaultValue: ['some_stage_1'], placeholder: 'e.g. stage_1', tooltip: L("betonquest.v2.condition.stage.mandatory.stageName.tooltip"), config: { allowedPatterns: [/^\S*$/] }, allowVariable: true },
             ]
         }
     },
@@ -617,7 +617,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.tag.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Input, name: L("betonquest.v2.condition.tag.mandatory.tag.name"), type: 'string', defaultValue: 'a_tag_1', placeholder: 'e.g. a_tag_1', tooltip: L("betonquest.v2.condition.tag.mandatory.tag.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.tag.mandatory.tag.name"), format: 'string', defaultValue: 'a_tag_1', placeholder: 'e.g. a_tag_1', tooltip: L("betonquest.v2.condition.tag.mandatory.tag.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },
@@ -627,11 +627,11 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.testforblock.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: BaseLocation, name: L("betonquest.v2.condition.testforblock.mandatory.location.name"), type: 'string', defaultValue: '0.5;64;0.5;world', tooltip: L("betonquest.v2.condition.testforblock.mandatory.location.tooltip"), allowVariable: true },
-                { jsx: BlockSelector, name: L("betonquest.v2.condition.testforblock.mandatory.typeOfBlock.name"), type: 'string', defaultValue: 'AIR', placeholder: 'e.g. AIR', tooltip: L("betonquest.v2.condition.testforblock.mandatory.typeOfBlock.tooltip") },
+                { jsx: BaseLocation, name: L("betonquest.v2.condition.testforblock.mandatory.location.name"), format: 'string', defaultValue: '0.5;64;0.5;world', tooltip: L("betonquest.v2.condition.testforblock.mandatory.location.tooltip"), allowVariable: true },
+                { jsx: BlockSelector, name: L("betonquest.v2.condition.testforblock.mandatory.typeOfBlock.name"), format: 'string', defaultValue: 'AIR', placeholder: 'e.g. AIR', tooltip: L("betonquest.v2.condition.testforblock.mandatory.typeOfBlock.tooltip") },
             ],
             optional: [
-                { jsx: Checkbox, name: L("betonquest.v2.condition.testforblock.optional.exactMatch.name"), key: 'exactMatch', type: 'boolean', tooltip: L("betonquest.v2.condition.testforblock.optional.exactMatch.tooltip") },
+                { jsx: Checkbox, name: L("betonquest.v2.condition.testforblock.optional.exactMatch.name"), key: 'exactMatch', format: 'boolean', tooltip: L("betonquest.v2.condition.testforblock.optional.exactMatch.tooltip") },
             ]
         }
     },
@@ -642,7 +642,7 @@ export const kinds: ElementKind<Condition>[] = [
         argumentsPatterns: {
             mandatory: [
                 // TODO: Custom editor
-                { jsx: Input, name: L("betonquest.v2.condition.time.mandatory.timeRange.name"), type: 'string', defaultValue: '0-23', placeholder: 'e.g. 2-16', tooltip: L("betonquest.v2.condition.time.mandatory.timeRange.tooltip"), config: { allowedPatterns: [/^[0-9-]*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.time.mandatory.timeRange.name"), format: 'string', defaultValue: '0-23', placeholder: 'e.g. 2-16', tooltip: L("betonquest.v2.condition.time.mandatory.timeRange.tooltip"), config: { allowedPatterns: [/^[0-9-]*$/] } },
             ]
         }
     },
@@ -653,11 +653,11 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.variable.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Variable, name: L("betonquest.v2.condition.variable.mandatory.variable.name"), type: 'string', defaultValue: '%%', placeholder: 'e.g. itemdurability.HAND', tooltip: L("betonquest.v2.condition.variable.mandatory.variable.tooltip") },
-                { jsx: Input, name: L("betonquest.v2.condition.variable.mandatory.regEx.name"), type: 'string', defaultValue: 'some value', placeholder: 'e.g. 16', tooltip: L("betonquest.v2.condition.variable.mandatory.regEx.tooltip"), escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] }, allowVariable: true },
+                { jsx: Variable, name: L("betonquest.v2.condition.variable.mandatory.variable.name"), format: 'string', defaultValue: '%%', placeholder: 'e.g. itemdurability.HAND', tooltip: L("betonquest.v2.condition.variable.mandatory.variable.tooltip") },
+                { jsx: Input, name: L("betonquest.v2.condition.variable.mandatory.regEx.name"), format: 'string', defaultValue: 'some value', placeholder: 'e.g. 16', tooltip: L("betonquest.v2.condition.variable.mandatory.regEx.tooltip"), escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] }, allowVariable: true },
             ],
             optional: [
-                { jsx: Checkbox, name: L("betonquest.v2.condition.variable.optional.forceSync.name"), key: 'forceSync', type: 'boolean', tooltip: L("betonquest.v2.condition.variable.optional.forceSync.tooltip") },
+                { jsx: Checkbox, name: L("betonquest.v2.condition.variable.optional.forceSync.name"), key: 'forceSync', format: 'boolean', tooltip: L("betonquest.v2.condition.variable.optional.forceSync.tooltip") },
             ]
         }
     },
@@ -668,7 +668,7 @@ export const kinds: ElementKind<Condition>[] = [
         argumentsPatterns: {
             mandatory: [
                 {
-                    jsx: Select, name: L("betonquest.v2.condition.weather.mandatory.type.name"), type: 'string', defaultValue: 'sun', placeholder: 'e.g. sun', config: {
+                    jsx: Select, name: L("betonquest.v2.condition.weather.mandatory.type.name"), format: 'string', defaultValue: 'sun', placeholder: 'e.g. sun', config: {
                         options: [
                             {
                                 label: L("betonquest.v2.condition.weather.mandatory.type.option.sun"), // TODO: i18n
@@ -694,7 +694,7 @@ export const kinds: ElementKind<Condition>[] = [
         description: L("betonquest.v2.condition.world.description"),
         argumentsPatterns: {
             mandatory: [
-                { jsx: Input, name: L("betonquest.v2.condition.world.mandatory.world.name"), type: 'string', defaultValue: 'world', placeholder: 'e.g. world_the_end', tooltip: L("betonquest.v2.condition.world.mandatory.world.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: Input, name: L("betonquest.v2.condition.world.mandatory.world.name"), format: 'string', defaultValue: 'world', placeholder: 'e.g. world_the_end', tooltip: L("betonquest.v2.condition.world.mandatory.world.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ]
         }
     },

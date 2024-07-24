@@ -41,7 +41,7 @@ export class ConditionArguments extends AbstractNodeV1<ConditionArgumentsType> {
     }
 
     // Search ArgumentsPatterns from V1 Element List
-    const argumentsPatterns: ArgumentsPatterns = kindConfig?.argumentsPatterns ?? { mandatory: [{ name: 'unspecified', type: '*', defaultValue: '' }] };
+    const argumentsPatterns: ArgumentsPatterns = kindConfig?.argumentsPatterns ?? { mandatory: [{ name: 'unspecified', format: '*', defaultValue: '' }] };
 
     // Cache arguments
     let argumentOptionalStrs: string[] = [];
