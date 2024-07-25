@@ -143,6 +143,7 @@ export class ConditionArguments extends AbstractNodeV1<ConditionArgumentsType> {
   }
 
   private assignArgumentsMandatory(argumentMandatoryStrs: string[], offsetStart: number, patterns: ArgumentsPatternMandatory[]) {
+    let dummymMandatoryArgumentCreated = false;
     patterns.forEach((pattern, i) => {
       const argStr = argumentMandatoryStrs[i];
       if (argStr) {
@@ -163,30 +164,37 @@ export class ConditionArguments extends AbstractNodeV1<ConditionArgumentsType> {
           DiagnosticSeverity.Error,
           DiagnosticCode.ArgumentMandatoryMissing,
         );
-        // Create dummy Argument
-        this.addChild(new ConditionArgumentMandatory(
-          "",
-          [offsetStart, offsetStart],
-          pattern,
-          this
-        ));
+        // Create dummy Argument for auto-complete
+        if (!dummymMandatoryArgumentCreated) {
+          this.addChild(new ConditionArgumentMandatory(
+            "",
+            [offsetStart, offsetStart],
+            pattern,
+            this
+          ));
+        }
+        // Break on the first empty mandatory Argument, preventing multiple auto-complete being prompted
+        dummymMandatoryArgumentCreated = true;
       }
     });
     return offsetStart;
   }
 
   private assignArgumentsOptional(argumentOptionalStrs: string[], offsetStart: number, patterns?: ArgumentsPatternOptional[]) {
-    argumentOptionalStrs.forEach(argStr => {
-      const str = argStr.trimEnd();
-      const pattern = patterns?.find(p => argStr.startsWith(p.key + ":"))!;
-      this.addChild(new ConditionArgumentOptional(
-        str,
-        [offsetStart, offsetStart + str.length],
-        pattern,
-        this
-      ));
-      offsetStart += argStr.length;
+    patterns?.forEach((pattern, i) => {
+      const argStr = argumentOptionalStrs.find(argStr => argStr.startsWith(pattern.key + ":"))?.trimEnd();
+      if (argStr) {
+        const str = argStr?.trimEnd();
+        this.addChild(new ConditionArgumentOptional(
+          str,
+          [offsetStart, offsetStart + str.length],
+          pattern,
+          this
+        ));
+        offsetStart += argStr.length;
+      }
     });
+
     return offsetStart;
   }
 
