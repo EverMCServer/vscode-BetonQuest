@@ -1,4 +1,4 @@
-import { DiagnosticSeverity } from "vscode-languageserver";
+import { CompletionItem, CompletionItemKind, DiagnosticSeverity } from "vscode-languageserver";
 import { Pair, Scalar } from "yaml";
 
 import { kinds } from "betonquest-utils/betonquest/v1/Events";
@@ -19,6 +19,7 @@ export class EventEntry extends AbstractNodeV1<EventEntryType> {
   readonly parent: EventList;
 
   yml: Pair<Scalar<string>, Scalar<string>>;
+  offsetKindEnd?: number;
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: EventList) {
     super();
@@ -26,6 +27,7 @@ export class EventEntry extends AbstractNodeV1<EventEntryType> {
     this.offsetStart = pair.key?.range?.[0];
     this.offsetEnd = pair.value?.range?.[1];
     this.yml = pair;
+    this.offsetKindEnd = this.offsetEnd;
 
     // Parse YAML key
     this.addChild(new EventKey(this.yml.key, this));
@@ -59,26 +61,28 @@ export class EventEntry extends AbstractNodeV1<EventEntryType> {
     const kindStr = matched[1];
     const kind = kinds.find(k => k.value === kindStr.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
     const offsetKindStart = offsetStart + matched.index;
-    const offsetKindEnd = offsetKindStart + kindStr.length;
-    this.addChild(new EventKind(kindStr, [offsetKindStart, offsetKindEnd], kind, this));
+    this.offsetKindEnd = offsetKindStart + kindStr.length;
+    this.addChild(new EventKind(kindStr, [offsetKindStart, this.offsetKindEnd], kind, this));
 
     // Parse Arguments
     const argumentsSourceStr = matched[3];
-    if (!argumentsSourceStr) {
-      // Check if the arguments missing any arguments by kinds list,
-      // If so, throw diagnostic
-      if (kind && kind.value !== "*" && kind.argumentsPatterns.mandatory.length > 0) {
-        this.addDiagnostic(
-          [offsetKindEnd, offsetEnd],
-          `Missing mandatory argument(s) for "${kindStr}"`,
-          DiagnosticSeverity.Error,
-          DiagnosticCode.ElementArgumentsMissing,
-        );
-      }
-      return;
-    }
-    const offsetArgumentsStart = offsetKindEnd ? offsetKindEnd + matched[2].length : undefined;
+    const offsetArgumentsStart = this.offsetKindEnd ? this.offsetKindEnd + matched[2].length : undefined;
     // Parse each individual arguments
     this.addChild(new EventArguments(argumentsSourceStr, [offsetArgumentsStart, offsetEnd], indent, kind, this));
+  }
+
+  getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
+    const completionItems = [];
+    // Prompt the Event list
+    if (this.offsetKindEnd && offset <= this.offsetKindEnd) {
+      completionItems.push(...kinds.filter(k => k.value !== "*").flatMap(k => ({
+        label: k.value,
+        kind: CompletionItemKind.Constructor, // TODO: move it onto SemanticTokenType etc.
+        detail: k.display,
+        documentation: k.description?.toString()
+      })));
+    }
+    completionItems.push(...super.getCompletions(offset, documentUri));
+    return completionItems;
   }
 }

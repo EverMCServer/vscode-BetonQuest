@@ -1,4 +1,4 @@
-import { DiagnosticSeverity } from "vscode-languageserver";
+import { CompletionItem, CompletionItemKind, DiagnosticSeverity } from "vscode-languageserver";
 import { Pair, Scalar } from "yaml";
 
 import { kinds } from "betonquest-utils/betonquest/v1/Objectives";
@@ -14,11 +14,12 @@ import { ObjectiveList } from "./ObjectiveList";
 
 export class ObjectiveEntry extends AbstractNodeV1<ObjectiveEntryType> {
   readonly type: ObjectiveEntryType = "ObjectiveEntry";
-  offsetStart?: number;
-  offsetEnd?: number;
+  readonly offsetStart?: number;
+  readonly offsetEnd?: number;
   readonly parent: ObjectiveList;
 
-  yml: Pair<Scalar<string>, Scalar<string>>;
+  readonly yml: Pair<Scalar<string>, Scalar<string>>;
+  private offsetKindEnd?: number;
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: ObjectiveList) {
     super();
@@ -26,6 +27,7 @@ export class ObjectiveEntry extends AbstractNodeV1<ObjectiveEntryType> {
     this.offsetStart = pair.key?.range?.[0];
     this.offsetEnd = pair.value?.range?.[1];
     this.yml = pair;
+    this.offsetKindEnd = this.offsetEnd;
 
     // Parse YAML key
     this.addChild(new ObjectiveKey(this.yml.key, this));
@@ -59,26 +61,28 @@ export class ObjectiveEntry extends AbstractNodeV1<ObjectiveEntryType> {
     const kindStr = matched[1];
     const kind = kinds.find(k => k.value === kindStr.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
     const offsetKindStart = offsetStart + matched.index;
-    const offsetKindEnd = offsetKindStart + kindStr.length;
-    this.addChild(new ObjectiveKind(kindStr, [offsetKindStart, offsetKindEnd], kind, this));
+    this.offsetKindEnd = offsetKindStart + kindStr.length;
+    this.addChild(new ObjectiveKind(kindStr, [offsetKindStart, this.offsetKindEnd], kind, this));
 
     // Parse Arguments
     const argumentsSourceStr = matched[3];
-    if (!argumentsSourceStr) {
-      // Check if the arguments missing any arguments by kinds list,
-      // If so, throw diagnostic
-      if (kind && kind.value !== "*" && kind.argumentsPatterns.mandatory.length > 0) {
-        this.addDiagnostic(
-          [offsetKindEnd, offsetEnd],
-          `Missing mandatory argument(s) for "${kindStr}"`,
-          DiagnosticSeverity.Error,
-          DiagnosticCode.ElementArgumentsMissing,
-        );
-      }
-      return;
-    }
-    const offsetArgumentsStart = offsetKindEnd ? offsetKindEnd + matched[2].length : undefined;
+    const offsetArgumentsStart = this.offsetKindEnd ? this.offsetKindEnd + matched[2].length : undefined;
     // Parse each individual arguments
     this.addChild(new ObjectiveArguments(argumentsSourceStr, [offsetArgumentsStart, offsetEnd], indent, kind, this));
+  }
+
+  getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
+    const completionItems = [];
+    // Prompt the Objective list
+    if (this.offsetKindEnd && offset <= this.offsetKindEnd) {
+      completionItems.push(...kinds.filter(k => k.value !== "*").flatMap(k => ({
+        label: k.value,
+        kind: CompletionItemKind.Constructor, // TODO: move it onto SemanticTokenType etc.
+        detail: k.display,
+        documentation: k.description?.toString()
+      })));
+    }
+    completionItems.push(...super.getCompletions(offset, documentUri));
+    return completionItems;
   }
 }

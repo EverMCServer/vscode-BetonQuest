@@ -14,12 +14,12 @@ import { ConditionList } from "./ConditionList";
 
 export class ConditionEntry extends AbstractNodeV1<ConditionEntryType> {
   readonly type: ConditionEntryType = "ConditionEntry";
-  offsetStart?: number;
-  offsetEnd?: number;
+  readonly offsetStart?: number;
+  readonly offsetEnd?: number;
   readonly parent: ConditionList;
 
-  yml: Pair<Scalar<string>, Scalar<string>>;
-  offsetKindEnd?: number;
+  readonly yml: Pair<Scalar<string>, Scalar<string>>;
+  private offsetKindEnd?: number;
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: ConditionList) {
     super();
@@ -66,34 +66,23 @@ export class ConditionEntry extends AbstractNodeV1<ConditionEntryType> {
 
     // Parse Arguments
     const argumentsSourceStr = matched[3];
-    if (!argumentsSourceStr) {
-      // Check if the arguments missing any arguments by kinds list,
-      // If so, throw diagnostic
-      if (kind && kind.value !== "*" && kind.argumentsPatterns.mandatory.length > 0) {
-        this.addDiagnostic(
-          [this.offsetKindEnd, offsetEnd],
-          `Missing mandatory argument(s) for "${kindStr}"`,
-          DiagnosticSeverity.Error,
-          DiagnosticCode.ElementArgumentsMissing,
-        );
-      }
-      return;
-    }
     const offsetArgumentsStart = this.offsetKindEnd ? this.offsetKindEnd + matched[2].length : undefined;
     // Parse each individual arguments
     this.addChild(new ConditionArguments(argumentsSourceStr, [offsetArgumentsStart, offsetEnd], indent, kind, this));
   }
 
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
+    const completionItems = [];
     // Prompt the Condition list
     if (this.offsetKindEnd && offset <= this.offsetKindEnd) {
-      return kinds.filter(k => k.value !== "*").flatMap(k => ({
+      completionItems.push(...kinds.filter(k => k.value !== "*").flatMap(k => ({
         label: k.value,
         kind: CompletionItemKind.Constructor, // TODO: move it onto SemanticTokenType etc.
         detail: k.display,
         documentation: k.description?.toString()
-      }));
+      })));
     }
-    return [];
+    completionItems.push(...super.getCompletions(offset, documentUri));
+    return completionItems;
   }
 }

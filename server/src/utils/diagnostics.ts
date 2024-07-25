@@ -67,11 +67,6 @@ export enum DiagnosticCode {
   ElementInstructionMissing = "BQ-1001",
 
   /**
-   * The arguments is missing.
-   */
-  ElementArgumentsMissing = "BQ-1002",
-
-  /**
    * The Condition / Event / Objective / Item ID syntax is incorrect.
    */
   ElementIdSyntax = "BQ-1101",
