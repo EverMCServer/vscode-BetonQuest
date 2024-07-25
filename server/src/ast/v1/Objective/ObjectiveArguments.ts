@@ -181,18 +181,35 @@ export class ObjectiveArguments extends AbstractNodeV1<ObjectiveArgumentsType> {
   }
 
   private assignArgumentsOptional(argumentOptionalStrs: string[], offsetStart: number, patterns?: ArgumentsPatternOptional[]) {
-    patterns?.forEach((pattern, i) => {
-      const argStr = argumentOptionalStrs.find(argStr => argStr.startsWith(pattern.key + ":"))?.trimEnd();
-      if (argStr) {
-        const str = argStr?.trimEnd();
+    // Cache founded patterns for un-entered optional arguments auto-complete promption
+    const foundPatterns: ArgumentsPatternOptional[] = [];
+
+    // Parse optional argument
+    argumentOptionalStrs.forEach(argStr => {
+      const str = argStr.trimEnd();
+      const pattern = patterns?.find(p => argStr.startsWith(p.key + ":"));
+      if (pattern) {
+        foundPatterns.push(pattern);
         this.addChild(new ObjectiveArgumentOptional(
           str,
           [offsetStart, offsetStart + str.length],
           pattern,
           this
         ));
-        offsetStart += argStr.length;
+      } else {
+        // Ignore unknown optional argument key
       }
+      offsetStart += argStr.length;
+    });
+
+    // Create dummy Argument for auto-complete
+    patterns?.filter(p => !foundPatterns.find(f => f.key === p.key)).forEach((pattern, i) => {
+      this.addChild(new ObjectiveArgumentOptional(
+        "",
+        [offsetStart, offsetStart],
+        pattern,
+        this
+      ));
     });
 
     return offsetStart;

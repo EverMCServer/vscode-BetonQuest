@@ -1,16 +1,19 @@
+import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
 
 import { ArgumentsPatternOptional } from "betonquest-utils/betonquest/Arguments";
+
 import { ObjectiveArgumentOptionalType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
 import { ObjectiveArguments } from "./ObjectiveArguments";
 
 export class ObjectiveArgumentOptional extends AbstractNodeV2<ObjectiveArgumentOptionalType> {
   readonly type: ObjectiveArgumentOptionalType = 'ObjectiveArgumentOptional'; // TODO remove Mandatory / Optional
-  offsetStart?: number;
-  offsetEnd?: number;
+  readonly offsetStart?: number;
+  readonly offsetEnd?: number;
   readonly parent: ObjectiveArguments;
 
-  argumentStr: string;
+  private argumentStr: string;
+  private pattern: ArgumentsPatternOptional;
 
   constructor(argumentStr: string,
     range: [number?, number?],
@@ -27,6 +30,20 @@ export class ObjectiveArgumentOptional extends AbstractNodeV2<ObjectiveArgumentO
     // Parse argumentStr
     this.argumentStr = argumentStr;
 
+    this.pattern = pattern;
+
     // Check format
+  }
+
+  getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
+    return [
+      {
+        label: this.pattern.key + ":",
+        kind: CompletionItemKind.Snippet, // TODO: move it onto SemanticTokenType etc.
+        detail: this.pattern.name?.toString(),
+        documentation: this.pattern.tooltip
+      },
+      ...super.getCompletions(offset, documentUri)
+    ];
   }
 }
