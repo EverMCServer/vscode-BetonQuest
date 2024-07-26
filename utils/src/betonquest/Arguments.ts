@@ -1,6 +1,72 @@
 import { Pair, Scalar } from "yaml";
 
 /**
+ * Argument Type
+ */
+export enum ArgumentType {
+
+    /** unknown */
+    unknown = "unknown",
+
+    /** Unspecified string */
+    string = "string",
+
+    /** Minecraft's Advancement */
+    advancement = "advancement",
+
+    /** Condiiton ID */
+    conditionID = "conditionID",
+
+    /** Event ID */
+    eventID = "eventID",
+
+    /** Objective ID */
+    objectiveID = "objectiveID",
+
+    /** BetonQuest's Item ID */
+    itemID = "itemID",
+
+    /** Minecraft's Biome */
+    biome = "biome",
+
+    /** Complete Instruction seprated by `^` */
+    instruction = "instruction",
+
+    /** Conversation Name / ID without cross-conversation path */
+    conversationID = "conversationID",
+
+    /** Selection */
+    selection = "selection",
+
+    /** Minecraft's Effect */
+    effect = "effect",
+
+    /** Interger number */
+    interger = "interger",
+
+    /** Constant value / string */
+    constant = "constant",
+
+    /** Minecraft's Entity */
+    entity = "entity",
+
+    /** Floating point number */
+    float = "float",
+
+    /** Location coordinate */
+    location = "location",
+
+    /** Entity / Mob mark */
+    entityMark = "mark",
+
+    /** Any string */
+    any = "any",
+}
+// type ArgumentType = (
+//     'string'
+// );
+
+/**
  * Mandatory arguments' value format
  * 
  * * string - string
@@ -68,6 +134,7 @@ type OptionalArguments = Map<string, OptionalArgument>;
 
 type ArgumentsPattern = {
     name: React.ReactNode,
+    type: ArgumentType,
     escapeCharacters?: string[],
     jsx?: (props: any) => React.ReactNode,
     tooltip?: string,
@@ -142,7 +209,7 @@ export abstract class ArgumentsAbstract {
     protected optional: OptionalArguments = new Map();
 
     constructor(
-        pattern: ArgumentsPatterns = { mandatory: [{ name: 'unspecified', format: '*', defaultValue: '' }] }
+        pattern: ArgumentsPatterns = { mandatory: [{ name: 'unspecified', type: ArgumentType.unknown, format: '*', defaultValue: '' }] }
     ) {
         this.pattern = pattern;
     }
@@ -587,7 +654,7 @@ export abstract class ArgumentsAbstract {
 
 export class ArgumentsString extends ArgumentsAbstract {
     private str: string;
-    constructor(str: string, pattern: ArgumentsPatterns = { mandatory: [{ name: 'unspecified', format: '*', defaultValue: '' }] }) {
+    constructor(str: string, pattern: ArgumentsPatterns = { mandatory: [{ name: 'unspecified', type: ArgumentType.unknown, format: '*', defaultValue: '' }] }) {
         super(pattern);
         this.str = str;
 
@@ -604,7 +671,7 @@ export default class Arguments extends ArgumentsAbstract {
 
     constructor(
         pair: Pair<Scalar<string>, Scalar<string>>,
-        pattern: ArgumentsPatterns = { mandatory: [{ name: 'unspecified', format: '*', defaultValue: '' }] }
+        pattern: ArgumentsPatterns = { mandatory: [{ name: 'unspecified', type: ArgumentType.unknown, format: '*', defaultValue: '' }] }
     ) {
         super(pattern);
         this.yaml = pair;

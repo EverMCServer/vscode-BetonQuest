@@ -1,7 +1,7 @@
 import { Checkbox, Col, Divider, Input, Row } from "antd";
 import { useEffect, useState } from "react";
 
-import Arguments, { ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
+import Arguments, { ArgumentType, ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
 import Event from "betonquest-utils/betonquest/Event";
 
 import { ListElementEditorBodyProps } from "../../../legacyListEditor/components/CommonList/CommonEditor";
@@ -9,11 +9,11 @@ import { ListElementEditorBodyProps } from "../../../legacyListEditor/components
 // e.g. emerald:5,emerald_block:9,important_sign notify backpack
 const pattern: ArgumentsPatterns = {
     mandatory: [
-        { name: 'item_list', format: '[string:number?][,]', defaultValue: [["emerald", 5], ["emerald_block", 9], ["important_sign", 1]] },
+        { name: 'item_list', type: ArgumentType.itemID, format: '[string:number?][,]', defaultValue: [["emerald", 5], ["emerald_block", 9], ["important_sign", 1]] },
     ],
     optional: [
-        { name: 'notify', key: 'notify', format: 'boolean' },
-        { name: 'backpack', key: 'backpack', format: 'boolean' }
+        { name: 'notify', type: ArgumentType.constant, key: 'notify', format: 'boolean' },
+        { name: 'backpack', type: ArgumentType.constant, key: 'backpack', format: 'boolean' }
     ]
 
 };

@@ -1,20 +1,20 @@
 import { Col, Divider, Input, InputNumber, Row } from "antd";
 import { useEffect, useState } from "react";
 
-import Arguments, { ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
+import Arguments, { ArgumentType, ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
 import Event from "betonquest-utils/betonquest/Event";
 import { ListElementEditorBodyProps } from "../../CommonList/CommonEditor";
 
 // e.g. killmob ZOMBIE 100;200;300;world 40 name:Bolec marked:quest_mob
 const pattern: ArgumentsPatterns = {
     mandatory: [
-        { name: 'entity_type', format: 'string', defaultValue: 'ZOMBIE' },
-        { name: 'location', format: 'string', defaultValue: '100;200;300;world' },
-        { name: 'radius', format: 'float', defaultValue: 1.0 },
+        { name: 'entity_type', type: ArgumentType.entity, format: 'string', defaultValue: 'ZOMBIE' },
+        { name: 'location', type: ArgumentType.location, format: 'string', defaultValue: '100;200;300;world' },
+        { name: 'radius', type: ArgumentType.float, format: 'float', defaultValue: 1.0 },
     ],
     optional: [
-        { name: 'name', key: 'name', format: 'string' },
-        { name: 'marked', key: 'marked', format: 'string' }
+        { name: 'name', type: ArgumentType.string, key: 'name', format: 'string' },
+        { name: 'marked', type: ArgumentType.entityMark, key: 'marked', format: 'string' }
     ]
 };
 
