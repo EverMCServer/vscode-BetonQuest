@@ -19,7 +19,8 @@ export class EventArguments extends AbstractNodeV1<EventArgumentsType> {
   readonly offsetEnd?: number;
   readonly parent: EventEntry;
 
-  indent: number;
+  private indent: number;
+  private isMandatoryArgumentIncomplete: boolean = false;
 
   constructor(argumentsSourceStr: string, range: [number?, number?], indent: number, kindConfig: ElementKind<Event>, parent: EventEntry) {
     super();
@@ -143,7 +144,6 @@ export class EventArguments extends AbstractNodeV1<EventArgumentsType> {
   }
 
   private assignArgumentsMandatory(argumentMandatoryStrs: string[], offsetStart: number, patterns: ArgumentsPatternMandatory[]) {
-    let dummymMandatoryArgumentCreated = false;
     patterns.forEach((pattern, i) => {
       const argStr = argumentMandatoryStrs[i];
       if (argStr) {
@@ -165,7 +165,7 @@ export class EventArguments extends AbstractNodeV1<EventArgumentsType> {
           DiagnosticCode.ArgumentMandatoryMissing,
         );
         // Create dummy Argument for auto-complete
-        if (!dummymMandatoryArgumentCreated) {
+        if (!this.isMandatoryArgumentIncomplete) {
           this.addChild(new EventArgumentMandatory(
             "",
             [offsetStart, offsetStart],
@@ -174,7 +174,7 @@ export class EventArguments extends AbstractNodeV1<EventArgumentsType> {
           ));
         }
         // Break on the first empty mandatory Argument, preventing multiple auto-complete being prompted
-        dummymMandatoryArgumentCreated = true;
+        this.isMandatoryArgumentIncomplete = true;
       }
     });
     return offsetStart;
@@ -203,14 +203,16 @@ export class EventArguments extends AbstractNodeV1<EventArgumentsType> {
     });
 
     // Create dummy Argument for auto-complete
-    patterns?.filter(p => !foundPatterns.find(f => f.key === p.key)).forEach((pattern, i) => {
-      this.addChild(new EventArgumentOptional(
-        "",
-        [offsetStart, offsetStart],
-        pattern,
-        this
-      ));
-    });
+    if (!this.isMandatoryArgumentIncomplete) { // Create dummy args / prompt optional auto-complete only when mandatory argument is complete.
+      patterns?.filter(p => !foundPatterns.find(f => f.key === p.key)).forEach((pattern, i) => {
+        this.addChild(new EventArgumentOptional(
+          "",
+          [offsetStart, offsetStart],
+          pattern,
+          this
+        ));
+      });
+    }
 
     return offsetStart;
   }

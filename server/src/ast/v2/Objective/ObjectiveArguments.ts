@@ -20,6 +20,7 @@ export class ObjectiveArguments extends AbstractNodeV2<ObjectiveArgumentsType> {
   readonly parent: ObjectiveEntry;
 
   private indent: number;
+  private isMandatoryArgumentIncomplete: boolean = false;
 
   constructor(argumentsSourceStr: string, range: [number?, number?], indent: number, kindConfig: ElementKind<Objective>, parent: ObjectiveEntry) {
     super();
@@ -136,7 +137,6 @@ export class ObjectiveArguments extends AbstractNodeV2<ObjectiveArgumentsType> {
   }
 
   private assignArgumentsMandatory(argumentMandatoryStrs: string[], offsetStart: number, patterns: ArgumentsPatternMandatory[]) {
-    let dummymMandatoryArgumentCreated = false;
     patterns.forEach((pattern, i) => {
       const argStr = argumentMandatoryStrs[i];
       if (argStr) {
@@ -158,7 +158,7 @@ export class ObjectiveArguments extends AbstractNodeV2<ObjectiveArgumentsType> {
           DiagnosticCode.ArgumentMandatoryMissing,
         );
         // Create dummy Argument for auto-complete
-        if (!dummymMandatoryArgumentCreated) {
+        if (!this.isMandatoryArgumentIncomplete) {
           this.addChild(new ObjectiveArgumentMandatory(
             "",
             [offsetStart, offsetStart],
@@ -167,7 +167,7 @@ export class ObjectiveArguments extends AbstractNodeV2<ObjectiveArgumentsType> {
           ));
         }
         // Break on the first empty mandatory Argument, preventing multiple auto-complete being prompted
-        dummymMandatoryArgumentCreated = true;
+        this.isMandatoryArgumentIncomplete = true;
       }
     });
     return offsetStart;
@@ -196,14 +196,16 @@ export class ObjectiveArguments extends AbstractNodeV2<ObjectiveArgumentsType> {
     });
 
     // Create dummy Argument for auto-complete
-    patterns?.filter(p => !foundPatterns.find(f => f.key === p.key)).forEach((pattern, i) => {
-      this.addChild(new ObjectiveArgumentOptional(
-        "",
-        [offsetStart, offsetStart],
-        pattern,
-        this
-      ));
-    });
+    if (!this.isMandatoryArgumentIncomplete) { // Create dummy args / prompt optional auto-complete only when mandatory argument is complete.
+      patterns?.filter(p => !foundPatterns.find(f => f.key === p.key)).forEach((pattern, i) => {
+        this.addChild(new ObjectiveArgumentOptional(
+          "",
+          [offsetStart, offsetStart],
+          pattern,
+          this
+        ));
+      });
+    }
 
     return offsetStart;
   }
