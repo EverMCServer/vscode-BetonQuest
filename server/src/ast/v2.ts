@@ -1,5 +1,8 @@
 import { AST } from "./ast";
 import { AbstractNode, ConversationOptionType, NodeType } from "./node";
+import { ArgumentConditionID } from "./v2/Argument/ArgumentConditionID";
+import { ArgumentEventID } from "./v2/Argument/ArgumentEventID";
+import { ArgumentObjectiveID } from "./v2/Argument/ArgumentObjectiveID";
 import { ConditionArgumentMandatory } from "./v2/Condition/ConditionArgumentMandatory";
 import { ConditionArgumentOptional } from "./v2/Condition/ConditionArgumentOptional";
 import { ConditionArguments } from "./v2/Condition/ConditionArguments";
@@ -51,11 +54,12 @@ import { PackageV2 } from "./v2/Package";
 type TConditionList = ConditionList | ConditionListSection | ConditionEntry | ConditionKey | ConditionKind | ConditionArguments | ConditionArgumentMandatory | ConditionArgumentOptional;
 type TEventListList = EventList | EventListSection | EventEntry | EventKey | EventKind | EventArguments | EventArgumentMandatory | EventArgumentOptional;
 type TObjectiveList = ObjectiveList | ObjectiveListSection | ObjectiveEntry | ObjectiveKey | ObjectiveKind | ObjectiveArguments | ObjectiveArgumentMandatory | ObjectiveArgumentOptional;
+type TArguments = ArgumentConditionID | ArgumentEventID | ArgumentObjectiveID;
 type TConversationNpcOption = NpcOption | NpcConditions | NpcCondition | NpcEvents | NpcEvent | NpcPointers | NpcPointer | NpcText;
 type TConversationPlayerOption = PlayerOption | PlayerConditions | PlayerCondition | PlayerEvents | PlayerEvent | PlayerPointers | PlayerPointer | PlayerText;
 export type ConversationOption = NpcOption | PlayerOption;
 type TConversation = Conversation | ConversationSection | ConversationQuester | ConversationQuesterTranslations | First | FirstPointer | ConversationStop | ConversationFinalEvents | ConversationFinalEvent | ConversationInterceptor | TConversationNpcOption | TConversationPlayerOption;
-export type NodeV2 = PackageV2 | TConditionList | TEventListList | TObjectiveList | TConversation;
+export type NodeV2 = PackageV2 | TConditionList | TEventListList | TObjectiveList | TArguments | TConversation;
 
 export abstract class AbstractNodeV2<T extends NodeType> extends AbstractNode<T, NodeV2> {
   abstract readonly parent: NodeV2;

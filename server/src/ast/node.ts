@@ -89,7 +89,13 @@ export type ElementArgumentValueArrayType = EventArgumentValueArrayType | Condit
 export type ElementArgumentValueType = EventArgumentValueType | ConditionArgumentValueType | ObjectiveArgumentValueType;
 export type ElementTypes = ElementListType | ElementEntryType | ElementKeyType | ElementKindType | ElementArgumentsType | ElementArgumentType | ElementArgumentKeyType | ElementArgumentValueArrayType | ElementArgumentValueType;
 
-export type NodeType = PackageTypes | ConversationTypes | EventTypes | ConditionTypes | ObjectiveTypes;
+export type ArgumentEntityType = 'ArgumentEntity';
+export type ArgumentConditionIdType = 'ArgumentConditionID';
+export type ArgumentEventIdType = 'ArgumentEventID';
+export type ArgumentObjectiveIdType = 'ArgumentObjectiveID';
+export type ArgumentType = ArgumentEntityType | ArgumentConditionIdType | ArgumentEventIdType | ArgumentObjectiveIdType;
+
+export type NodeType = PackageTypes | ConversationTypes | EventTypes | ConditionTypes | ObjectiveTypes | ArgumentType;
 
 export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2> {
   readonly abstract type: T;

@@ -40,6 +40,11 @@ export async function _activate(context: vscode.ExtensionContext, lspClient: Bas
       let editor = vscode.window.activeTextEditor;
       if (editor && event.document === editor.document) {
         // vscode.commands.executeCommand('editor.action.triggerSuggest');
+        // vscode.commands.executeCommand('editor.action.inlineSuggest.trigger');
+        // lspClient.sendRequest('textDocument/completion', {
+        //   textDocument: { uri: event.document.uri.toString() },
+        //   position: editor.selection.active
+        // });
       }
     });
 
