@@ -26,11 +26,14 @@ export enum ArgumentType {
     /** BetonQuest's Item ID */
     itemID = "itemID",
 
+    /** BetonQuest's Item ID seprated by `,` */
+    itemIDs = "itemIDs",
+
     /** Minecraft's Biome */
     biome = "biome",
 
     /** Complete Instruction seprated by `^` */
-    instruction = "instruction",
+    instructions = "instruction",
 
     /** Conversation Name / ID without cross-conversation path */
     conversationID = "conversationID",
@@ -38,8 +41,8 @@ export enum ArgumentType {
     /** Selection */
     selection = "selection",
 
-    /** Minecraft's Effect */
-    effect = "effect",
+    /** Minecraft's Potion Effect */
+    potionEffect = "potionEffect",
 
     /** Interger number */
     interger = "interger",
@@ -48,7 +51,7 @@ export enum ArgumentType {
     constant = "constant",
 
     /** Minecraft's Entity */
-    entity = "entity",
+    entityWithAmount = "entityWithAmount",
 
     /** Floating point number */
     float = "float",
@@ -56,8 +59,11 @@ export enum ArgumentType {
     /** Location coordinate */
     location = "location",
 
+    /** Entity / Mob name */
+    entityName = "entityName",
+
     /** Entity / Mob mark */
-    entityMark = "mark",
+    entityMark = "entityMark",
 
     /** Any string */
     any = "any",
