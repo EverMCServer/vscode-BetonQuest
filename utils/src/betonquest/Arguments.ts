@@ -87,7 +87,7 @@ export enum ArgumentType {
     entityMark = "entityMark",
 
     /** Language ID list */
-    languageIdList = "languageList",
+    languageIdList = "languageIdList",
 
     /** Minecraft's Advancement */
     advancement = "advancement",

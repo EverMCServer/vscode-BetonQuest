@@ -27,7 +27,7 @@ import Variable from "../../ui/Input/Variable";
 
 // Default optional arguments for every kind
 const defaultOptionalArguments: ArgumentsPatternOptional[] = [
-    { jsx: InputList, name: L("betonquest.v1.objective.*.optional.conditions.name"), type: ArgumentType.conditionID, key: 'conditions', format: 'string[,]', placeholder: L("(none)"), tooltip: L("betonquest.v1.objective.*.optional.conditions.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+    { jsx: InputList, name: L("betonquest.v1.objective.*.optional.conditions.name"), type: ArgumentType.conditionIdList, key: 'conditions', format: 'string[,]', placeholder: L("(none)"), tooltip: L("betonquest.v1.objective.*.optional.conditions.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
     { jsx: InputList, name: L("betonquest.v1.objective.*.optional.events.name"), type: ArgumentType.eventID, key: 'events', format: 'string[,]', placeholder: L("(none)"), tooltip: L("betonquest.v1.objective.*.optional.events.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
 ];
 

@@ -38,7 +38,7 @@ export class ObjectiveArgumentOptional extends AbstractNodeV1<ObjectiveArgumentO
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
     return [
       {
-        label: this.pattern.key + ":",
+        label: this.pattern.key + this.pattern.format === "boolean" ? ":" : "",
         kind: CompletionItemKind.Snippet, // TODO: move it onto SemanticTokenType etc.
         detail: this.pattern.name?.toString(),
         documentation: this.pattern.tooltip
