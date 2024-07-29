@@ -11,11 +11,23 @@ export enum ArgumentType {
     /** Unspecified string */
     string = "string",
 
-    /** Minecraft's Advancement */
-    advancement = "advancement",
+    /** Unspecified string list */
+    stringList = "stringList",
+
+    /** Interger number */
+    interger = "interger",
+
+    /** Floating point number */
+    float = "float",
+
+    /** Conversation Name / ID without cross-conversation path */
+    conversationID = "conversationID",
 
     /** Condiiton ID */
     conditionID = "conditionID",
+
+    /** Condiiton ID List */
+    conditionIdList = "conditionIdList",
 
     /** Event ID */
     eventID = "eventID",
@@ -26,35 +38,44 @@ export enum ArgumentType {
     /** BetonQuest's Item ID */
     itemID = "itemID",
 
-    /** BetonQuest's Item ID seprated by `,` */
-    itemIDs = "itemIDs",
+    /** Multiple BetonQuest's Item ID seprated by `,` with amount */
+    itemIdListWithAmount = "itemIdListWithAmount",
 
-    /** Minecraft's Biome */
-    biome = "biome",
+    /** Tag ID */
+    tagID = "tagID",
 
-    /** Complete Instruction seprated by `^` */
-    instructions = "instruction",
+    /** Global Point ID */
+    globalTagID = "globalTagID",
 
-    /** Conversation Name / ID without cross-conversation path */
-    conversationID = "conversationID",
+    /** Point ID */
+    pointID = "pointID",
+
+    /** Global Point ID */
+    globalPointID = "globalPointID",
+
+    /** Journal ID */
+    journalID = "journalID",
+
+    /** Stage Objective ID */
+    stageObjectiveID = "stageObjectiveID",
+
+    /** Stage name */
+    stageName = "stageName",
+
+    /** Complete Instructions seprated by `^` */
+    instructionSet = "instructionSet",
+
+    /** Variable Name */
+    variable = "variable",
+
+    /** Regular expression */
+    regex = "regEx",
 
     /** Selection */
     selection = "selection",
 
-    /** Minecraft's Potion Effect */
-    potionEffect = "potionEffect",
-
-    /** Interger number */
-    interger = "interger",
-
     /** Constant value / string */
     constant = "constant",
-
-    /** Minecraft's Entity */
-    entityWithAmount = "entityWithAmount",
-
-    /** Floating point number */
-    float = "float",
 
     /** Location coordinate */
     location = "location",
@@ -64,6 +85,30 @@ export enum ArgumentType {
 
     /** Entity / Mob mark */
     entityMark = "entityMark",
+
+    /** Language ID list */
+    languageIdList = "languageList",
+
+    /** Minecraft's Advancement */
+    advancement = "advancement",
+
+    /** Minecraft's Biome */
+    biome = "biome",
+
+    /** Minecraft's Block ID */
+    blockID = "blockID",
+
+    /** Minecraft's Entity */
+    entity = "entity",
+
+    /** Minecraft's Entities seprted by commas `,` */
+    entityList = "entityList",
+
+    /** Minecraft's Entities with amount devided by `:`, e.g. CREEPER:2 */
+    entityListWithAmount = "entityListWithAmount",
+
+    /** Minecraft's Potion Effect */
+    potionEffect = "potionEffect",
 
     /** Any string */
     any = "any",

@@ -9,7 +9,7 @@ import { ListElementEditorBodyProps } from "../../../legacyListEditor/components
 // e.g. killmob ZOMBIE 100;200;300;world 40 name:Bolec marked:quest_mob
 const pattern: ArgumentsPatterns = {
     mandatory: [
-        { name: 'entity_type', type: ArgumentType.entityWithAmount, format: 'string', defaultValue: 'ZOMBIE' },
+        { name: 'entity_type', type: ArgumentType.entityListWithAmount, format: 'string', defaultValue: 'ZOMBIE' },
         { name: 'location', type: ArgumentType.location, format: 'string', defaultValue: '100;200;300;world' },
         { name: 'radius', type: ArgumentType.float, format: 'float', defaultValue: 1.0 },
     ],
