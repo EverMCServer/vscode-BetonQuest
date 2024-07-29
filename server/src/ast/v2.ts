@@ -1,6 +1,9 @@
 import { AST } from "./ast";
 import { AbstractNode, ConversationOptionType, NodeType } from "./node";
 import { ArgumentConditionID } from "./v2/Argument/ArgumentConditionID";
+import { ArgumentEntity } from "./v2/Argument/ArgumentEntity";
+import { ArgumentEntityList } from "./v2/Argument/ArgumentEntityList";
+import { ArgumentEntityListWithAmount } from "./v2/Argument/ArgumentEntityListWithAmount";
 import { ArgumentEventID } from "./v2/Argument/ArgumentEventID";
 import { ArgumentObjectiveID } from "./v2/Argument/ArgumentObjectiveID";
 import { ConditionArgumentMandatory } from "./v2/Condition/ConditionArgumentMandatory";
@@ -54,7 +57,7 @@ import { PackageV2 } from "./v2/Package";
 type TConditionList = ConditionList | ConditionListSection | ConditionEntry | ConditionKey | ConditionKind | ConditionArguments | ConditionArgumentMandatory | ConditionArgumentOptional;
 type TEventListList = EventList | EventListSection | EventEntry | EventKey | EventKind | EventArguments | EventArgumentMandatory | EventArgumentOptional;
 type TObjectiveList = ObjectiveList | ObjectiveListSection | ObjectiveEntry | ObjectiveKey | ObjectiveKind | ObjectiveArguments | ObjectiveArgumentMandatory | ObjectiveArgumentOptional;
-type TArguments = ArgumentConditionID | ArgumentEventID | ArgumentObjectiveID;
+type TArguments = ArgumentConditionID | ArgumentEventID | ArgumentObjectiveID | ArgumentEntity | ArgumentEntityList | ArgumentEntityListWithAmount;
 type TConversationNpcOption = NpcOption | NpcConditions | NpcCondition | NpcEvents | NpcEvent | NpcPointers | NpcPointer | NpcText;
 type TConversationPlayerOption = PlayerOption | PlayerConditions | PlayerCondition | PlayerEvents | PlayerEvent | PlayerPointers | PlayerPointer | PlayerText;
 export type ConversationOption = NpcOption | PlayerOption;

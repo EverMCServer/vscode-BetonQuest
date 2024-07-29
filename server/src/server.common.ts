@@ -68,7 +68,7 @@ export function server(connection: Connection): void {
 
         // Tell the client that this server provides code completion.
         completionProvider: {
-          triggerCharacters: [" ", ",", ":", "\"", "'", "\n"],
+          triggerCharacters: [" ", ",", "\"", "'", "\n"],
           // resolveProvider: true,
           // completionItem: {
           //   labelDetailsSupport: true
