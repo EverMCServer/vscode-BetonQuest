@@ -24,7 +24,7 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: ConditionListSection) {
     super();
     this.offsetStart = pair.key?.range?.[0];
-    this.offsetEnd = pair.value?.range?.[1];
+    this.offsetEnd = pair.value?.range?.[2];
     this.parent = parent;
     this.yml = pair;
     this.offsetKindEnd = this.offsetEnd;

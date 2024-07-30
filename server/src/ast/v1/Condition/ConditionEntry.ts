@@ -25,7 +25,7 @@ export class ConditionEntry extends AbstractNodeV1<ConditionEntryType> {
     super();
     this.parent = parent;
     this.offsetStart = pair.key?.range?.[0];
-    this.offsetEnd = pair.value?.range?.[1];
+    this.offsetEnd = pair.value?.range?.[2];
     this.yml = pair;
     this.offsetKindEnd = this.offsetEnd;
 

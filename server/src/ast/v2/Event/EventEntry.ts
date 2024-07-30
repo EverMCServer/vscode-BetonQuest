@@ -24,7 +24,7 @@ export class EventEntry extends AbstractNodeV2<EventEntryType> {
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: EventListSection) {
     super();
     this.offsetStart = pair.key?.range?.[0];
-    this.offsetEnd = pair.value?.range?.[1];
+    this.offsetEnd = pair.value?.range?.[2];
     this.parent = parent;
     this.yml = pair;
     this.offsetKindEnd = this.offsetEnd;

@@ -6,31 +6,42 @@ export function getScalarSourceAndRange(value: Scalar | null) {
 
 export function getSourceByValue(value: Scalar | null) {
   switch (value?.srcToken?.type) {
-    case 'byte-order-mark':
-    case 'doc-mode':
-    case 'doc-start':
-    case 'space':
-    case 'comment':
-    case 'newline':
-    case 'directive-line':
-    case 'anchor':
-    case 'tag':
-    case 'seq-item-ind':
-    case 'explicit-key-ind':
-    case 'map-value-ind':
-    case 'flow-map-start':
-    case 'flow-map-end':
-    case 'flow-seq-start':
-    case 'flow-seq-end':
-    case 'flow-error-end':
-    case 'comma':
-    case 'block-scalar-header':
-    case 'error':
-    case 'directive':
-    case 'doc-end':
-    case 'alias':
+    // case 'byte-order-mark':
+    // case 'doc-mode':
+    // case 'doc-start':
+    // case 'space':
+    // case 'comment':
+    // case 'newline':
+    // case 'directive-line':
+    // case 'anchor':
+    // case 'tag':
+    // case 'seq-item-ind':
+    // case 'explicit-key-ind':
+    // case 'map-value-ind':
+    // case 'flow-map-start':
+    // case 'flow-map-end':
+    // case 'flow-seq-start':
+    // case 'flow-seq-end':
+    // case 'flow-error-end':
+    // case 'comma':
+    // case 'block-scalar-header':
+    // case 'error':
+    // case 'directive':
+    // case 'doc-end':
+    // case 'alias':
     case 'scalar':
-      return value.srcToken.source;
+      // For un-quoted scala (string) value, get the tailing empty spaces as well
+      let tailing = "";
+      if (value.srcToken.end) {
+        value.srcToken.end.every(s => {
+          if (s.type !== "space") {
+            return false;
+          }
+          tailing += s.source;
+          return true;
+        });
+      }
+      return value.srcToken.source + tailing;
     case 'block-scalar':
       // Remove tailing newline
       if (value.srcToken.source.endsWith("\r\n")) {
@@ -52,6 +63,18 @@ export function getScalarRangeByValue(value: Scalar | null): [offsetStart: numbe
   let range: [number, number, number] = value?.range ? [value.range[0], value.range[1], 0] : [0, 0, 0];
   switch (value?.srcToken?.type) {
     case 'scalar':
+      // For un-quoted scala (string) value, count the tailing empty spaces as well
+      let tailingOffset = 0;
+      if (value.srcToken.end) {
+        value.srcToken.end.every(s => {
+          if (s.type !== "space") {
+            return false;
+          }
+          tailingOffset += s.source.length;
+          return true;
+        });
+      }
+      range[1] += tailingOffset;
       break;
     case 'single-quoted-scalar':
     case 'double-quoted-scalar':

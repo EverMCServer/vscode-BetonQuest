@@ -1,4 +1,4 @@
-import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { CompletionItem, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ArgumentsPatternMandatory, ArgumentsPatternOptional, ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
 import Condition from "betonquest-utils/betonquest/Condition";
@@ -240,5 +240,11 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
 
   getHoverInfo(offset: number): HoverInfo[] {
     return [];
+  }
+
+  getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
+    return [
+      ...super.getCompletions(offset, documentUri)
+    ];
   }
 }
