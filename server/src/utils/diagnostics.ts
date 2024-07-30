@@ -82,9 +82,14 @@ export enum DiagnosticCode {
   ArgumentMandatoryMissing = "BQ-2001",
 
   /**
-   * A optional argument is missing.
+   * An optional argument is missing.
    */
   ArgumentOptionalMissing = "BQ-2002",
+
+  /**
+   * Argument value is not correct.
+   */
+  ArgumentValueInvalid = "BQ-2003",
 
   /**
    * The "quester" section is missing.

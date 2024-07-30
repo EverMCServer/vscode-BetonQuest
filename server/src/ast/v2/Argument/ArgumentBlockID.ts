@@ -1,13 +1,13 @@
 import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
 
-import ENTITY_TYPE_LIST from "betonquest-utils/bukkit/Data/EntityTypeList";
+import MATERIAL_LIST from "betonquest-utils/bukkit/Data/MaterialList";
 
 import { ArgumentEntityType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
 import { ConditionArgumentMandatory } from "../Condition/ConditionArgumentMandatory";
 import { ConditionArgumentOptional } from "../Condition/ConditionArgumentOptional";
 
-export class ArgumentEntityListWithAmount extends AbstractNodeV2<ArgumentEntityType> {
+export class ArgumentBlockID extends AbstractNodeV2<ArgumentEntityType> {
   readonly type: ArgumentEntityType = 'ArgumentEntity';
   readonly offsetStart?: number;
   readonly offsetEnd?: number;
@@ -25,11 +25,11 @@ export class ArgumentEntityListWithAmount extends AbstractNodeV2<ArgumentEntityT
   }
 
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
-    return ENTITY_TYPE_LIST.map(e => ({
+    return MATERIAL_LIST.filter(e => e.isBlock()).map(e => ({
       label: e.getBukkitId(),
       kind: CompletionItemKind.EnumMember,
-      detail: "Entity ID",
-      documentation: "Bukkit Entity ID"
+      detail: "Block ID",
+      documentation: "Bukkit Block ID"
     }));
   }
 
