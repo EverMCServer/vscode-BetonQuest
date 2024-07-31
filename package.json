@@ -10,7 +10,8 @@
   },
   "license": "AGPL-3.0",
   "categories": [
-    "Other"
+    "Programming Languages",
+    "Visualization"
   ],
   "bugs": {
     "url": "https://github.com/EverMCServer/vscode-BetonQuest/issues"
