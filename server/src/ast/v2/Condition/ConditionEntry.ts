@@ -24,16 +24,16 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: ConditionListSection) {
     super();
     this.offsetStart = pair.key?.range?.[0];
-    this.offsetEnd = pair.value?.range?.[2];
+    this.offsetEnd = pair.value?.range?.[1];
     this.parent = parent;
     this.yml = pair;
     this.offsetKindEnd = this.offsetEnd;
 
     // Parse YAML key
-    this.addChild(new ConditionKey(pair.key, this));
+    this.addChild(new ConditionKey(this.yml.key, this));
 
     // Parse kind and arguments
-    const [source, [offsetStart, offsetEnd, indent]] = getScalarSourceAndRange(pair.value);
+    const [source, [offsetStart, offsetEnd, indent]] = getScalarSourceAndRange(this.yml.value);
     if (!source || typeof source !== 'string') {
       // Missing or incorrect instructions
       this.addDiagnostic(
@@ -43,6 +43,10 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
         DiagnosticCode.ElementInstructionMissing,
       );
       return;
+    }
+    // Update offsetEnd if value is un-quoted string
+    if (this.yml.value?.srcToken?.type === "scalar") {
+      this.offsetEnd = offsetEnd;
     }
     const regex = /(\S+)(\s*)(.*)/s;
     let matched = regex.exec(source);
