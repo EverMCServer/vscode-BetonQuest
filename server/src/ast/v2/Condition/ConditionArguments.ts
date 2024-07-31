@@ -137,6 +137,7 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
   }
 
   private assignArgumentsMandatory(argumentMandatoryStrs: string[], offsetStart: number, patterns: ArgumentsPatternMandatory[]) {
+    let previousStrOffsetEnd = offsetStart;
     patterns.forEach((pattern, i) => {
       const argStr = argumentMandatoryStrs[i];
       if (argStr) {
@@ -147,12 +148,13 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
           pattern,
           this
         ));
+        previousStrOffsetEnd = offsetStart + str.length;
         offsetStart += argStr.length;
       } else {
         // Missing mandatory Arugment.
         // Add Diagnotistics
         this.addDiagnostic(
-          [offsetStart, offsetStart],
+          [previousStrOffsetEnd, offsetStart],
           `Missing mandatory argument: ${pattern.name}.\nExample value: ${pattern.defaultValue}`,
           DiagnosticSeverity.Error,
           DiagnosticCode.ArgumentMandatoryMissing,
