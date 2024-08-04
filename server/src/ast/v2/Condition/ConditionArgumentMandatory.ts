@@ -7,8 +7,8 @@ import { ConditionArguments } from "./ConditionArguments";
 
 export class ConditionArgumentMandatory extends AbstractNodeV2<ConditionArgumentMandatoryType> {
   readonly type: ConditionArgumentMandatoryType = 'ConditionArgumentMandatory';
-  readonly offsetStart?: number;
-  readonly offsetEnd?: number;
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
   readonly parent: ConditionArguments;
 
   private argumentStr: string;
@@ -16,20 +16,20 @@ export class ConditionArgumentMandatory extends AbstractNodeV2<ConditionArgument
 
   constructor(
     argumentStr: string,
-    range: [number?, number?],
+    range: [offsetStart: number, stringStart: number, offsetEnd: number],
     // isMandatory: boolean,
     pattern: ArgumentsPatternMandatory,
     parent: ConditionArguments,
   ) {
     super();
     this.offsetStart = range[0];
-    this.offsetEnd = range[1];
+    this.offsetEnd = range[2];
     this.parent = parent;
 
     this.argumentStr = argumentStr;
     this.pattern = pattern;
 
     // Parse argumentStr
-    praseArgument(this.argumentStr, [this.offsetStart, this.offsetEnd], this.pattern, this);
+    praseArgument(this.argumentStr, range, this.pattern, this);
   }
 }

@@ -48,7 +48,7 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
     if (this.yml.value?.srcToken?.type === "scalar") {
       this.offsetEnd = offsetEnd;
     }
-    const regex = /(\S+)(\s*)(.*)/s;
+    const regex = /(\S+)(\s*.*)/s;
     let matched = regex.exec(source);
 
     // Parse kind
@@ -69,8 +69,8 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
     this.addChild(new ConditionKind(kindStr, [offsetKindStart, this.offsetKindEnd], kind, this));
 
     // Parse Arguments
-    const argumentsSourceStr = matched[3];
-    const offsetArgumentsStart = this.offsetKindEnd ? this.offsetKindEnd + matched[2].length : undefined;
+    const argumentsSourceStr = matched[2];
+    const offsetArgumentsStart = this.offsetKindEnd;
     // Parse each individual arguments
     this.addChild(new ConditionArguments(argumentsSourceStr, [offsetArgumentsStart, offsetEnd], indent, kind, this));
   }

@@ -8,12 +8,12 @@ import { ArgumentInterger } from "./ArgumentInterger";
 
 export function praseArgument(
   argumentStr: string,
-  range: [number?, number?],
+  range: [offsetStart: number, stringStart: number, offsetEnd: number],
   // isMandatory: boolean,
   pattern: ArgumentsPatternMandatory,
   parent: ConditionArgumentMandatory | ConditionArgumentOptional
 ) {
-  let pos1 = range[0]!;
+  let pos1 = range[1]!;
   switch (pattern.type) {
 
     case ArgumentType.conditionID:
@@ -30,16 +30,16 @@ export function praseArgument(
 
     case ArgumentType.entityList:
       // Seprate value by ","
-      argumentStr.split(",").forEach(argStr => {
+      argumentStr.split(",").forEach((argStr, i) => {
         const pos2 = pos1 + argStr.length;
-        parent.addChild(new ArgumentEntity(argStr, [pos1, pos2], parent));
+        parent.addChild(new ArgumentEntity(argStr, [i ? pos1 : range[0], pos1, pos2], parent));
         pos1 = pos2 + 1;
       });
       break;
 
     case ArgumentType.entityListWithAmount:
       // Seprate value by "," and ":"
-      argumentStr.split(",").forEach(str => {
+      argumentStr.split(",").forEach((str, i) => {
         const pos4 = pos1 + str.length;
         let pos2 = pos4;
         const components = str.split(":");
@@ -48,7 +48,7 @@ export function praseArgument(
           const amountStr = components.slice(1).join(":");
           parent.addChild(new ArgumentInterger(amountStr, [pos2 + 1, pos4], parent));
         }
-        parent.addChild(new ArgumentEntity(components[0], [pos1, pos2], parent));
+        parent.addChild(new ArgumentEntity(components[0], [i ? pos1 : range[0], pos1, pos2], parent));
         pos1 = pos4 + 1;
       });
       break;

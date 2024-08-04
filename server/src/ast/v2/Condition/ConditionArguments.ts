@@ -22,7 +22,18 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
   private argumentsStrs: string[] = [];
   private indent: number;
   private kindConfig: ElementKind<Condition>;
+
   private isMandatoryArgumentIncomplete: boolean = false;
+
+  // Cache splited argument strings
+  private argumentMandatoryStrs: string[] = [];
+  private argumentOptionalStrs: string[] = [];
+
+  /**
+   * Cache the key offsets of each devided argument
+   * `<offsetStart>argument_string<stringEnd>(empty_spaces)<offsetEnd>`
+   */
+  private keyOffsets: [offsetStart: number, stringEnd: number, offsetEnd: number][] = [];
 
   constructor(argumentsSourceStr: string, range: [number?, number?], indent: number, kindConfig: ElementKind<Condition>, parent: ConditionEntry) {
     super();
@@ -33,22 +44,20 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
     this.kindConfig = kindConfig;
 
     // Split argumentsStr by whitespaces, with respect to quotes ("")
-    const regex = /(?:\"[^\"]*?\"|\'[^\']*?\')\s*|\S+\s*/g; // keep quotes and tailing whitespaces
+    // const regex = /(?:\"[^\"]*?\"|\'[^\']*?\')\s*|\S+\s*/g; // keep quotes and tailing whitespaces
+    const regex = /\s*(?:\"[^\"]*?\"|\'[^\']*?\')|\s*\S*/g; // keep quotes and heading whitespaces
     // const regex = /((?:\"[^\"]*?\"|\'[^\']*?\'))|(\S+)/g; // keep quotes
     // const regex = /(?:\"([^\"]*?)\"|\'([^\']*?)\')|(\S+)/g; // without quotes or whitespaces
     let matched: RegExpExecArray | null;
-    let posInit: number | undefined;
     while ((matched = regex.exec(argumentsSourceStr)) !== null) {
-      posInit = posInit ?? matched.index;
+      if (!matched[0]) {
+        break;
+      }
       this.argumentsStrs.push(matched[0]);
     }
 
     // Search ArgumentsPatterns from V2 Element List
     const argumentsPatterns: ArgumentsPatterns = this.kindConfig.argumentsPatterns ?? { mandatory: [{ name: 'unspecified', format: '*', defaultValue: '' }] };
-
-    // Cache arguments
-    let argumentOptionalStrs: string[] = [];
-    let argumentMandatoryStrs: string[] = [];
 
     if (argumentsPatterns.optional && argumentsPatterns.optional.length > 0) {
       // With optional args
@@ -56,9 +65,9 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
         // Optional at begining
         for (let pos = 0; pos < this.argumentsStrs.length && pos < argumentsPatterns.optional.length; pos++) {
           // Check if this is an existing optional arg. If so, append it.
-          const found = argumentsPatterns.optional?.find(p => this.argumentsStrs[pos].startsWith(p.key + ":"));
+          const found = argumentsPatterns.optional?.find(p => this.argumentsStrs[pos].trimStart().startsWith(p.key + ":"));
           if (found) {
-            argumentOptionalStrs.push(this.argumentsStrs[pos]);
+            this.argumentOptionalStrs.push(this.argumentsStrs[pos]);
             continue;
           }
           // If there are no more optional args, append the rest as mandatory args.
@@ -66,14 +75,14 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
             // Keep whitespaces only for the mandatory part. e.g. "notify", "log"
             if (argumentsPatterns.mandatory.length > 1) {
               const nonWhitespaceArgsPos = pos + argumentsPatterns.mandatory.length - 1;
-              argumentMandatoryStrs.push(this.argumentsStrs.slice(pos, nonWhitespaceArgsPos).join()); // Normal mandatory args
-              argumentMandatoryStrs.push(this.argumentsStrs.slice(nonWhitespaceArgsPos).join()); // Whitespace args
+              this.argumentMandatoryStrs.push(this.argumentsStrs.slice(pos, nonWhitespaceArgsPos).join()); // Normal mandatory args
+              this.argumentMandatoryStrs.push(this.argumentsStrs.slice(nonWhitespaceArgsPos).join()); // Whitespace args
             } else {
-              argumentMandatoryStrs.push(this.argumentsStrs.slice(pos).join());
+              this.argumentMandatoryStrs.push(this.argumentsStrs.slice(pos).join());
             }
           } else {
             // No need to keep whitespaces
-            argumentMandatoryStrs = this.argumentsStrs.slice(pos);
+            this.argumentMandatoryStrs = this.argumentsStrs.slice(pos);
           }
           break;
         }
@@ -82,9 +91,9 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
         // Optional at end
         for (let pos = this.argumentsStrs.length - 1; pos > -1; pos--) {
           // Check if this is an existing optional arg. If so, append it.
-          const found = argumentsPatterns.optional.find(p => this.argumentsStrs[pos].startsWith(p.key + ":"));
+          const found = argumentsPatterns.optional.find(p => this.argumentsStrs[pos].trimStart().startsWith(p.key + ":"));
           if (found) {
-            argumentOptionalStrs.unshift(this.argumentsStrs[pos]);
+            this.argumentOptionalStrs.unshift(this.argumentsStrs[pos]);
             continue;
           }
           // If there are no more optional args, append the rest as mandatory args.
@@ -92,14 +101,20 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
             // Keep whitespaces only for the mandatory part. e.g. "notify", "log"
             if (argumentsPatterns.mandatory.length > 1 && this.argumentsStrs.length > 1) {
               const nonWhitespaceArgsPos = argumentsPatterns.mandatory.length - 1;
-              argumentMandatoryStrs.push(this.argumentsStrs.slice(0, nonWhitespaceArgsPos).join()); // Normal mandatory args
-              argumentMandatoryStrs.push(this.argumentsStrs.slice(nonWhitespaceArgsPos, pos + 1).join()); // Whitespaceargs
+              this.argumentMandatoryStrs.push(this.argumentsStrs.slice(0, nonWhitespaceArgsPos).join()); // Normal mandatory args
+              this.argumentMandatoryStrs.push(this.argumentsStrs.slice(nonWhitespaceArgsPos, pos + 1).join()); // Whitespaceargs
             } else if (this.argumentsStrs.length > 0) {
-              argumentMandatoryStrs.push(this.argumentsStrs.slice(0, pos + 1).join());
+              this.argumentMandatoryStrs.push(this.argumentsStrs.slice(0, pos + 1).join());
             }
           } else {
             // No need to keep whitespaces
-            argumentMandatoryStrs = this.argumentsStrs.slice(0, pos + 1);
+            // Only put the required amount of  arguments into the mandatory array, the rest goes to optional array
+            if (pos + 1 > this.kindConfig.argumentsPatterns.mandatory.length) {
+              this.argumentMandatoryStrs = this.argumentsStrs.slice(0, this.kindConfig.argumentsPatterns.mandatory.length);
+              this.argumentOptionalStrs.unshift(...this.argumentsStrs.slice(this.kindConfig.argumentsPatterns.mandatory.length, pos + 1));
+            } else {
+              this.argumentMandatoryStrs = this.argumentsStrs.slice(0, pos + 1);
+            }
           }
           break;
         }
@@ -111,14 +126,14 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
         // Keep whitespaces only for the mandatory part. e.g. "notify", "log"
         if (argumentsPatterns.mandatory.length > 1 && this.argumentsStrs.length > 1) {
           const nonWhitespaceArgsPos = argumentsPatterns.mandatory.length - 1;
-          argumentMandatoryStrs.push(this.argumentsStrs.slice(0, nonWhitespaceArgsPos).join()); // Normal mandatory args
-          argumentMandatoryStrs.push(this.argumentsStrs.slice(nonWhitespaceArgsPos).join()); // Whitespaceargs
+          this.argumentMandatoryStrs.push(this.argumentsStrs.slice(0, nonWhitespaceArgsPos).join()); // Normal mandatory args
+          this.argumentMandatoryStrs.push(this.argumentsStrs.slice(nonWhitespaceArgsPos).join()); // Whitespaceargs
         } else if (this.argumentsStrs.length > 0) {
-          argumentMandatoryStrs = [this.argumentsStrs.join()];
+          this.argumentMandatoryStrs = [this.argumentsStrs.join()];
         }
       } else {
         // No need to keep whitespaces
-        argumentMandatoryStrs = this.argumentsStrs;
+        this.argumentMandatoryStrs = this.argumentsStrs;
       }
       // this.argumentsStrs = argumentMandatoryStrs;
     }
@@ -127,51 +142,51 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
     let offsetStart = this.offsetStart ?? 0;
     if (argumentsPatterns.optionalAtFirst) {
       // Parse optional arguments
-      offsetStart = this.assignArgumentsOptional(argumentOptionalStrs, offsetStart, argumentsPatterns.optional);
+      offsetStart = this.assignArgumentsOptional(this.argumentOptionalStrs, offsetStart, argumentsPatterns.optional);
       // Parse mandatory arguments
-      this.assignArgumentsMandatory(argumentMandatoryStrs, offsetStart, argumentsPatterns.mandatory);
+      this.assignArgumentsMandatory(this.argumentMandatoryStrs, offsetStart, argumentsPatterns.mandatory);
     } else {
       // Parse mandatory arguments
-      offsetStart = this.assignArgumentsMandatory(argumentMandatoryStrs, offsetStart, argumentsPatterns.mandatory);
+      offsetStart = this.assignArgumentsMandatory(this.argumentMandatoryStrs, offsetStart, argumentsPatterns.mandatory);
       // Parse optional arguments
-      this.assignArgumentsOptional(argumentOptionalStrs, offsetStart, argumentsPatterns.optional);
+      this.assignArgumentsOptional(this.argumentOptionalStrs, offsetStart, argumentsPatterns.optional);
     }
   }
 
   private assignArgumentsMandatory(argumentMandatoryStrs: string[], offsetStart: number, patterns: ArgumentsPatternMandatory[]) {
-    let previousStrOffsetEnd = offsetStart;
-    patterns.forEach((pattern, i) => {
-      const argStr = argumentMandatoryStrs[i];
-      if (argStr) {
-        const str = argStr.trimEnd();
+    let previousStringStart = offsetStart;
+    argumentMandatoryStrs.forEach((argStr, i) => {
+      const pattern = patterns[i];
+      const str = argStr.trimStart();
+      const offsets: [offsetStart: number, stringStart: number, offsetEnd: number] = [offsetStart, offsetStart + argStr.length - str.length, offsetStart + argStr.length];
+      this.keyOffsets.push(offsets);
+      if (str) {
         this.addChild(new ConditionArgumentMandatory(
           str,
-          [offsetStart, offsetStart + str.length],
+          offsets, // [offsets[1], offsets[2]],
           pattern,
           this
         ));
-        previousStrOffsetEnd = offsetStart + str.length;
-        offsetStart += argStr.length;
+        previousStringStart = offsets[1];
+        offsetStart = offsets[2];
       } else {
-        // Missing mandatory Arugment.
+        // Missing mandatory arugment.
         // Add Diagnotistics
         this.addDiagnostic(
-          [previousStrOffsetEnd, offsetStart],
+          [offsets[0], offsets[2]],
           `Missing mandatory argument: ${pattern.name}.\nExample value: ${pattern.defaultValue}`,
           DiagnosticSeverity.Error,
           DiagnosticCode.ArgumentMandatoryMissing,
         );
-        // Create dummy Argument for auto-complete
-        if (!this.isMandatoryArgumentIncomplete) {
-          this.addChild(new ConditionArgumentMandatory(
-            "",
-            [offsetStart, offsetStart],
-            pattern,
-            this
-          ));
-        }
-        // Break on the first empty mandatory Argument, preventing multiple auto-complete being prompted
+        // Mark mandatory argument is incomplete.
         this.isMandatoryArgumentIncomplete = true;
+        // Add dummy mandatory arugment for auto-complete promption
+        this.addChild(new ConditionArgumentMandatory(
+          str,
+          offsets, // [offsets[1], offsets[2]],
+          pattern,
+          this
+        ));
       }
     });
     return offsetStart;
@@ -183,33 +198,23 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
 
     // Parse optional argument
     argumentOptionalStrs.forEach(argStr => {
-      const str = argStr.trimEnd();
+      const str = argStr.trimStart();
+      const offsets: [offsetStart: number, stringStart: number, offsetEnd: number] = [offsetStart, offsetStart + argStr.length - str.length, offsetStart + argStr.length];
+      this.keyOffsets.push(offsets);
       const pattern = patterns?.find(p => argStr.startsWith(p.key + ":"));
       if (pattern) {
         foundPatterns.push(pattern);
         this.addChild(new ConditionArgumentOptional(
           str,
-          [offsetStart, offsetStart + str.length],
+          [offsets[1], offsets[2]],
           pattern,
           this
         ));
       } else {
         // Ignore unknown optional argument key
       }
-      offsetStart += argStr.length;
+      offsetStart = offsets[2];
     });
-
-    // Create dummy Argument for auto-complete
-    if (!this.isMandatoryArgumentIncomplete) { // Create dummy args / prompt optional auto-complete only when mandatory argument is complete.
-      patterns?.filter(p => !foundPatterns.find(f => f.key === p.key)).forEach((pattern, i) => {
-        this.addChild(new ConditionArgumentOptional(
-          "",
-          [offsetStart, offsetStart],
-          pattern,
-          this
-        ));
-      });
-    }
 
     return offsetStart;
   }
@@ -247,6 +252,29 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
   }
 
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
+    // // Prompt argument suggestions
+    // // 1. Iterate keyOffsets, check if the offset is in the desired range.
+    // const i = this.keyOffsets.findIndex(keyOffset => keyOffset[0] < offset && offset <= keyOffset[1]);
+    // if (i > -1) {
+    //   // 2. Determine if mandatory arg should be prompted
+    //   // const mandatoryCount = this.argumentMandatoryStrs.filter(s => s.trim()).length;
+    //   if (
+    //     // mandatoryCount < this.kindConfig.argumentsPatterns.mandatory.length && // Not enough mandatory arguments
+    //     i < this.kindConfig.argumentsPatterns.mandatory.length // Position is in between desinated range
+    //   ) {
+    //     console.log("Prompt mandatory"); // DEBUG
+    //   }
+
+    //   // 3. Determine if optional arg should be prompted
+    //   // const optionalCount = this.argumentOptionalStrs.filter(s => s.trim()).length;
+    //   if (
+    //     // this.kindConfig.argumentsPatterns.optional && // There are optional arguments
+    //     // optionalCount < this.kindConfig.argumentsPatterns.optional?.length &&  // Not enough optional arguments
+    //     i >= this.kindConfig.argumentsPatterns.mandatory.length // Position is in between desinated range
+    //   ) {
+    //     console.log("Prompt optional"); // DEBUG
+    //   }
+    // }
     return [
       ...super.getCompletions(offset, documentUri)
     ];
