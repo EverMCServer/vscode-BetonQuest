@@ -65,7 +65,7 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
         // Optional at begining
         for (let pos = 0; pos < this.argumentsStrs.length && pos < argumentsPatterns.optional.length; pos++) {
           // Check if this is an existing optional arg. If so, append it.
-          const found = argumentsPatterns.optional?.find(p => this.argumentsStrs[pos].trimStart().startsWith(p.key + ":"));
+          const found = argumentsPatterns.optional?.find(p => this.argumentsStrs[pos].trimStart().startsWith(p.key));
           if (found) {
             this.argumentOptionalStrs.push(this.argumentsStrs[pos]);
             continue;
@@ -91,7 +91,7 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
         // Optional at end
         for (let pos = this.argumentsStrs.length - 1; pos > -1; pos--) {
           // Check if this is an existing optional arg. If so, append it.
-          const found = argumentsPatterns.optional.find(p => this.argumentsStrs[pos].trimStart().startsWith(p.key + ":"));
+          const found = argumentsPatterns.optional.find(p => this.argumentsStrs[pos].trimStart().startsWith(p.key));
           if (found) {
             this.argumentOptionalStrs.unshift(this.argumentsStrs[pos]);
             continue;
@@ -154,7 +154,6 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
   }
 
   private assignArgumentsMandatory(argumentMandatoryStrs: string[], offsetStart: number, patterns: ArgumentsPatternMandatory[]) {
-    let previousStringStart = offsetStart;
     argumentMandatoryStrs.forEach((argStr, i) => {
       const pattern = patterns[i];
       const str = argStr.trimStart();
@@ -167,7 +166,6 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
           pattern,
           this
         ));
-        previousStringStart = offsets[1];
         offsetStart = offsets[2];
       } else {
         // Missing mandatory arugment.
@@ -201,20 +199,34 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
       const str = argStr.trimStart();
       const offsets: [offsetStart: number, stringStart: number, offsetEnd: number] = [offsetStart, offsetStart + argStr.length - str.length, offsetStart + argStr.length];
       this.keyOffsets.push(offsets);
-      const pattern = patterns?.find(p => argStr.startsWith(p.key + ":"));
-      if (pattern) {
-        foundPatterns.push(pattern);
-        this.addChild(new ConditionArgumentOptional(
-          str,
-          [offsets[1], offsets[2]],
-          pattern,
-          this
-        ));
+      if (str) {
+        const pattern = patterns?.find(p => str.startsWith(p.key));
+        if (pattern) {
+          foundPatterns.push(pattern);
+          this.addChild(new ConditionArgumentOptional(
+            str,
+            offsets,
+            pattern,
+            this
+          ));
+        } else {
+          // Ignore unknown optional argument key
+        }
       } else {
-        // Ignore unknown optional argument key
+        // Create dummy optional arguments for auto-complete promption
+        this.kindConfig.argumentsPatterns.optional?.filter(p => !foundPatterns.some(f => f.key === p.key))
+          .forEach(p => {
+            this.addChild(new ConditionArgumentOptional(
+              str,
+              offsets,
+              p,
+              this
+            ));
+          });
       }
       offsetStart = offsets[2];
     });
+
 
     return offsetStart;
   }

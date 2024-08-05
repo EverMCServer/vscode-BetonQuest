@@ -13,23 +13,23 @@ export class ArgumentEntity extends AbstractNodeV2<ArgumentEntityType> {
   readonly offsetEnd?: number;
   readonly parent: ConditionArgumentMandatory | ConditionArgumentOptional;
 
-  private range: [offsetStart: number, stringStart: number, offsetEnd: number];
+  private offsets: [offsetStart: number, stringStart: number, offsetEnd: number];
 
   constructor(
     argumentStr: string,
-    range: [offsetStart: number, stringStart: number, offsetEnd: number],
+    offsets: [offsetStart: number, stringStart: number, offsetEnd: number],
     parent: ConditionArgumentMandatory | ConditionArgumentOptional,
   ) {
     super();
-    this.offsetStart = range[0];
-    this.offsetEnd = range[2];
+    this.offsetStart = offsets[0];
+    this.offsetEnd = offsets[2];
     this.parent = parent;
 
-    this.range = range;
+    this.offsets = offsets;
   }
 
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
-    if (this.range[0] < offset && offset <= this.range[1] || offset === this.range[2]) {
+    if (this.offsets[0] < offset && offset <= this.offsets[1] || offset === this.offsets[2]) {
       return ENTITY_TYPE_LIST.map(e => ({
         label: e.getBukkitId(),
         kind: CompletionItemKind.EnumMember,

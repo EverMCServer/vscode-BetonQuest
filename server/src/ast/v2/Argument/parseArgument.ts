@@ -1,4 +1,4 @@
-import { ArgumentsPatternMandatory, ArgumentType } from "betonquest-utils/betonquest/Arguments";
+import { ArgumentsPatternMandatory, ArgumentsPatternOptional, ArgumentType } from "betonquest-utils/betonquest/Arguments";
 import { ConditionArgumentMandatory } from "../Condition/ConditionArgumentMandatory";
 import { ConditionArgumentOptional } from "../Condition/ConditionArgumentOptional";
 import { ArgumentBlockID } from "./ArgumentBlockID";
@@ -6,33 +6,33 @@ import { ArgumentConditionID } from "./ArgumentConditionID";
 import { ArgumentEntity } from "./ArgumentEntity";
 import { ArgumentInterger } from "./ArgumentInterger";
 
-export function praseArgument(
+export function parseArgument(
   argumentStr: string,
-  range: [offsetStart: number, stringStart: number, offsetEnd: number],
+  offsets: [offsetStart: number, stringStart: number, offsetEnd: number],
   // isMandatory: boolean,
-  pattern: ArgumentsPatternMandatory,
+  pattern: ArgumentsPatternMandatory | ArgumentsPatternOptional,
   parent: ConditionArgumentMandatory | ConditionArgumentOptional
 ) {
-  let pos1 = range[1]!;
+  let pos1 = offsets[1];
   switch (pattern.type) {
 
     case ArgumentType.conditionID:
-      parent.addChild(new ArgumentConditionID(argumentStr, range, parent));
+      parent.addChild(new ArgumentConditionID(argumentStr, offsets, parent));
       break;
 
     case ArgumentType.blockID:
-      parent.addChild(new ArgumentBlockID(argumentStr, range, parent));
+      parent.addChild(new ArgumentBlockID(argumentStr, offsets, parent));
       break;
 
     case ArgumentType.entity:
-      parent.addChild(new ArgumentEntity(argumentStr, range, parent));
+      parent.addChild(new ArgumentEntity(argumentStr, offsets, parent));
       break;
 
     case ArgumentType.entityList:
       // Seprate value by ","
       argumentStr.split(",").forEach((argStr, i) => {
         const pos2 = pos1 + argStr.length;
-        parent.addChild(new ArgumentEntity(argStr, [i ? pos1 : range[0], pos1, pos2], parent));
+        parent.addChild(new ArgumentEntity(argStr, [i ? pos1 : offsets[0], pos1, pos2], parent));
         pos1 = pos2 + 1;
       });
       break;
@@ -48,7 +48,7 @@ export function praseArgument(
           const amountStr = components.slice(1).join(":");
           parent.addChild(new ArgumentInterger(amountStr, [pos2 + 1, pos4], parent));
         }
-        parent.addChild(new ArgumentEntity(components[0], [i ? pos1 : range[0], pos1, pos2], parent));
+        parent.addChild(new ArgumentEntity(components[0], [i ? pos1 : offsets[0], pos1, pos2], parent));
         pos1 = pos4 + 1;
       });
       break;

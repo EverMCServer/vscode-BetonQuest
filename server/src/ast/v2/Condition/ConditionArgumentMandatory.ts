@@ -2,7 +2,7 @@ import { ArgumentsPatternMandatory } from "betonquest-utils/betonquest/Arguments
 
 import { ConditionArgumentMandatoryType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
-import { praseArgument } from "../Argument/praseArgument";
+import { parseArgument } from "../Argument/parseArgument";
 import { ConditionArguments } from "./ConditionArguments";
 
 export class ConditionArgumentMandatory extends AbstractNodeV2<ConditionArgumentMandatoryType> {
@@ -30,6 +30,6 @@ export class ConditionArgumentMandatory extends AbstractNodeV2<ConditionArgument
     this.pattern = pattern;
 
     // Parse argumentStr
-    praseArgument(this.argumentStr, range, this.pattern, this);
+    parseArgument(this.argumentStr, range, this.pattern, this);
   }
 }

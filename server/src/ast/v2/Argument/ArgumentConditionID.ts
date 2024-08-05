@@ -13,12 +13,12 @@ export class ArgumentConditionID extends AbstractNodeV2<ArgumentConditionIdType>
 
   constructor(
     argumentStr: string,
-    range: [offsetStart: number, stringStart: number, offsetEnd: number],
+    offsets: [offsetStart: number, stringStart: number, offsetEnd: number],
     parent: ConditionArgumentMandatory | ConditionArgumentOptional,
   ) {
     super();
-    this.offsetStart = range[0];
-    this.offsetEnd = range[2];
+    this.offsetStart = offsets[0];
+    this.offsetEnd = offsets[2];
     this.parent = parent;
   }
 
