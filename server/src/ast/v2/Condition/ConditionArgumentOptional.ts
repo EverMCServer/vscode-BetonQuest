@@ -34,18 +34,23 @@ export class ConditionArgumentOptional extends AbstractNodeV2<ConditionArgumentO
 
     // Parse argumentStr
     if (this.pattern.format !== "boolean") {
-      parseArgument(
-        this.argumentStr.split(":").slice(1).join(":"),
-        [this.offsets[1], this.offsets[1], this.offsets[2]],
-        this.pattern,
-        this
-      );
+      const strs = this.argumentStr.split(":");
+      if (strs.length) {
+        const str = strs.slice(1).join(":");
+        const pos1 = this.offsets[1] + strs[0].length + 1;
+        parseArgument(
+          str,
+          [pos1, pos1, this.offsets[2]],
+          this.pattern,
+          this
+        );
+      }
     }
   }
 
   // Prompt key completions
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
-    if (this.offsets[0] < offset && offset <= this.offsets[1] || offset === this.offsets[2]) {
+    if (!this.argumentStr.trim() && (this.offsets[0] < offset && offset <= this.offsets[1] || offset === this.offsets[2])) {
       return [
         {
           label: this.pattern.key + (this.pattern.format === "boolean" ? "" : ":"),
