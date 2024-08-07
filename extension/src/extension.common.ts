@@ -48,6 +48,28 @@ export async function _activate(context: vscode.ExtensionContext, lspClient: Bas
       }
     });
 
+    const editorConfig = vscode.workspace.getConfiguration('editor');
+
+    // // Disable `editor.suggest.showWords`, prevening "global identifiers" being shown
+    // // when Completion item array is empty from server.
+    // editorConfig.update('suggest.showWords', false, vscode.ConfigurationTarget.Workspace)
+    //   .then(() => {
+    //     console.log('Word-based suggestions have been disabled.');
+    //   }, (error) => {
+    //     console.error('Failed to update configuration:', error);
+    //   });
+
+    // Enable `editor.quickSuggestions.strings` for 24x7 code completion (suggest while typing).
+    const quickSuggestions = editorConfig.get<{ [key: string]: string }>('quickSuggestions');
+    if (!quickSuggestions || quickSuggestions.strings !== 'on') {
+      editorConfig.update('quickSuggestions', { ...quickSuggestions, strings: 'on' }, vscode.ConfigurationTarget.Workspace)
+        .then(() => {
+          console.log('Quick suggestions for strings have been enabled.');
+        }, (error) => {
+          console.error('Failed to update configuration:', error);
+        });
+    }
+
   }).catch(reason => {
     console.error('BQLS: betonquest-server failed to start', reason);
   });
