@@ -19,7 +19,9 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
   readonly parent: ConditionListSection;
 
   readonly yml: Pair<Scalar<string>, Scalar<string>>;
-  readonly offsetKindEnd?: number;
+  private offsetKindEnd?: number;
+  private kindString: string = "";
+  private argumentsString: string = "";
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: ConditionListSection) {
     super();
@@ -62,17 +64,17 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
       );
       return;
     }
-    const kindStr = matched[1];
-    const kind = kinds.find(k => k.value === kindStr.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
+    this.kindString = matched[1];
+    const kind = kinds.find(k => k.value === this.kindString.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
     const offsetKindStart = offsetStart + matched.index;
-    this.offsetKindEnd = offsetKindStart + kindStr.length;
-    this.addChild(new ConditionKind(kindStr, [offsetKindStart, this.offsetKindEnd], kind, this));
+    this.offsetKindEnd = offsetKindStart + this.kindString.length;
+    this.addChild(new ConditionKind(this.kindString, [offsetKindStart, this.offsetKindEnd], kind, this));
 
     // Parse Arguments
-    const argumentsSourceStr = matched[2];
+    this.argumentsString = matched[2];
     const offsetArgumentsStart = this.offsetKindEnd;
     // Parse each individual arguments
-    this.addChild(new ConditionArguments(argumentsSourceStr, [offsetArgumentsStart, offsetEnd], indent, kind, this));
+    this.addChild(new ConditionArguments(this.argumentsString, [offsetArgumentsStart, offsetEnd], indent, kind, this));
   }
 
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
@@ -82,12 +84,15 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
       this.yml.srcToken?.sep && this.yml.srcToken?.sep?.[1].type === 'space'
       && this.offsetKindEnd && offset <= this.offsetKindEnd
     ) {
-      completionItems.push(...kinds.filter(k => k.value !== "*").flatMap(k => ({
-        label: k.value,
-        kind: CompletionItemKind.Constructor, // TODO: move it onto SemanticTokenType etc.
-        detail: k.display,
-        documentation: k.description?.toString()
-      })));
+      completionItems.push(...kinds
+        .filter(k => k.value !== "*" && (!this.kindString || k.value.startsWith(this.kindString.trimStart())))
+        .flatMap(k => ({
+          label: k.value,
+          kind: CompletionItemKind.Constructor, // TODO: move it onto SemanticTokenType etc.
+          detail: k.display,
+          documentation: k.description?.toString()
+        }))
+      );
     }
     completionItems.push(...super.getCompletions(offset, documentUri));
     return completionItems;
