@@ -78,7 +78,10 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
     const completionItems = [];
     // Prompt the Condition list
-    if (this.offsetKindEnd && offset <= this.offsetKindEnd) {
+    if (
+      this.yml.srcToken?.sep && this.yml.srcToken?.sep?.[1].type === 'space'
+      && this.offsetKindEnd && offset <= this.offsetKindEnd
+    ) {
       completionItems.push(...kinds.filter(k => k.value !== "*").flatMap(k => ({
         label: k.value,
         kind: CompletionItemKind.Constructor, // TODO: move it onto SemanticTokenType etc.
