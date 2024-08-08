@@ -85,7 +85,7 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
       && this.offsetKindEnd && offset <= this.offsetKindEnd
     ) {
       completionItems.push(...kinds
-        .filter(k => k.value !== "*" && (!this.kindString || k.value.startsWith(this.kindString.trimStart())))
+        .filter(k => k.value !== "*")
         .flatMap(k => ({
           label: k.value,
           kind: CompletionItemKind.Constructor, // TODO: move it onto SemanticTokenType etc.

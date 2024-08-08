@@ -21,13 +21,13 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
 
   private argumentsStrs: string[] = [];
   private indent: number;
-  private kindConfig: ElementKind<Condition>;
+  readonly kindConfig: ElementKind<Condition>;
 
   private isMandatoryArgumentIncomplete: boolean = false;
 
   // Cache splited argument strings
-  private argumentMandatoryStrs: string[] = [];
-  private argumentOptionalStrs: string[] = [];
+  readonly argumentMandatoryStrs: string[] = [];
+  readonly argumentOptionalStrs: string[] = [];
 
   /**
    * Cache the key offsets of each devided argument
@@ -199,6 +199,7 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
       const str = argStr.trimStart();
       const offsets: [offsetStart: number, stringStart: number, offsetEnd: number] = [offsetStart, offsetStart + argStr.length - str.length, offsetStart + argStr.length];
       this.keyOffsets.push(offsets);
+      offsetStart = offsets[2];
       if (str) {
         const pattern = patterns?.find(p => str.startsWith(p.key));
         if (pattern) {
@@ -209,22 +210,25 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
             pattern,
             this
           ));
-        } else {
-          // Ignore unknown optional argument key
+          return;
         }
-      } else {
-        // Create dummy optional arguments for auto-complete promption
-        this.kindConfig.argumentsPatterns.optional?.filter(p => !foundPatterns.some(f => f.key === p.key))
-          .forEach(p => {
-            this.addChild(new ConditionArgumentOptional(
-              str,
-              offsets,
-              p,
-              this
-            ));
-          });
       }
-      offsetStart = offsets[2];
+      // Create dummy optional arguments for auto-complete promption
+      // this.kindConfig.argumentsPatterns.optional?.filter(p => !foundPatterns.some(f => f.key === p.key))
+      //   .forEach(p => {
+      //     this.addChild(new ConditionArgumentOptional(
+      //       str,
+      //       offsets,
+      //       p,
+      //       this
+      //     ));
+      //   });
+      this.addChild(new ConditionArgumentOptional(
+        str,
+        offsets,
+        undefined,
+        this
+      ));
     });
 
 

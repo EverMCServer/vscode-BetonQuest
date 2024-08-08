@@ -14,13 +14,13 @@ export class ConditionArgumentOptional extends AbstractNodeV2<ConditionArgumentO
   readonly parent: ConditionArguments;
 
   private argumentStr: string;
-  private pattern: ArgumentsPatternOptional;
+  private pattern?: ArgumentsPatternOptional;
   private offsets: [offsetStart: number, stringStart: number, offsetEnd: number];
 
   constructor(argumentStr: string,
     offsets: [offsetStart: number, stringStart: number, offsetEnd: number],
     // isMandatory: boolean,
-    pattern: ArgumentsPatternOptional,
+    pattern: ArgumentsPatternOptional | undefined,
     parent: ConditionArguments,
   ) {
     super();
@@ -33,7 +33,7 @@ export class ConditionArgumentOptional extends AbstractNodeV2<ConditionArgumentO
     this.offsets = offsets;
 
     // Parse argumentStr
-    if (this.pattern.format !== "boolean") {
+    if (this.pattern && this.pattern?.format !== "boolean") {
       const strs = this.argumentStr.split(":");
       if (strs.length) {
         const str = strs.slice(1).join(":");
@@ -50,21 +50,42 @@ export class ConditionArgumentOptional extends AbstractNodeV2<ConditionArgumentO
 
   // Prompt key completions
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
-    if (!this.argumentStr.trim() && (this.offsets[0] < offset && offset <= this.offsets[1] || offset === this.offsets[2])) {
-      return [
-        {
-          label: this.pattern.key + (this.pattern.format === "boolean" ? "" : ":"),
+    const completionItems: CompletionItem[] = [];
+
+    if (this.offsets[0] < offset && offset <= this.offsets[1] || offset === this.offsets[2]) {
+      this.parent.kindConfig.argumentsPatterns
+        .optional?.filter(o => !this.parent.argumentOptionalStrs.some(s => s.trimStart().startsWith(o.key)))
+        .forEach(pattern => completionItems.push({
+          label: pattern.key,
           kind: CompletionItemKind.Snippet, // TODO: move it onto SemanticTokenType etc.
-          detail: this.pattern.name?.toString(),
-          documentation: this.pattern.tooltip,
+          detail: pattern.name?.toString(),
+          documentation: pattern.tooltip,
           command: {
             title: "Prompt value suggestion",
             command: "editor.action.triggerSuggest"
-          }
-        },
-        ...super.getCompletions(offset, documentUri)
-      ];
+          },
+          insertText: pattern.key + (pattern.format === "boolean" ? "" : ":"), // TODO: add ":" only when there is no arguments
+        }));
     }
-    return super.getCompletions(offset, documentUri);
+
+    completionItems.push(...super.getCompletions(offset, documentUri));
+    return completionItems;
+
+    // if (this.pattern && (this.offsets[0] < offset && offset <= this.offsets[1] || offset === this.offsets[2])) {
+    //   return [
+    //     {
+    //       label: this.pattern.key + (this.pattern.format === "boolean" ? "" : ":"),
+    //       kind: CompletionItemKind.Snippet, // TODO: move it onto SemanticTokenType etc.
+    //       detail: this.pattern.name?.toString(),
+    //       documentation: this.pattern.tooltip,
+    //       command: {
+    //         title: "Prompt value suggestion",
+    //         command: "editor.action.triggerSuggest"
+    //       }
+    //     },
+    //     ...super.getCompletions(offset, documentUri)
+    //   ];
+    // }
+    // return super.getCompletions(offset, documentUri);
   }
 }
