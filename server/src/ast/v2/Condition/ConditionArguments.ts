@@ -82,7 +82,8 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
             }
           } else {
             // No need to keep whitespaces
-            this.argumentMandatoryStrs = this.argumentsStrs.slice(pos);
+            this.argumentMandatoryStrs = this.argumentsStrs.slice(pos, argumentsPatterns.mandatory.length);
+            // TODO: Throw warning on extra arguments
           }
           break;
         }
@@ -133,7 +134,8 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
         }
       } else {
         // No need to keep whitespaces
-        this.argumentMandatoryStrs = this.argumentsStrs;
+        this.argumentMandatoryStrs = this.argumentsStrs.slice(0, argumentsPatterns.mandatory.length);
+        // TODO: Throw warning on extra arguments
       }
       // this.argumentsStrs = argumentMandatoryStrs;
     }
