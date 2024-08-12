@@ -4,21 +4,20 @@ import ENTITY_TYPE_LIST from "betonquest-utils/bukkit/Data/EntityTypeList";
 
 import { ArgumentEntityType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
-import { ConditionArgumentMandatory } from "../Condition/ConditionArgumentMandatory";
-import { ConditionArgumentOptional } from "../Condition/ConditionArgumentOptional";
+import { ConditionArgumentValue } from "../Condition/ConditionArgumentValue";
 
 export class ArgumentEntity extends AbstractNodeV2<ArgumentEntityType> {
   readonly type: ArgumentEntityType = 'ArgumentEntity';
   readonly offsetStart?: number;
   readonly offsetEnd?: number;
-  readonly parent: ConditionArgumentMandatory | ConditionArgumentOptional;
+  readonly parent: ConditionArgumentValue;
 
   private offsets: [offsetStart: number, stringStart: number, offsetEnd: number];
 
   constructor(
     argumentStr: string,
     offsets: [offsetStart: number, stringStart: number, offsetEnd: number],
-    parent: ConditionArgumentMandatory | ConditionArgumentOptional,
+    parent: ConditionArgumentValue,
   ) {
     super();
     this.offsetStart = offsets[0];

@@ -13,6 +13,7 @@ import { ConditionArgumentMandatory } from "./ConditionArgumentMandatory";
 import { ConditionArgumentOptional } from "./ConditionArgumentOptional";
 import { ConditionEntry } from "./ConditionEntry";
 
+// TODO: rename to "parameters"
 export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
   readonly type: ConditionArgumentsType = "ConditionArguments";
   readonly offsetStart?: number;
