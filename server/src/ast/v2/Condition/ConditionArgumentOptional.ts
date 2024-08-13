@@ -14,7 +14,7 @@ export class ConditionArgumentOptional extends AbstractNodeV2<ConditionArgumentO
   readonly parent: ConditionArguments;
 
   private argumentStr: string;
-  private offsets: [offsetStart: number, stringStart: number, offsetEnd: number];
+  private offsets: [offsetStart: number, keyStart: number, keyEnd: number, valueStart: number, offsetEnd: number];
   private pattern?: ArgumentsPatternOptional;
 
   constructor(
@@ -29,23 +29,38 @@ export class ConditionArgumentOptional extends AbstractNodeV2<ConditionArgumentO
     this.offsetEnd = offsets[2];
     this.parent = parent;
 
-    this.argumentStr = argumentStr;
-    this.offsets = offsets;
+    this.argumentStr = argumentStr;  // argumentStr has been trimed already.
     this.pattern = pattern;
 
     // Parse argumentStr
 
-    // Parse key
-    // TODO...
-
-    // Parse value
+    // Split value
     if (this.pattern && this.pattern?.format !== "boolean") {
+      // Key-value pair
       const strs = this.argumentStr.split(":");
-      if (strs.length) {
+      if (strs.length > 0) {
+        // With ":"
+        // Calculate offsets
         const str = strs.slice(1).join(":");
-        const pos1 = this.offsets[1] + strs[0].length + 1;
-        this.addChild(new ConditionArgumentValue(str, [pos1, this.offsets[2]], this.pattern, this));
+        const pos2 = offsets[1] + strs[0].length;
+        this.offsets = [offsets[0], offsets[1], pos2, pos2 + 1, offsets[2]];
+        // Parse key
+        // TODO ...
+        // Parse value
+        this.addChild(new ConditionArgumentValue(str, [this.offsets[3], this.offsets[4]], this.pattern, this));
+      } else {
+        // Missing ":"
+        // Calculate offsets
+        this.offsets = [offsets[0], offsets[1], offsets[2], offsets[2], offsets[2]];
+        // Parse key
+        // TODO ...
       }
+    } else {
+      // Boolean
+      // Calculate offsets
+      this.offsets = [offsets[0], offsets[1], offsets[2], offsets[2], offsets[2]];
+      // Parse key
+      // TODO ...
     }
   }
 
@@ -53,8 +68,8 @@ export class ConditionArgumentOptional extends AbstractNodeV2<ConditionArgumentO
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
     const completionItems: CompletionItem[] = [];
 
-    // Prompt optional key suggestions
-    if (this.offsets[0] < offset && offset <= this.offsets[1]) {
+    // Prompt key suggestions
+    if (this.offsets[0] < offset && offset <= this.offsets[1] || offset === this.offsets[2]) {
       this.parent.kindConfig.argumentsPatterns
         .optional?.filter(o => !this.parent.argumentOptionalStrs.some(s => s.trimStart().startsWith(o.key)))
         .forEach(pattern => completionItems.push({
