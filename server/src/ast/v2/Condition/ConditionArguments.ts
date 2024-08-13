@@ -157,12 +157,11 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
   }
 
   private assignArgumentsMandatory(argumentMandatoryStrs: string[], offsetStart: number, patterns: ArgumentsPatternMandatory[]) {
-    argumentMandatoryStrs.forEach((argStr, i) => {
-      const pattern = patterns[i];
-      const str = argStr.trimStart();
-      const offsets: [offsetStart: number, stringStart: number, offsetEnd: number] = [offsetStart, offsetStart + argStr.length - str.length, offsetStart + argStr.length];
-      this.keyOffsets.push(offsets);
-      if (str) {
+    this.kindConfig.argumentsPatterns.mandatory.some((pattern, i) => {
+      const argStr = argumentMandatoryStrs[i] || undefined;
+      if (argStr && argStr.trimStart()) {
+        const str = argStr.trimStart();
+        const offsets: [offsetStart: number, stringStart: number, offsetEnd: number] = [offsetStart, offsetStart + argStr.length - str.length, offsetStart + argStr.length];
         this.addChild(new ConditionArgumentMandatory(
           str,
           offsets, // [offsets[1], offsets[2]],
@@ -172,23 +171,29 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
         offsetStart = offsets[2];
       } else {
         // Missing mandatory arugment.
-        // Add Diagnotistics
-        this.addDiagnostic(
-          [offsets[0], offsets[2]],
-          `Missing mandatory argument: ${pattern.name}.\nExample value: ${pattern.defaultValue}`,
-          DiagnosticSeverity.Error,
-          DiagnosticCode.ArgumentMandatoryMissing,
+        const pos2 = offsetStart + (argStr?.length || 0);
+        const offsets: [offsetStart: number, stringStart: number, offsetEnd: number] = [offsetStart, pos2, pos2];
+        // Add Diagnotistics for all the rest of mandatory arguments
+        this.kindConfig.argumentsPatterns.mandatory.slice(i).forEach(pattern =>
+          this.addDiagnostic(
+            [offsets[0], offsets[2]],
+            `Missing mandatory argument: ${pattern.name}.\nExample value: ${pattern.defaultValue}`,
+            DiagnosticSeverity.Error,
+            DiagnosticCode.ArgumentMandatoryMissing,
+          )
         );
-        // Mark mandatory argument is incomplete.
-        this.isMandatoryArgumentIncomplete = true;
-        // Add dummy mandatory arugment for auto-complete promption
+        // Add one dummy mandatory arugment for auto-complete promption
         this.addChild(new ConditionArgumentMandatory(
-          str,
-          offsets, // [offsets[1], offsets[2]],
+          "",
+          offsets,
           pattern,
           this
         ));
+        // Mark mandatory argument is incomplete.
+        this.isMandatoryArgumentIncomplete = true;
+        return true; // Break the loop
       }
+
     });
     return offsetStart;
   }
