@@ -2,14 +2,13 @@ import { ArgumentsPatternMandatory, ArgumentsPatternOptional, ArgumentType } fro
 
 import { ElementArgumentValueType } from "../../node";
 import { AbstractNodeV2, NodeV2 } from "../../v2";
+import { ConditionArgumentValue } from "../Condition/ConditionArgumentValue";
 import { ArgumentBlockID } from "./ArgumentBlockID";
 import { ArgumentConditionID } from "./ArgumentConditionID";
 import { ArgumentEntity } from "./ArgumentEntity";
 import { ArgumentInterger } from "./ArgumentInterger";
-import { ConditionArgumentValue } from "../Condition/ConditionArgumentValue";
 
 export abstract class AbstractValue<NT extends ElementArgumentValueType, PT extends NodeV2> extends AbstractNodeV2<NT> {
-  // readonly type: NT;
   readonly offsetStart?: number;
   readonly offsetEnd?: number;
   readonly parent: PT;
@@ -18,7 +17,6 @@ export abstract class AbstractValue<NT extends ElementArgumentValueType, PT exte
   private pattern?: ArgumentsPatternMandatory | ArgumentsPatternOptional;
 
   constructor(
-    // type: NT,
     valueStr: string,
     offsets: [offsetStart: number, offsetEnd: number],
     // isMandatory: boolean,
@@ -26,7 +24,6 @@ export abstract class AbstractValue<NT extends ElementArgumentValueType, PT exte
     parent: PT,
   ) {
     super();
-    // this.type = type;
     this.offsetStart = offsets[0];
     this.offsetEnd = offsets[1];
     this.parent = parent;

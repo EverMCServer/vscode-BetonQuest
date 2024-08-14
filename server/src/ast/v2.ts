@@ -6,6 +6,7 @@ import { ArgumentEntity } from "./v2/Argument/ArgumentEntity";
 import { ArgumentEventID } from "./v2/Argument/ArgumentEventID";
 import { ArgumentInterger } from "./v2/Argument/ArgumentInterger";
 import { ArgumentObjectiveID } from "./v2/Argument/ArgumentObjectiveID";
+import { ConditionArgumentKey } from "./v2/Condition/ConditionArgumentKey";
 import { ConditionArgumentMandatory } from "./v2/Condition/ConditionArgumentMandatory";
 import { ConditionArgumentOptional } from "./v2/Condition/ConditionArgumentOptional";
 import { ConditionArguments } from "./v2/Condition/ConditionArguments";
@@ -55,7 +56,7 @@ import { ObjectiveKind } from "./v2/Objective/ObjectiveKind";
 import { ObjectiveList, ObjectiveListSection } from "./v2/Objective/ObjectiveList";
 import { PackageV2 } from "./v2/Package";
 
-type TConditionList = ConditionList | ConditionListSection | ConditionEntry | ConditionKey | ConditionKind | ConditionArguments | ConditionArgumentMandatory | ConditionArgumentOptional | ConditionArgumentValue;
+type TConditionList = ConditionList | ConditionListSection | ConditionEntry | ConditionKey | ConditionKind | ConditionArguments | ConditionArgumentMandatory | ConditionArgumentOptional | ConditionArgumentKey | ConditionArgumentValue;
 type TEventListList = EventList | EventListSection | EventEntry | EventKey | EventKind | EventArguments | EventArgumentMandatory | EventArgumentOptional;
 type TObjectiveList = ObjectiveList | ObjectiveListSection | ObjectiveEntry | ObjectiveKey | ObjectiveKind | ObjectiveArguments | ObjectiveArgumentMandatory | ObjectiveArgumentOptional;
 type TArguments = ArgumentConditionID | ArgumentEventID | ArgumentObjectiveID | ArgumentBlockID | ArgumentEntity | ArgumentInterger;

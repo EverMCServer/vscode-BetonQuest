@@ -1,12 +1,12 @@
 import { ArgumentsPatternMandatory, ArgumentsPatternOptional } from "betonquest-utils/betonquest/Arguments";
 
-import { ConditionArgumentValueType } from "../../node";
-import { AbstractValue } from "../Argument/AbstractValue";
+import { ConditionArgumentKeyType } from "../../node";
+import { AbstractKey } from "../Argument/AbstractKey";
 import { ConditionArgumentMandatory } from "./ConditionArgumentMandatory";
 import { ConditionArgumentOptional } from "./ConditionArgumentOptional";
 
-export class ConditionArgumentValue extends AbstractValue<ConditionArgumentValueType, ConditionArgumentMandatory | ConditionArgumentOptional> {
-  readonly type: ConditionArgumentValueType = "ConditionArgumentValue";
+export class ConditionArgumentKey extends AbstractKey<ConditionArgumentKeyType, ConditionArgumentMandatory | ConditionArgumentOptional> {
+  readonly type: ConditionArgumentKeyType = "ConditionArgumentKey";
 
   constructor(
     valueStr: string,
