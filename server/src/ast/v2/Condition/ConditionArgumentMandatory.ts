@@ -71,9 +71,9 @@ export class ConditionArgumentMandatory extends AbstractNodeV2<ConditionArgument
     const completionItems: CompletionItem[] = [];
 
     // Prompt key suggestions
-    if (this.offsets[0] < offset && offset <= this.offsets[1] || offset === this.offsets[2]) {
+    if (this.pattern.key && (this.offsets[0] < offset && offset < this.offsets[1] || offset === this.offsets[2])) {
       this.parent.kindConfig.argumentsPatterns
-        .mandatory.filter(o => !this.parent.argumentMandatoryStrs.some(s => o.key && s.trimStart().startsWith(o.key)))
+        .mandatory.filter(o => !this.parent.argumentMandatoryStrs.some(s => !o.key || s.trimStart().startsWith(o.key)))
         .forEach(pattern => completionItems.push({
           label: pattern.key!,
           kind: CompletionItemKind.Snippet, // TODO: move it onto SemanticTokenType etc.
@@ -87,9 +87,9 @@ export class ConditionArgumentMandatory extends AbstractNodeV2<ConditionArgument
         }));
     }
 
-    // Prompt suggestions for insertion
-    if (this.offsets[0] < offset && offset < this.offsets[1]) {
-      return ConditionArgumentValue.getCompletionsByType(this.pattern.type);
+    // Prompt value suggestions for insertion
+    if (!this.pattern.key && this.offsets[0] < offset && offset < this.offsets[1]) {
+      completionItems.push(...ConditionArgumentValue.getCompletionsByType(this.pattern.type));
     }
 
     completionItems.push(...super.getCompletions(offset, documentUri));
