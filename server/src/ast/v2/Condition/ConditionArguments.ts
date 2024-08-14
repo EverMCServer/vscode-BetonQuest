@@ -164,7 +164,7 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
         const offsets: [offsetStart: number, stringStart: number, offsetEnd: number] = [offsetStart, offsetStart + argStr.length - str.length, offsetStart + argStr.length];
         this.addChild(new ConditionArgumentMandatory(
           str,
-          offsets, // [offsets[1], offsets[2]],
+          offsets,
           pattern,
           this
         ));

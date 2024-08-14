@@ -24,6 +24,10 @@ export class ArgumentBlockID extends AbstractNodeV2<ArgumentEntityType> {
   }
 
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
+    return ArgumentBlockID.getCompletions();
+  }
+
+  static getCompletions(): CompletionItem[] {
     return MATERIAL_LIST.filter(e => e.isBlock()).map(e => ({
       label: e.getBukkitId(),
       kind: CompletionItemKind.EnumMember,

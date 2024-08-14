@@ -27,16 +27,20 @@ export class ArgumentEntity extends AbstractNodeV2<ArgumentEntityType> {
     this.offsets = offsets;
   }
 
-  getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
+  getCompletions(offset: number, documentUri?: string): CompletionItem[] {
     if (this.offsets[0] < offset && offset <= this.offsets[1] || offset === this.offsets[2]) {
-      return ENTITY_TYPE_LIST.map(e => ({
-        label: e.getBukkitId(),
-        kind: CompletionItemKind.EnumMember,
-        detail: "Entity ID",
-        documentation: "Bukkit Entity ID"
-      }));
+      return ArgumentEntity.getCompletions();
     }
     return [];
+  }
+
+  static getCompletions(): CompletionItem[] {
+    return ENTITY_TYPE_LIST.map(e => ({
+      label: e.getBukkitId(),
+      kind: CompletionItemKind.EnumMember,
+      detail: "Entity ID",
+      documentation: "Bukkit Entity ID"
+    }));
   }
 
 }

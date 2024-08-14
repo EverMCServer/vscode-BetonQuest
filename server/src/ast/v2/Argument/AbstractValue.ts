@@ -1,4 +1,5 @@
 import { ArgumentsPatternMandatory, ArgumentsPatternOptional, ArgumentType } from "betonquest-utils/betonquest/Arguments";
+
 import { ElementArgumentValueType } from "../../node";
 import { AbstractNodeV2, NodeV2 } from "../../v2";
 import { ArgumentBlockID } from "./ArgumentBlockID";
@@ -79,4 +80,20 @@ export abstract class AbstractValue<NT extends ElementArgumentValueType, PT exte
   }
 
   abstract getThis(): ConditionArgumentValue;
+
+  static getCompletionsByType(type: ArgumentType) {
+    switch (type) {
+      case ArgumentType.conditionID:
+        return ArgumentConditionID.getCompletions();
+
+      case ArgumentType.blockID:
+        return ArgumentBlockID.getCompletions();
+
+      case ArgumentType.entity:
+      case ArgumentType.entityList:
+      case ArgumentType.entityListWithAmount:
+        return ArgumentEntity.getCompletions();
+    }
+    return [];
+  }
 }

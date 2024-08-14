@@ -21,7 +21,11 @@ export class ArgumentConditionID extends AbstractNodeV2<ArgumentConditionIdType>
     this.parent = parent;
   }
 
-  getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
+  getCompletions(offset: number, documentUri?: string): CompletionItem[] {
+    return ArgumentConditionID.getCompletions();
+  }
+
+  static getCompletions(): CompletionItem[] {
     return [];
   }
 

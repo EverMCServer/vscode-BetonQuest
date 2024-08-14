@@ -87,9 +87,9 @@ export class ConditionArgumentMandatory extends AbstractNodeV2<ConditionArgument
         }));
     }
 
-    // Prompt other value suggestions
-    if (this.offsets[0] < offset && offset <= this.offsets[1]) {
-      // TODO ...
+    // Prompt suggestions for insertion
+    if (this.offsets[0] < offset && offset < this.offsets[1]) {
+      return ConditionArgumentValue.getCompletionsByType(this.pattern.type);
     }
 
     completionItems.push(...super.getCompletions(offset, documentUri));
