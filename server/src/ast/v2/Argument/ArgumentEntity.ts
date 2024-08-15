@@ -13,6 +13,7 @@ export class ArgumentEntity extends AbstractNodeV2<ArgumentEntityType> {
   readonly parent: ConditionArgumentValue;
 
   private offsets: [offsetStart: number, stringStart: number, offsetEnd: number];
+  private argumentStr: string;
 
   constructor(
     argumentStr: string,
@@ -25,6 +26,7 @@ export class ArgumentEntity extends AbstractNodeV2<ArgumentEntityType> {
     this.parent = parent;
 
     this.offsets = offsets;
+    this.argumentStr = argumentStr;
   }
 
   getCompletions(offset: number, documentUri?: string): CompletionItem[] {
