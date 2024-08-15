@@ -19,6 +19,7 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
   readonly parent: ConditionListSection;
 
   readonly yml: Pair<Scalar<string>, Scalar<string>>;
+  private offsetValueStart?: number;
   private offsetKindStart?: number;
   private offsetKindEnd?: number;
   private kindString: string = "";
@@ -30,14 +31,15 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
     this.offsetEnd = pair.value?.range?.[1];
     this.parent = parent;
     this.yml = pair;
-    this.offsetKindStart = this.offsetStart;
-    this.offsetKindEnd = this.offsetEnd;
 
     // Parse YAML key
     this.addChild(new ConditionKey(this.yml.key, this));
 
     // Parse kind and arguments
     const [source, [offsetStart, offsetEnd, indent]] = getScalarSourceAndRange(this.yml.value);
+    this.offsetValueStart = offsetStart;
+    this.offsetKindStart = offsetStart;
+    this.offsetKindEnd = offsetEnd;
     if (!source || typeof source !== 'string') {
       // Missing or incorrect instructions
       this.addDiagnostic(
@@ -83,10 +85,10 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
     const completionItems = [];
     // Prompt the Condition kind list
     if (
-      this.yml.srcToken?.sep && this.yml.srcToken?.sep?.[1].type === 'space'
+      this.yml.srcToken?.sep && this.yml.srcToken.sep[1] && this.yml.srcToken.sep[1].type === 'space'
       && this.offsetKindStart && this.offsetKindEnd &&
       (
-        offset < this.offsetKindStart ||
+        this.offsetValueStart && this.offsetValueStart <= offset && (this.offsetValueStart === this.offsetKindStart && this.offsetKindStart === offset || offset < this.offsetKindStart) ||
         this.offsetKindStart < offset && offset <= this.offsetKindEnd
       )
     ) {
