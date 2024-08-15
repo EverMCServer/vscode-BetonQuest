@@ -19,6 +19,7 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
   readonly parent: ConditionListSection;
 
   readonly yml: Pair<Scalar<string>, Scalar<string>>;
+  private offsetKindStart?: number;
   private offsetKindEnd?: number;
   private kindString: string = "";
   private argumentsString: string = "";
@@ -29,6 +30,7 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
     this.offsetEnd = pair.value?.range?.[1];
     this.parent = parent;
     this.yml = pair;
+    this.offsetKindStart = this.offsetStart;
     this.offsetKindEnd = this.offsetEnd;
 
     // Parse YAML key
@@ -66,9 +68,9 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
     }
     this.kindString = matched[1];
     const kind = kinds.find(k => k.value === this.kindString.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
-    const offsetKindStart = offsetStart + matched.index;
-    this.offsetKindEnd = offsetKindStart + this.kindString.length;
-    this.addChild(new ConditionKind(this.kindString, [offsetKindStart, this.offsetKindEnd], kind, this));
+    this.offsetKindStart = offsetStart + matched.index;
+    this.offsetKindEnd = this.offsetKindStart + this.kindString.length;
+    this.addChild(new ConditionKind(this.kindString, [this.offsetKindStart, this.offsetKindEnd], kind, this));
 
     // Parse Arguments
     this.argumentsString = matched[2];
@@ -79,10 +81,14 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
 
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
     const completionItems = [];
-    // Prompt the Condition list
+    // Prompt the Condition kind list
     if (
       this.yml.srcToken?.sep && this.yml.srcToken?.sep?.[1].type === 'space'
-      && this.offsetKindEnd && offset <= this.offsetKindEnd
+      && this.offsetKindStart && this.offsetKindEnd &&
+      (
+        offset < this.offsetKindStart ||
+        this.offsetKindStart < offset && offset <= this.offsetKindEnd
+      )
     ) {
       completionItems.push(...kinds
         .filter(k => k.value !== "*")
