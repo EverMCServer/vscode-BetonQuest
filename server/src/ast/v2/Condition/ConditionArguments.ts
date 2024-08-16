@@ -67,7 +67,7 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
         let pos = 0;
         for (; pos < this.argumentsStrs.length && pos < argumentsPatterns.optional.length; pos++) {
           // Check if this is an existing optional arg. If so, append it.
-          const found = argumentsPatterns.optional?.some(p => this.argumentsStrs[pos].trimStart().startsWith(p.key));
+          const found = (pos === 0 && this.argumentsStrs[pos].trim() === "") || argumentsPatterns.optional?.some(p => this.argumentsStrs[pos].trimStart().startsWith(p.key));
           if (found) {
             this.argumentOptionalStrs.push(this.argumentsStrs[pos]);
             continue;
@@ -94,7 +94,7 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
         // Optional at end
         for (let pos = this.argumentsStrs.length - 1; pos > -1; pos--) {
           // Check if this is an existing optional arg. If so, append it.
-          const found = argumentsPatterns.optional.find(p => this.argumentsStrs[pos].trim() === "" || this.argumentsStrs[pos].trimStart().startsWith(p.key));
+          const found = (pos >= argumentsPatterns.mandatory.length && this.argumentsStrs[pos].trim() === "") || argumentsPatterns.optional.find(p => this.argumentsStrs[pos].trimStart().startsWith(p.key));
           if (found) {
             this.argumentOptionalStrs.unshift(this.argumentsStrs[pos]);
             continue;
