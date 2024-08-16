@@ -1,4 +1,4 @@
-import { CompletionItem, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ArgumentsPatternMandatory, ArgumentsPatternOptional, ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
 import Condition from "betonquest-utils/betonquest/Condition";
@@ -276,32 +276,4 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
     return [];
   }
 
-  // getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
-  //   // Prompt argument suggestions
-  //   // 1. Iterate keyOffsets, check if the offset is in the desired range.
-  //   const i = this.keyOffsets.findIndex(keyOffset => keyOffset[0] < offset && offset <= keyOffset[1]);
-  //   if (i > -1) {
-  //     // 2. Determine if mandatory arg should be prompted
-  //     // const mandatoryCount = this.argumentMandatoryStrs.filter(s => s.trim()).length;
-  //     if (
-  //       // mandatoryCount < this.kindConfig.argumentsPatterns.mandatory.length && // Not enough mandatory arguments
-  //       i < this.kindConfig.argumentsPatterns.mandatory.length // Position is in between desinated range
-  //     ) {
-  //       console.log("Prompt mandatory"); // DEBUG
-  //     }
-
-  //     // 3. Determine if optional arg should be prompted
-  //     // const optionalCount = this.argumentOptionalStrs.filter(s => s.trim()).length;
-  //     if (
-  //       // this.kindConfig.argumentsPatterns.optional && // There are optional arguments
-  //       // optionalCount < this.kindConfig.argumentsPatterns.optional?.length &&  // Not enough optional arguments
-  //       i >= this.kindConfig.argumentsPatterns.mandatory.length // Position is in between desinated range
-  //     ) {
-  //       console.log("Prompt optional"); // DEBUG
-  //     }
-  //   }
-  //   return [
-  //     ...super.getCompletions(offset, documentUri)
-  //   ];
-  // }
 }

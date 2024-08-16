@@ -40,16 +40,20 @@ import { Pointer as PlayerPointer } from "./v2/Conversation/Option/Player/Pointe
 import { Pointers as PlayerPointers } from "./v2/Conversation/Option/Player/Pointers";
 import { Text as PlayerText } from "./v2/Conversation/Option/Player/Text";
 import { PlayerOption } from "./v2/Conversation/Option/PlayerOption";
+import { EventArgumentKey } from "./v2/Event/EventArgumentKey";
 import { EventArgumentMandatory } from "./v2/Event/EventArgumentMandatory";
 import { EventArgumentOptional } from "./v2/Event/EventArgumentOptional";
 import { EventArguments } from "./v2/Event/EventArguments";
+import { EventArgumentValue } from "./v2/Event/EventArgumentValue";
 import { EventEntry } from "./v2/Event/EventEntry";
 import { EventKey } from "./v2/Event/EventKey";
 import { EventKind } from "./v2/Event/EventKind";
 import { EventList, EventListSection } from "./v2/Event/EventList";
+import { ObjectiveArgumentKey } from "./v2/Objective/ObjectiveArgumentKey";
 import { ObjectiveArgumentMandatory } from "./v2/Objective/ObjectiveArgumentMandatory";
 import { ObjectiveArgumentOptional } from "./v2/Objective/ObjectiveArgumentOptional";
 import { ObjectiveArguments } from "./v2/Objective/ObjectiveArguments";
+import { ObjectiveArgumentValue } from "./v2/Objective/ObjectiveArgumentValue";
 import { ObjectiveEntry } from "./v2/Objective/ObjectiveEntry";
 import { ObjectiveKey } from "./v2/Objective/ObjectiveKey";
 import { ObjectiveKind } from "./v2/Objective/ObjectiveKind";
@@ -57,8 +61,8 @@ import { ObjectiveList, ObjectiveListSection } from "./v2/Objective/ObjectiveLis
 import { PackageV2 } from "./v2/Package";
 
 type TConditionList = ConditionList | ConditionListSection | ConditionEntry | ConditionKey | ConditionKind | ConditionArguments | ConditionArgumentMandatory | ConditionArgumentOptional | ConditionArgumentKey | ConditionArgumentValue;
-type TEventListList = EventList | EventListSection | EventEntry | EventKey | EventKind | EventArguments | EventArgumentMandatory | EventArgumentOptional;
-type TObjectiveList = ObjectiveList | ObjectiveListSection | ObjectiveEntry | ObjectiveKey | ObjectiveKind | ObjectiveArguments | ObjectiveArgumentMandatory | ObjectiveArgumentOptional;
+type TEventListList = EventList | EventListSection | EventEntry | EventKey | EventKind | EventArguments | EventArgumentMandatory | EventArgumentOptional | EventArgumentKey | EventArgumentValue;
+type TObjectiveList = ObjectiveList | ObjectiveListSection | ObjectiveEntry | ObjectiveKey | ObjectiveKind | ObjectiveArguments | ObjectiveArgumentMandatory | ObjectiveArgumentOptional | ObjectiveArgumentKey | ObjectiveArgumentValue;
 type TArguments = ArgumentConditionID | ArgumentEventID | ArgumentObjectiveID | ArgumentBlockID | ArgumentEntity | ArgumentInterger;
 type TConversationNpcOption = NpcOption | NpcConditions | NpcCondition | NpcEvents | NpcEvent | NpcPointers | NpcPointer | NpcText;
 type TConversationPlayerOption = PlayerOption | PlayerConditions | PlayerCondition | PlayerEvents | PlayerEvent | PlayerPointers | PlayerPointer | PlayerText;

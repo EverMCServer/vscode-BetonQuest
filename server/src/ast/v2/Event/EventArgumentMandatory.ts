@@ -1,50 +1,113 @@
-
-import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
+import { CompletionItem, CompletionItemKind, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ArgumentsPatternMandatory } from "betonquest-utils/betonquest/Arguments";
 
 import { EventArgumentMandatoryType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
 import { EventArguments } from "./EventArguments";
+import { EventArgumentValue } from "./EventArgumentValue";
+import { EventArgumentKey } from "./EventArgumentKey";
+import { DiagnosticCode } from "../../../utils/diagnostics";
 
 export class EventArgumentMandatory extends AbstractNodeV2<EventArgumentMandatoryType> {
-  readonly type: EventArgumentMandatoryType = 'EventArgumentMandatory'; // TODO remove Mandatory / Optional
-  readonly offsetStart?: number;
-  readonly offsetEnd?: number;
+  readonly type: EventArgumentMandatoryType = 'EventArgumentMandatory';
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
   readonly parent: EventArguments;
 
   private argumentStr: string;
+  private offsets: [offsetStart: number, keyStart: number, keyEnd: number, valueStart: number, offsetEnd: number];
   private pattern: ArgumentsPatternMandatory;
 
-  constructor(argumentStr: string,
-    range: [number?, number?],
+  constructor(
+    argumentStr: string,
+    offsets: [offsetStart: number, stringStart: number, offsetEnd: number],
     // isMandatory: boolean,
     pattern: ArgumentsPatternMandatory,
     parent: EventArguments,
   ) {
     super();
+    this.offsetStart = offsets[0];
+    this.offsetEnd = offsets[2];
     this.parent = parent;
 
-    this.offsetStart = range[0];
-    this.offsetEnd = range[1];
-
-    // Parse argumentStr
-    this.argumentStr = argumentStr;
-
+    this.argumentStr = argumentStr;  // argumentStr has been trimed already.
     this.pattern = pattern;
 
-    // Check format
+    // Parse argumentStr
+
+    // Split value
+    if (this.pattern && this.pattern.key) {
+      // Key-value pair
+      const strs = this.argumentStr.split(":");
+      if (strs.length > 1) {
+        // With ":"
+        // Calculate offsets
+        const valueStr = strs.slice(1).join(":");
+        const pos2 = offsets[1] + strs[0].length;
+        this.offsets = [offsets[0], offsets[1], pos2, pos2 + 1, offsets[2]];
+        // Parse key
+        this.addChild(new EventArgumentKey(strs[0], [this.offsets[1], this.offsets[2]], this.pattern, this));
+        // Parse value
+        this.addChild(new EventArgumentValue(valueStr, [this.offsets[3], this.offsets[4]], this.pattern, this));
+      } else {
+        // Calculate offsets
+        this.offsets = [offsets[0], offsets[1], offsets[2], offsets[2], offsets[2]];
+        if (strs.length > 0) {
+          // Missing ":"
+          // Parse key
+          this.addChild(new EventArgumentKey(strs[0], [this.offsets[1], this.offsets[2]], this.pattern, this));
+          // Warn about missing value
+          this.addDiagnostic(
+            [this.offsets[2], this.offsets[3]],
+            `Missing semicolon ":"`,
+            DiagnosticSeverity.Error,
+            DiagnosticCode.ArgumentKeyMissingSemicolon,
+            [{
+              title: `Add semicolon ":"`,
+              text: ":",
+            }]
+          );
+        } else {
+          // Diagnostic of missing the whole argument has been handled by the parent.
+          // We don't need to do anything here.
+        }
+      }
+    } else {
+      // Value only
+      // Calculate offsets
+      this.offsets = [offsets[0], offsets[1], offsets[1], offsets[1], offsets[2]];
+      // Parse 
+      this.addChild(new EventArgumentValue(this.argumentStr, [this.offsets[3], this.offsets[4]], this.pattern, this));
+    }
   }
 
-  getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
-    return [
-      {
-        label: this.pattern.defaultValue.toString(),
-        kind: CompletionItemKind.Snippet, // TODO: move it onto SemanticTokenType etc.
-        detail: this.pattern.name?.toString(),
-        documentation: this.pattern.tooltip
-      },
-      ...super.getCompletions(offset, documentUri)
-    ];
+  getCompletions(offset: number, documentUri?: string): CompletionItem[] {
+    const completionItems: CompletionItem[] = [];
+
+    // Prompt key suggestions
+    if (this.pattern.key && (this.offsets[0] < offset && offset < this.offsets[1] || offset === this.offsets[2])) {
+      this.parent.kindConfig.argumentsPatterns
+        .mandatory.filter(o => !this.parent.argumentMandatoryStrs.some(s => !o.key || s.trimStart().startsWith(o.key)))
+        .forEach(pattern => completionItems.push({
+          label: pattern.key!,
+          kind: CompletionItemKind.Snippet, // TODO: move it onto SemanticTokenType etc.
+          detail: pattern.name?.toString(),
+          documentation: pattern.tooltip,
+          command: {
+            title: "Prompt value suggestion",
+            command: "editor.action.triggerSuggest"
+          },
+          insertText: pattern.key + ":",
+        }));
+    }
+
+    // Prompt value suggestions for insertion
+    if (!this.pattern.key && this.offsets[0] < offset && offset < this.offsets[1]) {
+      completionItems.push(...EventArgumentValue.getCompletionsByType(this.pattern.type));
+    }
+
+    completionItems.push(...super.getCompletions(offset, documentUri));
+    return completionItems;
   }
 }
