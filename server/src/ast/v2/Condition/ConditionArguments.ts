@@ -64,36 +64,37 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
       // With optional args
       if (argumentsPatterns.optionalAtFirst) {
         // Optional at begining
-        for (let pos = 0; pos < this.argumentsStrs.length && pos < argumentsPatterns.optional.length; pos++) {
+        let pos = 0;
+        for (; pos < this.argumentsStrs.length && pos < argumentsPatterns.optional.length; pos++) {
           // Check if this is an existing optional arg. If so, append it.
-          const found = argumentsPatterns.optional?.find(p => this.argumentsStrs[pos].trimStart().startsWith(p.key));
+          const found = argumentsPatterns.optional?.some(p => this.argumentsStrs[pos].trimStart().startsWith(p.key));
           if (found) {
             this.argumentOptionalStrs.push(this.argumentsStrs[pos]);
             continue;
           }
-          // If there are no more optional args, append the rest as mandatory args.
-          if (argumentsPatterns.keepWhitespaces) {
-            // Keep whitespaces only for the mandatory part. e.g. "notify", "log"
-            if (argumentsPatterns.mandatory.length > 1) {
-              const nonWhitespaceArgsPos = pos + argumentsPatterns.mandatory.length - 1;
-              this.argumentMandatoryStrs.push(this.argumentsStrs.slice(pos, nonWhitespaceArgsPos).join()); // Normal mandatory args
-              this.argumentMandatoryStrs.push(this.argumentsStrs.slice(nonWhitespaceArgsPos).join()); // Whitespace args
-            } else {
-              this.argumentMandatoryStrs.push(this.argumentsStrs.slice(pos).join());
-            }
-          } else {
-            // No need to keep whitespaces
-            this.argumentMandatoryStrs = this.argumentsStrs.slice(pos, argumentsPatterns.mandatory.length);
-            // TODO: Throw warning on extra arguments
-          }
           break;
+        }
+        // If there are no more optional args, append the rest as mandatory args.
+        if (argumentsPatterns.keepWhitespaces) {
+          // Keep whitespaces only for the mandatory part. e.g. "notify", "log"
+          if (argumentsPatterns.mandatory.length > 1) {
+            const nonWhitespaceArgsPos = pos + argumentsPatterns.mandatory.length - 1;
+            this.argumentMandatoryStrs.push(this.argumentsStrs.slice(pos, nonWhitespaceArgsPos).join("")); // Normal mandatory args
+            this.argumentMandatoryStrs.push(this.argumentsStrs.slice(nonWhitespaceArgsPos).join("")); // Whitespace args
+          } else {
+            this.argumentMandatoryStrs.push(this.argumentsStrs.slice(pos).join(""));
+          }
+        } else {
+          // No need to keep whitespaces
+          this.argumentMandatoryStrs = this.argumentsStrs.slice(pos, argumentsPatterns.mandatory.length);
+          // TODO: Throw warning on extra arguments
         }
         // this.argumentsStrs = [...argumentOptionalStrs, ...argumentMandatoryStrs];
       } else {
         // Optional at end
         for (let pos = this.argumentsStrs.length - 1; pos > -1; pos--) {
           // Check if this is an existing optional arg. If so, append it.
-          const found = argumentsPatterns.optional.find(p => this.argumentsStrs[pos].trimStart().startsWith(p.key));
+          const found = argumentsPatterns.optional.find(p => this.argumentsStrs[pos].trim() === "" || this.argumentsStrs[pos].trimStart().startsWith(p.key));
           if (found) {
             this.argumentOptionalStrs.unshift(this.argumentsStrs[pos]);
             continue;
@@ -103,10 +104,10 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
             // Keep whitespaces only for the mandatory part. e.g. "notify", "log"
             if (argumentsPatterns.mandatory.length > 1 && this.argumentsStrs.length > 1) {
               const nonWhitespaceArgsPos = argumentsPatterns.mandatory.length - 1;
-              this.argumentMandatoryStrs.push(this.argumentsStrs.slice(0, nonWhitespaceArgsPos).join()); // Normal mandatory args
-              this.argumentMandatoryStrs.push(this.argumentsStrs.slice(nonWhitespaceArgsPos, pos + 1).join()); // Whitespaceargs
+              this.argumentMandatoryStrs.push(this.argumentsStrs.slice(0, nonWhitespaceArgsPos).join("")); // Normal mandatory args
+              this.argumentMandatoryStrs.push(this.argumentsStrs.slice(nonWhitespaceArgsPos, pos + 1).join("")); // Whitespaceargs
             } else if (this.argumentsStrs.length > 0) {
-              this.argumentMandatoryStrs.push(this.argumentsStrs.slice(0, pos + 1).join());
+              this.argumentMandatoryStrs.push(this.argumentsStrs.slice(0, pos + 1).join(""));
             }
           } else {
             // No need to keep whitespaces
@@ -128,10 +129,10 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
         // Keep whitespaces only for the mandatory part. e.g. "notify", "log"
         if (argumentsPatterns.mandatory.length > 1 && this.argumentsStrs.length > 1) {
           const nonWhitespaceArgsPos = argumentsPatterns.mandatory.length - 1;
-          this.argumentMandatoryStrs.push(this.argumentsStrs.slice(0, nonWhitespaceArgsPos).join()); // Normal mandatory args
-          this.argumentMandatoryStrs.push(this.argumentsStrs.slice(nonWhitespaceArgsPos).join()); // Whitespaceargs
+          this.argumentMandatoryStrs.push(this.argumentsStrs.slice(0, nonWhitespaceArgsPos).join("")); // Normal mandatory args
+          this.argumentMandatoryStrs.push(this.argumentsStrs.slice(nonWhitespaceArgsPos).join("")); // Whitespaceargs
         } else if (this.argumentsStrs.length > 0) {
-          this.argumentMandatoryStrs = [this.argumentsStrs.join()];
+          this.argumentMandatoryStrs = [this.argumentsStrs.join("")];
         }
       } else {
         // No need to keep whitespaces
