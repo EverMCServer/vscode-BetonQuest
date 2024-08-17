@@ -5,9 +5,9 @@ import { ArgumentsPatternOptional } from "betonquest-utils/betonquest/Arguments"
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { EventArgumentOptionalType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
-import { EventArgumentKey } from "./EventArgumentKey";
+import { ArgumentKey } from "../Argument/ArgumentKey";
+import { ArgumentValue } from "../Argument/ArgumentValue";
 import { EventArguments } from "./EventArguments";
-import { EventArgumentValue } from "./EventArgumentValue";
 
 export class EventArgumentOptional extends AbstractNodeV2<EventArgumentOptionalType> {
   readonly type: EventArgumentOptionalType = 'EventArgumentOptional';
@@ -47,16 +47,16 @@ export class EventArgumentOptional extends AbstractNodeV2<EventArgumentOptionalT
         const pos2 = offsets[1] + strs[0].length;
         this.offsets = [offsets[0], offsets[1], pos2, pos2 + 1, offsets[2]];
         // Parse key
-        this.addChild(new EventArgumentKey(strs[0], [this.offsets[1], this.offsets[2]], this.pattern, this));
+        this.addChild(new ArgumentKey(strs[0], [this.offsets[1], this.offsets[2]], this.pattern, this));
         // Parse value
-        this.addChild(new EventArgumentValue(str, [this.offsets[3], this.offsets[4]], this.pattern, this));
+        this.addChild(new ArgumentValue(str, [this.offsets[3], this.offsets[4]], this.pattern, this));
       } else {
         // Calculate offsets
         this.offsets = [offsets[0], offsets[1], offsets[2], offsets[2], offsets[2]];
         if (strs.length > 0) {
           // Missing ":"
           // Parse key
-          this.addChild(new EventArgumentKey(strs[0], [this.offsets[1], this.offsets[2]], this.pattern, this));
+          this.addChild(new ArgumentKey(strs[0], [this.offsets[1], this.offsets[2]], this.pattern, this));
           // Warn about missing value
           this.addDiagnostic(
             [this.offsets[2], this.offsets[3]],
@@ -78,7 +78,7 @@ export class EventArgumentOptional extends AbstractNodeV2<EventArgumentOptionalT
       // Calculate offsets
       this.offsets = [offsets[0], offsets[1], offsets[2], offsets[2], offsets[2]];
       // Parse key
-      this.addChild(new EventArgumentValue(this.argumentStr, [this.offsets[3], this.offsets[4]], this.pattern, this));
+      this.addChild(new ArgumentValue(this.argumentStr, [this.offsets[3], this.offsets[4]], this.pattern, this));
     }
   }
 

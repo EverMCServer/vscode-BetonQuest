@@ -2,19 +2,18 @@ import { CompletionItem } from "vscode-languageserver";
 
 import { ArgumentObjectiveIdType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
-import { ConditionArgumentMandatory } from "../Condition/ConditionArgumentMandatory";
-import { ConditionArgumentOptional } from "../Condition/ConditionArgumentOptional";
+import { ArgumentValue } from "./ArgumentValue";
 
 export class ArgumentObjectiveID extends AbstractNodeV2<ArgumentObjectiveIdType> {
   readonly type: ArgumentObjectiveIdType = 'ArgumentObjectiveID';
   readonly offsetStart?: number;
   readonly offsetEnd?: number;
-  readonly parent: ConditionArgumentMandatory | ConditionArgumentOptional;
+  readonly parent: ArgumentValue;
 
   constructor(
     argumentStr: string,
     range: [number?, number?],
-    parent: ConditionArgumentMandatory | ConditionArgumentOptional,
+    parent: ArgumentValue,
   ) {
     super();
     this.offsetStart = range[0];

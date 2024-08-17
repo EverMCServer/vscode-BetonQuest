@@ -78,24 +78,29 @@ export type ObjectiveArgumentValueArrayType = 'ObjectiveArgumentValueArray';
 export type ObjectiveArgumentValueType = 'ObjectiveArgumentValue';
 export type ObjectiveTypes = ObjectiveListType | ObjectiveListSectionType | ObjectiveEntryType | ObjectiveKeyType | ObjectiveKindType | ObjectiveArgumentsType | ObjectiveArgumentMandatoryType | ObjectiveArgumentOptionalType | ObjectiveArgumentKeyType | ObjectiveArgumentValueArrayType | ObjectiveArgumentValueType;
 
-export type ElementListType = EventListType | ConditionListType | ObjectiveListType;
-export type ElementEntryType = EventEntryType | ConditionEntryType | ObjectiveEntryType;
-export type ElementKeyType = EventKeyType | ConditionKeyType | ObjectiveKeyType;
-export type ElementKindType = EventKindType | ConditionKindType | ObjectiveKindType;
-export type ElementArgumentsType = EventArgumentsType | ConditionArgumentsType | ObjectiveArgumentsType;
-export type ElementArgumentType = EventArgumentMandatoryType | EventArgumentOptionalType | ConditionArgumentMandatoryType | ConditionArgumentOptionalType | ObjectiveArgumentMandatoryType | ObjectiveArgumentOptionalType;
-export type ElementArgumentKeyType = EventArgumentKeyType | ConditionArgumentKeyType | ObjectiveArgumentKeyType;
-export type ElementArgumentValueArrayType = EventArgumentValueArrayType | ConditionArgumentValueArrayType | ObjectiveArgumentValueArrayType;
-export type ElementArgumentValueType = EventArgumentValueType | ConditionArgumentValueType | ObjectiveArgumentValueType;
-export type ElementTypes = ElementListType | ElementEntryType | ElementKeyType | ElementKindType | ElementArgumentsType | ElementArgumentType | ElementArgumentKeyType | ElementArgumentValueArrayType | ElementArgumentValueType;
+// export type ElementListType = EventListType | ConditionListType | ObjectiveListType;
+// export type ElementEntryType = EventEntryType | ConditionEntryType | ObjectiveEntryType;
+// export type ElementKeyType = EventKeyType | ConditionKeyType | ObjectiveKeyType;
+// export type ElementKindType = EventKindType | ConditionKindType | ObjectiveKindType;
+// export type ElementArgumentsType = EventArgumentsType | ConditionArgumentsType | ObjectiveArgumentsType;
+// export type ElementArgumentType = EventArgumentMandatoryType | EventArgumentOptionalType | ConditionArgumentMandatoryType | ConditionArgumentOptionalType | ObjectiveArgumentMandatoryType | ObjectiveArgumentOptionalType;
+// export type ElementArgumentKeyType = EventArgumentKeyType | ConditionArgumentKeyType | ObjectiveArgumentKeyType;
+// export type ElementArgumentValueArrayType = EventArgumentValueArrayType | ConditionArgumentValueArrayType | ObjectiveArgumentValueArrayType;
+// export type ElementArgumentValueType = EventArgumentValueType | ConditionArgumentValueType | ObjectiveArgumentValueType;
+// export type ElementTypes = ElementListType | ElementEntryType | ElementKeyType | ElementKindType | ElementArgumentsType | ElementArgumentType | ElementArgumentKeyType | ElementArgumentValueArrayType | ElementArgumentValueType;
+export type ArgumentKeyType = "ArgumentKey";
+export type ArgumentKeyProxyType = "ArgumentKey";
+export type ArgumentValueType = "ArgumentValue";
+export type ArgumentValueProxyType = "ArgumentValue";
+export type ArgumentTypes = ArgumentKeyType | ArgumentKeyProxyType | ArgumentValueType | ArgumentValueProxyType;
 
 export type ArgumentEntityType = 'ArgumentEntity';
 export type ArgumentConditionIdType = 'ArgumentConditionID';
 export type ArgumentEventIdType = 'ArgumentEventID';
 export type ArgumentObjectiveIdType = 'ArgumentObjectiveID';
-export type ArgumentType = ArgumentEntityType | ArgumentConditionIdType | ArgumentEventIdType | ArgumentObjectiveIdType;
+export type ArgumentValueTypes = ArgumentEntityType | ArgumentConditionIdType | ArgumentEventIdType | ArgumentObjectiveIdType;
 
-export type NodeType = PackageTypes | ConversationTypes | EventTypes | ConditionTypes | ObjectiveTypes | ArgumentType;
+export type NodeType = PackageTypes | ConversationTypes | EventTypes | ConditionTypes | ObjectiveTypes | ArgumentTypes | ArgumentValueTypes;
 
 export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2> {
   readonly abstract type: T;

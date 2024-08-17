@@ -2,12 +2,12 @@ import { CompletionItem, CompletionItemKind, DiagnosticSeverity } from "vscode-l
 
 import { ArgumentsPatternMandatory } from "betonquest-utils/betonquest/Arguments";
 
+import { DiagnosticCode } from "../../../utils/diagnostics";
 import { EventArgumentMandatoryType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
+import { ArgumentKey } from "../Argument/ArgumentKey";
+import { ArgumentValue } from "../Argument/ArgumentValue";
 import { EventArguments } from "./EventArguments";
-import { EventArgumentValue } from "./EventArgumentValue";
-import { EventArgumentKey } from "./EventArgumentKey";
-import { DiagnosticCode } from "../../../utils/diagnostics";
 
 export class EventArgumentMandatory extends AbstractNodeV2<EventArgumentMandatoryType> {
   readonly type: EventArgumentMandatoryType = 'EventArgumentMandatory';
@@ -47,16 +47,16 @@ export class EventArgumentMandatory extends AbstractNodeV2<EventArgumentMandator
         const pos2 = offsets[1] + strs[0].length;
         this.offsets = [offsets[0], offsets[1], pos2, pos2 + 1, offsets[2]];
         // Parse key
-        this.addChild(new EventArgumentKey(strs[0], [this.offsets[1], this.offsets[2]], this.pattern, this));
+        this.addChild(new ArgumentKey(strs[0], [this.offsets[1], this.offsets[2]], this.pattern, this));
         // Parse value
-        this.addChild(new EventArgumentValue(valueStr, [this.offsets[3], this.offsets[4]], this.pattern, this));
+        this.addChild(new ArgumentValue(valueStr, [this.offsets[3], this.offsets[4]], this.pattern, this));
       } else {
         // Calculate offsets
         this.offsets = [offsets[0], offsets[1], offsets[2], offsets[2], offsets[2]];
         if (strs.length > 0) {
           // Missing ":"
           // Parse key
-          this.addChild(new EventArgumentKey(strs[0], [this.offsets[1], this.offsets[2]], this.pattern, this));
+          this.addChild(new ArgumentKey(strs[0], [this.offsets[1], this.offsets[2]], this.pattern, this));
           // Warn about missing value
           this.addDiagnostic(
             [this.offsets[2], this.offsets[3]],
@@ -78,7 +78,7 @@ export class EventArgumentMandatory extends AbstractNodeV2<EventArgumentMandator
       // Calculate offsets
       this.offsets = [offsets[0], offsets[1], offsets[1], offsets[1], offsets[2]];
       // Parse 
-      this.addChild(new EventArgumentValue(this.argumentStr, [this.offsets[3], this.offsets[4]], this.pattern, this));
+      this.addChild(new ArgumentValue(this.argumentStr, [this.offsets[3], this.offsets[4]], this.pattern, this));
     }
   }
 
@@ -104,7 +104,7 @@ export class EventArgumentMandatory extends AbstractNodeV2<EventArgumentMandator
 
     // Prompt value suggestions for insertion
     if (!this.pattern.key && this.offsets[0] < offset && offset < this.offsets[1]) {
-      completionItems.push(...EventArgumentValue.getCompletionsByType(this.pattern.type));
+      completionItems.push(...ArgumentValue.getCompletionsByType(this.pattern.type));
     }
 
     completionItems.push(...super.getCompletions(offset, documentUri));

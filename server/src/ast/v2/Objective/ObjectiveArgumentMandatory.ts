@@ -2,12 +2,12 @@ import { CompletionItem, CompletionItemKind, DiagnosticSeverity } from "vscode-l
 
 import { ArgumentsPatternMandatory } from "betonquest-utils/betonquest/Arguments";
 
+import { DiagnosticCode } from "../../../utils/diagnostics";
 import { ObjectiveArgumentMandatoryType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
+import { ArgumentKey } from "../Argument/ArgumentKey";
+import { ArgumentValue } from "../Argument/ArgumentValue";
 import { ObjectiveArguments } from "./ObjectiveArguments";
-import { ObjectiveArgumentValue } from "./ObjectiveArgumentValue";
-import { ObjectiveArgumentKey } from "./ObjectiveArgumentKey";
-import { DiagnosticCode } from "../../../utils/diagnostics";
 
 export class ObjectiveArgumentMandatory extends AbstractNodeV2<ObjectiveArgumentMandatoryType> {
   readonly type: ObjectiveArgumentMandatoryType = 'ObjectiveArgumentMandatory';
@@ -47,16 +47,16 @@ export class ObjectiveArgumentMandatory extends AbstractNodeV2<ObjectiveArgument
         const pos2 = offsets[1] + strs[0].length;
         this.offsets = [offsets[0], offsets[1], pos2, pos2 + 1, offsets[2]];
         // Parse key
-        this.addChild(new ObjectiveArgumentKey(strs[0], [this.offsets[1], this.offsets[2]], this.pattern, this));
+        this.addChild(new ArgumentKey(strs[0], [this.offsets[1], this.offsets[2]], this.pattern, this));
         // Parse value
-        this.addChild(new ObjectiveArgumentValue(valueStr, [this.offsets[3], this.offsets[4]], this.pattern, this));
+        this.addChild(new ArgumentValue(valueStr, [this.offsets[3], this.offsets[4]], this.pattern, this));
       } else {
         // Calculate offsets
         this.offsets = [offsets[0], offsets[1], offsets[2], offsets[2], offsets[2]];
         if (strs.length > 0) {
           // Missing ":"
           // Parse key
-          this.addChild(new ObjectiveArgumentKey(strs[0], [this.offsets[1], this.offsets[2]], this.pattern, this));
+          this.addChild(new ArgumentKey(strs[0], [this.offsets[1], this.offsets[2]], this.pattern, this));
           // Warn about missing value
           this.addDiagnostic(
             [this.offsets[2], this.offsets[3]],
@@ -78,7 +78,7 @@ export class ObjectiveArgumentMandatory extends AbstractNodeV2<ObjectiveArgument
       // Calculate offsets
       this.offsets = [offsets[0], offsets[1], offsets[1], offsets[1], offsets[2]];
       // Parse 
-      this.addChild(new ObjectiveArgumentValue(this.argumentStr, [this.offsets[3], this.offsets[4]], this.pattern, this));
+      this.addChild(new ArgumentValue(this.argumentStr, [this.offsets[3], this.offsets[4]], this.pattern, this));
     }
   }
 
@@ -104,7 +104,7 @@ export class ObjectiveArgumentMandatory extends AbstractNodeV2<ObjectiveArgument
 
     // Prompt value suggestions for insertion
     if (!this.pattern.key && this.offsets[0] < offset && offset < this.offsets[1]) {
-      completionItems.push(...ObjectiveArgumentValue.getCompletionsByType(this.pattern.type));
+      completionItems.push(...ArgumentValue.getCompletionsByType(this.pattern.type));
     }
 
     completionItems.push(...super.getCompletions(offset, documentUri));

@@ -4,18 +4,18 @@ import MATERIAL_LIST from "betonquest-utils/bukkit/Data/MaterialList";
 
 import { ArgumentEntityType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
-import { ConditionArgumentValue } from "../Condition/ConditionArgumentValue";
+import { ArgumentValue } from "./ArgumentValue";
 
 export class ArgumentBlockID extends AbstractNodeV2<ArgumentEntityType> {
   readonly type: ArgumentEntityType = 'ArgumentEntity';
   readonly offsetStart?: number;
   readonly offsetEnd?: number;
-  readonly parent: ConditionArgumentValue;
+  readonly parent: ArgumentValue;
 
   constructor(
     argumentStr: string,
     offsets: [offsetStart: number, stringStart: number, offsetEnd: number],
-    parent: ConditionArgumentValue,
+    parent: ArgumentValue,
   ) {
     super();
     this.offsetStart = offsets[0];
