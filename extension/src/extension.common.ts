@@ -1,15 +1,15 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from "vscode";
 import * as path from 'path';
+import * as vscode from "vscode";
 import { BaseLanguageClient } from 'vscode-languageclient/lib/common/client';
 
+import { ConditionsEditorProvider } from "./conditionsEditorProvider";
 import { ConversationEditorProvider } from "./conversationEditorProvider";
 import { EventsEditorProvider } from "./eventsEditorProvider";
-import { ConditionsEditorProvider } from "./conditionsEditorProvider";
+import { fileHandler, fileTreeHandler, filesHandler } from "./lsp/file";
 import { ObjectivesEditorProvider } from "./objectivesEditorProvider";
 import { PackageEditorProvider } from "./packageEditorProvider";
-import { fileHandler, fileTreeHandler, filesHandler } from "./lsp/file";
 // import { ExampleEditorProvider } from './exampleEditorProvider';
 
 const textDecoder = new TextDecoder();
@@ -50,19 +50,19 @@ export async function _activate(context: vscode.ExtensionContext, lspClient: Bas
 
     const editorConfig = vscode.workspace.getConfiguration('editor');
 
-    // // Disable `editor.suggest.showWords`, prevening "global identifiers" being shown
-    // // when Completion item array is empty from server.
-    // editorConfig.update('suggest.showWords', false, vscode.ConfigurationTarget.Workspace)
-    //   .then(() => {
-    //     console.log('Word-based suggestions have been disabled.');
-    //   }, (error) => {
-    //     console.error('Failed to update configuration:', error);
-    //   });
+    // Disable `editor.suggest.showWords`, prevening "global identifiers" being shown
+    // when Completion item array is empty from server.
+    editorConfig.update('suggest.showWords', false, vscode.ConfigurationTarget.Global)
+      .then(() => {
+        console.log('Word-based suggestions have been disabled.');
+      }, (error) => {
+        console.error('Failed to update configuration:', error);
+      });
 
     // Enable `editor.quickSuggestions.strings` for 24x7 code completion (suggest while typing).
     const quickSuggestions = editorConfig.get<{ [key: string]: string }>('quickSuggestions');
     if (!quickSuggestions || quickSuggestions.strings !== 'on') {
-      editorConfig.update('quickSuggestions', { ...quickSuggestions, strings: 'on' }, vscode.ConfigurationTarget.Workspace)
+      editorConfig.update('quickSuggestions', { ...quickSuggestions, strings: 'on' }, vscode.ConfigurationTarget.Global)
         .then(() => {
           console.log('Quick suggestions for strings have been enabled.');
         }, (error) => {
