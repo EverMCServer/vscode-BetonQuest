@@ -1,6 +1,8 @@
+import { DiagnosticSeverity } from "vscode-languageserver";
+
 import { ArgumentsPatternMandatory, ArgumentsPatternOptional } from "betonquest-utils/betonquest/Arguments";
 
-import { Diagnostic } from "vscode-languageserver";
+import { DiagnosticCode } from "../../../utils/diagnostics";
 import { ArgumentKeyType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
 import { ConditionArgumentMandatory } from "../Condition/ConditionArgumentMandatory";
@@ -12,8 +14,8 @@ import { ObjectiveArgumentOptional } from "../Objective/ObjectiveArgumentOptiona
 
 export class ArgumentKey extends AbstractNodeV2<ArgumentKeyType> {
   readonly type: ArgumentKeyType = "ArgumentKey";
-  readonly offsetStart?: number;
-  readonly offsetEnd?: number;
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
   readonly parent: ConditionArgumentMandatory | ConditionArgumentOptional | EventArgumentMandatory | EventArgumentOptional | ObjectiveArgumentMandatory | ObjectiveArgumentOptional;
 
   private keyStr: string;
@@ -33,9 +35,20 @@ export class ArgumentKey extends AbstractNodeV2<ArgumentKeyType> {
 
     this.keyStr = keyStr;
     this.pattern = pattern;
+
+    // Parse key
+    if (this.pattern?.key && this.keyStr !== this.pattern.key) {
+      this.addDiagnostic(
+        [this.offsetStart, this.offsetEnd],
+        `Incorrect key. Should be "${this.pattern.key}".`,
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ArgumentKeyIncorrect,
+        [{
+          title: `Change to "${this.pattern.key}"`,
+          text: this.pattern.key
+        }]
+      );
+    }
   }
 
-  getDiagnostics(): Diagnostic[] {
-    return []; // TODO
-  }
 }

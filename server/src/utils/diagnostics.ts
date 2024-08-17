@@ -87,6 +87,11 @@ export enum DiagnosticCode {
   ArgumentOptionalMissing = "BQ-2002",
 
   /**
+   * Argument key is incorrect.
+   */
+  ArgumentKeyIncorrect = "BQ-2003",
+
+  /**
    * Argument key missing semicolon.
    */
   ArgumentKeyMissingSemicolon = "BQ-2004",
