@@ -1,13 +1,13 @@
 {
-    "extension.command.openConversationEditor.title": "BetonQuest: 会話文フローチャートを開く",
-    "extension.command.openEventsEditor.title": "BetonQuest: イベントエディターを開く",
-    "extension.command.openConditionsEditor.title": "BetonQuest: コンディションエディターを開く",
-    "extension.command.openObjectivesEditor.title": "BetonQuest: オブジェクティブエディターを開く",
-    "extension.command.openPackageEditor.title": "BetonQuest: パッケージエディターを開く",
-    "extension.customEditors.conversationEditor.displayName": "会話文 フローチャート",
-    "extension.customEditors.eventsEditor.displayName": "イベント エディター",
-    "extension.customEditors.conditionsEditor.displayName": "コンディション エディター",
-    "extension.customEditors.objectivesEditor.displayName": "オブジェクティブ エディター",
-    "extension.customEditors.packageEditor.displayName": "パッケージエディター",
+    "extension.command.openConversationEditor.title": "BetonQuest: 会話文フローチャートを開く（旧 v1.0 形式）",
+    "extension.command.openEventsEditor.title": "BetonQuest: イベントエディターを開く（旧 v1.0 形式）",
+    "extension.command.openConditionsEditor.title": "BetonQuest: コンディションエディターを開く（旧 v1.0 形式）",
+    "extension.command.openObjectivesEditor.title": "BetonQuest: オブジェクティブエディターを開く（旧 v1.0 形式）",
+    "extension.command.openPackageEditor.title": "BetonQuest: パッケージエディターを開く（v2.0 形式）",
+    "extension.customEditors.conversationEditor.displayName": "会話文 フローチャート （旧 v1.0 形式）",
+    "extension.customEditors.eventsEditor.displayName": "イベント エディター （旧 v1.0 形式）",
+    "extension.customEditors.conditionsEditor.displayName": "コンディション エディター （旧 v1.0 形式）",
+    "extension.customEditors.objectivesEditor.displayName": "オブジェクティブ エディター （旧 v1.0 形式）",
+    "extension.customEditors.packageEditor.displayName": "パッケージエディター （v2.0 形式）",
     "extension.setting.translationSelection.description": "会話文フローチャートの言語設定は'en'がデフォルトです。"
 }

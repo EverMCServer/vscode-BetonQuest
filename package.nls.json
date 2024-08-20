@@ -1,13 +1,13 @@
 {
-    "extension.command.openConversationEditor.title": "BetonQuest: Open Conversation Flowchart",
-    "extension.command.openEventsEditor.title": "BetonQuest: Open Events Editor",
-    "extension.command.openConditionsEditor.title": "BetonQuest: Open Conditions Editor",
-    "extension.command.openObjectivesEditor.title": "BetonQuest: Open Objectives Editor",
-    "extension.command.openPackageEditor.title": "BetonQuest: Open Package Editor",
-    "extension.customEditors.conversationEditor.displayName": "Conversation Flowchart",
-    "extension.customEditors.eventsEditor.displayName": "Events Editor",
-    "extension.customEditors.conditionsEditor.displayName": "Conditions Editor",
-    "extension.customEditors.objectivesEditor.displayName": "Objectives Editor",
-    "extension.customEditors.packageEditor.displayName": "Package Editor",
+    "extension.command.openConversationEditor.title": "BetonQuest: Open Conversation Flowchart (Legacy v1.0 format)",
+    "extension.command.openEventsEditor.title": "BetonQuest: Open Events Editor (Legacy v1.0 format)",
+    "extension.command.openConditionsEditor.title": "BetonQuest: Open Conditions Editor (Legacy v1.0 format)",
+    "extension.command.openObjectivesEditor.title": "BetonQuest: Open Objectives Editor (Legacy v1.0 format)",
+    "extension.command.openPackageEditor.title": "BetonQuest: Open with Package Editor (v2.0 format)",
+    "extension.customEditors.conversationEditor.displayName": "Conversation Flowchart (Legacy v1.0 format)",
+    "extension.customEditors.eventsEditor.displayName": "Events Editor (Legacy v1.0 format)",
+    "extension.customEditors.conditionsEditor.displayName": "Conditions Editor (Legacy v1.0 format)",
+    "extension.customEditors.objectivesEditor.displayName": "Objectives Editor (Legacy v1.0 format)",
+    "extension.customEditors.packageEditor.displayName": "Package Editor (v2.0 format)",
     "extension.setting.translationSelection.description": "The translation selection for conversation flowchart. Default to 'en'."
 }

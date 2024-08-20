@@ -1,13 +1,13 @@
 {
-    "extension.command.openConversationEditor.title": "BetonQuest: 打开对话流程图",
-    "extension.command.openEventsEditor.title": "BetonQuest: 打开事件编辑器",
-    "extension.command.openConditionsEditor.title": "BetonQuest: 打开条件编辑器",
-    "extension.command.openObjectivesEditor.title": "BetonQuest: 打开目标编辑器",
-    "extension.command.openPackageEditor.title": "BetonQuest: 打开脚本包编辑器",
-    "extension.customEditors.conversationEditor.displayName": "对话流程图",
-    "extension.customEditors.eventsEditor.displayName": "事件编辑器",
-    "extension.customEditors.conditionsEditor.displayName": "条件编辑器",
-    "extension.customEditors.objectivesEditor.displayName": "目标编辑器",
-    "extension.customEditors.packageEditor.displayName": "脚本包编辑器",
+    "extension.command.openConversationEditor.title": "BetonQuest: 打开对话流程图（旧 v1.0 格式）",
+    "extension.command.openEventsEditor.title": "BetonQuest: 打开事件编辑器（旧 v1.0 格式）",
+    "extension.command.openConditionsEditor.title": "BetonQuest: 打开条件编辑器（旧 v1.0 格式）",
+    "extension.command.openObjectivesEditor.title": "BetonQuest: 打开目标编辑器（旧 v1.0 格式）",
+    "extension.command.openPackageEditor.title": "BetonQuest: 使用脚本包编辑器打开（v2.0 格式）",
+    "extension.customEditors.conversationEditor.displayName": "对话流程图（旧 v1.0 格式）",
+    "extension.customEditors.eventsEditor.displayName": "事件编辑器（旧 v1.0 格式）",
+    "extension.customEditors.conditionsEditor.displayName": "条件编辑器（旧 v1.0 格式）",
+    "extension.customEditors.objectivesEditor.displayName": "目标编辑器（旧 v1.0 格式）",
+    "extension.customEditors.packageEditor.displayName": "脚本包编辑器（v2.0 格式）",
     "extension.setting.translationSelection.description": "对话流程图中选中的翻译语言。默认为“en”。"
 }
