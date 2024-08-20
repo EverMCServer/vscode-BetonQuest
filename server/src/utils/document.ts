@@ -115,7 +115,7 @@ export async function getAllDocuments(connection: Connection, workspaceFolders: 
   let allDocs: [string, TextDocument[]?][] = [];
 
   // Obtain docuemtns from client
-  allDocs = await Promise.all(workspaceFolders!.flatMap(async wsFolder => {
+  allDocs = await Promise.all(workspaceFolders?.flatMap(async wsFolder => {
     try {
       // Get file tree
       let a = await connection.sendRequest<string[]>('custom/file/tree', {
@@ -141,7 +141,7 @@ export async function getAllDocuments(connection: Connection, workspaceFolders: 
       }
     };
     return [wsFolder.uri, undefined];
-  }));
+  }) || []);
 
   return new AllDocuments(allDocs);
 }
