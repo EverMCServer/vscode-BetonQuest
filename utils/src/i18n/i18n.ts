@@ -16,7 +16,6 @@ declare global {
 }
 
 const defaultLocale = "en"; // default to "en"
-let locale = defaultLocale;
 
 type TTranslation = { [key: string]: string };
 
@@ -29,14 +28,14 @@ export function setLocale(languageCode: string) {
     }
 
     if (translations.has(languageCode)) {
-        locale = languageCode;
+        globalThis.locale = languageCode;
     }
 }
 setLocale(globalThis.locale || defaultLocale);
 
 // Get translation by key
 export default function L(key: string, variables?: string[]): string {
-    let str = translations.get(locale)?.[key] ?? translations.get(defaultLocale)?.[key] ?? key;
+    let str = translations.get(globalThis.locale)?.[key] ?? translations.get(defaultLocale)?.[key] ?? key;
 
     // Substitutes variables in string
     if (variables) {
@@ -48,7 +47,7 @@ export default function L(key: string, variables?: string[]): string {
     return str;
 }
 
-// Languages listed from
+// Languages list from
 // https://minecraft.wiki/w/Language
 export const allLanguages = [
     {

@@ -1,6 +1,9 @@
-import { FilesResponse, LocationsParams } from 'betonquest-utils/lsp/file';
-import { CodeAction, Command, CompletionItem, CompletionItemKind, Connection, DidChangeConfigurationNotification, FileChangeType, HandlerResult, InitializeParams, InitializeResult, SemanticTokensParams, SemanticTokensRequest, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
+import { CodeAction, Command, Connection, DidChangeConfigurationNotification, FileChangeType, HandlerResult, InitializeParams, InitializeResult, SemanticTokensParams, SemanticTokensRequest, TextDocumentSyncKind, TextDocuments, WorkspaceFolder } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
+
+import { setLocale } from 'betonquest-utils/i18n/i18n';
+import { FilesResponse, LocationsParams } from 'betonquest-utils/lsp/file';
+
 import { ASTs } from './ast/ast';
 import { legend } from './semantics/legend';
 import { hoverHandler } from './service/hover';
@@ -25,6 +28,9 @@ export function server(connection: Connection): void {
   connection.onInitialize((params: InitializeParams) => {
     workspaceFolders = params.workspaceFolders;
     let capabilities = params.capabilities;
+
+    // Get client locale and set i18n
+    setLocale(params.locale ?? 'en');
 
     // Does the client support the `workspace/configuration` request?
     // If not, we fall back using global settings.

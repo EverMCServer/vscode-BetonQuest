@@ -1,7 +1,7 @@
 import { CompletionItem, CompletionItemKind, DiagnosticSeverity } from "vscode-languageserver";
 import { Pair, Scalar } from "yaml";
 
-import { kinds } from "betonquest-utils/betonquest/v1/Objectives";
+import { Kinds } from "betonquest-utils/betonquest/v1/Objectives";
 
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getScalarSourceAndRange } from "../../../utils/yaml";
@@ -59,6 +59,7 @@ export class ObjectiveEntry extends AbstractNodeV1<ObjectiveEntryType> {
       return;
     }
     const kindStr = matched[1];
+    const kinds = Kinds.get();
     const kind = kinds.find(k => k.value === kindStr.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
     const offsetKindStart = offsetStart + matched.index;
     this.offsetKindEnd = offsetKindStart + kindStr.length;
@@ -75,7 +76,7 @@ export class ObjectiveEntry extends AbstractNodeV1<ObjectiveEntryType> {
     const completionItems = [];
     // Prompt the Objective list
     if (this.offsetKindEnd && offset <= this.offsetKindEnd) {
-      completionItems.push(...kinds.filter(k => k.value !== "*").flatMap(k => ({
+      completionItems.push(...Kinds.get().filter(k => k.value !== "*").flatMap(k => ({
         label: k.value,
         kind: CompletionItemKind.Constructor, // TODO: move it onto SemanticTokenType etc.
         detail: k.display,

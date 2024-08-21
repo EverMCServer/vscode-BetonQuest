@@ -1,7 +1,7 @@
 import { CompletionItem, CompletionItemKind, DiagnosticSeverity } from "vscode-languageserver";
 import { Pair, Scalar } from "yaml";
 
-import { kinds } from "betonquest-utils/betonquest/v2/Conditions";
+import { Kinds } from "betonquest-utils/betonquest/v2/Conditions";
 
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getScalarSourceAndRange } from "../../../utils/yaml";
@@ -69,6 +69,7 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
       return;
     }
     this.kindString = matched[1];
+    const kinds = Kinds.get();
     const kind = kinds.find(k => k.value === this.kindString.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
     this.offsetKindStart = offsetStart + matched.index;
     this.offsetKindEnd = this.offsetKindStart + this.kindString.length;
@@ -92,7 +93,7 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
         this.offsetKindStart < offset && offset <= this.offsetKindEnd
       )
     ) {
-      completionItems.push(...kinds
+      completionItems.push(...Kinds.get()
         .filter(k => k.value !== "*")
         .flatMap(k => ({
           label: k.value,
