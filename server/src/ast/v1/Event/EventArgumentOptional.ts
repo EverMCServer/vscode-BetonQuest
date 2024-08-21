@@ -1,50 +1,109 @@
-import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
+import { CompletionItem, CompletionItemKind, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ArgumentsPatternOptional } from "betonquest-utils/betonquest/Arguments";
 
+import { DiagnosticCode } from "../../../utils/diagnostics";
 import { EventArgumentOptionalType } from "../../node";
 import { AbstractNodeV1 } from "../../v1";
+import { ArgumentKey } from "../Argument/ArgumentKey";
+import { ArgumentValue } from "../Argument/ArgumentValue";
 import { EventArguments } from "./EventArguments";
 
 export class EventArgumentOptional extends AbstractNodeV1<EventArgumentOptionalType> {
-  readonly type: EventArgumentOptionalType = 'EventArgumentOptional'; // TODO remove Mandatory / Optional
+  readonly type: EventArgumentOptionalType = 'EventArgumentOptional';
   readonly offsetStart?: number;
   readonly offsetEnd?: number;
   readonly parent: EventArguments;
 
   private argumentStr: string;
-  private pattern: ArgumentsPatternOptional;
+  private offsets: [offsetStart: number, keyStart: number, keyEnd: number, valueStart: number, offsetEnd: number];
+  private pattern?: ArgumentsPatternOptional;
 
-  constructor(argumentStr: string,
-    range: [number?, number?],
+  constructor(
+    argumentStr: string,
+    offsets: [offsetStart: number, stringStart: number, offsetEnd: number],
     // isMandatory: boolean,
-    pattern: ArgumentsPatternOptional,
+    pattern: ArgumentsPatternOptional | undefined,
     parent: EventArguments,
   ) {
     super();
+    this.offsetStart = offsets[0];
+    this.offsetEnd = offsets[2];
     this.parent = parent;
 
-    this.offsetStart = range[0];
-    this.offsetEnd = range[1];
-
-    // Parse argumentStr
-    this.argumentStr = argumentStr;
-
+    this.argumentStr = argumentStr;  // argumentStr has been trimed already.
     this.pattern = pattern;
 
-    // Check format
+    // Parse argumentStr
+
+    // Split value
+    if (this.pattern && this.pattern?.format !== "boolean") {
+      // Key-value pair
+      const strs = this.argumentStr.split(":");
+      if (strs.length > 1) {
+        // With ":"
+        // Calculate offsets
+        const str = strs.slice(1).join(":");
+        const pos2 = offsets[1] + strs[0].length;
+        this.offsets = [offsets[0], offsets[1], pos2, pos2 + 1, offsets[2]];
+        // Parse key
+        this.addChild(new ArgumentKey(strs[0], [this.offsets[1], this.offsets[2]], this.pattern, this));
+        // Parse value
+        this.addChild(new ArgumentValue(str, [this.offsets[3], this.offsets[4]], this.pattern, this));
+      } else {
+        // Calculate offsets
+        this.offsets = [offsets[0], offsets[1], offsets[2], offsets[2], offsets[2]];
+        if (strs.length > 0) {
+          // Missing ":"
+          // Parse key
+          this.addChild(new ArgumentKey(strs[0], [this.offsets[1], this.offsets[2]], this.pattern, this));
+          // Warn about missing value
+          this.addDiagnostic(
+            [this.offsets[2], this.offsets[3]],
+            `Missing semicolon ":"`,
+            DiagnosticSeverity.Error,
+            DiagnosticCode.ArgumentKeyMissingSemicolon,
+            [{
+              title: `Add semicolon ":"`,
+              text: ":",
+            }]
+          );
+        } else {
+          // Diagnostic of missing the whole argument has been handled by the parent.
+          // We don't need to do anything here.
+        }
+      }
+    } else {
+      // Boolean
+      // Calculate offsets
+      this.offsets = [offsets[0], offsets[1], offsets[2], offsets[2], offsets[2]];
+      // Parse key
+      this.addChild(new ArgumentValue(this.argumentStr, [this.offsets[3], this.offsets[4]], this.pattern, this));
+    }
   }
 
+  // Prompt key completions
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
-    return [
-      {
-        label: this.pattern.key + this.pattern.format === "boolean" ? ":" : "",
-        kind: CompletionItemKind.Snippet, // TODO: move it onto SemanticTokenType etc.
-        detail: this.pattern.name?.toString(),
-        documentation: this.pattern.tooltip
-      },
-      ...super.getCompletions(offset, documentUri)
-    ];
+    const completionItems: CompletionItem[] = [];
+
+    // Prompt key suggestions
+    if (this.offsets[0] < offset && offset <= this.offsets[1] || offset === this.offsets[2]) {
+      this.parent.kindConfig.argumentsPatterns
+        .optional?.filter(o => !this.parent.argumentOptionalStrs.some(s => s.trimStart().startsWith(o.key)))
+        .forEach(pattern => completionItems.push({
+          label: pattern.key,
+          kind: CompletionItemKind.Snippet, // TODO: move it onto SemanticTokenType etc.
+          detail: pattern.name?.toString(),
+          documentation: pattern.tooltip,
+          command: {
+            title: "Prompt value suggestion",
+            command: "editor.action.triggerSuggest"
+          },
+          insertText: pattern.key + (pattern.format === "boolean" ? "" : ":"), // TODO: add ":" only when there is no arguments
+        }));
+    }
+
+    completionItems.push(...super.getCompletions(offset, documentUri));
+    return completionItems;
   }
 }
-

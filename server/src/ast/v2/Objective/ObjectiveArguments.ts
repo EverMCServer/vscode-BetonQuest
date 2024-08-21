@@ -13,7 +13,6 @@ import { ObjectiveArgumentMandatory } from "./ObjectiveArgumentMandatory";
 import { ObjectiveArgumentOptional } from "./ObjectiveArgumentOptional";
 import { ObjectiveEntry } from "./ObjectiveEntry";
 
-// TODO: rename to "parameters"
 export class ObjectiveArguments extends AbstractNodeV2<ObjectiveArgumentsType> {
   readonly type: ObjectiveArgumentsType = "ObjectiveArguments";
   readonly offsetStart?: number;

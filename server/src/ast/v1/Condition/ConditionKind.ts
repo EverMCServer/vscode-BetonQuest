@@ -9,18 +9,18 @@ import { ConditionEntry } from "./ConditionEntry";
 
 export class ConditionKind extends AbstractNodeV1<ConditionKindType> {
   readonly type: ConditionKindType = "ConditionKind";
-  offsetStart?: number;
-  offsetEnd?: number;
+  readonly offsetStart?: number;
+  readonly offsetEnd?: number;
   readonly parent: ConditionEntry;
 
-  value: string;
-  kindConfig?: _ElementKind<Condition>;
+  private value: string;
+  private kindConfig?: _ElementKind<Condition>;
 
   constructor(value: string, range: [number?, number?], kindConfig: _ElementKind<Condition>, parent: ConditionEntry) {
     super();
-    this.parent = parent;
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
+    this.parent = parent;
 
     this.value = value;
     this.kindConfig = kindConfig;

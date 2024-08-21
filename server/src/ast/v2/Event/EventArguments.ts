@@ -13,7 +13,6 @@ import { EventArgumentMandatory } from "./EventArgumentMandatory";
 import { EventArgumentOptional } from "./EventArgumentOptional";
 import { EventEntry } from "./EventEntry";
 
-// TODO: rename to "parameters"
 export class EventArguments extends AbstractNodeV2<EventArgumentsType> {
   readonly type: EventArgumentsType = "EventArguments";
   readonly offsetStart?: number;

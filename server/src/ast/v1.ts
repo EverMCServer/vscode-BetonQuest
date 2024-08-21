@@ -1,5 +1,13 @@
 import { AST } from "./ast";
 import { AbstractNode, ConversationOptionType, NodeType } from "./node";
+import { ArgumentBlockID } from "./v1/Argument/ArgumentBlockID";
+import { ArgumentConditionID } from "./v1/Argument/ArgumentConditionID";
+import { ArgumentEntity } from "./v1/Argument/ArgumentEntity";
+import { ArgumentEventID } from "./v1/Argument/ArgumentEventID";
+import { ArgumentInterger } from "./v1/Argument/ArgumentInterger";
+import { ArgumentKey } from "./v1/Argument/ArgumentKey";
+import { ArgumentObjectiveID } from "./v1/Argument/ArgumentObjectiveID";
+import { ArgumentValue } from "./v1/Argument/ArgumentValue";
 import { ConditionArgumentMandatory } from "./v1/Condition/ConditionArgumentMandatory";
 import { ConditionArgumentOptional } from "./v1/Condition/ConditionArgumentOptional";
 import { ConditionArguments } from "./v1/Condition/ConditionArguments";
@@ -51,10 +59,11 @@ import { PackageV1 } from "./v1/Package";
 type TConditionList = ConditionList | ConditionEntry | ConditionKey | ConditionKind | ConditionArguments | ConditionArgumentMandatory | ConditionArgumentOptional;
 type TEventListList = EventList | EventEntry | EventKey | EventKind | EventArguments | EventArgumentMandatory | EventArgumentOptional;
 type TObjectiveList = ObjectiveList | ObjectiveEntry | ObjectiveKey | ObjectiveKind | ObjectiveArguments | ObjectiveArgumentMandatory | ObjectiveArgumentOptional;
+type TArguments = ArgumentKey | ArgumentValue | ArgumentConditionID | ArgumentEventID | ArgumentObjectiveID | ArgumentBlockID | ArgumentEntity | ArgumentInterger;
 type TConversationNpcOption = NpcOption | NpcConditions | NpcCondition | NpcEvents | NpcEvent | NpcPointers | NpcPointer | NpcText;
 type TConversationPlayerOption = PlayerOption | PlayerConditions | PlayerCondition | PlayerEvents | PlayerEvent | PlayerPointers | PlayerPointer | PlayerText;
 type TConversation = Conversation | ConversationQuester | ConversationQuesterTranslations | First | FirstPointer | ConversationStop | ConversationFinalEvents | ConversationFinalEvent | ConversationInterceptor | TConversationNpcOption | TConversationPlayerOption;
-export type NodeV1 = PackageV1 | TConditionList | TEventListList | TObjectiveList | TConversation;
+export type NodeV1 = PackageV1 | TConditionList | TEventListList | TObjectiveList | TArguments | TConversation;
 
 export abstract class AbstractNodeV1<T extends NodeType> extends AbstractNode<T, NodeV1> {
   abstract readonly parent: NodeV1;
