@@ -56,22 +56,22 @@ export class ArgumentValue extends AbstractNodeV2<ArgumentValueType> {
       switch (this.pattern.type) {
 
         case ArgumentType.conditionID:
-          parent.addChild(new ArgumentConditionID(this.valueStr, [this.offsetStart, this.offsetStart, this.offsetEnd], this));
+          parent.addChild(new ArgumentConditionID(this.valueStr, [this.offsetStart, this.offsetEnd], this));
           break;
 
         case ArgumentType.blockID:
-          parent.addChild(new ArgumentBlockID(valueStr, [this.offsetStart, this.offsetStart, this.offsetEnd], this));
+          parent.addChild(new ArgumentBlockID(valueStr, [this.offsetStart, this.offsetEnd], this));
           break;
 
         case ArgumentType.entity:
-          parent.addChild(new ArgumentEntity(valueStr, [this.offsetStart, this.offsetStart, this.offsetEnd], this));
+          parent.addChild(new ArgumentEntity(valueStr, [this.offsetStart, this.offsetEnd], this));
           break;
 
         case ArgumentType.entityList:
           // Seprate value by ","
           this.valueStr.split(",").forEach((argStr, i) => {
             const pos2 = pos1 + argStr.length;
-            parent.addChild(new ArgumentEntity(argStr, [i ? pos1 : offsets[0], pos1, pos2], this));
+            parent.addChild(new ArgumentEntity(argStr, [pos1, pos2], this));
             pos1 = pos2 + 1;
           });
           break;
@@ -85,10 +85,10 @@ export class ArgumentValue extends AbstractNodeV2<ArgumentValueType> {
               const components = str.split(":");
               pos2 = pos1 + components[0].length;
               const amountStr = components.slice(1).join(":");
-              parent.addChild(new ArgumentEntity(components[0], [i ? pos1 : offsets[0], pos1, pos2], this));
+              parent.addChild(new ArgumentEntity(components[0], [pos1, pos2], this));
               parent.addChild(new ArgumentInterger(amountStr, [pos2 + 1, pos4], this));
             } else {
-              parent.addChild(new ArgumentEntity(str, [i ? pos1 : offsets[0], pos1, pos2], this));
+              parent.addChild(new ArgumentEntity(str, [pos1, pos2], this));
             }
             pos1 = pos4 + 1;
           });

@@ -9,29 +9,27 @@ import { DiagnosticCode } from "../../../utils/diagnostics";
 
 export class ArgumentEntity extends AbstractNodeV2<ArgumentEntityType> {
   readonly type: ArgumentEntityType = 'ArgumentEntity';
-  readonly offsetStart?: number;
-  readonly offsetEnd?: number;
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
   readonly parent: ArgumentValue;
 
-  private offsets: [offsetStart: number, stringStart: number, offsetEnd: number];
   private argumentStr: string;
 
   constructor(
     argumentStr: string,
-    offsets: [offsetStart: number, stringStart: number, offsetEnd: number],
+    offsets: [offsetStart: number, offsetEnd: number],
     parent: ArgumentValue,
   ) {
     super();
     this.offsetStart = offsets[0];
-    this.offsetEnd = offsets[2];
+    this.offsetEnd = offsets[1];
     this.parent = parent;
 
-    this.offsets = offsets;
     this.argumentStr = argumentStr;
   }
 
   getCompletions(offset: number, documentUri?: string): CompletionItem[] {
-    if (this.offsets[0] < offset && offset <= this.offsets[1] || offset === this.offsets[2]) {
+    if (offset === this.offsetEnd) {
       return ArgumentEntity.getCompletions();
     }
     return [];
@@ -51,7 +49,7 @@ export class ArgumentEntity extends AbstractNodeV2<ArgumentEntityType> {
     // if (!ENTITY_TYPE_LIST.some(e => e.isIdMatched(this.argumentStr))) {
     if (!this.argumentStr.trim()) {
       diagnostics.push(this.generateDiagnostic(
-        [this.offsets[1], this.offsets[2]],
+        [this.offsetStart, this.offsetEnd],
         "Missing Entity ID",
         DiagnosticSeverity.Error,
         DiagnosticCode.ArgumentValueMissing

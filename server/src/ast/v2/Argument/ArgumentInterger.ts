@@ -6,18 +6,18 @@ import { ArgumentValue } from "./ArgumentValue";
 
 export class ArgumentInterger extends AbstractNodeV2<ArgumentIntergerType> {
   readonly type: ArgumentIntergerType = 'ArgumentInterger';
-  readonly offsetStart?: number;
-  readonly offsetEnd?: number;
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
   readonly parent: ArgumentValue;
 
   constructor(
     argumentStr: string,
-    range: [number?, number?],
+    offsets: [offsetStart: number, offsetEnd: number],
     parent: ArgumentValue,
   ) {
     super();
-    this.offsetStart = range[0];
-    this.offsetEnd = range[1];
+    this.offsetStart = offsets[0];
+    this.offsetEnd = offsets[1];
     this.parent = parent;
 
     // Check value

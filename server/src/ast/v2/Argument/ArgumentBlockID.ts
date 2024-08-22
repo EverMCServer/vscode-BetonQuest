@@ -8,18 +8,18 @@ import { ArgumentValue } from "./ArgumentValue";
 
 export class ArgumentBlockID extends AbstractNodeV2<ArgumentBlockIdType> {
   readonly type: ArgumentBlockIdType = 'ArgumentBlockID';
-  readonly offsetStart?: number;
-  readonly offsetEnd?: number;
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
   readonly parent: ArgumentValue;
 
   constructor(
     argumentStr: string,
-    offsets: [offsetStart: number, stringStart: number, offsetEnd: number],
+    offsets: [offsetStart: number, offsetEnd: number],
     parent: ArgumentValue,
   ) {
     super();
     this.offsetStart = offsets[0];
-    this.offsetEnd = offsets[2];
+    this.offsetEnd = offsets[1];
     this.parent = parent;
   }
 
