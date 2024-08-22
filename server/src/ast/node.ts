@@ -153,30 +153,20 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
     if (offsets[0] === undefined || offsets[1] === undefined) {
       return;
     }
+    const diagnostic = this.generateDiagnostic([offsets[0], offsets[1]], message, severity, code);
+    this.diagnostics.push(diagnostic);
+    this.codeActions.push(...this.generateCodeActions(diagnostic, codeActions));
+  }
+
+  generateDiagnostic(offsets: [offsetStart: number, offsetEnd: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode) {
     const range = this.getRangeByOffset(offsets[0], offsets[1]);
-    const diagnostic: Diagnostic = {
+    return {
       range: range,
       message: message,
       severity: severity,
       source: 'BetonQuest',
       code: code
-    };
-    this.diagnostics.push(diagnostic);
-    codeActions?.forEach(({ title, text, range: r }) => {
-      this.codeActions.push({
-        title: title,
-        kind: CodeActionKind.QuickFix,
-        diagnostics: [diagnostic],
-        edit: {
-          changes: {
-            [this.getUri()]: [{
-              range: r ? this.getRangeByOffset(r[0], r[1]) : range,
-              newText: text
-            }]
-          }
-        }
-      });
-    });
+    } as Diagnostic;
   }
 
   makeDiagnostic(offsets: [offsetStart: number, offsetEnd: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode) {
@@ -199,6 +189,26 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
 
   addCodeActions(...codeActions: CodeAction[]) {
     this.codeActions.push(...codeActions);
+  }
+
+  generateCodeActions(diagnostic: Diagnostic, codeActions?: { title: string, text: string, range?: [offsetStart: number, offsetEnd: number] }[]) {
+    const result: CodeAction[] = [];
+    codeActions?.forEach(({ title, text, range: r }) => {
+      result.push({
+        title: title,
+        kind: CodeActionKind.QuickFix,
+        diagnostics: [diagnostic],
+        edit: {
+          changes: {
+            [this.getUri()]: [{
+              range: r ? this.getRangeByOffset(r[0], r[1]) : diagnostic.range,
+              newText: text
+            }]
+          }
+        }
+      });
+    });
+    return result;
   }
 
   addSemanticTokens(...token: SemanticToken[]) {

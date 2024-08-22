@@ -190,22 +190,6 @@ export class ConversationSection extends Document<ConversationSectionType> {
       }
     });
 
-    // Check missing elements
-    if (!this.getChild('ConversationQuester')) {
-      this.addDiagnostic(
-        [0, 0],
-        `Missing element "quester".`,
-        DiagnosticSeverity.Error,
-        DiagnosticCode.ConversationMissingQuester,
-        [
-          {
-            title: `Add element "quester"`,
-            text: `quester: ${getFilename(this.document.uri, true)}\n`
-          }
-        ]
-      );
-    }
-
     // ...
   }
 
@@ -213,6 +197,29 @@ export class ConversationSection extends Document<ConversationSectionType> {
     const offsetStart = (pair.value as any).range?.[0] as number | undefined ?? pair.key.range?.[0];
     const offsetEnd = offsetStart ? (pair.value as any).range?.[1] as number : pair.key.range?.[1];
     this.addDiagnostic([offsetStart, offsetEnd], message, DiagnosticSeverity.Error, DiagnosticCode.ValueTypeIncorrect);
+  }
+
+  getDiagnostics(): Diagnostic[] {
+    // Check missing elements
+    if (!this.parent.getChildren().some(c => c.getChild('ConversationQuester')) && !this.diagnostics.some(d => d.code === DiagnosticCode.ConversationMissingQuester)) {
+      this.addDiagnostic(
+        [(this.yml.range?.[0] || 0), (this.yml.range?.[0] || 0)],
+        `Missing element "quester".`,
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ConversationMissingQuester,
+        [
+          {
+            title: `Add element "quester"`,
+            text: `quester: ${getFilename(this.document.uri, true)}\n` + ` `.repeat(this.yml.srcToken?.type === "block-map" ? this.yml.srcToken.indent : 0)
+          }
+        ]
+      );
+    }
+    return super.getDiagnostics();
+  }
+
+  getCodeActions(documentUri?: string): CodeAction[] {
+    return super.getCodeActions(documentUri);
   }
 
   getFirst() {
