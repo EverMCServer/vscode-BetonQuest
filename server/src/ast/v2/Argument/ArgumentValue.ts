@@ -81,13 +81,15 @@ export class ArgumentValue extends AbstractNodeV2<ArgumentValueType> {
           this.valueStr.split(",").forEach((str, i) => {
             const pos4 = pos1 + str.length;
             let pos2 = pos4;
-            const components = str.split(":");
-            if (components[1] !== undefined) {
+            if (str.includes(":")) {
+              const components = str.split(":");
               pos2 = pos1 + components[0].length;
               const amountStr = components.slice(1).join(":");
+              parent.addChild(new ArgumentEntity(components[0], [i ? pos1 : offsets[0], pos1, pos2], this));
               parent.addChild(new ArgumentInterger(amountStr, [pos2 + 1, pos4], this));
+            } else {
+              parent.addChild(new ArgumentEntity(str, [i ? pos1 : offsets[0], pos1, pos2], this));
             }
-            parent.addChild(new ArgumentEntity(components[0], [i ? pos1 : offsets[0], pos1, pos2], this));
             pos1 = pos4 + 1;
           });
           break;

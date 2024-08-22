@@ -1,10 +1,11 @@
-import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
+import { CompletionItem, CompletionItemKind, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import ENTITY_TYPE_LIST from "betonquest-utils/bukkit/Data/EntityTypeList";
 
 import { ArgumentEntityType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
 import { ArgumentValue } from "./ArgumentValue";
+import { DiagnosticCode } from "../../../utils/diagnostics";
 
 export class ArgumentEntity extends AbstractNodeV2<ArgumentEntityType> {
   readonly type: ArgumentEntityType = 'ArgumentEntity';
@@ -43,6 +44,20 @@ export class ArgumentEntity extends AbstractNodeV2<ArgumentEntityType> {
       detail: "Entity ID",
       documentation: "Bukkit Entity ID"
     }));
+  }
+
+  getDiagnostics(): Diagnostic[] {
+    const diagnostics: Diagnostic[] = [];
+    // if (!ENTITY_TYPE_LIST.some(e => e.isIdMatched(this.argumentStr))) {
+    if (!this.argumentStr.trim()) {
+      diagnostics.push(this.generateDiagnostic(
+        [this.offsets[1], this.offsets[2]],
+        "Missing Entity ID",
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ArgumentValueMissing
+      ));
+    }
+    return super.getDiagnostics().concat(diagnostics);
   }
 
 }

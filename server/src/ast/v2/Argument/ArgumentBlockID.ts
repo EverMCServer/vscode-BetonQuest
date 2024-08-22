@@ -2,12 +2,12 @@ import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
 
 import MATERIAL_LIST from "betonquest-utils/bukkit/Data/MaterialList";
 
-import { ArgumentEntityType } from "../../node";
+import { ArgumentBlockIdType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
 import { ArgumentValue } from "./ArgumentValue";
 
-export class ArgumentBlockID extends AbstractNodeV2<ArgumentEntityType> {
-  readonly type: ArgumentEntityType = 'ArgumentEntity';
+export class ArgumentBlockID extends AbstractNodeV2<ArgumentBlockIdType> {
+  readonly type: ArgumentBlockIdType = 'ArgumentBlockID';
   readonly offsetStart?: number;
   readonly offsetEnd?: number;
   readonly parent: ArgumentValue;
