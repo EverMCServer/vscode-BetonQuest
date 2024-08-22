@@ -1,4 +1,4 @@
-import { DiagnosticSeverity, PublishDiagnosticsParams } from "vscode-languageserver";
+import { CodeAction, Diagnostic, DiagnosticSeverity, PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { Pair, Scalar, YAMLMap } from "yaml";
 
@@ -28,7 +28,7 @@ export class Conversation extends SectionCollection<ConversationType> {
     this.conversationID = conversationID;
   }
 
-  addSection(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>) {
+  addSection(uri: string, document: TextDocument, yml: Pair<Scalar<string>, YAMLMap<Scalar<string>>>) {
     this.addChild(new ConversationSection(uri, document, yml, this));
   }
 
@@ -48,12 +48,12 @@ export class ConversationSection extends Document<ConversationSectionType> {
   readonly type: ConversationSectionType = 'ConversationSection';
   readonly parent: Conversation;
 
-  constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: Conversation) {
+  constructor(uri: string, document: TextDocument, yml: Pair<Scalar<string>, YAMLMap<Scalar<string>>>, parent: Conversation) {
     super(uri, document, yml);
     this.parent = parent;
 
     // Parse Elements
-    this.yml.items.forEach(pair => {
+    this.yml.value?.items.forEach(pair => {
       const offsetStart = pair.key.range?.[0] ?? 0;
       const offsetEnd = (pair.value as Scalar | YAMLMap)?.range?.[1] ?? offsetStart;
       // Set key's Semantic Token
@@ -203,14 +203,14 @@ export class ConversationSection extends Document<ConversationSectionType> {
     // Check missing elements
     if (!this.parent.getChildren().some(c => c.getChild('ConversationQuester')) && !this.diagnostics.some(d => d.code === DiagnosticCode.ConversationMissingQuester)) {
       this.addDiagnostic(
-        [(this.yml.range?.[0] || 0), (this.yml.range?.[0] || 0)],
+        [(this.yml.value?.range?.[0] || 0), (this.yml.value?.range?.[0] || 0)],
         `Missing element "quester".`,
         DiagnosticSeverity.Error,
         DiagnosticCode.ConversationMissingQuester,
         [
           {
             title: `Add element "quester"`,
-            text: `quester: ${getFilename(this.document.uri, true)}\n` + ` `.repeat(this.yml.srcToken?.type === "block-map" ? this.yml.srcToken.indent : 0)
+            text: `quester: ${getFilename(this.document.uri, true)}\n` + ` `.repeat(this.yml.value?.srcToken?.type === "block-map" ? this.yml.value.srcToken.indent : 0)
           }
         ]
       );

@@ -166,7 +166,7 @@ export function isStringScalarPair(value: any): value is Pair<Scalar<string>, Sc
     value.value instanceof Scalar && typeof value.value.value === 'string';
 }
 
-export function isYamlMapPair(value: any): value is Pair<Scalar<string>, YAMLMap> {
+export function isYamlMapPair<ValueType extends YAMLMap>(value: any): value is Pair<Scalar<string>, ValueType> {
   return value instanceof Pair &&
     value.key instanceof Scalar && typeof value.key.value === 'string' &&
     value.value instanceof YAMLMap;

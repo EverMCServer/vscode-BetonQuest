@@ -1,6 +1,6 @@
 import { PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { Scalar, YAMLMap, isPair, isScalar } from "yaml";
+import { Pair, Scalar, YAMLMap, isPair, isScalar } from "yaml";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
@@ -17,7 +17,7 @@ export class ConditionList extends SectionCollection<ConditionListType> {
     super(uri, parent);
   }
 
-  addSection(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>, unknown>): void {
+  addSection(uri: string, document: TextDocument, yml: Pair<Scalar<string>, YAMLMap<Scalar<string>>>): void {
     this.children.push(new ConditionListSection(uri, document, yml, this));
   }
 
@@ -43,12 +43,12 @@ export class ConditionListSection extends Document<ConditionListSectionType> {
   readonly type: ConditionListSectionType = "ConditionListSection";
   readonly parent: ConditionList;
 
-  constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: ConditionList) {
+  constructor(uri: string, document: TextDocument, yml: Pair<Scalar<string>, YAMLMap<Scalar<string>>>, parent: ConditionList) {
     super(uri, document, yml);
     this.parent = parent;
 
     // Parse Elements
-    this.yml.items.forEach(pair => {
+    this.yml.value?.items.forEach(pair => {
       if (isScalar<string>(pair.value) && isPair<Scalar<string>, Scalar<string>>(pair)) {
         // this.entries.push(new ElementEntry<U>(pair, this));
         this.addChild(new ConditionEntry(pair, this));

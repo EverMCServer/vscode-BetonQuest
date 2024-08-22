@@ -69,7 +69,7 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
         switch (pair.key.value) {
           case 'conditions':
             if (isMap<Scalar<string>>(pair.value) && isStringScalar(pair.key)) {
-              this.getConditionList().addSection(document.uri, document, pair.value);
+              this.getConditionList().addSection(document.uri, document, pair);
               // Set key's Semantic Token
               if (pair.key.range) {
                 this.getConditionList().getChildren().find(section => section.getUri() === document.uri)?.
@@ -85,7 +85,7 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
             break;
           case 'events':
             if (isMap<Scalar<string>>(pair.value) && isStringScalar(pair.key)) {
-              this.getEventList().addSection(document.uri, document, pair.value);
+              this.getEventList().addSection(document.uri, document, pair);
               // Set key's Semantic Token
               if (pair.key.range) {
                 this.getEventList().getChildren().find(section => section.getUri() === document.uri)?.
@@ -101,7 +101,7 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
             break;
           case 'objectives':
             if (isMap<Scalar<string>>(pair.value) && isStringScalar(pair.key)) {
-              this.getObjectiveList().addSection(document.uri, document, pair.value);
+              this.getObjectiveList().addSection(document.uri, document, pair);
               // Set key's Semantic Token
               if (pair.key.range) {
                 this.getObjectiveList().getChildren().find(section => section.getUri() === document.uri)?.
@@ -120,13 +120,13 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
           case 'conversations':
             if (isYamlMapPair(pair)) {
               pair.value?.items.forEach(p => {
-                if (isYamlMapPair(p) && isMap<Scalar<string>>(p.value)) {
+                if (isYamlMapPair<YAMLMap<Scalar<string>>>(p) && isMap<Scalar<string>>(p.value)) {
                   let conversation = this.getConversations(p.key.value)[0];
                   if (!conversation) {
                     conversation = new Conversation(this.uri, p.key.value, this);
                     this.addChild(conversation);
                   }
-                  conversation.addSection(document.uri, document, p.value);
+                  conversation.addSection(document.uri, document, p);
                   // Set key's Semantic Token
                   if (pair.key.range) {
                     conversation.getChildren().find(section => section.getUri() === document.uri)?.

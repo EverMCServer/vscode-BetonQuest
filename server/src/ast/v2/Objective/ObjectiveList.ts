@@ -1,6 +1,6 @@
 import { PublishDiagnosticsParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { Scalar, YAMLMap, isPair, isScalar } from "yaml";
+import { Pair, Scalar, YAMLMap, isPair, isScalar } from "yaml";
 
 import { LocationsResponse } from "betonquest-utils/lsp/file";
 
@@ -17,7 +17,7 @@ export class ObjectiveList extends SectionCollection<ObjectiveListType> {
     super(uri, parent);
   }
 
-  addSection(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>, unknown>): void {
+  addSection(uri: string, document: TextDocument, yml: Pair<Scalar<string>, YAMLMap<Scalar<string>>>): void {
     this.children.push(new ObjectiveListSection(uri, document, yml, this));
   }
 
@@ -43,12 +43,12 @@ export class ObjectiveListSection extends Document<ObjectiveListSectionType> {
   readonly type: ObjectiveListSectionType = "ObjectiveListSection";
   readonly parent: ObjectiveList;
 
-  constructor(uri: string, document: TextDocument, yml: YAMLMap<Scalar<string>>, parent: ObjectiveList) {
+  constructor(uri: string, document: TextDocument, yml: Pair<Scalar<string>, YAMLMap<Scalar<string>>>, parent: ObjectiveList) {
     super(uri, document, yml);
     this.parent = parent;
 
     // Parse Elements
-    this.yml.items.forEach(pair => {
+    this.yml.value?.items.forEach(pair => {
       if (isScalar<string>(pair.value) && isPair<Scalar<string>, Scalar<string>>(pair)) {
         // this.entries.push(new ElementEntry<U>(pair, this));
         this.addChild(new ObjectiveEntry(pair, this));
