@@ -32,8 +32,14 @@ export enum ArgumentType {
     /** Event ID */
     eventID = "eventID",
 
+    /** Event ID List */
+    eventIdList = "eventIdList",
+
     /** Objective ID */
     objectiveID = "objectiveID",
+
+    /** Objective ID List */
+    objectiveIdList = "objectiveIdList",
 
     /** BetonQuest's Item ID */
     itemID = "itemID",

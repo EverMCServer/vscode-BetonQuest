@@ -2,10 +2,10 @@ import { CompletionItem, CompletionItemKind, Diagnostic, DiagnosticSeverity } fr
 
 import ENTITY_TYPE_LIST from "betonquest-utils/bukkit/Data/EntityTypeList";
 
+import { DiagnosticCode } from "../../../utils/diagnostics";
 import { ArgumentEntityType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
 import { ArgumentValue } from "./ArgumentValue";
-import { DiagnosticCode } from "../../../utils/diagnostics";
 
 export class ArgumentEntity extends AbstractNodeV2<ArgumentEntityType> {
   readonly type: ArgumentEntityType = 'ArgumentEntity';

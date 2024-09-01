@@ -1,7 +1,8 @@
-import { CompletionItem } from "vscode-languageserver";
+import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
 
 import { ArgumentConditionIdType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
+import { ConditionKey } from "../Condition/ConditionKey";
 import { ArgumentValue } from "./ArgumentValue";
 
 export class ArgumentConditionID extends AbstractNodeV2<ArgumentConditionIdType> {
@@ -21,12 +22,26 @@ export class ArgumentConditionID extends AbstractNodeV2<ArgumentConditionIdType>
     this.parent = parent;
   }
 
-  getCompletions(offset: number, documentUri?: string): CompletionItem[] {
-    return ArgumentConditionID.getCompletions();
+  private getConditionIDs() {
+    return (this.getAllConditionEntries()
+      .map(e => e.getChild<ConditionKey>("ConditionKey"))
+      .filter(e => e !== undefined) as ConditionKey[])
+      .map<[string, string]>(e => [
+        e.value,
+        e.getPackagePath().join("-")
+      ]);
   }
 
-  static getCompletions(): CompletionItem[] {
-    return [];
+  getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
+    // return ArgumentConditionID.getCompletions();
+    const packagePath = this.getPackagePath().join("-");
+    return this.getConditionIDs().map(e => ({
+      label: e[0],
+      kind: CompletionItemKind.EnumMember,
+      detail: e[0],
+      documentation: "Package: " + e[1], // Package path
+      insertText: (packagePath === e[1] ? "" : e[1] + ".") + e[0]
+    }));
   }
 
 }

@@ -24,6 +24,10 @@ export class ObjectiveList extends Document<ObjectiveListType> {
     });
   }
 
+  _getObjectiveEntries(id?: string) {
+    return this.getChildren<ObjectiveEntry>('ObjectiveEntry', e => e.getChild<ObjectiveKey>('ObjectiveKey', id === undefined ? undefined : e => e.value === id));
+  }
+
   getLocations(yamlPath: string[], sourceUri: string) {
     const result: LocationsResponse = [];
     this

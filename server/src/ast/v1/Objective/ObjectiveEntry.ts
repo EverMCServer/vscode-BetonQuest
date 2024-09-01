@@ -70,7 +70,7 @@ export class ObjectiveEntry extends AbstractNodeV1<ObjectiveEntryType> {
     }
     this.kindString = matched[1];
     const kinds = Kinds.get();
-    const kind = kinds.find(k => k.value === this.kindString.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
+    const kind = kinds.find(k => k.value.toLocaleLowerCase() === this.kindString.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
     this.offsetKindStart = offsetStart + matched.index;
     this.offsetKindEnd = this.offsetKindStart + this.kindString.length;
     this.addChild(new ObjectiveKind(this.kindString, [this.offsetKindStart, this.offsetKindEnd], kind, this));

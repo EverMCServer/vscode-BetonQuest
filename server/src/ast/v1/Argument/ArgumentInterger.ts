@@ -1,11 +1,11 @@
 import { DiagnosticSeverity } from "vscode-languageserver";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { ArgumentEntityType } from "../../node";
+import { ArgumentIntergerType } from "../../node";
 import { AbstractNodeV1 } from "../../v1";
 import { ArgumentValue } from "./ArgumentValue";
 
-export class ArgumentInterger extends AbstractNodeV1<ArgumentEntityType> {
-  readonly type: ArgumentEntityType = 'ArgumentEntity';
+export class ArgumentInterger extends AbstractNodeV1<ArgumentIntergerType> {
+  readonly type: ArgumentIntergerType = 'ArgumentInterger';
   readonly offsetStart?: number;
   readonly offsetEnd?: number;
   readonly parent: ArgumentValue;

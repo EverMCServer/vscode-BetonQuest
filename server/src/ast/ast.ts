@@ -6,17 +6,23 @@ import { HoverInfo } from "../utils/hover";
 import { LocationLinkOffset } from "../utils/location";
 import { getParentUrl } from "../utils/url";
 import { ConversationOptionType } from "./node";
+import { ConditionList as V1ConditionList } from "./v1/Condition/ConditionList";
 import { FirstPointer as V1FirstPointer } from "./v1/Conversation/FirstPointer";
 import { Pointer as V1NpcPointer } from "./v1/Conversation/Option/Npc/Pointer";
 import { NpcOption as V1NpcOption } from "./v1/Conversation/Option/NpcOption";
 import { Pointer as V1PlayerPointer } from "./v1/Conversation/Option/Player/Pointer";
 import { PlayerOption as V1PlayerOption } from "./v1/Conversation/Option/PlayerOption";
+import { EventList as V1EventList } from "./v1/Event/EventList";
+import { ObjectiveList as V1ObjectiveList } from "./v1/Objective/ObjectiveList";
 import { PackageV1 } from "./v1/Package";
+import { ConditionList as V2ConditionList, ConditionListSection as V2ConditionListSection } from "./v2/Condition/ConditionList";
 import { FirstPointer as V2FirstPointer } from "./v2/Conversation/FirstPointer";
 import { Pointer as V2NpcPointer } from "./v2/Conversation/Option/Npc/Pointer";
 import { NpcOption as V2NpcOption } from "./v2/Conversation/Option/NpcOption";
 import { Pointer as V2PlayerPointer } from "./v2/Conversation/Option/Player/Pointer";
 import { PlayerOption as V2PlayerOption } from "./v2/Conversation/Option/PlayerOption";
+import { EventList as V2EventList, EventListSection as V2EventListSection } from "./v2/Event/EventList";
+import { ObjectiveList as V2ObjectiveList, ObjectiveListSection as V2ObjectiveListSection } from "./v2/Objective/ObjectiveList";
 import { PackageV2 } from "./v2/Package";
 
 // AST by workspace folders
@@ -300,13 +306,34 @@ export class AST {
   getV1ConditionEntry(id: string, packageUri: string) {
     return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getConditionEntries(id, packageUri));
   }
+  getV1AllConditionEntries() {
+    return this.packagesV1.flatMap(p =>
+      p.getChildren<V1ConditionList>("ConditionList").flatMap(c =>
+        c._getConditionEntries()
+      )
+    );
+  }
 
   getV1EventEntry(id: string, packageUri: string) {
     return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getEventEntries(id, packageUri));
   }
+  getV1AllEventEntries() {
+    return this.packagesV1.flatMap(p =>
+      p.getChildren<V1EventList>("EventList").flatMap(c =>
+        c._getEventEntries()
+      )
+    );
+  }
 
   getV1ObjectiveEntry(id: string, packageUri: string) {
     return this.packagesV1.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getObjectiveEntries(id, packageUri));
+  }
+  getV1AllObjectiveEntries() {
+    return this.packagesV1.flatMap(p =>
+      p.getChildren<V1ObjectiveList>("ObjectiveList").flatMap(c =>
+        c._getObjectiveEntries()
+      )
+    );
   }
 
   getV1ConversationOptions<T extends ConversationOptionType>(type: T, optionID?: string, conversationID?: string, packageUri?: string) {
@@ -373,13 +400,40 @@ export class AST {
   getV2ConditionEntry(id: string, packageUri: string) {
     return this.packagesV2.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getConditionEntries(id, packageUri));
   }
+  getV2AllConditionEntries() {
+    return this.packagesV2.flatMap(p =>
+      p.getChildren<V2ConditionList>("ConditionList").flatMap(c =>
+        c.getChildren<V2ConditionListSection>("ConditionListSection").flatMap(c =>
+          c._getConditionEntries()
+        )
+      )
+    );
+  }
 
   getV2EventEntry(id: string, packageUri: string) {
     return this.packagesV2.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getEventEntries(id, packageUri));
   }
+  getV2AllEventEntries() {
+    return this.packagesV2.flatMap(p =>
+      p.getChildren<V2EventList>("EventList").flatMap(c =>
+        c.getChildren<V2EventListSection>("EventListSection").flatMap(c =>
+          c._getEventEntries()
+        )
+      )
+    );
+  }
 
   getV2ObjectiveEntry(id: string, packageUri: string) {
     return this.packagesV2.filter(pkg => pkg.isPackageUri(packageUri)).flatMap(p => p.getObjectiveEntries(id, packageUri));
+  }
+  getV2AllObjectiveEntries() {
+    return this.packagesV2.flatMap(p =>
+      p.getChildren<V2ObjectiveList>("ObjectiveList").flatMap(c =>
+        c.getChildren<V2ObjectiveListSection>("ObjectiveListSection").flatMap(c =>
+          c._getObjectiveEntries()
+        )
+      )
+    );
   }
 
   getV2ConversationOptions<T extends ConversationOptionType>(type: T, optionID?: string, conversationID?: string, packageUri?: string) {

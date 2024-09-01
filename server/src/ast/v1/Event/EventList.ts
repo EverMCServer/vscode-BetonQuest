@@ -24,6 +24,10 @@ export class EventList extends Document<EventListType> {
     });
   }
 
+  _getEventEntries(id?: string) {
+    return this.getChildren<EventEntry>('EventEntry', e => e.getChild<EventKey>('EventKey', id === undefined ? undefined : e => e.value === id));
+  }
+
   getLocations(yamlPath: string[], sourceUri: string) {
     const result: LocationsResponse = [];
     this

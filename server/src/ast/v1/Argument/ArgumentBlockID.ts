@@ -2,24 +2,24 @@ import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
 
 import MATERIAL_LIST from "betonquest-utils/bukkit/Data/MaterialList";
 
-import { ArgumentEntityType } from "../../node";
+import { ArgumentBlockIdType } from "../../node";
 import { AbstractNodeV1 } from "../../v1";
 import { ArgumentValue } from "./ArgumentValue";
 
-export class ArgumentBlockID extends AbstractNodeV1<ArgumentEntityType> {
-  readonly type: ArgumentEntityType = 'ArgumentEntity';
-  readonly offsetStart?: number;
-  readonly offsetEnd?: number;
+export class ArgumentBlockID extends AbstractNodeV1<ArgumentBlockIdType> {
+  readonly type: ArgumentBlockIdType = 'ArgumentBlockID';
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
   readonly parent: ArgumentValue;
 
   constructor(
     argumentStr: string,
-    offsets: [offsetStart: number, stringStart: number, offsetEnd: number],
+    offsets: [offsetStart: number, offsetEnd: number],
     parent: ArgumentValue,
   ) {
     super();
     this.offsetStart = offsets[0];
-    this.offsetEnd = offsets[2];
+    this.offsetEnd = offsets[1];
     this.parent = parent;
   }
 

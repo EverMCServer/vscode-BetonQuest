@@ -212,6 +212,9 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
       return this.parentAst.getV2ConditionEntry(id, packageUri);
     }
   }
+  getAllConditionEntries(): ConditionEntry[] {
+    return this.parentAst.getV2AllConditionEntries();
+  }
 
   // Get Event entries from child or parent
   getEventEntries(id: string, packageUri: string): EventEntry[] {
@@ -221,6 +224,9 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
       return this.parentAst.getV2EventEntry(id, packageUri);
     }
   }
+  getAllEventEntries(): EventEntry[] {
+    return this.parentAst.getV2AllEventEntries();
+  }
 
   // Get Objective entries from child or parent
   getObjectiveEntries(id: string, packageUri: string): ObjectiveEntry[] {
@@ -229,6 +235,9 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
     } else {
       return this.parentAst.getV2ObjectiveEntry(id, packageUri);
     }
+  }
+  getAllObjectiveEntries(): ObjectiveEntry[] {
+    return this.parentAst.getV2AllObjectiveEntries();
   }
 
   getConversationOptions<T extends ConversationOptionType>(type: T, optionID?: string, conversationID?: string, packageUri?: string) {

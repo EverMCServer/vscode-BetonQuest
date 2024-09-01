@@ -58,8 +58,8 @@ export class ObjectiveListSection extends Document<ObjectiveListSectionType> {
     });
   }
 
-  private _getObjectiveEntries(id: string) {
-    return this.getChildren<ObjectiveEntry>('ObjectiveEntry', e => e.getChild<ObjectiveKey>('ObjectiveKey', e => e.value === id));
+  _getObjectiveEntries(id?: string) {
+    return this.getChildren<ObjectiveEntry>('ObjectiveEntry', e => e.getChild<ObjectiveKey>('ObjectiveKey', id === undefined ? undefined : e => e.value === id));
   }
 
   getPublishDiagnosticsParams() {

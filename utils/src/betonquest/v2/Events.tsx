@@ -384,7 +384,7 @@ export class Kinds {
                 // e.g. folder event1,event2,event3 delay:5 period:1
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: InputList, name: L("betonquest.v2.event.folder.mandatory.eventNames.name"), type: ArgumentType.unknown, format: 'string[,]', defaultValue: ['an_event_1'], placeholder: 'e.g. event1', tooltip: L("betonquest.v2.event.folder.mandatory.eventNames.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: InputList, name: L("betonquest.v2.event.folder.mandatory.eventNames.name"), type: ArgumentType.eventIdList, format: 'string[,]', defaultValue: ['an_event_1'], placeholder: 'e.g. event1', tooltip: L("betonquest.v2.event.folder.mandatory.eventNames.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                     ],
                     optional: [
                         { jsx: Number, name: L("betonquest.v2.event.folder.optional.delay.name"), type: ArgumentType.unknown, key: 'delay', format: 'float', placeholder: L("(none)"), tooltip: L("betonquest.v2.event.folder.optional.delay.tooltip"), config: { min: 0 }, allowVariable: true },
@@ -959,7 +959,7 @@ export class Kinds {
                     mandatory: [
                         // For some reason this can be optional in BQ: https://github.com/BetonQuest/BetonQuest/blob/e80ccaba416b1fa458968bc3a35e5a585e06c2e0/src/main/java/org/betonquest/betonquest/quest/event/run/RunForAllEventFactory.java#L34
                         // But it is better to make it mandatory.
-                        { jsx: InputList, name: L("betonquest.v2.event.runForAll.mandatory.events.name"), type: ArgumentType.unknown, key: 'events', format: 'string[,]', defaultValue: ['an_event_id_1'], placeholder: 'e.g. kickPlayer', tooltip: L("betonquest.v2.event.runForAll.mandatory.events.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: InputList, name: L("betonquest.v2.event.runForAll.mandatory.events.name"), type: ArgumentType.eventIdList, key: 'events', format: 'string[,]', defaultValue: ['an_event_id_1'], placeholder: 'e.g. kickPlayer', tooltip: L("betonquest.v2.event.runForAll.mandatory.events.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                     ],
                     optional: [
                         // { jsx: InputList, name: 'Event Names', key: 'events', type: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: 'List of Event Names to be executed', config: { allowedPatterns: [/^\S*$/] } },
@@ -1305,7 +1305,7 @@ export class Kinds {
         ] as ElementKind<Event>[]).map(kind => {
             // Default optional arguments for every kind
             const defaultOptionalArguments: ArgumentsPatternOptional[] = [
-                { jsx: InputList, name: L("betonquest.v2.event.*.optional.conditions.name"), type: ArgumentType.any, key: 'conditions', format: 'string[,]', placeholder: L("(none)"), tooltip: L("betonquest.v2.event.*.optional.conditions.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                { jsx: InputList, name: L("betonquest.v2.event.*.optional.conditions.name"), type: ArgumentType.conditionIdList, key: 'conditions', format: 'string[,]', placeholder: L("(none)"), tooltip: L("betonquest.v2.event.*.optional.conditions.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
             ];
             if (kind.argumentsPatterns.optional) {
                 kind.argumentsPatterns.optional.push(...defaultOptionalArguments);

@@ -58,8 +58,8 @@ export class EventListSection extends Document<EventListSectionType> {
     });
   }
 
-  private _getEventEntries(id: string) {
-    return this.getChildren<EventEntry>('EventEntry', e => e.getChild<EventKey>('EventKey', e => e.value === id));
+  _getEventEntries(id?: string) {
+    return this.getChildren<EventEntry>('EventEntry', e => e.getChild<EventKey>('EventKey', id === undefined ? undefined : e => e.value === id));
   }
 
   getPublishDiagnosticsParams() {

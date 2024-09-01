@@ -70,7 +70,7 @@ export class EventEntry extends AbstractNodeV1<EventEntryType> {
     }
     this.kindString = matched[1];
     const kinds = Kinds.get();
-    const kind = kinds.find(k => k.value === this.kindString.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
+    const kind = kinds.find(k => k.value.toLocaleLowerCase() === this.kindString.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
     this.offsetKindStart = offsetStart + matched.index;
     this.offsetKindEnd = this.offsetKindStart + this.kindString.length;
     this.addChild(new EventKind(this.kindString, [this.offsetKindStart, this.offsetKindEnd], kind, this));

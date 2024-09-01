@@ -123,6 +123,9 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
       return this.parentAst.getV1ConditionEntry(id, packageUri);
     }
   }
+  getAllConditionEntries(): ConditionEntry[] {
+    return this.parentAst.getV1AllConditionEntries();
+  }
 
   // Get Event entries from child or parent
   getEventEntries(id: string, packageUri: string): EventEntry[] {
@@ -131,6 +134,9 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
     } else {
       return this.parentAst.getV1EventEntry(id, packageUri);
     }
+  }
+  getAllEventEntries(): EventEntry[] {
+    return this.parentAst.getV1AllEventEntries();
   }
 
   // Get Objective entries from child or parent
@@ -142,6 +148,10 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
       return this.parentAst.getV1ObjectiveEntry(id, packageUri);
     }
   }
+  getAllObjectiveEntries(): ObjectiveEntry[] {
+    return this.parentAst.getV1AllObjectiveEntries();
+  }
+
 
   getConversationOptions<T extends ConversationOptionType>(type: T, optionID?: string, conversationID?: string, packageUri?: string): NpcOption[] | PlayerOption[] {
     if (packageUri && this.isPackageUri(packageUri)) {

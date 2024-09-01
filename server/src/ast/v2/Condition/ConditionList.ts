@@ -58,8 +58,8 @@ export class ConditionListSection extends Document<ConditionListSectionType> {
     });
   }
 
-  private _getConditionEntries(id: string) {
-    return this.getChildren<ConditionEntry>('ConditionEntry', e => e.getChild<ConditionKey>('ConditionKey', e => e.value === id));
+  _getConditionEntries(id?: string) {
+    return this.getChildren<ConditionEntry>('ConditionEntry', e => e.getChild<ConditionKey>('ConditionKey', id === undefined ? undefined : e => e.value === id));
   }
 
   getPublishDiagnosticsParams() {

@@ -30,7 +30,8 @@ export function server(connection: Connection): void {
     let capabilities = params.capabilities;
 
     // Get client locale and set i18n
-    setLocale(params.locale ?? 'en');
+    // setLocale(params.locale ?? 'en');
+    setLocale('zh-cn');
 
     // Does the client support the `workspace/configuration` request?
     // If not, we fall back using global settings.

@@ -24,6 +24,10 @@ export class ConditionList extends Document<ConditionListType> {
     });
   }
 
+  _getConditionEntries(id?: string) {
+    return this.getChildren<ConditionEntry>('ConditionEntry', e => e.getChild<ConditionKey>('ConditionKey', id === undefined ? undefined : e => e.value === id));
+  }
+
   getLocations(yamlPath: string[], sourceUri: string) {
     const result: LocationsResponse = [];
     this

@@ -318,7 +318,7 @@ export class Kinds {
                 // e.g. folder event1,event2,event3 delay:5 period:1
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: InputList, name: L("betonquest.v1.event.folder.mandatory.eventNames.name"), type: ArgumentType.unknown, format: 'string[,]', defaultValue: ['an_event_1'], placeholder: 'e.g. event1', tooltip: L("betonquest.v1.event.folder.mandatory.eventNames.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: InputList, name: L("betonquest.v1.event.folder.mandatory.eventNames.name"), type: ArgumentType.eventIdList, format: 'string[,]', defaultValue: ['an_event_1'], placeholder: 'e.g. event1', tooltip: L("betonquest.v1.event.folder.mandatory.eventNames.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                     ],
                     optional: [
                         { jsx: Number, name: L("betonquest.v1.event.folder.optional.delay.name"), type: ArgumentType.unknown, key: 'delay', format: 'float', placeholder: L("(none)"), tooltip: L("betonquest.v1.event.folder.optional.delay.tooltip"), config: { min: 0 }, allowVariable: true },
