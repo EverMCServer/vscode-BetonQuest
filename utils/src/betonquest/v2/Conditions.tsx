@@ -709,6 +709,44 @@ export class Kinds {
                     ]
                 }
             },
+
+            // Third-party Plugins Integrations
+
+            // Citizens - https://betonquest.org/2.1/Documentation/Scripting/Building-Blocks/Integration-List/#citizens
+            {
+                value: 'npcdistance',
+                display: L("betonquest.v2.condition.npcdistance.display"),
+                description: L("betonquest.v2.condition.npcdistance.description"),
+                argumentsPatterns: {
+                    mandatory: [
+                        { jsx: Input, name: L("betonquest.v2.condition.npcdistance.mandatory.npcID.name"), type: ArgumentType.string, format: 'string', defaultValue: '1', placeholder: 'e.g. 1', tooltip: L("betonquest.v2.condition.npcdistance.mandatory.npcID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Number, name: L("betonquest.v2.condition.npcdistance.mandatory.distance.name"), type: ArgumentType.interger, format: 'int', defaultValue: 1, tooltip: L("betonquest.v2.condition.npcdistance.mandatory.distance.tooltip"), config: { min: 0 }, allowVariable: true },
+                    ]
+                }
+            },
+            {
+                value: 'npclocation',
+                display: L("betonquest.v2.condition.npclocation.display"),
+                description: L("betonquest.v2.condition.npclocation.description"),
+                argumentsPatterns: {
+                    mandatory: [
+                        { jsx: Input, name: L("betonquest.v2.condition.npclocation.mandatory.npcID.name"), type: ArgumentType.string, format: 'string', defaultValue: '1', placeholder: 'e.g. 1', tooltip: L("betonquest.v2.condition.npclocation.mandatory.npcID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: BaseLocation, name: L("betonquest.v2.condition.npclocation.mandatory.location.name"), type: ArgumentType.location, format: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
+                        { jsx: Number, name: L("betonquest.v2.condition.npclocation.mandatory.radius.name"), type: ArgumentType.interger, format: 'int', defaultValue: 1, config: { min: 0 }, allowVariable: true },
+                    ]
+                }
+            },
+            {
+                value: 'npcregion',
+                display: L("betonquest.v2.condition.npcregion.display"),
+                description: L("betonquest.v2.condition.npcregion.description"),
+                argumentsPatterns: {
+                    mandatory: [
+                        { jsx: Input, name: L("betonquest.v2.condition.npcregion.mandatory.npcID.name"), type: ArgumentType.string, format: 'string', defaultValue: '1', placeholder: 'e.g. 1', tooltip: L("betonquest.v2.condition.npcregion.mandatory.npcID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Input, name: L("betonquest.v2.condition.npcregion.mandatory.regionID.name"), type: ArgumentType.string, format: 'string', defaultValue: 'region_1', placeholder: 'e.g. region_1', tooltip: L("betonquest.v2.condition.npcregion.mandatory.regionID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                    ]
+                }
+            },
         ];
     }
 }

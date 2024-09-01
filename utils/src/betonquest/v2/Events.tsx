@@ -1301,7 +1301,12 @@ export class Kinds {
                         { jsx: Input, name: L("betonquest.v2.event.weather.optional.world.name"), type: ArgumentType.unknown, key: 'world', format: 'string', placeholder: 'current', tooltip: L("betonquest.v2.event.weather.optional.world.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                     ]
                 }
-            }
+            },
+
+            // Third-party Plugins Integrations
+
+            // Citizens - https://betonquest.org/2.1/Documentation/Scripting/Building-Blocks/Integration-List/#citizens
+            // TODO
         ] as ElementKind<Event>[]).map(kind => {
             // Default optional arguments for every kind
             const defaultOptionalArguments: ArgumentsPatternOptional[] = [

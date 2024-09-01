@@ -547,6 +547,11 @@ export class Kinds {
                     ]
                 }
             },
+
+            // Third-party Plugins Integrations
+
+            // Citizens - https://betonquest.org/2.1/Documentation/Scripting/Building-Blocks/Integration-List/#citizens
+            // TODO
         ] as ElementKind<Objective>[]).map(kind => {
             // Default optional arguments for every kind
             const defaultOptionalArguments: ArgumentsPatternOptional[] = [
