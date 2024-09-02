@@ -6,6 +6,7 @@ import Event from "../Event";
 import { ElementKind } from "./Element";
 
 import BaseLocation from "../../ui/Input/BaseLocation";
+import BaseLocationList from "../../ui/Input/BaseLocationList";
 import BlockSelector from "../../ui/Input/BlockSelector";
 import Checkbox from "../../ui/Input/Checkbox";
 import EntityType from "../../ui/Input/EntityType";
@@ -1306,7 +1307,44 @@ export class Kinds {
             // Third-party Plugins Integrations
 
             // Citizens - https://betonquest.org/2.1/Documentation/Scripting/Building-Blocks/Integration-List/#citizens
-            // TODO
+            {
+                value: 'movenpc',
+                display: L("betonquest.v2.event.movenpc.display"),
+                description: L("betonquest.v2.event.movenpc.description"),
+                argumentsPatterns: {
+                    mandatory: [
+                        { jsx: Input, name: L("betonquest.v2.event.movenpc.mandatory.npcID.name"), type: ArgumentType.string, format: 'string', defaultValue: '1', placeholder: 'e.g. 1', tooltip: L("betonquest.v2.event.movenpc.mandatory.npcID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: BaseLocationList, name: L("betonquest.v2.event.movenpc.mandatory.locations.name"), type: ArgumentType.locationList, format: 'string[,]', defaultValue: ['0.5;64;0.5;world'], tooltip: L("betonquest.v2.event.movenpc.mandatory.locations.tooltip"), allowVariable: true },
+                    ],
+                    optional: [
+                        { jsx: Checkbox, name: L("betonquest.v2.event.movenpc.optional.block.name"), type: ArgumentType.constant, key: 'block', format: 'boolean', tooltip: L("betonquest.v2.event.movenpc.optional.block.tooltip") },
+                        { jsx: Number, name: L("betonquest.v2.event.movenpc.optional.wait.name"), type: ArgumentType.interger, key: 'wait', format: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.event.movenpc.optional.wait.tooltip"), config: { min: 0 }, allowVariable: true },
+                        { jsx: InputList, name: L("betonquest.v2.event.movenpc.optional.done.name"), key: 'done', type: ArgumentType.eventIdList, format: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: L("betonquest.v2.event.movenpc.optional.done.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: InputList, name: L("betonquest.v2.event.movenpc.optional.fail.name"), key: 'fail', type: ArgumentType.eventIdList, format: 'string[,]', placeholder: 'e.g. kickPlayer', tooltip: L("betonquest.v2.event.movenpc.optional.fail.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                    ]
+                }
+            },
+            {
+                value: 'stopnpc',
+                display: L("betonquest.v2.event.stopnpc.display"),
+                description: L("betonquest.v2.event.stopnpc.description"),
+                argumentsPatterns: {
+                    mandatory: [
+                        { jsx: Input, name: L("betonquest.v2.event.stopnpc.mandatory.npcID.name"), type: ArgumentType.string, format: 'string', defaultValue: '1', placeholder: 'e.g. 1', tooltip: L("betonquest.v2.event.stopnpc.mandatory.npcID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                    ],
+                }
+            },
+            {
+                value: 'teleportnpc',
+                display: L("betonquest.v2.event.teleportnpc.display"),
+                description: L("betonquest.v2.event.teleportnpc.description"),
+                argumentsPatterns: {
+                    mandatory: [
+                        { jsx: Input, name: L("betonquest.v2.event.teleportnpc.mandatory.npcID.name"), type: ArgumentType.string, format: 'string', defaultValue: '1', placeholder: 'e.g. 1', tooltip: L("betonquest.v2.event.teleportnpc.mandatory.npcID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: BaseLocation, name: L("betonquest.v2.event.teleportnpc.mandatory.location.name"), type: ArgumentType.unknown, format: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
+                    ],
+                }
+            },
         ] as ElementKind<Event>[]).map(kind => {
             // Default optional arguments for every kind
             const defaultOptionalArguments: ArgumentsPatternOptional[] = [

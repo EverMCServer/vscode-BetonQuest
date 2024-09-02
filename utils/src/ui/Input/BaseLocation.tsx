@@ -68,7 +68,7 @@ export default function (props: InputProps) {
     const cachedValueBeforeToggle = useRef(props.value);
 
     return (
-        <Space direction="vertical" style={{ width: "100%" }}>
+        <Space direction="vertical" size={2} style={{ width: "100%" }}>
             {props.config?.optional ? <Space.Compact block><Checkbox
                 checked={props.value ? true : false}
                 onChange={e => {

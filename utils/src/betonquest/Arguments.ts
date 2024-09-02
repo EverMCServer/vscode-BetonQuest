@@ -86,6 +86,9 @@ export enum ArgumentType {
     /** Location coordinate */
     location = "location",
 
+    /** Location coordinate List */
+    locationList = "locationList",
+
     /** Entity / Mob name */
     entityName = "entityName",
 
