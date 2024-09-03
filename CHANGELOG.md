@@ -4,6 +4,20 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.5.3 pre-release] - 2024-09-03
+
+### Added
+- Add more Code Completions over Conditions / Events / Objectives
+- Add Citizens integrations
+
+### Fixed
+- Fix select style
+
+## [0.5.2 pre-release] - 2024-08-17
+
+### Added
+- Add more Code Completions over Conditions / Events / Objectives
+
 ## [0.5.1 pre-release] - 2024-07-11
 
 ### Fixed

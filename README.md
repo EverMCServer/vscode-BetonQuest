@@ -1,6 +1,7 @@
 # BetonQuest IntelliSense and GUI Editor
 
-[![VS Marketplace](https://img.shields.io/visual-studio-marketplace/v/EverMC.betonquest?color=brightgreen&label=VS%20Marketplace&logo=visual-studio-code&style=flat-square)](https://marketplace.visualstudio.com/items?itemName=EverMC.betonquest)
+[![VS Marketplace](https://img.shields.io/visual-studio-marketplace/v/EverMC.betonquest?color=brightgreen&label=Release&logo=visual-studio-code&style=flat-square)](https://marketplace.visualstudio.com/items?itemName=EverMC.betonquest)
+[![VS Marketplace](https://img.shields.io/visual-studio-marketplace/v/EverMC.betonquest?color=ff9000&label=Pre-Release&logo=visual-studio-code&style=flat-square&include_prereleases)](https://marketplace.visualstudio.com/items?itemName=EverMC.betonquest)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue?style=flat-square)](https://github.com/EverMCServer/vscode-BetonQuest/blob/main/LICENSE)
 
 
@@ -47,12 +48,12 @@ For a quick trial. It works on your tablet and even a cellphone!
     - ✅ Code semantic highlight.
     - ⬜ Hint / errors translation.
     - ⬜ Semantic highlight and references for instructions.
-    - ⬜ Code completion.
+    - ⬜ (WIP) Code completion.
 - GUI editor
     - ✅ GUI editor for `Conversations`, `Events`, `Conditions`, `Objectives` with built-in [documentation](https://betonquest.org/2.1/Documentation/Overview/) support.
     - ⬜ [Journal](https://betonquest.org/2.1/Documentation/Features/Journal/) editing.
     - ⬜ [Items](https://betonquest.org/2.1/Documentation/Features/Items/) editing.
-    - ⬜ [Intergrated plugins](https://betonquest.org/2.1/Documentation/Scripting/Building-Blocks/Integration-List/) support.
+    - ⬜ (WIP) [Integrated plugins](https://betonquest.org/2.1/Documentation/Scripting/Building-Blocks/Integration-List/) support.
     - ⬜ Advanced Variable editor.
     - ⬜ Package configuration.
     - ⬜ [Menu](https://betonquest.org/2.1/Documentation/Features/Menus/Menu/) editing.
@@ -136,6 +137,8 @@ Helps on translating this extension are welcomed. Please consider submitting you
 - Add Language Server for BetonQuest v1 and v2 scripts
 - Add Definitions and References searching
 - Add Semantic Highlight
+- Add Code Completions (wip)
+- Add Citizens integrations
 - Fix various bugs
 
 ### 0.4.1
