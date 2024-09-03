@@ -25,6 +25,10 @@
     color: var(--vscode-input-placeholderForeground);
 }
 
+.ant-select .ant-select-selection-placeholder {
+    color: var(--vscode-input-placeholderForeground);
+}
+
 /* suffix icons */
 
 .ant-select .ant-select-arrow {

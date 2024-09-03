@@ -890,7 +890,7 @@
     "betonquest.v1.objective.npcrange.mandatory.type.option.inside": "在范围内",
     "betonquest.v1.objective.npcrange.mandatory.type.option.outside": "在范围外",
     "betonquest.v1.objective.npcrange.mandatory.radius.name": "半径",
-    "betonquest.v1.objective.npcrange.mandatory.radius.tooltip": "以 NPC 为起点的半径范围",
+    "betonquest.v1.objective.npcrange.mandatory.radius.tooltip": "以 NPC 为圆心的半径范围",
 
     "betonquest.v2.event.*.display": "*",
     "betonquest.v2.event.*.mandatory.value.name": "值",
@@ -1918,7 +1918,7 @@
     "betonquest.v2.objective.npcrange.mandatory.type.option.inside": "在范围内",
     "betonquest.v2.objective.npcrange.mandatory.type.option.outside": "在范围外",
     "betonquest.v2.objective.npcrange.mandatory.radius.name": "半径",
-    "betonquest.v2.objective.npcrange.mandatory.radius.tooltip": "以 NPC 为起点的半径范围",
+    "betonquest.v2.objective.npcrange.mandatory.radius.tooltip": "以 NPC 为圆心的半径范围",
 
     "a": ""
 }
