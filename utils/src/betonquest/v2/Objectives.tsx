@@ -562,11 +562,11 @@ export class Kinds {
                     optional: [
                         { jsx: Checkbox, name: L("betonquest.v2.objective.npcinteract.optional.cancel.name"), type: ArgumentType.unknown, key: 'cancel', format: 'boolean', tooltip: L("betonquest.v2.objective.npcinteract.optional.cancel.tooltip") },
                         {
-                            jsx: Select, name: L("betonquest.v2.objective.npcinteract.optional.interaction.name"), type: ArgumentType.unknown, key: 'interaction', format: 'string', defaultValue: 'any', placeholder: 'e.g. any', tooltip: L("betonquest.v2.objective.npcinteract.optional.interaction.tooltip"), config: {
+                            jsx: Select, name: L("betonquest.v2.objective.npcinteract.optional.interaction.name"), type: ArgumentType.unknown, key: 'interaction', format: 'string', defaultValue: 'any', placeholder: 'e.g. any', config: {
                                 options: [
-                                    { label: 'Any', value: 'any' },
-                                    { label: 'Right', value: 'right' },
-                                    { label: 'Left', value: 'left' },
+                                    { label: L('betonquest.v2.objective.npcinteract.optional.interaction.option.any'), value: 'any' },
+                                    { label: L('betonquest.v2.objective.npcinteract.optional.interaction.option.right'), value: 'right' },
+                                    { label: L('betonquest.v2.objective.npcinteract.optional.interaction.option.left'), value: 'left' },
                                 ] as DefaultOptionType[]
                             }
                         },
@@ -582,7 +582,8 @@ export class Kinds {
                         { jsx: Input, name: L("betonquest.v2.objective.npckill.mandatory.npcID.name"), type: ArgumentType.string, format: 'string', defaultValue: '1', placeholder: 'e.g. 1', tooltip: L("betonquest.v2.objective.npckill.mandatory.npcID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                     ],
                     optional: [
-                        { jsx: Number, name: L("betonquest.v2.objective.npckill.optional.amount.name"), type: ArgumentType.unknown, key: 'amount', format: 'int', tooltip: L("betonquest.v2.objective.npckill.optional.amount.tooltip"), placeholder: '1', config: { min: 0, undefinedValue: 0 }, allowVariable: true },
+                        { jsx: Number, name: L("betonquest.v2.objective.npckill.optional.amount.name"), type: ArgumentType.unknown, key: 'amount', format: 'int', placeholder: '1', config: { min: 0, undefinedValue: 0 }, allowVariable: true },
+                        { jsx: Number, name: L("betonquest.v2.objective.npckill.optional.notify.name"), type: ArgumentType.unknown, key: 'notify', format: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v2.objective.npckill.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
                     ]
                 }
             },
@@ -592,14 +593,14 @@ export class Kinds {
                 description: L("betonquest.v2.objective.npcrange.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Input, name: L("betonquest.v2.objective.npcrange.mandatory.npcID.name"), type: ArgumentType.string, format: 'string', defaultValue: '1', placeholder: 'e.g. 1', tooltip: L("betonquest.v2.objective.npcrange.mandatory.npcID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: InputList, name: L("betonquest.v2.objective.npcrange.mandatory.npcID.name"), type: ArgumentType.string, format: 'string[,]', defaultValue: ['1'], placeholder: 'e.g. 1', tooltip: L("betonquest.v2.objective.npcrange.mandatory.npcID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                         {
-                            jsx: Select, name: L("betonquest.v2.objective.npcrange.mandatory.type.name"), type: ArgumentType.unknown, format: 'string', defaultValue: 'HEAD', placeholder: 'e.g. HEAD', config: {
+                            jsx: Select, name: L("betonquest.v2.objective.npcrange.mandatory.type.name"), type: ArgumentType.unknown, format: 'string', defaultValue: 'enter', placeholder: 'e.g. enter', config: {
                                 options: [
-                                    { label: 'Enter', value: 'enter' },
-                                    { label: 'Leave', value: 'leave' },
-                                    { label: 'Inside', value: 'inside' },
-                                    { label: 'Outside', value: 'outside' },
+                                    { label: L('betonquest.v2.objective.npcrange.mandatory.type.option.enter'), value: 'enter' },
+                                    { label: L('betonquest.v2.objective.npcrange.mandatory.type.option.leave'), value: 'leave' },
+                                    { label: L('betonquest.v2.objective.npcrange.mandatory.type.option.inside'), value: 'inside' },
+                                    { label: L('betonquest.v2.objective.npcrange.mandatory.type.option.outside'), value: 'outside' },
                                 ] as DefaultOptionType[]
                             }
                         },

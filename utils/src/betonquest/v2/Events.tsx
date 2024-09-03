@@ -1341,7 +1341,7 @@ export class Kinds {
                 argumentsPatterns: {
                     mandatory: [
                         { jsx: Input, name: L("betonquest.v2.event.teleportnpc.mandatory.npcID.name"), type: ArgumentType.string, format: 'string', defaultValue: '1', placeholder: 'e.g. 1', tooltip: L("betonquest.v2.event.teleportnpc.mandatory.npcID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
-                        { jsx: BaseLocation, name: L("betonquest.v2.event.teleportnpc.mandatory.location.name"), type: ArgumentType.unknown, format: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
+                        { jsx: BaseLocation, name: L("betonquest.v2.event.teleportnpc.mandatory.location.name"), type: ArgumentType.location, format: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
                     ],
                 }
             },
