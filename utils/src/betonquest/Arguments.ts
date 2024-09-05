@@ -17,6 +17,9 @@ export enum ArgumentType {
     /** Interger number */
     interger = "interger",
 
+    /** Interger number list */
+    intergerList = "intergerList",
+
     /** Floating point number */
     float = "float",
 
@@ -26,19 +29,19 @@ export enum ArgumentType {
     /** Condiiton ID */
     conditionID = "conditionID",
 
-    /** Condiiton ID List */
+    /** Condiiton ID list */
     conditionIdList = "conditionIdList",
 
     /** Event ID */
     eventID = "eventID",
 
-    /** Event ID List */
+    /** Event ID list */
     eventIdList = "eventIdList",
 
     /** Objective ID */
     objectiveID = "objectiveID",
 
-    /** Objective ID List */
+    /** Objective ID list */
     objectiveIdList = "objectiveIdList",
 
     /** BetonQuest's Item ID */
@@ -68,6 +71,9 @@ export enum ArgumentType {
     /** Stage name */
     stageName = "stageName",
 
+    /** Stage name list */
+    stageNameList = "stageNameList",
+
     /** Complete Instructions seprated by `^` */
     instructionSet = "instructionSet",
 
@@ -86,7 +92,7 @@ export enum ArgumentType {
     /** Location coordinate */
     location = "location",
 
-    /** Location coordinate List */
+    /** Location coordinate list */
     locationList = "locationList",
 
     /** Entity / Mob name */
@@ -116,8 +122,14 @@ export enum ArgumentType {
     /** Minecraft's Entities with amount devided by `:`, e.g. CREEPER:2 */
     entityListWithAmount = "entityListWithAmount",
 
+    /** Minecraft's Enchantment List with level */
+    enchantmentListWithLevel = "enchantmentListWithLevel",
+
     /** Minecraft's Potion Effect */
     potionEffect = "potionEffect",
+
+    /** Minecraft's Dye Color */
+    dyeColor = "dyeColor",
 
     /** Any string */
     any = "any",
