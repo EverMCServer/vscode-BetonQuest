@@ -1313,7 +1313,7 @@ export class Kinds {
                 description: L("betonquest.v2.event.movenpc.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Input, name: L("betonquest.v2.event.movenpc.mandatory.npcID.name"), type: ArgumentType.string, format: 'string', defaultValue: '1', placeholder: 'e.g. 1', tooltip: L("betonquest.v2.event.movenpc.mandatory.npcID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Number, name: L("betonquest.v2.event.movenpc.mandatory.npcID.name"), type: ArgumentType.string, format: 'int', defaultValue: 0, tooltip: L("betonquest.v2.event.movenpc.mandatory.npcID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                         { jsx: BaseLocationList, name: L("betonquest.v2.event.movenpc.mandatory.locations.name"), type: ArgumentType.locationList, format: 'string[,]', defaultValue: ['0.5;64;0.5;world'], tooltip: L("betonquest.v2.event.movenpc.mandatory.locations.tooltip"), allowVariable: true },
                     ],
                     optional: [
@@ -1330,7 +1330,7 @@ export class Kinds {
                 description: L("betonquest.v2.event.stopnpc.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Input, name: L("betonquest.v2.event.stopnpc.mandatory.npcID.name"), type: ArgumentType.string, format: 'string', defaultValue: '1', placeholder: 'e.g. 1', tooltip: L("betonquest.v2.event.stopnpc.mandatory.npcID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Number, name: L("betonquest.v2.event.stopnpc.mandatory.npcID.name"), type: ArgumentType.string, format: 'int', defaultValue: 0, tooltip: L("betonquest.v2.event.stopnpc.mandatory.npcID.tooltip"), config: { min: 0 } },
                     ],
                 }
             },
@@ -1340,7 +1340,7 @@ export class Kinds {
                 description: L("betonquest.v2.event.teleportnpc.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Input, name: L("betonquest.v2.event.teleportnpc.mandatory.npcID.name"), type: ArgumentType.string, format: 'string', defaultValue: '1', placeholder: 'e.g. 1', tooltip: L("betonquest.v2.event.teleportnpc.mandatory.npcID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Number, name: L("betonquest.v2.event.teleportnpc.mandatory.npcID.name"), type: ArgumentType.string, format: 'int', defaultValue: 0, tooltip: L("betonquest.v2.event.teleportnpc.mandatory.npcID.tooltip"), config: { min: 0 } },
                         { jsx: BaseLocation, name: L("betonquest.v2.event.teleportnpc.mandatory.location.name"), type: ArgumentType.location, format: 'string', defaultValue: '0.5;64;0.5;world', config: { defaultValue: [0.5, 64, 0.5, "world", 0, 0] }, allowVariable: true },
                     ],
                 }

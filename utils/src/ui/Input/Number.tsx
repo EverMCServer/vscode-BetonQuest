@@ -8,6 +8,7 @@ import { InputProps } from "./Common";
  * Input for number.
  * 
  * - `value` - Number value
+ * - `defaultValue` - Default Number when empty
  * - `placeholder` - Number Input placeholder
  * - `config`:
  *   - `min` - Minimum allowed value.
@@ -15,6 +16,7 @@ import { InputProps } from "./Common";
  *   - `step` - Increment step value. Default to 1.
  *   - `undefinedValue` - Output undefined when value equals to this. Usefull when decreasing to 0.
  *   - `nullValue` - Output null when value equals to this. Usefull when null/Nan means 1.
+ *   - `defaultWhenEmpty` - Output defaultValue when empty.
  * @param props 
  * @returns 
  */
@@ -32,7 +34,9 @@ export default function (props: InputProps) {
         <InputNumber
             defaultValue={props.defaultValue as number}
             value={value}
+            onInput={(text) => props.config && setValue(props.config.formatter(text))} // Format input
             onChange={(value) => {
+                props.config?.formatter && value && (value = props.config?.formatter(value.toString())); // Format value
                 if (value === null || value === props.config?.undefinedValue) {
                     value = undefined;
                 }
@@ -40,12 +44,16 @@ export default function (props: InputProps) {
                 if (props.config?.nullValue && value === props.config?.nullValue) {
                     value = null;
                 }
+                if (!value && props.defaultValue !== undefined && props.config?.defaultWhenEmpty) {
+                    value = props.defaultValue;
+                }
                 props.onChange(value);
             }}
             placeholder={props.placeholder}
             min={props.config?.min}
             max={props.config?.max}
             step={props.config?.step}
+            // formatter={props.config?.formatter}
             size="small"
         />
     );

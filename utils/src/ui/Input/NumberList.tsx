@@ -3,15 +3,11 @@ import { useEffect, useState } from "react";
 
 import { VscClose } from "react-icons/vsc";
 import L from "../../i18n/i18n";
-import BaseLocation from "./BaseLocation";
 import { InputProps } from "./Common";
-
-// https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Data-Formats/#block-selectors
-
-type BaseLocationType = [defaultX: number, defaultY: number, defaultZ: number, defaultWorld: string, defaultYaw?: number, defaultPitch?: number];
+import Number from "./Number";
 
 /**
- * Input for Location List.
+ * Input for Number List.
  * 
  * - `value` - String value
  * - `config`:
@@ -21,12 +17,12 @@ type BaseLocationType = [defaultX: number, defaultY: number, defaultZ: number, d
  * @returns 
  */
 export default function (props: InputProps) {
-    const [valueArray, setValueArray] = useState<string[]>([]);
+    const [valueArray, setValueArray] = useState<number[]>([]);
     useEffect(() => {
-        setValueArray(props.value as string[] || props.defaultValue || ["0.5;64;0.5;world"]);
+        setValueArray(props.value as number[] || props.defaultValue || [0]);
     }, [props.value]);
 
-    const onChange = (value: string, index: number) => {
+    const onChange = (value: number, index: number) => {
         // Update value
         const valueUpdate = valueArray.slice();
         valueUpdate[index] = value;
@@ -44,13 +40,8 @@ export default function (props: InputProps) {
     const onAdd = () => {
         const valueUpdate = valueArray.slice();
 
-        // Do not allow adding new empty value if there is already one
-        if (valueUpdate.length > 0 && valueUpdate.some(v => v[0].length === 0)) {
-            return;
-        }
-
         // Update value
-        valueUpdate.push('');
+        valueUpdate.push(0);
         setValueArray(valueUpdate);
         props.onChange(valueUpdate);
     };
@@ -67,7 +58,7 @@ export default function (props: InputProps) {
                     key={index}
                     style={{ width: '-webkit-fill-available' }}
                 >
-                    <BaseLocation
+                    <Number
                         value={location}
                         defaultValue={props.defaultValue[0]}
                         placeholder={props.placeholder}

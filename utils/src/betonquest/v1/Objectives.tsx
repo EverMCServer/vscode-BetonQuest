@@ -18,6 +18,7 @@ import Input from "../../ui/Input/Input";
 import InputList from "../../ui/Input/InputList";
 import ItemList from "../../ui/Input/ItemList";
 import Number from "../../ui/Input/Number";
+import NumberList from "../../ui/Input/NumberList";
 import PotionEffectType from "../../ui/Input/PotionEffectType";
 import PotionEffectTypeList from "../../ui/Input/PotionEffectTypeList";
 import Select from "../../ui/Input/Select";
@@ -500,7 +501,7 @@ export class Kinds {
                 description: L("betonquest.v1.objective.npcinteract.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Input, name: L("betonquest.v1.objective.npcinteract.mandatory.npcID.name"), type: ArgumentType.string, format: 'string', defaultValue: '1', placeholder: 'e.g. 1', tooltip: L("betonquest.v1.objective.npcinteract.mandatory.npcID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Number, name: L("betonquest.v1.objective.npcinteract.mandatory.npcID.name"), type: ArgumentType.string, format: 'int', defaultValue: 0, tooltip: L("betonquest.v1.objective.npcinteract.mandatory.npcID.tooltip"), config: { min: 0 } },
                     ],
                     optional: [
                         { jsx: Checkbox, name: L("betonquest.v1.objective.npcinteract.optional.cancel.name"), type: ArgumentType.constant, key: 'cancel', format: 'boolean', tooltip: L("betonquest.v1.objective.npcinteract.optional.cancel.tooltip") },
@@ -522,7 +523,7 @@ export class Kinds {
                 description: L("betonquest.v1.objective.npckill.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Input, name: L("betonquest.v1.objective.npckill.mandatory.npcID.name"), type: ArgumentType.string, format: 'string', defaultValue: '1', placeholder: 'e.g. 1', tooltip: L("betonquest.v1.objective.npckill.mandatory.npcID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Number, name: L("betonquest.v1.objective.npckill.mandatory.npcID.name"), type: ArgumentType.string, format: 'int', defaultValue: 0, tooltip: L("betonquest.v1.objective.npckill.mandatory.npcID.tooltip"), config: { min: 0 } },
                     ],
                     optional: [
                         { jsx: Number, name: L("betonquest.v1.objective.npckill.optional.amount.name"), type: ArgumentType.interger, key: 'amount', format: 'int', placeholder: '1', config: { min: 0, undefinedValue: 0 }, allowVariable: true },
@@ -536,7 +537,7 @@ export class Kinds {
                 description: L("betonquest.v1.objective.npcrange.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: InputList, name: L("betonquest.v1.objective.npcrange.mandatory.npcID.name"), type: ArgumentType.stringList, format: 'string[,]', defaultValue: ['1'], placeholder: 'e.g. 1', tooltip: L("betonquest.v1.objective.npcrange.mandatory.npcID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: NumberList, name: L("betonquest.v1.objective.npcrange.mandatory.npcID.name"), type: ArgumentType.stringList, format: 'int[,]', defaultValue: [0], tooltip: L("betonquest.v1.objective.npcrange.mandatory.npcID.tooltip"), config: { min: 0, formatter: (v: any) => v?.replace(/[^\d]/g, '') as unknown as number, defaultWhenEmpty: true } },
                         {
                             jsx: Select, name: L("betonquest.v1.objective.npcrange.mandatory.type.name"), type: ArgumentType.selection, format: 'string', defaultValue: 'enter', placeholder: 'e.g. enter', config: {
                                 options: [

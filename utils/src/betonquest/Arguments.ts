@@ -141,11 +141,12 @@ export enum ArgumentType {
  */
 type MandatoryArgumentFormat = (
     'string' |
-    'int' |
-    'float' |
     'string[,]' |
     'string[|]' |
     'string[^]' |
+    'int' |
+    'int[,]' |
+    'float' |
     '[string:number?][,]' |
     '*' |
     'variable'
@@ -153,8 +154,9 @@ type MandatoryArgumentFormat = (
 
 export type MandatoryArgumentDataFormat =
     string |
-    number |
     string[] |
+    number |
+    number[] |
     [string, number?][]
     ;
 type MandatoryArguments = Array<MandatoryArgument>;
@@ -172,9 +174,10 @@ type MandatoryArguments = Array<MandatoryArgument>;
  */
 type OptionalArgumentFormat = (
     'string' |
-    'int' |
-    'float' |
     'string[,]' |
+    'int' |
+    'int[,]' |
+    'float' |
     'boolean' |
     // '[string:number][,]' |
     '[string:number?][,]' |
@@ -183,8 +186,9 @@ type OptionalArgumentFormat = (
 
 export type OptionalArgumentDataFormat =
     string |
-    number |
     string[] |
+    number |
+    number[] |
     boolean |
     // [string, number][] |
     [string, number?][] |
@@ -422,6 +426,10 @@ export abstract class ArgumentsAbstract {
                 this.mandatory[i].setValue(this.unescapeCharacters(escapeCharacters, argStr ? argStr : pat.defaultValue as string));
             } else if (pat.format === 'int') {
                 this.mandatory[i].setValue(argStr ? parseInt(argStr) : pat.defaultValue);
+            } else if (pat.format === 'int[,]') {
+                this.mandatory[i].setValue(argStr?.split(/(?<!\\),/g)
+                    .map(v => parseInt(v))
+                    || pat.defaultValue);
             } else if (pat.format === 'float') {
                 this.mandatory[i].setValue(argStr ? parseFloat(argStr) : pat.defaultValue);
             } else if (pat.format === 'string[,]') {
@@ -496,6 +504,9 @@ export abstract class ArgumentsAbstract {
                         // Parse value
                         if (pat.format === 'int') {
                             optionalArgument.setValue(parseInt(argStrValue));
+                        } else if (pat.format === 'int[,]') {
+                            optionalArgument.setValue(argStrValue.split(/(?<!\\),/g)
+                                .map(v => parseInt(v)));
                         } else if (pat.format === 'float') {
                             optionalArgument.setValue(parseFloat(argStrValue));
                         } else if (pat.format === 'string[,]') {
@@ -584,6 +595,10 @@ export abstract class ArgumentsAbstract {
             // Set value by format
             if (pat.format === 'int') {
                 element += (value as number).toString();
+            } else if (pat.format === 'int[,]') {
+                element += (value as number[])
+                    .map(str => str.toString())
+                    .join(",");
             } else if (pat.format === 'float') {
                 element += (value as number).toString();
             } else if (pat.format === 'string[,]') {
@@ -633,6 +648,13 @@ export abstract class ArgumentsAbstract {
             } else {
                 if (pat.format === 'int') {
                     optionalStrs.push(`${pat.key}:${(value as number).toString()}`);
+                } else if (pat.format === 'int[,]') {
+                    const valueArray = value as number[];
+                    if (valueArray.length > 1 || valueArray[0] !== undefined || valueArray[0] !== null) {
+                        optionalStrs.push(`${pat.key}:${valueArray
+                            .map(v => v.toString())
+                            .join(",")}`);
+                    }
                 } else if (pat.format === 'float') {
                     optionalStrs.push(`${pat.key}:${(value as number).toString()}`);
                 } else if (pat.format === 'string[,]') {
