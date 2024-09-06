@@ -558,7 +558,7 @@ export class Kinds {
                 description: L("betonquest.v2.objective.npcinteract.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Number, name: L("betonquest.v2.objective.npcinteract.mandatory.npcID.name"), type: ArgumentType.interger, format: 'int', defaultValue: 0, tooltip: L("betonquest.v2.objective.npcinteract.mandatory.npcID.tooltip"), config: { min: 0 } },
+                        { jsx: Number, name: L("betonquest.v2.objective.npcinteract.mandatory.npcID.name"), type: ArgumentType.interger, format: 'int', defaultValue: 0, tooltip: L("betonquest.v2.objective.npcinteract.mandatory.npcID.tooltip"), config: { min: 0, forceInterger: true } },
                     ],
                     optional: [
                         { jsx: Checkbox, name: L("betonquest.v2.objective.npcinteract.optional.cancel.name"), type: ArgumentType.constant, key: 'cancel', format: 'boolean', tooltip: L("betonquest.v2.objective.npcinteract.optional.cancel.tooltip") },
@@ -580,7 +580,7 @@ export class Kinds {
                 description: L("betonquest.v2.objective.npckill.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Number, name: L("betonquest.v2.objective.npckill.mandatory.npcID.name"), type: ArgumentType.interger, format: 'int', defaultValue: 0, tooltip: L("betonquest.v2.objective.npckill.mandatory.npcID.tooltip"), config: { min: 0 } },
+                        { jsx: Number, name: L("betonquest.v2.objective.npckill.mandatory.npcID.name"), type: ArgumentType.interger, format: 'int', defaultValue: 0, tooltip: L("betonquest.v2.objective.npckill.mandatory.npcID.tooltip"), config: { min: 0, forceInterger: true } },
                     ],
                     optional: [
                         { jsx: Number, name: L("betonquest.v2.objective.npckill.optional.amount.name"), type: ArgumentType.interger, key: 'amount', format: 'int', placeholder: '1', config: { min: 0, undefinedValue: 0 }, allowVariable: true },
@@ -594,7 +594,7 @@ export class Kinds {
                 description: L("betonquest.v2.objective.npcrange.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: NumberList, name: L("betonquest.v2.objective.npcrange.mandatory.npcID.name"), type: ArgumentType.intergerList, format: 'int[,]', defaultValue: [0], tooltip: L("betonquest.v2.objective.npcrange.mandatory.npcID.tooltip"), config: { min: 0, formatter: (v: any) => v?.replace(/[^\d]/g, '') as unknown as number, defaultWhenEmpty: true } },
+                        { jsx: NumberList, name: L("betonquest.v2.objective.npcrange.mandatory.npcID.name"), type: ArgumentType.intergerList, format: 'int[,]', defaultValue: [0], tooltip: L("betonquest.v2.objective.npcrange.mandatory.npcID.tooltip"), config: { min: 0, forceInterger: true, defaultWhenEmpty: true } },
                         {
                             jsx: Select, name: L("betonquest.v2.objective.npcrange.mandatory.type.name"), type: ArgumentType.selection, format: 'string', defaultValue: 'enter', placeholder: 'e.g. enter', config: {
                                 options: [

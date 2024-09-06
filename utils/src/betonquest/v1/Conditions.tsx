@@ -636,7 +636,7 @@ export class Kinds {
                 description: L("betonquest.v1.condition.npcdistance.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Number, name: L("betonquest.v1.condition.npcdistance.mandatory.npcID.name"), type: ArgumentType.interger, format: 'int', defaultValue: 0, tooltip: L("betonquest.v1.condition.npcdistance.mandatory.npcID.tooltip"), config: { min: 0 } },
+                        { jsx: Number, name: L("betonquest.v1.condition.npcdistance.mandatory.npcID.name"), type: ArgumentType.interger, format: 'int', defaultValue: 0, tooltip: L("betonquest.v1.condition.npcdistance.mandatory.npcID.tooltip"), config: { min: 0, forceInterger: true } },
                         { jsx: Number, name: L("betonquest.v1.condition.npcdistance.mandatory.distance.name"), type: ArgumentType.interger, format: 'int', defaultValue: 1, tooltip: L("betonquest.v1.condition.npcdistance.mandatory.distance.tooltip"), config: { min: 0 }, allowVariable: true },
                     ]
                 }
@@ -647,7 +647,7 @@ export class Kinds {
                 description: L("betonquest.v1.condition.npclocation.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Number, name: L("betonquest.v1.condition.npclocation.mandatory.npcID.name"), type: ArgumentType.interger, format: 'int', defaultValue: 0, tooltip: L("betonquest.v1.condition.npclocation.mandatory.npcID.tooltip"), config: { min: 0 } },
+                        { jsx: Number, name: L("betonquest.v1.condition.npclocation.mandatory.npcID.name"), type: ArgumentType.interger, format: 'int', defaultValue: 0, tooltip: L("betonquest.v1.condition.npclocation.mandatory.npcID.tooltip"), config: { min: 0, forceInterger: true } },
                         { jsx: BaseLocation, name: L("betonquest.v1.condition.npclocation.mandatory.location.name"), type: ArgumentType.location, format: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
                         { jsx: Number, name: L("betonquest.v1.condition.npclocation.mandatory.radius.name"), type: ArgumentType.interger, format: 'int', defaultValue: 1, config: { min: 0 }, allowVariable: true },
                     ]
@@ -659,7 +659,7 @@ export class Kinds {
                 description: L("betonquest.v1.condition.npcregion.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Number, name: L("betonquest.v1.condition.npcregion.mandatory.npcID.name"), type: ArgumentType.interger, format: 'int', defaultValue: 0, tooltip: L("betonquest.v1.condition.npcregion.mandatory.npcID.tooltip"), config: { min: 0 } },
+                        { jsx: Number, name: L("betonquest.v1.condition.npcregion.mandatory.npcID.name"), type: ArgumentType.interger, format: 'int', defaultValue: 0, tooltip: L("betonquest.v1.condition.npcregion.mandatory.npcID.tooltip"), config: { min: 0, forceInterger: true } },
                         { jsx: Input, name: L("betonquest.v1.condition.npcregion.mandatory.regionID.name"), type: ArgumentType.string, format: 'string', defaultValue: 'region_1', placeholder: 'e.g. region_1', tooltip: L("betonquest.v1.condition.npcregion.mandatory.regionID.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                     ]
                 }

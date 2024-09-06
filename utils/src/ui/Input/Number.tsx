@@ -17,6 +17,7 @@ import { InputProps } from "./Common";
  *   - `undefinedValue` - Output undefined when value equals to this. Usefull when decreasing to 0.
  *   - `nullValue` - Output null when value equals to this. Usefull when null/Nan means 1.
  *   - `defaultWhenEmpty` - Output defaultValue when empty.
+ *   - `forceInterger` - Force interger (remove decimal point).
  * @param props 
  * @returns 
  */
@@ -34,9 +35,11 @@ export default function (props: InputProps) {
         <InputNumber
             defaultValue={props.defaultValue as number}
             value={value}
-            onInput={(text) => props.config && setValue(props.config.formatter(text))} // Format input
+            onInput={(text) => props.config?.forceInterger && setValue(text.replace(/[^\d]/g, '') as unknown as number)}
             onChange={(value) => {
-                props.config?.formatter && value && (value = props.config?.formatter(value.toString())); // Format value
+                if (props.config?.forceInterger && value) {
+                    value = value.toString().replace(/[^\d]/g, '') as unknown as number;
+                }
                 if (value === null || value === props.config?.undefinedValue) {
                     value = undefined;
                 }
@@ -53,7 +56,6 @@ export default function (props: InputProps) {
             min={props.config?.min}
             max={props.config?.max}
             step={props.config?.step}
-            // formatter={props.config?.formatter}
             size="small"
         />
     );
