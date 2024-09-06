@@ -146,13 +146,13 @@ export class Kinds {
                         {
                             jsx: Select, name: L("betonquest.v2.condition.dayofweek.mandatory.action.name"), type: ArgumentType.selection, format: 'string', defaultValue: 'monday', placeholder: 'e.g. any', tooltip: L("betonquest.v2.condition.dayofweek.mandatory.action.tooltip"), config: {
                                 options: [
-                                    { label: 'Monday', value: 'monday' },
-                                    { label: 'Tuesday', value: 'tuesday' },
-                                    { label: 'Wednesday', value: 'wednesday' },
-                                    { label: 'Thursday', value: 'thursday' },
-                                    { label: 'Friday', value: 'friday' },
-                                    { label: 'Saturday', value: 'saturday' },
-                                    { label: 'Sunday', value: 'sunday' },
+                                    { label: L("betonquest.v2.condition.dayofweek.mandatory.action.option.monday"), value: 'monday' },
+                                    { label: L("betonquest.v2.condition.dayofweek.mandatory.action.option.tuesday"), value: 'tuesday' },
+                                    { label: L("betonquest.v2.condition.dayofweek.mandatory.action.option.wednesday"), value: 'wednesday' },
+                                    { label: L("betonquest.v2.condition.dayofweek.mandatory.action.option.thursday"), value: 'thursday' },
+                                    { label: L("betonquest.v2.condition.dayofweek.mandatory.action.option.friday"), value: 'friday' },
+                                    { label: L("betonquest.v2.condition.dayofweek.mandatory.action.option.saturday"), value: 'saturday' },
+                                    { label: L("betonquest.v2.condition.dayofweek.mandatory.action.option.sunday"), value: 'sunday' },
                                 ] as DefaultOptionType[]
                             }
                         },
@@ -220,12 +220,12 @@ export class Kinds {
                         {
                             jsx: Select, name: L("betonquest.v2.condition.facing.mandatory.direction.name"), type: ArgumentType.selection, format: 'string', defaultValue: 'UP', placeholder: 'e.g. UP', tooltip: L("betonquest.v2.condition.facing.mandatory.direction.tooltip"), config: {
                                 options: [
-                                    { label: 'North', value: 'NORTH' },
-                                    { label: 'East', value: 'EAST' },
-                                    { label: 'West', value: 'WEST' },
-                                    { label: 'South', value: 'SOUTH' },
-                                    { label: 'Up (>60°)', value: 'UP' },
-                                    { label: 'Down (>60°)', value: 'DOWN' },
+                                    { label: L("betonquest.v2.condition.facing.mandatory.direction.option.north"), value: 'NORTH' },
+                                    { label: L("betonquest.v2.condition.facing.mandatory.direction.option.east"), value: 'EAST' },
+                                    { label: L("betonquest.v2.condition.facing.mandatory.direction.option.south"), value: 'SOUTH' },
+                                    { label: L("betonquest.v2.condition.facing.mandatory.direction.option.west"), value: 'WEST' },
+                                    { label: L("betonquest.v2.condition.facing.mandatory.direction.option.up"), value: 'UP' },
+                                    { label: L("betonquest.v2.condition.facing.mandatory.direction.option.down"), value: 'DOWN' },
                                 ] as DefaultOptionType[]
                             }
                         },
@@ -249,10 +249,10 @@ export class Kinds {
                         {
                             jsx: Select, name: L("betonquest.v2.condition.gamemode.mandatory.gameMode.name"), type: ArgumentType.selection, format: 'string', defaultValue: 'survival', placeholder: 'e.g. Survival', tooltip: L("betonquest.v2.condition.gamemode.mandatory.gameMode.tooltip"), config: {
                                 options: [
-                                    { label: 'Survival', value: 'survival' },
-                                    { label: 'Creative', value: 'creative' },
-                                    { label: 'Adventure', value: 'adventure' },
-                                    { label: 'Spectator', value: 'spectator' },
+                                    { label: L("betonquest.v2.condition.gamemode.mandatory.gameMode.option.survival"), value: 'survival' },
+                                    { label: L("betonquest.v2.condition.gamemode.mandatory.gameMode.option.creative"), value: 'creative' },
+                                    { label: L("betonquest.v2.condition.gamemode.mandatory.gameMode.option.adventure"), value: 'adventure' },
+                                    { label: L("betonquest.v2.condition.gamemode.mandatory.gameMode.option.spectator"), value: 'spectator' },
                                 ] as DefaultOptionType[]
                             }
                         },
@@ -356,12 +356,12 @@ export class Kinds {
                         {
                             jsx: Select, name: L("betonquest.v2.condition.itemdurability.mandatory.slot.name"), type: ArgumentType.selection, format: 'string', defaultValue: 'HAND', placeholder: 'e.g. HAND', config: {
                                 options: [
-                                    { label: 'Hand', value: 'HAND' },
-                                    { label: 'Off-Hand', value: 'OFF_HAND' },
-                                    { label: 'Head', value: 'HEAD' },
-                                    { label: 'Chest', value: 'CHEST' },
-                                    { label: 'Legs', value: 'LEGS' },
-                                    { label: 'Feet', value: 'FEET' },
+                                    { label: L("betonquest.v2.condition.itemdurability.mandatory.slot.option.hand"), value: 'HAND' },
+                                    { label: L("betonquest.v2.condition.itemdurability.mandatory.slot.option.off_hand"), value: 'OFF_HAND' },
+                                    { label: L("betonquest.v2.condition.itemdurability.mandatory.slot.option.head"), value: 'HEAD' },
+                                    { label: L("betonquest.v2.condition.itemdurability.mandatory.slot.option.chest"), value: 'CHEST' },
+                                    { label: L("betonquest.v2.condition.itemdurability.mandatory.slot.option.legs"), value: 'LEGS' },
+                                    { label: L("betonquest.v2.condition.itemdurability.mandatory.slot.option.feet"), value: 'FEET' },
                                 ] as DefaultOptionType[]
                             }
                         },
@@ -426,14 +426,14 @@ export class Kinds {
                         {
                             jsx: Select, name: L("betonquest.v2.condition.mooncycle.mandatory.phase.name"), type: ArgumentType.selection, format: 'int', defaultValue: '1', placeholder: 'e.g. Full Moon', config: {
                                 options: [
-                                    { label: '🌕 Full Moon', value: 1 },
-                                    { label: '🌖 Waning Gibbous', value: 2 },
-                                    { label: '🌗 Last Quarter', value: 3 },
-                                    { label: '🌘 Waning Crescent', value: 4 },
-                                    { label: '🌑 New Moon', value: 5 },
-                                    { label: '🌒 Waxing Crescent', value: 6 },
-                                    { label: '🌓 First Quarter', value: 7 },
-                                    { label: '🌔 Waxing Gibbous', value: 8 },
+                                    { label: L("betonquest.v2.condition.mooncycle.mandatory.phase.option.1"), value: 1 },
+                                    { label: L("betonquest.v2.condition.mooncycle.mandatory.phase.option.2"), value: 2 },
+                                    { label: L("betonquest.v2.condition.mooncycle.mandatory.phase.option.3"), value: 3 },
+                                    { label: L("betonquest.v2.condition.mooncycle.mandatory.phase.option.4"), value: 4 },
+                                    { label: L("betonquest.v2.condition.mooncycle.mandatory.phase.option.5"), value: 5 },
+                                    { label: L("betonquest.v2.condition.mooncycle.mandatory.phase.option.6"), value: 6 },
+                                    { label: L("betonquest.v2.condition.mooncycle.mandatory.phase.option.7"), value: 7 },
+                                    { label: L("betonquest.v2.condition.mooncycle.mandatory.phase.option.8"), value: 8 },
                                 ] as DefaultOptionType[]
                             }, allowVariable: true
                         },
@@ -450,12 +450,12 @@ export class Kinds {
                         {
                             jsx: Select, name: L("betonquest.v2.condition.numbercompare.mandatory.compare.name"), type: ArgumentType.selection, format: 'string', defaultValue: '=', placeholder: 'e.g. =', config: {
                                 options: [
-                                    { label: '<  less than', value: '<' },
-                                    { label: '<= less or equals to', value: '<=' },
-                                    { label: '=  equals to', value: '=' },
-                                    { label: '!= not equals to', value: '!=' },
-                                    { label: '>  greater than', value: '>' },
-                                    { label: '>= greater or equals to', value: '>=' },
+                                    { label: L("betonquest.v2.condition.numbercompare.mandatory.compare.option.<"), value: '<' },
+                                    { label: L("betonquest.v2.condition.numbercompare.mandatory.compare.option.<="), value: '<=' },
+                                    { label: L("betonquest.v2.condition.numbercompare.mandatory.compare.option.="), value: '=' },
+                                    { label: L("betonquest.v2.condition.numbercompare.mandatory.compare.option.!="), value: '!=' },
+                                    { label: L("betonquest.v2.condition.numbercompare.mandatory.compare.option.>"), value: '>' },
+                                    { label: L("betonquest.v2.condition.numbercompare.mandatory.compare.option.>="), value: '>=' },
                                 ] as DefaultOptionType[]
                             }
                         },
@@ -609,12 +609,12 @@ export class Kinds {
                         {
                             jsx: Select, name: L("betonquest.v2.condition.stage.mandatory.compare.name"), type: ArgumentType.selection, format: 'string', defaultValue: '=', placeholder: 'e.g. =', config: {
                                 options: [
-                                    { label: '<  less than', value: '<' },
-                                    { label: '<= less or equals to', value: '<=' },
-                                    { label: '=  equals to', value: '=' },
-                                    { label: '!= not equals to', value: '!=' },
-                                    { label: '>  greater than', value: '>' },
-                                    { label: '>= greater or equals to', value: '>=' },
+                                    { label: L("betonquest.v2.condition.stage.mandatory.compare.option.<"), value: '<' },
+                                    { label: L("betonquest.v2.condition.stage.mandatory.compare.option.<="), value: '<=' },
+                                    { label: L("betonquest.v2.condition.stage.mandatory.compare.option.="), value: '=' },
+                                    { label: L("betonquest.v2.condition.stage.mandatory.compare.option.!="), value: '!=' },
+                                    { label: L("betonquest.v2.condition.stage.mandatory.compare.option.>"), value: '>' },
+                                    { label: L("betonquest.v2.condition.stage.mandatory.compare.option.>="), value: '>=' },
                                 ] as DefaultOptionType[]
                             }
                         },

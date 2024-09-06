@@ -60,9 +60,9 @@ export class Kinds {
                         {
                             jsx: Select, name: L("betonquest.v1.objective.action.mandatory.action.name"), type: ArgumentType.selection, format: 'string', defaultValue: 'any', placeholder: 'e.g. any', tooltip: L("betonquest.v1.objective.action.mandatory.action.tooltip"), config: {
                                 options: [
-                                    { label: 'Any', value: 'any' },
-                                    { label: 'Right', value: 'right' },
-                                    { label: 'Left', value: 'left' },
+                                    { label: L("betonquest.v1.objective.action.mandatory.action.option.any"), value: 'any' },
+                                    { label: L("betonquest.v1.objective.action.mandatory.action.option.right"), value: 'right' },
+                                    { label: L("betonquest.v1.objective.action.mandatory.action.option.left"), value: 'left' },
                                 ] as DefaultOptionType[]
                             }
                         },
@@ -256,9 +256,9 @@ export class Kinds {
                         {
                             jsx: Select, name: L("betonquest.v1.objective.interact.mandatory.action.name"), type: ArgumentType.selection, format: 'string', defaultValue: 'any', placeholder: 'e.g. any', tooltip: L("betonquest.v1.objective.interact.mandatory.action.tooltip"), config: {
                                 options: [
-                                    { label: 'Any', value: 'any' },
-                                    { label: 'Right', value: 'right' },
-                                    { label: 'Left', value: 'left' },
+                                    { label: L("betonquest.v1.objective.interact.mandatory.action.option.any"), value: 'any' },
+                                    { label: L("betonquest.v1.objective.interact.mandatory.action.option.right"), value: 'right' },
+                                    { label: L("betonquest.v1.objective.interact.mandatory.action.option.left"), value: 'left' },
                                 ] as DefaultOptionType[]
                             }
                         },

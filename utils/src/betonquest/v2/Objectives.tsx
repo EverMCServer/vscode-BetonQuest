@@ -58,9 +58,9 @@ export class Kinds {
                         {
                             jsx: Select, name: L("betonquest.v2.objective.action.mandatory.action.name"), type: ArgumentType.selection, format: 'string', defaultValue: 'any', placeholder: 'e.g. any', tooltip: L("betonquest.v2.objective.action.mandatory.action.tooltip"), config: {
                                 options: [
-                                    { label: 'Any', value: 'any' },
-                                    { label: 'Right', value: 'right' },
-                                    { label: 'Left', value: 'left' },
+                                    { label: L("betonquest.v2.objective.action.mandatory.action.option.any"), value: 'any' },
+                                    { label: L("betonquest.v2.objective.action.mandatory.action.option.right"), value: 'right' },
+                                    { label: L("betonquest.v2.objective.action.mandatory.action.option.left"), value: 'left' },
                                 ] as DefaultOptionType[]
                             }
                         },
@@ -270,9 +270,9 @@ export class Kinds {
                         {
                             jsx: Select, name: L("betonquest.v2.objective.interact.mandatory.action.name"), type: ArgumentType.selection, format: 'string', defaultValue: 'any', placeholder: 'e.g. any', tooltip: L("betonquest.v2.objective.interact.mandatory.action.tooltip"), config: {
                                 options: [
-                                    { label: 'Any', value: 'any' },
-                                    { label: 'Right', value: 'right' },
-                                    { label: 'Left', value: 'left' },
+                                    { label: L("betonquest.v2.objective.interact.mandatory.action.option.any"), value: 'any' },
+                                    { label: L("betonquest.v2.objective.interact.mandatory.action.option.right"), value: 'right' },
+                                    { label: L("betonquest.v2.objective.interact.mandatory.action.option.left"), value: 'left' },
                                 ] as DefaultOptionType[]
                             }
                         },
@@ -524,10 +524,10 @@ export class Kinds {
                         {
                             jsx: Select, name: L("betonquest.v2.objective.equip.mandatory.slot.name"), type: ArgumentType.selection, format: 'string', defaultValue: 'HEAD', placeholder: 'e.g. HEAD', config: {
                                 options: [
-                                    { label: 'Head', value: 'HEAD' },
-                                    { label: 'Chest', value: 'CHEST' },
-                                    { label: 'Legs', value: 'LEGS' },
-                                    { label: 'Feet', value: 'FEET' },
+                                    { label: L("betonquest.v2.objective.equip.mandatory.slot.option.head"), value: 'HEAD' },
+                                    { label: L("betonquest.v2.objective.equip.mandatory.slot.option.chest"), value: 'CHEST' },
+                                    { label: L("betonquest.v2.objective.equip.mandatory.slot.option.legs"), value: 'LEGS' },
+                                    { label: L("betonquest.v2.objective.equip.mandatory.slot.option.feet"), value: 'FEET' },
                                 ] as DefaultOptionType[]
                             }
                         },

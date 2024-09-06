@@ -574,27 +574,27 @@ export class Kinds {
                             jsx: Select, name: L("betonquest.v2.event.itemdurability.mandatory.slot.name"), type: ArgumentType.selection, format: 'string', defaultValue: 'HAND', placeholder: 'e.g. HAND', config: {
                                 options: [
                                     {
-                                        label: L("betonquest.v2.event.itemdurability.mandatory.slot.option.HAND"),
+                                        label: L("betonquest.v2.event.itemdurability.mandatory.slot.option.hand"),
                                         value: 'HAND'
                                     },
                                     {
-                                        label: L("betonquest.v2.event.itemdurability.mandatory.slot.option.OFF_HAND"),
+                                        label: L("betonquest.v2.event.itemdurability.mandatory.slot.option.off_hand"),
                                         value: 'OFF_HAND'
                                     },
                                     {
-                                        label: L("betonquest.v2.event.itemdurability.mandatory.slot.option.HEAD"),
+                                        label: L("betonquest.v2.event.itemdurability.mandatory.slot.option.head"),
                                         value: 'HEAD'
                                     },
                                     {
-                                        label: L("betonquest.v2.event.itemdurability.mandatory.slot.option.CHEST"),
+                                        label: L("betonquest.v2.event.itemdurability.mandatory.slot.option.chest"),
                                         value: 'CHEST'
                                     },
                                     {
-                                        label: L("betonquest.v2.event.itemdurability.mandatory.slot.option.LEGS"),
+                                        label: L("betonquest.v2.event.itemdurability.mandatory.slot.option.legs"),
                                         value: 'LEGS'
                                     },
                                     {
-                                        label: L("betonquest.v2.event.itemdurability.mandatory.slot.option.FEET"),
+                                        label: L("betonquest.v2.event.itemdurability.mandatory.slot.option.feet"),
                                         value: 'FEET'
                                     },
                                 ] as DefaultOptionType[]
@@ -604,19 +604,19 @@ export class Kinds {
                             jsx: Select, name: L("betonquest.v2.event.itemdurability.mandatory.operation.name"), type: ArgumentType.selection, format: 'string', defaultValue: 'SET', placeholder: 'e.g. SET', config: {
                                 options: [
                                     {
-                                        label: L("betonquest.v2.event.itemdurability.mandatory.operation.option.ADD"),
+                                        label: L("betonquest.v2.event.itemdurability.mandatory.operation.option.add"),
                                         value: 'ADD'
                                     },
                                     {
-                                        label: L("betonquest.v2.event.itemdurability.mandatory.operation.option.SUBTRACT"),
+                                        label: L("betonquest.v2.event.itemdurability.mandatory.operation.option.subtract"),
                                         value: 'SUBTRACT'
                                     },
                                     {
-                                        label: L("betonquest.v2.event.itemdurability.mandatory.operation.option.SET"),
+                                        label: L("betonquest.v2.event.itemdurability.mandatory.operation.option.set"),
                                         value: 'SET'
                                     },
                                     {
-                                        label: L("betonquest.v2.event.itemdurability.mandatory.operation.option.MULTIPLY"),
+                                        label: L("betonquest.v2.event.itemdurability.mandatory.operation.option.multiply"),
                                         value: 'MULTIPLY'
                                     },
                                 ] as DefaultOptionType[]
