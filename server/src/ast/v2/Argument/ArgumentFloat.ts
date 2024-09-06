@@ -1,12 +1,12 @@
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { ArgumentIntergerType } from "../../node";
+import { ArgumentFloatType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
 import { ArgumentValue } from "./ArgumentValue";
 
-export class ArgumentInterger extends AbstractNodeV2<ArgumentIntergerType> {
-  readonly type: ArgumentIntergerType = 'ArgumentInterger';
+export class ArgumentFloat extends AbstractNodeV2<ArgumentFloatType> {
+  readonly type: ArgumentFloatType = 'ArgumentFloat';
   readonly offsetStart: number;
   readonly offsetEnd: number;
   readonly parent: ArgumentValue;
@@ -23,11 +23,12 @@ export class ArgumentInterger extends AbstractNodeV2<ArgumentIntergerType> {
     this.offsetEnd = offsets[1];
     this.parent = parent;
     this.argumentStr = argumentStr;
+
   }
 
   getDiagnostics(): Diagnostic[] {
     const diagnostics: Diagnostic[] = [];
-    if (!this.argumentStr.match(/^(?:\+|-)?\d+$/gm)) {
+    if (!this.argumentStr.match(/^(?:\+|-)?\d+(?:\.\d+)?$/gm)) {
       diagnostics.push(this.makeDiagnostic(
         [this.offsetStart, this.offsetEnd],
         "Invalid interger",

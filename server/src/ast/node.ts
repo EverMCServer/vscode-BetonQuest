@@ -95,12 +95,13 @@ export type ArgumentValueProxyType = "ArgumentValue";
 export type ArgumentTypes = ArgumentKeyType | ArgumentKeyProxyType | ArgumentValueType | ArgumentValueProxyType;
 
 export type ArgumentIntergerType = 'ArgumentInterger';
+export type ArgumentFloatType = 'ArgumentFloat';
 export type ArgumentBlockIdType = 'ArgumentBlockID';
 export type ArgumentEntityType = 'ArgumentEntity';
 export type ArgumentConditionIdType = 'ArgumentConditionID';
 export type ArgumentEventIdType = 'ArgumentEventID';
 export type ArgumentObjectiveIdType = 'ArgumentObjectiveID';
-export type ArgumentValueTypes = ArgumentIntergerType | ArgumentBlockIdType | ArgumentEntityType | ArgumentConditionIdType | ArgumentEventIdType | ArgumentObjectiveIdType;
+export type ArgumentValueTypes = ArgumentIntergerType | ArgumentFloatType | ArgumentBlockIdType | ArgumentEntityType | ArgumentConditionIdType | ArgumentEventIdType | ArgumentObjectiveIdType;
 
 export type NodeType = PackageTypes | ConversationTypes | EventTypes | ConditionTypes | ObjectiveTypes | ArgumentTypes | ArgumentValueTypes;
 

@@ -15,6 +15,7 @@ import { ArgumentBlockID } from "./ArgumentBlockID";
 import { ArgumentConditionID } from "./ArgumentConditionID";
 import { ArgumentEntity } from "./ArgumentEntity";
 import { ArgumentEventID } from "./ArgumentEventID";
+import { ArgumentFloat } from "./ArgumentFloat";
 import { ArgumentInterger } from "./ArgumentInterger";
 
 export class ArgumentValue extends AbstractNodeV2<ArgumentValueType> {
@@ -55,6 +56,14 @@ export class ArgumentValue extends AbstractNodeV2<ArgumentValueType> {
     let pos1 = this.offsetStart;
     if (this.pattern && this.pattern?.format !== "boolean") {
       switch (this.pattern.type) {
+
+        case ArgumentType.interger:
+          parent.addChild(new ArgumentInterger(this.valueStr, [this.offsetStart, this.offsetEnd], this));
+          break;
+
+        case ArgumentType.float:
+          parent.addChild(new ArgumentFloat(this.valueStr, [this.offsetStart, this.offsetEnd], this));
+          break;
 
         case ArgumentType.conditionID:
           parent.addChild(new ArgumentConditionID(this.valueStr, [this.offsetStart, this.offsetEnd], this));
