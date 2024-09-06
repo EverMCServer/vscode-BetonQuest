@@ -26,6 +26,9 @@ export enum ArgumentType {
     /** Conversation Name / ID without cross-conversation path */
     conversationID = "conversationID",
 
+    /** Conversation Option ID without cross-conversation path or Conversation ID */
+    conversationOptionID = "conversationOptionID",
+
     /** Condiiton ID */
     conditionID = "conditionID",
 
@@ -95,6 +98,9 @@ export enum ArgumentType {
     /** Location coordinate list */
     locationList = "locationList",
 
+    /** Vector e.g. (0;0.1;1.3) */
+    vector = "vector",
+
     /** Entity / Mob name */
     entityName = "entityName",
 
@@ -128,8 +134,14 @@ export enum ArgumentType {
     /** Minecraft's Potion Effect */
     potionEffect = "potionEffect",
 
+    /** Minecraft's Potion Effect list */
+    potionEffectList = "potionEffectList",
+
     /** Minecraft's Dye Color */
     dyeColor = "dyeColor",
+
+    /** Custom Minecraft's Scoreboard score name */
+    scoreName = "scoreName",
 
     /** Any string */
     any = "any",
