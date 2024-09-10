@@ -1,0 +1,35 @@
+/* Override Ant Design's Popover styles */
+
+.ant-radio-group .ant-radio-wrapper {
+    color: var(--vscode-foreground);
+}
+
+/* Checked */
+.ant-radio-group .ant-radio-wrapper .ant-radio.ant-radio-checked .ant-radio-inner {
+    border-color: var(--vscode-radio-activeBorder);
+    background-color: var(--vscode-radio-activeBackground);
+}
+.ant-radio-group .ant-radio-wrapper .ant-radio.ant-radio-checked .ant-radio-inner::after {
+    background-color: var(--vscode-radio-activeForeground);
+}
+.ant-radio-group .ant-radio-wrapper:hover .ant-radio.ant-radio-checked .ant-radio-inner {
+    border-color: var(--vscode-radio-inactiveHoverBackground);
+}
+/*
+--vscode-radio-activeForeground: #ffffff;
+--vscode-radio-activeBackground: rgba(36, 137, 219, 0.51);
+--vscode-radio-activeBorder: #2488db;
+--vscode-radio-inactiveBorder: rgba(255, 255, 255, 0.2);
+--vscode-radio-inactiveHoverBackground */
+
+/* Un-checked */
+.ant-radio-group .ant-radio-wrapper .ant-radio .ant-radio-inner {
+    border-color: var(--vscode-radio-inactiveBorder);
+    background-color: var(--vscode-radio-inactiveHoverBackground);
+}
+.ant-radio-group .ant-radio-wrapper .ant-radio .ant-radio-inner::after {
+    background-color: var(--vscode-radio-inactiveHoverBackground);
+}
+.ant-radio-group .ant-radio-wrapper:hover .ant-radio .ant-radio-inner {
+    border-color: var(--vscode-radio-inactiveBorder);
+}

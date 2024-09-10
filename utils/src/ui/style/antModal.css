@@ -1,0 +1,20 @@
+/* Override Ant Design's Popover styles */
+
+.ant-modal-root .ant-modal {
+    padding-bottom: 0px;
+}
+
+.ant-modal-root .ant-modal .ant-modal-content {
+    border: 1px solid var(--vscode-widget-border);
+    border-radius: 4px;
+    box-shadow: var(--vscode-widget-shadow) 0px 0px 8px 2px;
+    background-color: var(--vscode-notifications-background);
+}
+
+.ant-modal-root .ant-modal .ant-modal-content .ant-modal-body .ant-modal-confirm-title {
+    color: var(--vscode-notifications-foreground);
+}
+
+.ant-modal-root .ant-modal .ant-modal-content .ant-modal-body .ant-modal-confirm-content {
+    color: var(--vscode-notifications-foreground);
+}
