@@ -4,6 +4,20 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.5.4 pre-release] - 2024-09-10
+
+### Added
+- Fit modal and radio styles
+- Add some missing translation
+- Add Events / Objectives argument types
+
+### Changed
+- Set default new conversation multilingual mode to false
+- Change NPC ID input to interger
+
+### Fixed
+- Fix bad player option handler by removing it from flowchart
+
 ## [0.5.3 pre-release] - 2024-09-03
 
 ### Added

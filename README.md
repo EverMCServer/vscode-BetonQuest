@@ -47,7 +47,7 @@ For a quick trial. It works on your tablet and even a cellphone!
     - ✅ Right click and Go To Definitions / References of `Pointers`, `Events`, `Conditions`, `Objectives`.
     - ✅ Code semantic highlight.
     - ⬜ Hint / errors translation.
-    - ⬜ Semantic highlight and references for instructions.
+    - ⬜ (WIP) Semantic highlight and references for instructions.
     - ⬜ (WIP) Code completion.
 - GUI editor
     - ✅ GUI editor for `Conversations`, `Events`, `Conditions`, `Objectives` with built-in [documentation](https://betonquest.org/2.1/Documentation/Overview/) support.
@@ -139,6 +139,9 @@ Helps on translating this extension are welcomed. Please consider submitting you
 - Add Semantic Highlight
 - Add Code Completions (wip)
 - Add Citizens integrations
+- Add some missing translation
+- Fit modal and radio styles
+- Set default new conversation multilingual mode to false
 - Fix various bugs
 
 ### 0.4.1
