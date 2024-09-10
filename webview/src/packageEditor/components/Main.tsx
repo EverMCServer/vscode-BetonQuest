@@ -122,7 +122,7 @@ export default function main(props: MainProps) {
     // New key for Conversation's script name
     const [newConversationKeyConfig, setNewConversationKeyConfig] = useState("new_conv");
     // Multilingual selection
-    const [isMultilingualConfig, setIsMultilingualConfig] = useState(true);
+    const [isMultilingualConfig, setIsMultilingualConfig] = useState(false);
     const [translationNameConfig, setTranslationNameConfig] = useState(packageEditor.initialConfig.translationSelection || 'en');
 
     // Handle conversation creation
@@ -158,8 +158,8 @@ export default function main(props: MainProps) {
                         onChange={e => { key = e.target.value; setNewConversationKeyConfig(e.target.value); }}
                     ></Input>
                     <Radio.Group onChange={e => { isMultilingual = e.target.value; setIsMultilingualConfig(e.target.value); setIsMultilingualEnabled(e.target.value); }} defaultValue={isMultilingual}>
-                        <Radio value={true}>{L("packageEditor.main.createModal.enable")}</Radio>
                         <Radio value={false}>{L("packageEditor.main.createModal.disable")}</Radio>
+                        <Radio value={true}>{L("packageEditor.main.createModal.enable")}</Radio>
                     </Radio.Group>
                     {isMultilingualEnabled ?
                         <Select
