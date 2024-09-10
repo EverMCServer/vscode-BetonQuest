@@ -176,13 +176,6 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         className="handleOut"
         isValidConnection={(e) => isConnectable(e)}
       />
-      <Handle
-        id="handleN"
-        type="source"
-        position={Position.Right}
-        className="handleN"
-        isValidConnection={(e) => isConnectable(e)}
-      />
     </div>
   );
 });
