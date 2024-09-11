@@ -77,11 +77,14 @@ export enum ArgumentType {
     /** Stage name list */
     stageNameList = "stageNameList",
 
-    /** Complete Instructions seprated by `^` */
+    /** Complete instructions seprated by `^` */
     instructionSet = "instructionSet",
 
-    /** Variable Name */
+    /** Variable name */
     variable = "variable",
+    
+    /** Variable name surrounded by "%" */
+    variableQuoted = "variableQuoted",
 
     /** Regular expression */
     regex = "regEx",

@@ -102,11 +102,6 @@ export class ConditionArgumentMandatory extends AbstractNodeV2<ConditionArgument
         }));
     }
 
-    // Prompt value suggestions for insertion
-    if (!this.pattern.key && this.offsets[0] < offset && offset < this.offsets[1]) {
-      completionItems.push(...ArgumentValue.getCompletionsByType(this.pattern.type));
-    }
-
     completionItems.push(...super.getCompletions(offset, documentUri));
     return completionItems;
   }

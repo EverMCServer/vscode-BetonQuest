@@ -30,18 +30,14 @@ export class ArgumentEntity extends AbstractNodeV2<ArgumentEntityType> {
 
   getCompletions(offset: number, documentUri?: string): CompletionItem[] {
     if (offset === this.offsetEnd) {
-      return ArgumentEntity.getCompletions();
+      return ENTITY_TYPE_LIST.map(e => ({
+        label: e.getBukkitId(),
+        kind: CompletionItemKind.EnumMember,
+        detail: "Entity ID",
+        documentation: "Bukkit Entity ID"
+      }));
     }
     return [];
-  }
-
-  static getCompletions(): CompletionItem[] {
-    return ENTITY_TYPE_LIST.map(e => ({
-      label: e.getBukkitId(),
-      kind: CompletionItemKind.EnumMember,
-      detail: "Entity ID",
-      documentation: "Bukkit Entity ID"
-    }));
   }
 
   getDiagnostics(): Diagnostic[] {

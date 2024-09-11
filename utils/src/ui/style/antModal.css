@@ -1,9 +1,5 @@
 /* Override Ant Design's Popover styles */
 
-.ant-modal-root .ant-modal {
-    padding-bottom: 0px;
-}
-
 .ant-modal-root .ant-modal .ant-modal-content {
     border: 1px solid var(--vscode-widget-border);
     border-radius: 4px;

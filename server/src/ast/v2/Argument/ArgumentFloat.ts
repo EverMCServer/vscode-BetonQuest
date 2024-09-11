@@ -31,7 +31,7 @@ export class ArgumentFloat extends AbstractNodeV2<ArgumentFloatType> {
     if (!this.argumentStr.match(/^(?:\+|-)?\d+(?:\.\d+)?$/gm)) {
       diagnostics.push(this.makeDiagnostic(
         [this.offsetStart, this.offsetEnd],
-        "Invalid interger",
+        "Invalid number",
         DiagnosticSeverity.Error,
         DiagnosticCode.ArgumentValueInvalid
       ));

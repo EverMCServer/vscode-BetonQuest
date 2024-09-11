@@ -61,6 +61,15 @@ export class ArgumentValue extends AbstractNodeV2<ArgumentValueType> {
           parent.addChild(new ArgumentInterger(this.valueStr, [this.offsetStart, this.offsetEnd], this));
           break;
 
+        case ArgumentType.intergerList:
+          // Seprate value by ","
+          this.valueStr.split(",").forEach((argStr, i) => {
+            const pos2 = pos1 + argStr.length;
+            parent.addChild(new ArgumentInterger(argStr, [pos1, pos2], this));
+            pos1 = pos2 + 1;
+          });
+          break;
+
         case ArgumentType.float:
           parent.addChild(new ArgumentFloat(this.valueStr, [this.offsetStart, this.offsetEnd], this));
           break;
@@ -127,18 +136,5 @@ export class ArgumentValue extends AbstractNodeV2<ArgumentValueType> {
           break;
       }
     }
-  }
-
-  static getCompletionsByType(type: ArgumentType) {
-    switch (type) {
-      case ArgumentType.blockID:
-        return ArgumentBlockID.getCompletions();
-
-      case ArgumentType.entity:
-      case ArgumentType.entityList:
-      case ArgumentType.entityListWithAmount:
-        return ArgumentEntity.getCompletions();
-    }
-    return [];
   }
 }

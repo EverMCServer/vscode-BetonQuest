@@ -664,7 +664,7 @@ export class Kinds {
                 description: L("betonquest.v2.condition.variable.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Variable, name: L("betonquest.v2.condition.variable.mandatory.variable.name"), type: ArgumentType.variable, format: 'string', defaultValue: '%%', placeholder: 'e.g. itemdurability.HAND', tooltip: L("betonquest.v2.condition.variable.mandatory.variable.tooltip") },
+                        { jsx: Variable, name: L("betonquest.v2.condition.variable.mandatory.variable.name"), type: ArgumentType.variableQuoted, format: 'string', defaultValue: '%%', placeholder: 'e.g. itemdurability.HAND', tooltip: L("betonquest.v2.condition.variable.mandatory.variable.tooltip") },
                         { jsx: Input, name: L("betonquest.v2.condition.variable.mandatory.regEx.name"), type: ArgumentType.regex, format: 'string', defaultValue: 'some value', placeholder: 'e.g. 16', tooltip: L("betonquest.v2.condition.variable.mandatory.regEx.tooltip"), escapeCharacters: [' '], config: { allowedPatterns: [/^[\S ]*$/] }, allowVariable: true },
                     ],
                     optional: [
