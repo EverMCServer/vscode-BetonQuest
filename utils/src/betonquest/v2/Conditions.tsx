@@ -682,15 +682,15 @@ export class Kinds {
                             jsx: Select, name: L("betonquest.v2.condition.weather.mandatory.type.name"), type: ArgumentType.selection, format: 'string', defaultValue: 'sun', placeholder: 'e.g. sun', config: {
                                 options: [
                                     {
-                                        label: L("betonquest.v2.condition.weather.mandatory.type.option.sun"), // TODO: i18n
+                                        label: L("betonquest.v2.condition.weather.mandatory.type.option.sun"),
                                         value: 'sun'
                                     },
                                     {
-                                        label: L("betonquest.v2.condition.weather.mandatory.type.option.rain"), // TODO: i18n
+                                        label: L("betonquest.v2.condition.weather.mandatory.type.option.rain"),
                                         value: 'rain'
                                     },
                                     {
-                                        label: L("betonquest.v2.condition.weather.mandatory.type.option.storm"), // TODO: i18n
+                                        label: L("betonquest.v2.condition.weather.mandatory.type.option.storm"),
                                         value: 'storm'
                                     },
                                 ] as DefaultOptionType[]
