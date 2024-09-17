@@ -17,6 +17,7 @@ import { ArgumentEntity } from "./ArgumentEntity";
 import { ArgumentEventID } from "./ArgumentEventID";
 import { ArgumentFloat } from "./ArgumentFloat";
 import { ArgumentInterger } from "./ArgumentInterger";
+import { ArgumentVariable } from "./ArgumentVariable";
 
 export class ArgumentValue extends AbstractNodeV2<ArgumentValueType> {
   readonly type: ArgumentValueType = "ArgumentValue";
@@ -55,85 +56,90 @@ export class ArgumentValue extends AbstractNodeV2<ArgumentValueType> {
     // Parse value
     let pos1 = this.offsetStart;
     if (this.pattern && this.pattern?.format !== "boolean") {
-      switch (this.pattern.type) {
+      if (pattern?.allowVariable && this.valueStr[0] === "%" && this.valueStr[this.valueStr.length - 1] === "%") {
+        // Parse as variable
+        this.addChild(new ArgumentVariable(this.valueStr, [this.offsetStart, this.offsetEnd], this));
+      } else {
+        switch (this.pattern.type) {
 
-        case ArgumentType.interger:
-          parent.addChild(new ArgumentInterger(this.valueStr, [this.offsetStart, this.offsetEnd], this));
-          break;
+          case ArgumentType.interger:
+            parent.addChild(new ArgumentInterger(this.valueStr, [this.offsetStart, this.offsetEnd], this));
+            break;
 
-        case ArgumentType.intergerList:
-          // Seprate value by ","
-          this.valueStr.split(",").forEach((argStr, i) => {
-            const pos2 = pos1 + argStr.length;
-            parent.addChild(new ArgumentInterger(argStr, [pos1, pos2], this));
-            pos1 = pos2 + 1;
-          });
-          break;
+          case ArgumentType.intergerList:
+            // Seprate value by ","
+            this.valueStr.split(",").forEach((argStr, i) => {
+              const pos2 = pos1 + argStr.length;
+              parent.addChild(new ArgumentInterger(argStr, [pos1, pos2], this));
+              pos1 = pos2 + 1;
+            });
+            break;
 
-        case ArgumentType.float:
-          parent.addChild(new ArgumentFloat(this.valueStr, [this.offsetStart, this.offsetEnd], this));
-          break;
+          case ArgumentType.float:
+            parent.addChild(new ArgumentFloat(this.valueStr, [this.offsetStart, this.offsetEnd], this));
+            break;
 
-        case ArgumentType.conditionID:
-          parent.addChild(new ArgumentConditionID(this.valueStr, [this.offsetStart, this.offsetEnd], this));
-          break;
+          case ArgumentType.conditionID:
+            parent.addChild(new ArgumentConditionID(this.valueStr, [this.offsetStart, this.offsetEnd], this));
+            break;
 
-        case ArgumentType.conditionIdList:
-          // Seprate value by ","
-          this.valueStr.split(",").forEach((argStr, i) => {
-            const pos2 = pos1 + argStr.length;
-            parent.addChild(new ArgumentConditionID(argStr, [pos1, pos2], this));
-            pos1 = pos2 + 1;
-          });
-          break;
+          case ArgumentType.conditionIdList:
+            // Seprate value by ","
+            this.valueStr.split(",").forEach((argStr, i) => {
+              const pos2 = pos1 + argStr.length;
+              parent.addChild(new ArgumentConditionID(argStr, [pos1, pos2], this));
+              pos1 = pos2 + 1;
+            });
+            break;
 
-        case ArgumentType.eventID:
-          parent.addChild(new ArgumentEventID(this.valueStr, [this.offsetStart, this.offsetEnd], this));
-          break;
+          case ArgumentType.eventID:
+            parent.addChild(new ArgumentEventID(this.valueStr, [this.offsetStart, this.offsetEnd], this));
+            break;
 
-        case ArgumentType.eventIdList:
-          // Seprate value by ","
-          this.valueStr.split(",").forEach((argStr, i) => {
-            const pos2 = pos1 + argStr.length;
-            parent.addChild(new ArgumentEventID(argStr, [pos1, pos2], this));
-            pos1 = pos2 + 1;
-          });
-          break;
+          case ArgumentType.eventIdList:
+            // Seprate value by ","
+            this.valueStr.split(",").forEach((argStr, i) => {
+              const pos2 = pos1 + argStr.length;
+              parent.addChild(new ArgumentEventID(argStr, [pos1, pos2], this));
+              pos1 = pos2 + 1;
+            });
+            break;
 
-        case ArgumentType.blockID:
-          parent.addChild(new ArgumentBlockID(valueStr, [this.offsetStart, this.offsetEnd], this));
-          break;
+          case ArgumentType.blockID:
+            parent.addChild(new ArgumentBlockID(valueStr, [this.offsetStart, this.offsetEnd], this));
+            break;
 
-        case ArgumentType.entity:
-          parent.addChild(new ArgumentEntity(valueStr, [this.offsetStart, this.offsetEnd], this));
-          break;
+          case ArgumentType.entity:
+            parent.addChild(new ArgumentEntity(valueStr, [this.offsetStart, this.offsetEnd], this));
+            break;
 
-        case ArgumentType.entityList:
-          // Seprate value by ","
-          this.valueStr.split(",").forEach((argStr, i) => {
-            const pos2 = pos1 + argStr.length;
-            parent.addChild(new ArgumentEntity(argStr, [pos1, pos2], this));
-            pos1 = pos2 + 1;
-          });
-          break;
+          case ArgumentType.entityList:
+            // Seprate value by ","
+            this.valueStr.split(",").forEach((argStr, i) => {
+              const pos2 = pos1 + argStr.length;
+              parent.addChild(new ArgumentEntity(argStr, [pos1, pos2], this));
+              pos1 = pos2 + 1;
+            });
+            break;
 
-        case ArgumentType.entityListWithAmount:
-          // Seprate value by "," and ":"
-          this.valueStr.split(",").forEach((str, i) => {
-            const pos4 = pos1 + str.length;
-            let pos2 = pos4;
-            if (str.includes(":")) {
-              const components = str.split(":");
-              pos2 = pos1 + components[0].length;
-              const amountStr = components.slice(1).join(":");
-              parent.addChild(new ArgumentEntity(components[0], [pos1, pos2], this));
-              parent.addChild(new ArgumentInterger(amountStr, [pos2 + 1, pos4], this));
-            } else {
-              parent.addChild(new ArgumentEntity(str, [pos1, pos2], this));
-            }
-            pos1 = pos4 + 1;
-          });
-          break;
+          case ArgumentType.entityListWithAmount:
+            // Seprate value by "," and ":"
+            this.valueStr.split(",").forEach((str, i) => {
+              const pos4 = pos1 + str.length;
+              let pos2 = pos4;
+              if (str.includes(":")) {
+                const components = str.split(":");
+                pos2 = pos1 + components[0].length;
+                const amountStr = components.slice(1).join(":");
+                parent.addChild(new ArgumentEntity(components[0], [pos1, pos2], this));
+                parent.addChild(new ArgumentInterger(amountStr, [pos2 + 1, pos4], this));
+              } else {
+                parent.addChild(new ArgumentEntity(str, [pos1, pos2], this));
+              }
+              pos1 = pos4 + 1;
+            });
+            break;
+        }
       }
     }
   }

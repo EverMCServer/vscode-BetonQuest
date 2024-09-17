@@ -24,12 +24,16 @@ export class ArgumentBlockID extends AbstractNodeV2<ArgumentBlockIdType> {
   }
 
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
-    return MATERIAL_LIST.filter(e => e.isBlock()).map(e => ({
+    const completions: CompletionItem[] = MATERIAL_LIST.filter(e => e.isBlock()).map(e => ({
       label: e.getBukkitId(),
       kind: CompletionItemKind.EnumMember,
       detail: "Block ID",
       documentation: "Bukkit Block ID"
     }));
+    return [
+      ...completions,
+      ...super.getCompletions(offset, documentUri)
+    ];
   }
 
 }
