@@ -15,9 +15,9 @@ export class EventArgumentOptional extends AbstractNodeV2<EventArgumentOptionalT
   readonly offsetEnd?: number;
   readonly parent: EventArguments;
 
-  private argumentStr: string;
+  readonly argumentStr: string;
   private offsets: [offsetStart: number, keyStart: number, keyEnd: number, valueStart: number, offsetEnd: number];
-  private pattern?: ArgumentsPatternOptional;
+  readonly pattern?: ArgumentsPatternOptional;
 
   constructor(
     argumentStr: string,
@@ -88,7 +88,7 @@ export class EventArgumentOptional extends AbstractNodeV2<EventArgumentOptionalT
 
     // Prompt key suggestions
     if (this.offsets[0] < offset && offset <= this.offsets[1] || offset === this.offsets[2]) {
-      this.parent.kindConfig.argumentsPatterns
+      this.parent.parent.kindConfig?.argumentsPatterns
         .optional?.filter(o => !this.parent.argumentOptionalStrs.some(s => s.trimStart().startsWith(o.key)))
         .forEach(pattern => completionItems.push({
           label: pattern.key,

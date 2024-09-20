@@ -15,9 +15,9 @@ export class ConditionArgumentMandatory extends AbstractNodeV2<ConditionArgument
   readonly offsetEnd: number;
   readonly parent: ConditionArguments;
 
-  private argumentStr: string;
+  readonly argumentStr: string;
   private offsets: [offsetStart: number, keyStart: number, keyEnd: number, valueStart: number, offsetEnd: number];
-  private pattern: ArgumentsPatternMandatory;
+  readonly pattern: ArgumentsPatternMandatory;
 
   constructor(
     argumentStr: string,
@@ -87,7 +87,7 @@ export class ConditionArgumentMandatory extends AbstractNodeV2<ConditionArgument
 
     // Prompt key suggestions
     if (this.pattern.key && (this.offsets[0] < offset && offset < this.offsets[1] || offset === this.offsets[2])) {
-      this.parent.kindConfig.argumentsPatterns
+      this.parent.parent.kindConfig?.argumentsPatterns
         .mandatory.filter(o => !this.parent.argumentMandatoryStrs.some(s => !o.key || s.trimStart().startsWith(o.key)))
         .forEach(pattern => completionItems.push({
           label: pattern.key!,

@@ -1,6 +1,3 @@
-import Objective from "betonquest-utils/betonquest/Objective";
-import { ElementKind as _ElementKind } from "betonquest-utils/betonquest/v2/Element";
-
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { HoverInfo } from "../../../utils/hover";
 import { ObjectiveKindType } from "../../node";
@@ -14,16 +11,14 @@ export class ObjectiveKind extends AbstractNodeV2<ObjectiveKindType> {
   readonly parent: ObjectiveEntry;
 
   private value: string;
-  private kindConfig?: _ElementKind<Objective>;
 
-  constructor(value: string, range: [number?, number?], kindConfig: _ElementKind<Objective>, parent: ObjectiveEntry) {
+  constructor(value: string, range: [number?, number?], parent: ObjectiveEntry) {
     super();
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
     this.parent = parent;
 
     this.value = value;
-    this.kindConfig = kindConfig;
   }
 
   getSemanticTokens(): SemanticToken[] {
@@ -44,11 +39,11 @@ export class ObjectiveKind extends AbstractNodeV2<ObjectiveKindType> {
         content: "",
         offset: [this.offsetStart, this.offsetEnd]
       };
-      if (this.kindConfig) {
-        info.content = `(${this.type}) ${this.kindConfig?.value}`;
-        if (this.kindConfig.description) {
+      if (this.parent.kindConfig) {
+        info.content = `(${this.type}) ${this.parent.kindConfig?.value}`;
+        if (this.parent.kindConfig.description) {
           // TODO: Remove html tag from this.kindConfig.description
-          info.content += "\n\n---\n\n" + this.kindConfig.display.toString() + "\n\n" + this.kindConfig.description;
+          info.content += "\n\n---\n\n" + this.parent.kindConfig.display.toString() + "\n\n" + this.parent.kindConfig.description;
         }
       }
       infos.push(info);

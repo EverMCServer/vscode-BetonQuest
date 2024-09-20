@@ -1,8 +1,6 @@
 import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ArgumentsPatternMandatory, ArgumentsPatternOptional, ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
-import Objective from "betonquest-utils/betonquest/Objective";
-import { ElementKind } from "betonquest-utils/betonquest/v2/Element";
 
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
@@ -21,7 +19,6 @@ export class ObjectiveArguments extends AbstractNodeV2<ObjectiveArgumentsType> {
 
   private argumentsStrs: string[] = [];
   private indent: number;
-  readonly kindConfig: ElementKind<Objective>;
 
   private isMandatoryArgumentIncomplete: boolean = false;
 
@@ -35,13 +32,12 @@ export class ObjectiveArguments extends AbstractNodeV2<ObjectiveArgumentsType> {
    */
   private keyOffsets: [offsetStart: number, stringEnd: number, offsetEnd: number][] = [];
 
-  constructor(argumentsSourceStr: string, range: [number?, number?], indent: number, kindConfig: ElementKind<Objective>, parent: ObjectiveEntry) {
+  constructor(argumentsSourceStr: string, range: [number?, number?], indent: number, parent: ObjectiveEntry) {
     super();
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
     this.parent = parent;
     this.indent = indent;
-    this.kindConfig = kindConfig;
 
     // Split argumentsStr by whitespaces, with respect to quotes ("")
     // const regex = /(?:\"[^\"]*?\"|\'[^\']*?\')\s*|\S+\s*/g; // keep quotes and tailing whitespaces
@@ -57,7 +53,7 @@ export class ObjectiveArguments extends AbstractNodeV2<ObjectiveArgumentsType> {
     }
 
     // Search ArgumentsPatterns from V2 Element List
-    const argumentsPatterns: ArgumentsPatterns = this.kindConfig.argumentsPatterns ?? { mandatory: [{ name: 'unspecified', format: '*', defaultValue: '' }] };
+    const argumentsPatterns: ArgumentsPatterns = this.parent.kindConfig?.argumentsPatterns ?? { mandatory: [{ name: 'unspecified', format: '*', defaultValue: '' }] } as ArgumentsPatterns;
 
     if (argumentsPatterns.optional && argumentsPatterns.optional.length > 0) {
       // With optional args
@@ -111,9 +107,9 @@ export class ObjectiveArguments extends AbstractNodeV2<ObjectiveArgumentsType> {
           } else {
             // No need to keep whitespaces
             // Only put the required amount of  arguments into the mandatory array, the rest goes to optional array
-            if (pos + 1 > this.kindConfig.argumentsPatterns.mandatory.length) {
-              this.argumentMandatoryStrs = this.argumentsStrs.slice(0, this.kindConfig.argumentsPatterns.mandatory.length);
-              this.argumentOptionalStrs.unshift(...this.argumentsStrs.slice(this.kindConfig.argumentsPatterns.mandatory.length, pos + 1));
+            if (pos + 1 > argumentsPatterns.mandatory.length) {
+              this.argumentMandatoryStrs = this.argumentsStrs.slice(0, argumentsPatterns.mandatory.length);
+              this.argumentOptionalStrs.unshift(...this.argumentsStrs.slice(argumentsPatterns.mandatory.length, pos + 1));
             } else {
               this.argumentMandatoryStrs = this.argumentsStrs.slice(0, pos + 1);
             }
@@ -157,7 +153,7 @@ export class ObjectiveArguments extends AbstractNodeV2<ObjectiveArgumentsType> {
   }
 
   private assignArgumentsMandatory(argumentMandatoryStrs: string[], offsetStart: number, patterns: ArgumentsPatternMandatory[]) {
-    this.kindConfig.argumentsPatterns.mandatory.some((pattern, i) => {
+    this.parent.kindConfig?.argumentsPatterns.mandatory.some((pattern, i) => {
       const argStr = argumentMandatoryStrs[i] || undefined;
       if (argStr && argStr.trimStart()) {
         const str = argStr.trimStart();
@@ -174,7 +170,7 @@ export class ObjectiveArguments extends AbstractNodeV2<ObjectiveArgumentsType> {
         const pos2 = offsetStart + (argStr?.length || 0);
         const offsets: [offsetStart: number, stringStart: number, offsetEnd: number] = [offsetStart, pos2, pos2];
         // Add Diagnotistics for all the rest of mandatory arguments
-        this.kindConfig.argumentsPatterns.mandatory.slice(i).forEach(pattern =>
+        this.parent.kindConfig?.argumentsPatterns.mandatory.slice(i).forEach(pattern =>
           this.addDiagnostic(
             [offsets[0], offsets[2]],
             `Missing mandatory argument: ${pattern.name}.\nExample value: ${pattern.defaultValue}`,

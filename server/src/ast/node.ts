@@ -144,9 +144,9 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
     return this.children.find<Node>((c): c is Node => (c.type === type || type.includes(c.type)) && (!additionalCheck || additionalCheck(c as Node)));
   }
 
-  getChildren<Node extends N>(type?: NodeType, additionalCheck?: (child: Node) => any | boolean) {
+  getChildren<Node extends N>(type?: NodeType | NodeType[], additionalCheck?: (child: Node) => any | boolean) {
     if (type) {
-      return this.children.filter<Node>((c): c is Node => c.type === type && (!additionalCheck || additionalCheck(c as Node)));
+      return this.children.filter<Node>((c): c is Node => (c.type === type || type.includes(c.type)) && (!additionalCheck || additionalCheck(c as Node)));
     }
     return this.children as Node[];
   }

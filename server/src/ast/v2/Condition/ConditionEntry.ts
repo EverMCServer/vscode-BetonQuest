@@ -1,7 +1,9 @@
 import { CompletionItem, CompletionItemKind, DiagnosticSeverity } from "vscode-languageserver";
 import { Pair, Scalar } from "yaml";
 
+import Condition from "betonquest-utils/betonquest/Condition";
 import { Kinds } from "betonquest-utils/betonquest/v2/Conditions";
+import { ElementKind } from "betonquest-utils/betonquest/v2/Element";
 
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getScalarSourceAndRange } from "../../../utils/yaml";
@@ -22,6 +24,8 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
   private offsetValueStart?: number;
   private offsetKindStart?: number;
   private offsetKindEnd?: number;
+  readonly kindConfig?: ElementKind<Condition>;
+  readonly keyString: string;
   private kindString: string = "";
   private argumentsString: string = "";
 
@@ -33,6 +37,7 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
     this.yml = pair;
 
     // Parse YAML key
+    this.keyString = this.yml.key.value;
     this.addChild(new ConditionKey(this.yml.key, this));
 
     // Parse kind and arguments
@@ -70,16 +75,20 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
     }
     this.kindString = matched[1];
     const kinds = Kinds.get();
-    const kind = kinds.find(k => k.value.toLocaleLowerCase() === this.kindString.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
+    this.kindConfig = kinds.find(k => k.value.toLocaleLowerCase() === this.kindString.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
     this.offsetKindStart = offsetStart + matched.index;
     this.offsetKindEnd = this.offsetKindStart + this.kindString.length;
-    this.addChild(new ConditionKind(this.kindString, [this.offsetKindStart, this.offsetKindEnd], kind, this));
+    this.addChild(new ConditionKind(this.kindString, [this.offsetKindStart, this.offsetKindEnd], this));
 
     // Parse Arguments
     this.argumentsString = matched[2];
     const offsetArgumentsStart = this.offsetKindEnd;
     // Parse each individual arguments
-    this.addChild(new ConditionArguments(this.argumentsString, [offsetArgumentsStart, offsetEnd], indent, kind, this));
+    this.addChild(new ConditionArguments(this.argumentsString, [offsetArgumentsStart, offsetEnd], indent, this));
+  }
+
+  isKind(kindToCheck: string) {
+    return this.kindString.toLowerCase() === kindToCheck.toLowerCase();
   }
 
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
