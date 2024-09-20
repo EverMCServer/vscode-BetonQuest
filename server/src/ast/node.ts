@@ -101,6 +101,7 @@ export type ArgumentFloatType = 'ArgumentFloat';
 export type ArgumentBlockIdType = 'ArgumentBlockID';
 export type ArgumentEntityType = 'ArgumentEntity';
 export type ArgumentConditionIdType = 'ArgumentConditionID';
+export type ArgumentGlobalPointIdType = 'ArgumentGlobalPointID';
 export type ArgumentEventIdType = 'ArgumentEventID';
 export type ArgumentObjectiveIdType = 'ArgumentObjectiveID';
 export type ArgumentValueTypes =
@@ -111,6 +112,7 @@ export type ArgumentValueTypes =
   ArgumentBlockIdType |
   ArgumentEntityType |
   ArgumentConditionIdType |
+  ArgumentGlobalPointIdType |
   ArgumentEventIdType |
   ArgumentObjectiveIdType;
 

@@ -1,25 +1,19 @@
 import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
 
 import { ArgumentConditionIdType } from "../../node";
-import { AbstractNodeV2 } from "../../v2";
 import { ConditionKey } from "../Condition/ConditionKey";
+import { ArgumentAbstractID } from "./ArgumentAbstractID";
 import { ArgumentValue } from "./ArgumentValue";
 
-export class ArgumentConditionID extends AbstractNodeV2<ArgumentConditionIdType> {
+export class ArgumentConditionID extends ArgumentAbstractID<ArgumentConditionIdType> {
   readonly type: ArgumentConditionIdType = 'ArgumentConditionID';
-  readonly offsetStart: number;
-  readonly offsetEnd: number;
-  readonly parent: ArgumentValue;
 
   constructor(
     argumentStr: string,
     offsets: [offsetStart: number, offsetEnd: number],
     parent: ArgumentValue,
   ) {
-    super();
-    this.offsetStart = offsets[0];
-    this.offsetEnd = offsets[1];
-    this.parent = parent;
+    super(argumentStr, offsets, parent);
   }
 
   private getConditionIDs() {

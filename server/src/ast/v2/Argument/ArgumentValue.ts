@@ -16,6 +16,7 @@ import { ArgumentConditionID } from "./ArgumentConditionID";
 import { ArgumentEntity } from "./ArgumentEntity";
 import { ArgumentEventID } from "./ArgumentEventID";
 import { ArgumentFloat } from "./ArgumentFloat";
+import { ArgumentGlobalPointID } from "./ArgumentGlobalPointID";
 import { ArgumentInterger } from "./ArgumentInterger";
 import { ArgumentVariable } from "./ArgumentVariable";
 
@@ -63,61 +64,65 @@ export class ArgumentValue extends AbstractNodeV2<ArgumentValueType> {
         switch (this.pattern.type) {
 
           case ArgumentType.interger:
-            parent.addChild(new ArgumentInterger(this.valueStr, [this.offsetStart, this.offsetEnd], this));
+            this.addChild(new ArgumentInterger(this.valueStr, [this.offsetStart, this.offsetEnd], this));
             break;
 
           case ArgumentType.intergerList:
             // Seprate value by ","
             this.valueStr.split(",").forEach((argStr, i) => {
               const pos2 = pos1 + argStr.length;
-              parent.addChild(new ArgumentInterger(argStr, [pos1, pos2], this));
+              this.addChild(new ArgumentInterger(argStr, [pos1, pos2], this));
               pos1 = pos2 + 1;
             });
             break;
 
           case ArgumentType.float:
-            parent.addChild(new ArgumentFloat(this.valueStr, [this.offsetStart, this.offsetEnd], this));
+            this.addChild(new ArgumentFloat(this.valueStr, [this.offsetStart, this.offsetEnd], this));
             break;
 
           case ArgumentType.conditionID:
-            parent.addChild(new ArgumentConditionID(this.valueStr, [this.offsetStart, this.offsetEnd], this));
+            this.addChild(new ArgumentConditionID(this.valueStr, [this.offsetStart, this.offsetEnd], this));
             break;
 
           case ArgumentType.conditionIdList:
             // Seprate value by ","
             this.valueStr.split(",").forEach((argStr, i) => {
               const pos2 = pos1 + argStr.length;
-              parent.addChild(new ArgumentConditionID(argStr, [pos1, pos2], this));
+              this.addChild(new ArgumentConditionID(argStr, [pos1, pos2], this));
               pos1 = pos2 + 1;
             });
             break;
 
           case ArgumentType.eventID:
-            parent.addChild(new ArgumentEventID(this.valueStr, [this.offsetStart, this.offsetEnd], this));
+            this.addChild(new ArgumentEventID(this.valueStr, [this.offsetStart, this.offsetEnd], this));
             break;
 
           case ArgumentType.eventIdList:
             // Seprate value by ","
             this.valueStr.split(",").forEach((argStr, i) => {
               const pos2 = pos1 + argStr.length;
-              parent.addChild(new ArgumentEventID(argStr, [pos1, pos2], this));
+              this.addChild(new ArgumentEventID(argStr, [pos1, pos2], this));
               pos1 = pos2 + 1;
             });
             break;
 
+          case ArgumentType.globalPointID:
+            this.addChild(new ArgumentGlobalPointID(this.valueStr, [this.offsetStart, this.offsetEnd], this));
+            break;
+
           case ArgumentType.blockID:
-            parent.addChild(new ArgumentBlockID(valueStr, [this.offsetStart, this.offsetEnd], this));
+            this.addChild(new ArgumentBlockID(valueStr, [this.offsetStart, this.offsetEnd], this));
             break;
 
           case ArgumentType.entity:
-            parent.addChild(new ArgumentEntity(valueStr, [this.offsetStart, this.offsetEnd], this));
+            this.addChild(new ArgumentEntity(valueStr, [this.offsetStart, this.offsetEnd], this));
             break;
 
           case ArgumentType.entityList:
             // Seprate value by ","
             this.valueStr.split(",").forEach((argStr, i) => {
               const pos2 = pos1 + argStr.length;
-              parent.addChild(new ArgumentEntity(argStr, [pos1, pos2], this));
+              this.addChild(new ArgumentEntity(argStr, [pos1, pos2], this));
               pos1 = pos2 + 1;
             });
             break;
@@ -131,10 +136,10 @@ export class ArgumentValue extends AbstractNodeV2<ArgumentValueType> {
                 const components = str.split(":");
                 pos2 = pos1 + components[0].length;
                 const amountStr = components.slice(1).join(":");
-                parent.addChild(new ArgumentEntity(components[0], [pos1, pos2], this));
-                parent.addChild(new ArgumentInterger(amountStr, [pos2 + 1, pos4], this));
+                this.addChild(new ArgumentEntity(components[0], [pos1, pos2], this));
+                this.addChild(new ArgumentInterger(amountStr, [pos2 + 1, pos4], this));
               } else {
-                parent.addChild(new ArgumentEntity(str, [pos1, pos2], this));
+                this.addChild(new ArgumentEntity(str, [pos1, pos2], this));
               }
               pos1 = pos4 + 1;
             });
