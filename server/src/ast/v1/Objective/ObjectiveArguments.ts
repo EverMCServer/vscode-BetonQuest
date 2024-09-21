@@ -272,8 +272,4 @@ export class ObjectiveArguments extends AbstractNodeV1<ObjectiveArgumentsType> {
     return semanticTokens;
   }
 
-  getHoverInfo(offset: number): HoverInfo[] {
-    return [];
-  }
-
 }

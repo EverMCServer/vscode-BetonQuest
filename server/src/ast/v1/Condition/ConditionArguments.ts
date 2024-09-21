@@ -272,8 +272,4 @@ export class ConditionArguments extends AbstractNodeV1<ConditionArgumentsType> {
     return semanticTokens;
   }
 
-  getHoverInfo(offset: number): HoverInfo[] {
-    return [];
-  }
-
 }

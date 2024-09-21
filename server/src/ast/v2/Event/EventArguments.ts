@@ -267,8 +267,4 @@ export class EventArguments extends AbstractNodeV2<EventArgumentsType> {
     return semanticTokens;
   }
 
-  getHoverInfo(offset: number): HoverInfo[] {
-    return [];
-  }
-
 }

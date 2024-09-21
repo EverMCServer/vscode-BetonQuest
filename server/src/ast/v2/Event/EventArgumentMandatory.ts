@@ -3,6 +3,7 @@ import { CompletionItem, CompletionItemKind, DiagnosticSeverity } from "vscode-l
 import { ArgumentsPatternMandatory } from "betonquest-utils/betonquest/Arguments";
 
 import { DiagnosticCode } from "../../../utils/diagnostics";
+import { HoverInfo } from "../../../utils/hover";
 import { EventArgumentMandatoryType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
 import { ArgumentKey } from "../Argument/ArgumentKey";
@@ -80,6 +81,17 @@ export class EventArgumentMandatory extends AbstractNodeV2<EventArgumentMandator
       // Parse 
       this.addChild(new ArgumentValue(this.argumentStr, [this.offsets[3], this.offsets[4]], this.pattern, this));
     }
+  }
+
+  getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
+    return [
+      // Show name of the argument
+      {
+        content: "Mandatory argument: " + this.pattern.name!.toString(),
+        offset: [this.offsets[1], this.offsets[4]]
+      },
+      ...super.getHoverInfo(offset, documentUri)
+    ];
   }
 
   getCompletions(offset: number, documentUri?: string): CompletionItem[] {

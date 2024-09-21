@@ -3,6 +3,7 @@ import { CompletionItem, CompletionItemKind, DiagnosticSeverity } from "vscode-l
 import { ArgumentsPatternOptional } from "betonquest-utils/betonquest/Arguments";
 
 import { DiagnosticCode } from "../../../utils/diagnostics";
+import { HoverInfo } from "../../../utils/hover";
 import { ConditionArgumentOptionalType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
 import { ArgumentKey } from "../Argument/ArgumentKey";
@@ -11,8 +12,8 @@ import { ConditionArguments } from "./ConditionArguments";
 
 export class ConditionArgumentOptional extends AbstractNodeV2<ConditionArgumentOptionalType> {
   readonly type: ConditionArgumentOptionalType = 'ConditionArgumentOptional';
-  readonly offsetStart?: number;
-  readonly offsetEnd?: number;
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
   readonly parent: ConditionArguments;
 
   readonly argumentStr: string;
@@ -80,6 +81,16 @@ export class ConditionArgumentOptional extends AbstractNodeV2<ConditionArgumentO
       // Parse key
       this.addChild(new ArgumentValue(this.argumentStr, [this.offsets[3], this.offsets[4]], this.pattern, this));
     }
+  }
+
+  getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
+    const results = super.getHoverInfo(offset, documentUri);
+    // Show name of the argument
+    this.pattern ? results.push({
+      content: "Optional argument: " + this.pattern.name!.toString(),
+      offset: [this.offsets[1], this.offsets[4]]
+    }) : undefined;
+    return results;
   }
 
   // Prompt key completions
