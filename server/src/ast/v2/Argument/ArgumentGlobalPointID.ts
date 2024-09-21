@@ -28,42 +28,32 @@ export class ArgumentGlobalPointID extends ArgumentAbstractID<ArgumentGlobalPoin
 
   private getAllGlobalPointIDs() {
     const result: Map<string, [string, string, string, string]> = new Map();
-    ([
+    [
+      // Iterate all element lists
       this.getAllConditionEntries(),
       this.getAllEventEntries(),
       this.getAllObjectiveEntries()
     ].flat()
       .filter(e =>
+        // Speed up searching by filtering all entries contains type = ArgumentType.globalPointID only
         e.kindConfig?.argumentsPatterns.mandatory.some(e => e.type === ArgumentType.globalPointID) ||
         e.kindConfig?.argumentsPatterns.optional?.some(e => e.type === ArgumentType.globalPointID)
       )
-      .map(e => e.getChild<ConditionArguments | EventArguments | ObjectiveArguments>(["ConditionArguments", "EventArguments", "ObjectiveArguments"]))
-      .filter(e => e !== undefined) as ConditionArguments[])
+      .flatMap(e => e.getChildren<ConditionArguments | EventArguments | ObjectiveArguments>(["ConditionArguments", "EventArguments", "ObjectiveArguments"]))
+      .flatMap(e => e.getChildren<ConditionArgumentMandatory | EventArgumentMandatory | ObjectiveArgumentMandatory | ConditionArgumentOptional | EventArgumentOptional | ObjectiveArgumentOptional>(["ConditionArgumentMandatory", "EventArgumentMandatory", "ObjectiveArgumentMandatory", "ConditionArgumentOptional", "EventArgumentOptional", "ObjectiveArgumentOptional"]))
+      // Filter all argument by type  
+      .filter(e => e.pattern?.type === ArgumentType.globalPointID)
       .forEach(e => {
-        e.getChildren<ConditionArgumentMandatory | EventArgumentMandatory | ObjectiveArgumentMandatory>(["ConditionArgumentMandatory", "EventArgumentMandatory", "ObjectiveArgumentMandatory"])
-          .filter(e => e.pattern.type === ArgumentType.globalPointID)
-          .forEach(e => {
-            if (e.getPackagePath() !== this.getPackagePath() || e.parent.parent.keyString !== this.parent.parent.parent.parent.keyString) {
-              result.set(e.argumentStr, [
-                e.argumentStr,
-                e.getPackagePath().join("-"),
-                e.parent.type,
-                e.parent.parent.keyString
-              ]);
-            }
-          });
-        e.getChildren<ConditionArgumentOptional | EventArgumentOptional | ObjectiveArgumentOptional>(["ConditionArgumentOptional", "EventArgumentOptional", "ObjectiveArgumentOptional"])
-          .filter(e => e.pattern?.type === ArgumentType.globalPointID)
-          .forEach(e => {
-            if (e.getPackagePath() !== this.getPackagePath() || e.parent.parent.keyString !== this.parent.parent.parent.parent.keyString) {
-              result.set(e.argumentStr, [
-                e.argumentStr,
-                e.getPackagePath().join("-"),
-                e.parent.type,
-                e.parent.parent.keyString
-              ]);
-            }
-          });
+        // Ignore the entering id
+        if (e.getPackagePath() !== this.getPackagePath() || e.parent.parent.keyString !== this.parent.parent.parent.parent.keyString) {
+          // Assign GlobalPointID string to result
+          result.set(e.argumentStr, [
+            e.argumentStr,
+            e.getPackagePath().join("-"),
+            e.parent.type,
+            e.parent.parent.keyString
+          ]);
+        }
       });
     return [...result.values()];
   }
