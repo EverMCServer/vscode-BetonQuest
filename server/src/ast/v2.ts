@@ -74,6 +74,8 @@ export type NodeV2 = PackageV2 | TConditionList | TEventListList | TObjectiveLis
 export abstract class AbstractNodeV2<T extends NodeType> extends AbstractNode<T, NodeV2> {
   abstract readonly parent: NodeV2;
 
+  private _packagePath?: string[]; // Cached results
+
   getAst(): AST {
     if (this.parent.type === 'PackageV2') {
       return this.parent.parentAst;
@@ -89,7 +91,7 @@ export abstract class AbstractNodeV2<T extends NodeType> extends AbstractNode<T,
   // Get absolute Package path.
   // This method must be overrided / hijacked by the top-level class.
   getPackagePath(): string[] {
-    return this.parent.getPackagePath();
+    return this._packagePath ?? (this._packagePath = this.parent.getPackagePath());
   }
 
   // Get all target package's Condition entries.

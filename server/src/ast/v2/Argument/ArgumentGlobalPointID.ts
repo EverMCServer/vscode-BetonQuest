@@ -26,7 +26,7 @@ export class ArgumentGlobalPointID extends ArgumentAbstractID<ArgumentGlobalPoin
     super(argumentStr, offsets, parent);
   }
 
-  private getGlobalPointIDs() {
+  private getAllGlobalPointIDs() {
     const result: Map<string, [string, string, string, string]> = new Map();
     ([
       this.getAllConditionEntries(),
@@ -43,22 +43,26 @@ export class ArgumentGlobalPointID extends ArgumentAbstractID<ArgumentGlobalPoin
         e.getChildren<ConditionArgumentMandatory | EventArgumentMandatory | ObjectiveArgumentMandatory>(["ConditionArgumentMandatory", "EventArgumentMandatory", "ObjectiveArgumentMandatory"])
           .filter(e => e.pattern.type === ArgumentType.globalPointID)
           .forEach(e => {
-            result.set(e.argumentStr, [
-              e.argumentStr,
-              e.getPackagePath().join("-"),
-              e.parent.type,
-              e.parent.parent.keyString
-            ]);
+            if (e.getPackagePath() !== this.getPackagePath() || e.parent.parent.keyString !== this.parent.parent.parent.parent.keyString) {
+              result.set(e.argumentStr, [
+                e.argumentStr,
+                e.getPackagePath().join("-"),
+                e.parent.type,
+                e.parent.parent.keyString
+              ]);
+            }
           });
         e.getChildren<ConditionArgumentOptional | EventArgumentOptional | ObjectiveArgumentOptional>(["ConditionArgumentOptional", "EventArgumentOptional", "ObjectiveArgumentOptional"])
           .filter(e => e.pattern?.type === ArgumentType.globalPointID)
           .forEach(e => {
-            result.set(e.argumentStr, [
-              e.argumentStr,
-              e.getPackagePath().join("-"),
-              e.parent.type,
-              e.parent.parent.keyString
-            ]);
+            if (e.getPackagePath() !== this.getPackagePath() || e.parent.parent.keyString !== this.parent.parent.parent.parent.keyString) {
+              result.set(e.argumentStr, [
+                e.argumentStr,
+                e.getPackagePath().join("-"),
+                e.parent.type,
+                e.parent.parent.keyString
+              ]);
+            }
           });
       });
     return [...result.values()];
@@ -67,7 +71,7 @@ export class ArgumentGlobalPointID extends ArgumentAbstractID<ArgumentGlobalPoin
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
     // return ArgumentGlobalPointID.getCompletions();
     const packagePath = this.getPackagePath().join("-");
-    return this.getGlobalPointIDs().map(e => {
+    return this.getAllGlobalPointIDs().map(e => {
       let typeStr = e[2];
       if (typeStr.startsWith("Condition")) {
         typeStr = "Condition";
