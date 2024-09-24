@@ -12,6 +12,9 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
   readonly offsetEnd: number;
   readonly parent: ArgumentValue;
 
+  readonly variableType?: string;
+  readonly variableInstructions?: string;
+
   constructor(
     argumentStr: string,
     offsets: [offsetStart: number, offsetEnd: number],
@@ -23,14 +26,11 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
     this.parent = parent;
 
     // Parse by variable type
-    this.parseVariable(argumentStr);
-
-  }
-
-  private parseVariable(argumentStr: string) {
     const match = /^%([^\.]+)\.(.*)%$/g.exec(argumentStr);
     if (match) {
-      switch (match[1]) {
+      this.variableType = match[1];
+      this.variableInstructions = match[2];
+      switch (this.variableType) {
         case 'objective':
           break;
         case 'condition':
@@ -38,7 +38,7 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
         case 'point':
           break;
         case 'globalpoint':
-          this.addChild(new ArgumentVariableGlobalPoint(match[2], [this.offsetStart + match[1].length + 2, this.offsetEnd - 1], this));
+          this.addChild(new ArgumentVariableGlobalPoint(this.variableInstructions, [this.offsetStart + this.variableType.length + 2, this.offsetEnd - 1], this));
           break;
         case 'tag':
           break;
@@ -72,6 +72,10 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
         DiagnosticCode.ArgumentValueInvalid,
       );
     }
+
+  }
+
+  private parseVariable(argumentStr: string) {
   };
 
   // getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
