@@ -25,9 +25,12 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
     this.offsetEnd = offsets[1];
     this.parent = parent;
 
-    // Parse by variable type
+    // Parse variable ID
     const match = /^%([^\.]+)\.(.*)%$/g.exec(argumentStr);
     if (match) {
+      if (this.getPackageUri(match[1])) {
+        // TODO
+      }
       this.variableType = match[1];
       this.variableInstructions = match[2];
       switch (this.variableType) {

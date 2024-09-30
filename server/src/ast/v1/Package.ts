@@ -26,6 +26,8 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
   readonly parentAst: AST;
   readonly packagePath: string[];
 
+  private documentVersions: Map<string, number | undefined> = new Map();
+
   constructor(packageUri: string, documents: TextDocument[], parent: AST) {
     super();
     this.uri = packageUri;
@@ -34,8 +36,19 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
     // Calculate package's path
     this.packagePath = decodeURI(this.uri).slice(this.parentAst.wsFolderUri.length).replace(/^\/?|\/?$/gm, "").split('/');
 
-    // Parse sub Nodes by types
-    documents.forEach((document) => {
+    this.update(documents);
+  }
+
+  // Update package with documents
+  update(documents: TextDocument[]) {
+    // Get documents that need to be updated / created
+    const newDocs = documents.filter(newDoc => newDoc.version !== this.documentVersions.get(newDoc.uri));
+    // Remove missing / outdated documents from AST
+    const oldDocUris = [...this.documentVersions.keys()].filter(o => !newDocs.some(n => n.uri === o));
+    this.children = this.children.filter(e => oldDocUris.includes(e.getUri()));
+
+    // Iterate all files and create missing nodes.
+    newDocs.forEach((document) => {
       const u = new URL(document.uri);
       const p = u.pathname.split('/');
       switch (p[p.length - 1]) {
@@ -63,6 +76,10 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
           break;
       }
     });
+
+    // Update file versions
+    this.documentVersions = new Map();
+    documents.forEach(newDoc => this.documentVersions.set(newDoc.uri, newDoc.version));
   }
 
   // Get absolute Package path

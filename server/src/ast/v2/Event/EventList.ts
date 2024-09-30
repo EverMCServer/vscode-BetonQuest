@@ -26,7 +26,7 @@ export class EventList extends SectionCollection<EventListType> {
   }
 
   getLocations(yamlPath: string[], sourceUri: string) {
-    return this.children.flatMap(section => (section as EventListSection).getLocations(yamlPath, sourceUri));
+    return this.children.map(section => (section as EventListSection).getLocations(yamlPath, sourceUri));
   }
 
   getEventEntries(id: string, packageUri?: string): EventEntry[] {

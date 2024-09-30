@@ -1,10 +1,12 @@
-import { Scalar, YAMLMap, isSeq, parseDocument, visit } from "yaml";
 import { Range } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
+import { Scalar, YAMLMap, isSeq, parseDocument, visit } from "yaml";
+
+import { LocationsResponse } from "betonquest-utils/lsp/file";
 
 import { NodeType } from "../node";
-import { PackageV1 } from "./Package";
 import { AbstractNodeV1 } from "../v1";
+import { PackageV1 } from "./Package";
 
 export abstract class Document<T extends NodeType> extends AbstractNodeV1<T> {
   readonly uri: string;
@@ -50,6 +52,8 @@ export abstract class Document<T extends NodeType> extends AbstractNodeV1<T> {
     this.offsetStart = this.yml.range?.[0];
     this.offsetEnd = this.yml.range?.[1];
   }
+
+  abstract getLocations(yamlPath: string[], sourceUri: string): LocationsResponse;
 
   getRangeByOffset(offsetStart: number, offsetEnd: number) {
     return {

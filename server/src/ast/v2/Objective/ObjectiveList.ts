@@ -26,7 +26,7 @@ export class ObjectiveList extends SectionCollection<ObjectiveListType> {
   }
 
   getLocations(yamlPath: string[], sourceUri: string) {
-    return this.children.flatMap(section => (section as ObjectiveListSection).getLocations(yamlPath, sourceUri));
+    return this.children.map(section => (section as ObjectiveListSection).getLocations(yamlPath, sourceUri));
   }
 
   getObjectiveEntries(id: string, packageUri?: string): ObjectiveEntry[] {

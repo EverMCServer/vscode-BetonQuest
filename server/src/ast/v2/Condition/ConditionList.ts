@@ -26,7 +26,7 @@ export class ConditionList extends SectionCollection<ConditionListType> {
   }
 
   getLocations(yamlPath: string[], sourceUri: string) {
-    return this.children.flatMap(section => (section as ConditionListSection).getLocations(yamlPath, sourceUri));
+    return this.children.map(section => (section as ConditionListSection).getLocations(yamlPath, sourceUri));
   }
 
   getConditionEntries(id: string, packageUri?: string): ConditionEntry[] {

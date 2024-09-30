@@ -11,7 +11,7 @@ import { getParentUrl } from "../../utils/url";
 import { isStringScalar, isYamlMapPair } from "../../utils/yaml";
 import { AST } from "../ast";
 import { ConversationOptionType, PackageV2Type } from "../node";
-import { AbstractNodeV2 } from "../v2";
+import { AbstractNodeV2, NodeV2 } from "../v2";
 import { ConditionEntry } from "./Condition/ConditionEntry";
 import { ConditionList } from "./Condition/ConditionList";
 import { Conversation } from "./Conversation/Conversation";
@@ -26,22 +26,51 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
   readonly parent: PackageV2 = this;
   readonly parentAst: AST;
   readonly packagePath: string[];
+  protected children: (ConditionList | EventList | ObjectiveList | Conversation)[] = [
+    // Init Lists
+    new ConditionList(this.uri, this),
+    new EventList(this.uri, this),
+    new ObjectiveList(this.uri, this)
+  ];
+
+  private documentVersions: Map<string, number | undefined> = new Map();
 
   constructor(packageUri: string, documents: TextDocument[], parent: AST) {
     super();
     this.uri = packageUri;
     this.parentAst = parent;
 
-    // Init Lists
-    this.addChild(new ConditionList(this.uri, this));
-    this.addChild(new EventList(this.uri, this));
-    this.addChild(new ObjectiveList(this.uri, this));
-
     // Calculate package's path
     this.packagePath = decodeURI(this.uri).slice(this.parentAst.wsFolderUri.length).replace(/^\/?QuestPackages\//m, "").replace(/(?:\/)$/m, "").split('/');
 
-    // Iterate all files and create nodes.
-    documents.forEach((document) => {
+    this.update(documents);
+  }
+
+  // Update package with documents
+  update(documents: TextDocument[]) {
+    // // Skip if nothing changed
+    // if (
+    //   // No missing files
+    //   this.documentVersions.size === documents.length &&
+    //   // Versions matched
+    //   documents.every(newDoc => newDoc.version === this.documentVersions.get(newDoc.uri))
+    // ) {
+    //   return;
+    // }
+    // // Update file versions
+    // this.documentVersions = new Map();
+    // documents.forEach(newDoc => this.documentVersions.set(newDoc.uri, newDoc.version));
+    // this.children = [];
+
+    // NEW:
+    // Get documents that need to be updated / created
+    const newDocs = documents.filter(newDoc => newDoc.version !== this.documentVersions.get(newDoc.uri));
+    // Remove missing / outdated documents from AST
+    const oldDocUris = [...this.documentVersions.keys()].filter(o => !newDocs.some(n => n.uri === o));
+    this.children.forEach(e => e.filterSections(oldDocUris));
+
+    // Iterate all files and create missing nodes.
+    newDocs.forEach((document) => {
       // Parse YAML document
       const ymlDoc = parseDocument<YAMLMap<Scalar<string>, any>, false>(
         document.getText(),
@@ -149,6 +178,10 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
         }
       });
     });
+
+    // Update file versions
+    this.documentVersions = new Map();
+    documents.forEach(newDoc => this.documentVersions.set(newDoc.uri, newDoc.version));
   }
 
   // Get absolute Package path
@@ -281,13 +314,13 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
       return locations;
     }
     if (yamlPath[0] === 'conditions') {
-      locations.push(...this.getConditionList().getLocations(yamlPath, sourceUri));
+      locations.push(...this.getConditionList().getLocations(yamlPath, sourceUri).flat());
     }
     if (yamlPath[0] === 'events') {
-      locations.push(...this.getEventList().getLocations(yamlPath, sourceUri));
+      locations.push(...this.getEventList().getLocations(yamlPath, sourceUri).flat());
     }
     if (yamlPath[0] === 'objectives') {
-      locations.push(...this.getObjectiveList().getLocations(yamlPath, sourceUri));
+      locations.push(...this.getObjectiveList().getLocations(yamlPath, sourceUri).flat());
     }
     return locations;
   }

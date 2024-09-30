@@ -2,6 +2,8 @@ import { CodeAction, Diagnostic, DiagnosticSeverity, PublishDiagnosticsParams } 
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { Pair, Scalar, YAMLMap } from "yaml";
 
+import { LocationsResponse } from "betonquest-utils/lsp/file";
+
 import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getFilename } from "../../../utils/url";
@@ -41,6 +43,11 @@ export class Conversation extends SectionCollection<ConversationType> {
       uri: c.getUri(),
       diagnostics: c.getDiagnostics()
     }));
+  }
+
+  getLocations(yamlPath: string[], sourceUri: string): LocationsResponse[] {
+    // TODO
+    return [];
   }
 }
 

@@ -1,6 +1,8 @@
-import { Range } from "vscode-languageserver";
+import { PublishDiagnosticsParams, Range } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { Pair, Scalar, YAMLMap } from "yaml";
+
+import { LocationsResponse } from "betonquest-utils/lsp/file";
 
 import { NodeType } from "../node";
 import { AbstractNodeV2 } from "../v2";
@@ -16,6 +18,15 @@ export abstract class SectionCollection<T extends NodeType> extends AbstractNode
   }
 
   abstract addSection(uri: string, document: TextDocument, yml: Pair<Scalar<string>, YAMLMap<Scalar<string>>>): void;
+
+  // Remove documents which are not on the urls list
+  filterSections(uris: string[]) {
+    this.children = this.children.filter(e => uris.includes(e.getUri()));
+  }
+
+  abstract getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[];
+
+  abstract getLocations(yamlPath: string[], sourceUri: string): LocationsResponse[];
 }
 
 export abstract class Document<T extends NodeType> extends AbstractNodeV2<T> {

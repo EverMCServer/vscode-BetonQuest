@@ -34,7 +34,15 @@ export class ASTs {
   }
 
   updateDocuments(allDocuments: AllDocuments) {
-    this.asts = allDocuments.getAllDocuments().map<[string, AST?]>(([wsFolderUri, documents]) => [wsFolderUri, documents ? new AST(wsFolderUri, documents) : undefined]);
+    allDocuments.getAllDocuments().forEach(([wsFolderUri, documents]) => {
+      const ast = this.asts.find(e => e[0] === wsFolderUri)?.[1];
+      if (ast && documents) {
+        ast.updatePackages(wsFolderUri, documents);
+      } else {
+        this.asts = this.asts.filter(([uri]) => uri !== wsFolderUri);
+        this.asts.push([wsFolderUri, documents ? new AST(wsFolderUri, documents) : undefined]);
+      }
+    });
   }
 
   // getAstByPackageUri(packageUri: string) {
@@ -102,15 +110,24 @@ export class AST {
 
   constructor(wsFolderUri: string, documents: TextDocument[]) {
     this.wsFolderUri = wsFolderUri;
-    const [filesV1, filesV2] = this.classifyAllDocuments(documents);
 
-    // // Set the base dir of the package
-    this.packageRootUriV1 = wsFolderUri;
-    this.packageRootUriV2 = wsFolderUri + "QuestPackages/";
+    // Set the base dir of the package
+    this.packageRootUriV1 = this.wsFolderUri;
+    this.packageRootUriV2 = this.wsFolderUri + "QuestPackages/";
+
+    // Parse AST and cache file structure
+    this.updatePackages(this.wsFolderUri, documents);
+  }
+
+  updatePackages(wsFolderUri: string, documents: TextDocument[]): [filesV1: Map<string, TextDocument[]>, filesV2: Map<string, TextDocument[]>] {
+    // Classify files
+    const [filesV1, filesV2] = this.classifyAllDocuments(documents);
 
     // Create AST by versions and packages
     this.parseAllDocumentsV1(filesV1);
     this.parseAllDocumentsV2(filesV2);
+
+    return [filesV1, filesV2];
   }
 
   // Classify files by versions and packages
@@ -223,19 +240,35 @@ export class AST {
 
   // Parse all files by packages, v1
   parseAllDocumentsV1(allDocuments: Map<string, TextDocument[]>) {
-    this.packagesV1 = []; // Purge all cached files
+    // Remove packages which are gone
+    this.packagesV1 = this.packagesV1.filter(oldPackage => [...allDocuments.keys()].includes(oldPackage.uri));
+
+    // Create new package / Update changed package
     allDocuments.forEach((documents, packageUri) => {
-      // Create Package
-      this.packagesV1.push(new PackageV1(packageUri, documents, this));
+      const oldPkg = this.packagesV1.find(p => p.uri === packageUri);
+      if (!oldPkg) {
+        // Create Package
+        this.packagesV1.push(new PackageV1(packageUri, documents, this));
+      } else {
+        oldPkg.update(documents);
+      }
     });
   }
 
   // Parse all files by packages, v2
   parseAllDocumentsV2(allDocuments: Map<string, TextDocument[]>) {
-    this.packagesV2 = []; // Purge all cached files
+    // Remove packages which are gone
+    this.packagesV2 = this.packagesV2.filter(oldPackage => [...allDocuments.keys()].includes(oldPackage.uri));
+
+    // Create new package / Update changed package
     allDocuments.forEach((documents, packageUri) => {
-      // Create Package
-      this.packagesV2.push(new PackageV2(packageUri, documents, this));
+      const oldPkg = this.packagesV2.find(p => p.uri === packageUri);
+      if (!oldPkg) {
+        // Create Package
+        this.packagesV2.push(new PackageV2(packageUri, documents, this));
+      } else {
+        oldPkg.update(documents);
+      }
     });
   }
 
