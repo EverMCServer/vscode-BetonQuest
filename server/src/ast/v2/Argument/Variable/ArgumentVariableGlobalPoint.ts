@@ -67,7 +67,6 @@ export class ArgumentVariableGlobalPoint extends AbstractNodeV2<ArgumentVariable
   // TOOD: move it into sub-class
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
     return [
-      ...super.getCompletions(offset, documentUri),
       ...this.getAllGlobalPointIDs().map(e => {
         let typeStr = e[2];
         if (typeStr.startsWith("Condition")) {

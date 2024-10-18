@@ -32,7 +32,6 @@ export class ArgumentBlockID extends AbstractNodeV2<ArgumentBlockIdType> {
     }));
     return [
       ...completions,
-      ...super.getCompletions(offset, documentUri)
     ];
   }
 

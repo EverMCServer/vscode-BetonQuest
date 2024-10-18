@@ -107,7 +107,6 @@ export class ObjectiveArgumentMandatory extends AbstractNodeV1<ObjectiveArgument
       completionItems.push(...ArgumentValue.getCompletionsByType(this.pattern.type));
     }
 
-    completionItems.push(...super.getCompletions(offset, documentUri));
     return completionItems;
   }
 }

@@ -84,7 +84,7 @@ export class ConditionArgumentOptional extends AbstractNodeV2<ConditionArgumentO
   }
 
   getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
-    const results = super.getHoverInfo(offset, documentUri);
+    const results: HoverInfo[] = [];
     // Show name of the argument
     this.pattern ? results.push({
       content: "Optional argument: " + this.pattern.name!.toString(),
@@ -114,7 +114,6 @@ export class ConditionArgumentOptional extends AbstractNodeV2<ConditionArgumentO
         }));
     }
 
-    completionItems.push(...super.getCompletions(offset, documentUri));
     return completionItems;
   }
 }

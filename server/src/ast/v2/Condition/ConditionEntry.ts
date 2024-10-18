@@ -112,7 +112,6 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
         }))
       );
     }
-    completionItems.push(...super.getCompletions(offset, documentUri));
     return completionItems;
   }
 }

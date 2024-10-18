@@ -103,7 +103,6 @@ export class ConditionArgumentOptional extends AbstractNodeV1<ConditionArgumentO
         }));
     }
 
-    completionItems.push(...super.getCompletions(offset, documentUri));
     return completionItems;
   }
 }

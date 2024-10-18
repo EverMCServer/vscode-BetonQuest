@@ -29,7 +29,7 @@ export class ArgumentFloat extends AbstractNodeV2<ArgumentFloatType> {
   getDiagnostics(): Diagnostic[] {
     const diagnostics: Diagnostic[] = [];
     if (!this.argumentStr.match(/^(?:\+|-)?\d+(?:\.\d+)?$/gm)) {
-      diagnostics.push(this.makeDiagnostic(
+      diagnostics.push(this.generateDiagnostic(
         [this.offsetStart, this.offsetEnd],
         "Invalid number",
         DiagnosticSeverity.Error,

@@ -103,7 +103,6 @@ export class EventArgumentOptional extends AbstractNodeV1<EventArgumentOptionalT
         }));
     }
 
-    completionItems.push(...super.getCompletions(offset, documentUri));
     return completionItems;
   }
 }

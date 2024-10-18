@@ -74,7 +74,19 @@ export class ASTs {
   }
 
   getHoverInfos(offset: number, documentUri: string) {
-    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getHoverInfo(offset, documentUri));
+    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast._getHoverInfo(offset, documentUri));
+  }
+
+  getDefinitions(offset: number, documentUri: string): LocationLinkOffset[] {
+    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast._getDefinitions(offset, documentUri));
+  }
+
+  getReferences(offset: number, documentUri: string): LocationLinkOffset[] {
+    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast._getReferences(offset, documentUri));
+  }
+
+  getCompletions(offset: number, documentUri: string): CompletionItem[] {
+    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast._getCompletions(offset, documentUri));
   }
 
   /**
@@ -84,18 +96,6 @@ export class ASTs {
    */
   getLocations(yamlPath: string[], sourceUri: string) {
     return this.getAllAstByDocumentUri(sourceUri).flatMap(ast => ast.getLocations(yamlPath, sourceUri));
-  }
-
-  getDefinitions(offset: number, documentUri: string): LocationLinkOffset[] {
-    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getDefinitions(offset, documentUri));
-  }
-
-  getReferences(offset: number, documentUri: string): LocationLinkOffset[] {
-    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getReferences(offset, documentUri));
-  }
-
-  getCompletions(offset: number, documentUri: string): CompletionItem[] {
-    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getCompletions(offset, documentUri));
   }
 
 }
@@ -297,10 +297,10 @@ export class AST {
   }
 
   // Get all hover info
-  getHoverInfo(offset: number, documentUri: string): HoverInfo[] {
+  _getHoverInfo(offset: number, documentUri: string): HoverInfo[] {
     return [
-      ...this.packagesV1.flatMap(p => p.getHoverInfo(offset, documentUri)),
-      ...this.packagesV2.flatMap(p => p.getHoverInfo(offset, documentUri))
+      ...this.packagesV1.flatMap(p => p._getHoverInfo(offset, documentUri)),
+      ...this.packagesV2.flatMap(p => p._getHoverInfo(offset, documentUri))
     ];
   }
 
@@ -311,24 +311,24 @@ export class AST {
     ];
   }
 
-  getDefinitions(offset: number, uri: string): LocationLinkOffset[] {
+  _getDefinitions(offset: number, uri: string): LocationLinkOffset[] {
     return [
-      ...this.packagesV1.flatMap(pkg => pkg.getDefinitions(offset, uri)),
-      ...this.packagesV2.flatMap(pkg => pkg.getDefinitions(offset, uri))
+      ...this.packagesV1.flatMap(pkg => pkg._getDefinitions(offset, uri)),
+      ...this.packagesV2.flatMap(pkg => pkg._getDefinitions(offset, uri))
     ];
   }
 
-  getReferences(offset: number, uri: string): LocationLinkOffset[] {
+  _getReferences(offset: number, uri: string): LocationLinkOffset[] {
     return [
-      ...this.packagesV1.flatMap(pkg => pkg.getReferences(offset, uri)),
-      ...this.packagesV2.flatMap(pkg => pkg.getReferences(offset, uri))
+      ...this.packagesV1.flatMap(pkg => pkg._getReferences(offset, uri)),
+      ...this.packagesV2.flatMap(pkg => pkg._getReferences(offset, uri))
     ];
   }
 
-  getCompletions(offset: number, uri: string): CompletionItem[] {
+  _getCompletions(offset: number, uri: string): CompletionItem[] {
     return [
-      ...this.packagesV1.flatMap(pkg => pkg.getCompletions(offset, uri)),
-      ...this.packagesV2.flatMap(pkg => pkg.getCompletions(offset, uri))
+      ...this.packagesV1.flatMap(pkg => pkg._getCompletions(offset, uri)),
+      ...this.packagesV2.flatMap(pkg => pkg._getCompletions(offset, uri))
     ];
   }
 

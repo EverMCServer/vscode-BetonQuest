@@ -77,32 +77,32 @@ export abstract class Document<T extends NodeType> extends AbstractNodeV1<T> {
     return super.getSemanticTokens();
   }
 
-  getHoverInfo(offset: number, documentUri?: string) {
+  _getHoverInfo(offset: number, documentUri?: string) {
     if (documentUri && documentUri !== this.uri) {
       return [];
     }
-    return super.getHoverInfo(offset, documentUri);
+    return super._getHoverInfo(offset, documentUri);
   }
 
-  getDefinitions(offset: number, documentUri?: string) {
+  _getDefinitions(offset: number, documentUri?: string) {
     if (documentUri && documentUri !== this.uri) {
       return [];
     }
-    return super.getDefinitions(offset, documentUri);
+    return super._getDefinitions(offset, documentUri);
   }
 
-  getReferences(offset: number, documentUri?: string) {
+  _getReferences(offset: number, documentUri?: string) {
     if (documentUri && documentUri !== this.uri) {
       return [];
     }
-    return super.getReferences(offset, documentUri);
+    return super._getReferences(offset, documentUri);
   }
 
-  getCompletions(offset: number, documentUri?: string) {
+  _getCompletions(offset: number, documentUri?: string) {
     if (documentUri && documentUri !== this.uri) {
       return [];
     }
-    return super.getCompletions(offset, documentUri);
+    return super._getCompletions(offset, documentUri);
   }
 
 }

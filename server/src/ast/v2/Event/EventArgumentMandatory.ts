@@ -89,8 +89,7 @@ export class EventArgumentMandatory extends AbstractNodeV2<EventArgumentMandator
       {
         content: "Mandatory argument: " + this.pattern.name!.toString(),
         offset: [this.offsets[1], this.offsets[4]]
-      },
-      ...super.getHoverInfo(offset, documentUri)
+      }
     ];
   }
 
@@ -114,7 +113,6 @@ export class EventArgumentMandatory extends AbstractNodeV2<EventArgumentMandator
         }));
     }
 
-    completionItems.push(...super.getCompletions(offset, documentUri));
     return completionItems;
   }
 }

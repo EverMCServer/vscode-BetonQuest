@@ -107,7 +107,6 @@ export class ConditionArgumentMandatory extends AbstractNodeV1<ConditionArgument
       completionItems.push(...ArgumentValue.getCompletionsByType(this.pattern.type));
     }
 
-    completionItems.push(...super.getCompletions(offset, documentUri));
     return completionItems;
   }
 }

@@ -84,7 +84,7 @@ export class FirstPointer extends AbstractNodeV2<ConversationFirstPointerType> {
   getDiagnostics(): Diagnostic[] {
     const diagnostics = super.getDiagnostics();
     if (this.getTargetNodes().length < 1) {
-      diagnostics.push(this.makeDiagnostic(
+      diagnostics.push(this.generateDiagnostic(
         [this.offsetStart, this.offsetEnd],
         `The Conversation Option "${this.optionID}" does not exist.`,
         DiagnosticSeverity.Error,

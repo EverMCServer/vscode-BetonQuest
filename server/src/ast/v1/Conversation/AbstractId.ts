@@ -119,7 +119,7 @@ export abstract class AbstractID<T extends NodeType, PT extends ConversationFina
   getDiagnostics(): Diagnostic[] {
     const diagnostics = super.getDiagnostics();
     if (this.getTargetNodes().length < 1) {
-      diagnostics.push(this.makeDiagnostic(
+      diagnostics.push(this.generateDiagnostic(
         [this.offsetStart, this.offsetEnd],
         `The target ${this.getIdKindName()} "${this.id}" is not defined${this.package ? " in package \"" + this.package + "\"" : ""}.`,
         DiagnosticSeverity.Error,

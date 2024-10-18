@@ -185,17 +185,6 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
     } as Diagnostic;
   }
 
-  makeDiagnostic(offsets: [offsetStart: number, offsetEnd: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode) {
-    const range = this.getRangeByOffset(offsets[0], offsets[1]);
-    return {
-      range: range,
-      message: message,
-      severity: severity,
-      source: 'BetonQuest',
-      code: code
-    } as Diagnostic;
-  }
-
   getCodeActions(documentUri?: string): CodeAction[] {
     return [
       ...this.codeActions,
@@ -236,30 +225,62 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
       ...this.semanticTokens,
       ...this.children.flatMap(c => c.getSemanticTokens(documentUri))
     ];
-  };
+  }
+
+  _getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
+    if (!this.offsetStart || !this.offsetEnd || (offset >= this.offsetStart && offset <= this.offsetEnd)) {
+      return [
+        ...this.getHoverInfo(offset, documentUri),
+        ...this.children.flatMap(c => c._getHoverInfo(offset, documentUri))
+      ];
+    }
+    return [];
+  }
 
   getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
-    return this.children
-      .filter(c => !c.offsetStart || !c.offsetEnd || (offset >= c.offsetStart && offset <= c.offsetEnd))
-      .flatMap(c => c.getHoverInfo(offset, documentUri));
+    return [];
+  }
+
+  _getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
+    if (!this.offsetStart || !this.offsetEnd || (offset >= this.offsetStart && offset <= this.offsetEnd)) {
+      return [
+        ...this.getDefinitions(offset, documentUri),
+        ...this.children.flatMap(c => c._getDefinitions(offset, documentUri))
+      ];
+    }
+    return [];
   }
 
   getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
-    return this.children
-      .filter(c => !c.offsetStart || !c.offsetEnd || (offset >= c.offsetStart && offset <= c.offsetEnd))
-      .flatMap(c => c.getDefinitions(offset, documentUri));
+    return [];
+  }
+
+  _getReferences(offset: number, documentUri?: string): LocationLinkOffset[] {
+    if (!this.offsetStart || !this.offsetEnd || (offset >= this.offsetStart && offset <= this.offsetEnd)) {
+      return [
+        ...this.getReferences(offset, documentUri),
+        ...this.children.flatMap(c => c._getReferences(offset, documentUri))
+      ];
+    }
+    return [];
   }
 
   getReferences(offset: number, documentUri?: string): LocationLinkOffset[] {
-    return this.children
-      .filter(c => !c.offsetStart || !c.offsetEnd || (offset >= c.offsetStart && offset <= c.offsetEnd))
-      .flatMap(c => c.getReferences(offset, documentUri));
+    return [];
+  }
+
+  _getCompletions(offset: number, documentUri?: string): CompletionItem[] {
+    if (!this.offsetStart || !this.offsetEnd || (offset >= this.offsetStart && offset <= this.offsetEnd)) {
+      return [
+        ...this.getCompletions(offset, documentUri),
+        ...this.children.flatMap(c => c._getCompletions(offset, documentUri))
+      ];
+    }
+    return [];
   }
 
   getCompletions(offset: number, documentUri?: string): CompletionItem[] {
-    return this.children
-      .filter(c => !c.offsetStart || !c.offsetEnd || (offset >= c.offsetStart && offset <= c.offsetEnd))
-      .flatMap(c => c.getCompletions(offset, documentUri));
+    return [];
   }
 
   // Get range by offset.

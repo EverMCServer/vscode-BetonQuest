@@ -27,6 +27,8 @@ export class First extends AbstractNodeV2<ConversationFirstType> {
 
     this.yml = yml;
 
+    // TODO: create a standalone node for the YAML key
+
     const [entriesStr, [valueOffsetStart, valueOffsetEnd]] = getScalarSourceAndRange(yml.value);
     this.entriesStr = entriesStr;
     if (typeof yml.value?.value !== 'string') {
@@ -98,7 +100,7 @@ export class First extends AbstractNodeV2<ConversationFirstType> {
   getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
     // TODO: create a standalone node for the YAML key
     if (offset < this.yml.key.range![0] || offset > this.yml.key.range![1]) {
-      return super.getDefinitions(offset, documentUri);
+      return [];
     }
     // Return self so VSCode will show its References instead
     return [{

@@ -103,7 +103,6 @@ export class EventEntry extends AbstractNodeV1<EventEntryType> {
         }))
       );
     }
-    completionItems.push(...super.getCompletions(offset, documentUri));
     return completionItems;
   }
 }

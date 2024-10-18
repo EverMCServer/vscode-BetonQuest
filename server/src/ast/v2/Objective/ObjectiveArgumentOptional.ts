@@ -84,7 +84,7 @@ export class ObjectiveArgumentOptional extends AbstractNodeV2<ObjectiveArgumentO
   }
 
   getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
-    const results = super.getHoverInfo(offset, documentUri);
+    const results: HoverInfo[] = [];
     // Show name of the argument
     this.pattern ? results.push({
       content: "Optional argument: " + this.pattern.name!.toString(),
@@ -114,7 +114,6 @@ export class ObjectiveArgumentOptional extends AbstractNodeV2<ObjectiveArgumentO
         }));
     }
 
-    completionItems.push(...super.getCompletions(offset, documentUri));
     return completionItems;
   }
 }

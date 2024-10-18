@@ -325,35 +325,35 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
     return locations;
   }
 
-  getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
+  _getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
     if (documentUri && !documentUri.startsWith(this.uri)) {
       return [];
     }
     return this.children
-      .flatMap(c => c.getHoverInfo(offset, documentUri));
+      .flatMap(c => c._getHoverInfo(offset, documentUri));
   }
 
-  getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
+  _getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
     if (documentUri && !documentUri.startsWith(this.uri)) {
       return [];
     }
     return this.children
-      .flatMap(c => c.getDefinitions(offset, documentUri));
+      .flatMap(c => c._getDefinitions(offset, documentUri));
   }
 
-  getReferences(offset: number, documentUri?: string): LocationLinkOffset[] {
+  _getReferences(offset: number, documentUri?: string): LocationLinkOffset[] {
     if (documentUri && !documentUri.startsWith(this.uri)) {
       return [];
     }
     return this.children
-      .flatMap(c => c.getReferences(offset, documentUri));
+      .flatMap(c => c._getReferences(offset, documentUri));
   }
 
-  getCompletions(offset: number, documentUri?: string): CompletionItem[] {
+  _getCompletions(offset: number, documentUri?: string): CompletionItem[] {
     if (documentUri && !documentUri.startsWith(this.uri)) {
       return [];
     }
     return this.children
-      .flatMap(c => c.getCompletions(offset, documentUri));
+      .flatMap(c => c._getCompletions(offset, documentUri));
   }
 }

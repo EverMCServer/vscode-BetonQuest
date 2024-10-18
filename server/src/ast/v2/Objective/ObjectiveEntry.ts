@@ -112,7 +112,6 @@ export class ObjectiveEntry extends AbstractNodeV2<ObjectiveEntryType> {
         }))
       );
     }
-    completionItems.push(...super.getCompletions(offset, documentUri));
     return completionItems;
   }
 }
