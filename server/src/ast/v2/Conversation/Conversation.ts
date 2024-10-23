@@ -41,7 +41,7 @@ export class Conversation extends SectionCollection<ConversationType> {
   getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
     return this.children.filter(c => !documentUri || c.getUri() === documentUri).flatMap(c => ({
       uri: c.getUri(),
-      diagnostics: c.getDiagnostics()
+      diagnostics: c._getDiagnostics()
     }));
   }
 
@@ -197,17 +197,7 @@ export class ConversationSection extends Document<ConversationSectionType> {
       }
     });
 
-    // ...
-  }
-
-  private addDiagnosticValueTypeIncorrect(pair: Pair<Scalar<string>>, message: string) {
-    const offsetStart = (pair.value as any).range?.[0] as number | undefined ?? pair.key.range?.[0];
-    const offsetEnd = offsetStart ? (pair.value as any).range?.[1] as number : pair.key.range?.[1];
-    this.addDiagnostic([offsetStart, offsetEnd], message, DiagnosticSeverity.Error, DiagnosticCode.ValueTypeIncorrect);
-  }
-
-  getDiagnostics(): Diagnostic[] {
-    // Check missing elements
+    // Check missing elements from the Package
     if (!this.parent.getChildren().some(c => c.getChild('ConversationQuester')) && !this.diagnostics.some(d => d.code === DiagnosticCode.ConversationMissingQuester)) {
       this.addDiagnostic(
         [(this.yml.value?.range?.[0] || 0), (this.yml.value?.range?.[0] || 0)],
@@ -222,11 +212,12 @@ export class ConversationSection extends Document<ConversationSectionType> {
         ]
       );
     }
-    return super.getDiagnostics();
   }
 
-  getCodeActions(documentUri?: string): CodeAction[] {
-    return super.getCodeActions(documentUri);
+  private addDiagnosticValueTypeIncorrect(pair: Pair<Scalar<string>>, message: string) {
+    const offsetStart = (pair.value as any).range?.[0] as number | undefined ?? pair.key.range?.[0];
+    const offsetEnd = offsetStart ? (pair.value as any).range?.[1] as number : pair.key.range?.[1];
+    this.addDiagnostic([offsetStart, offsetEnd], message, DiagnosticSeverity.Error, DiagnosticCode.ValueTypeIncorrect);
   }
 
   getFirst() {

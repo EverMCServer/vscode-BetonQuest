@@ -158,11 +158,16 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
    */
   abstract getAst(): AST;
 
-  getDiagnostics(): Diagnostic[] {
+  _getDiagnostics(): Diagnostic[] {
     return [
       ...this.diagnostics,
-      ...this.children.flatMap(c => c.getDiagnostics())
+      ...this.getDiagnostics(),
+      ...this.children.flatMap(c => c._getDiagnostics())
     ];
+  }
+
+  getDiagnostics(): Diagnostic[] {
+    return [];
   }
 
   addDiagnostic(offsets: [offsetStart?: number, offsetEnd?: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode, codeActions?: { title: string, text: string, range?: [offsetStart: number, offsetEnd: number] }[]) {
@@ -185,11 +190,16 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
     } as Diagnostic;
   }
 
-  getCodeActions(documentUri?: string): CodeAction[] {
+  _getCodeActions(documentUri?: string): CodeAction[] {
     return [
       ...this.codeActions,
-      ...this.children.flatMap(c => c.getCodeActions(documentUri))
+      ...this.getCodeActions(documentUri),
+      ...this.children.flatMap(c => c._getCodeActions(documentUri))
     ];
+  }
+
+  getCodeActions(documentUri?: string): CodeAction[] {
+    return [];
   }
 
   addCodeActions(...codeActions: CodeAction[]) {
@@ -220,11 +230,16 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
     this.semanticTokens.push(...token);
   }
 
-  getSemanticTokens(documentUri?: string): SemanticToken[] {
+  _getSemanticTokens(documentUri?: string): SemanticToken[] {
     return [
       ...this.semanticTokens,
-      ...this.children.flatMap(c => c.getSemanticTokens(documentUri))
+      ...this.getSemanticTokens(documentUri),
+      ...this.children.flatMap(c => c._getSemanticTokens(documentUri))
     ];
+  }
+
+  getSemanticTokens(documentUri?: string): SemanticToken[] {
+    return [];
   }
 
   _getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {

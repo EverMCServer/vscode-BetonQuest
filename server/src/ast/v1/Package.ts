@@ -193,7 +193,7 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
     return this.children.filter(c => !documentUri || c.getUri() === documentUri).flatMap(c => {
       return {
         uri: c.getUri(),
-        diagnostics: c.getDiagnostics()
+        diagnostics: c._getDiagnostics()
       };
     });
   }

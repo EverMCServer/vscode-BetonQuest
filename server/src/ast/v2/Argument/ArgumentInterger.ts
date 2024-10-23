@@ -35,10 +35,7 @@ export class ArgumentInterger extends AbstractNodeV2<ArgumentIntergerType> {
         DiagnosticCode.ArgumentValueInvalid
       ));
     }
-    return [
-      ...diagnostics,
-      ...super.getDiagnostics()
-    ];
+    return diagnostics;
   }
 
 }

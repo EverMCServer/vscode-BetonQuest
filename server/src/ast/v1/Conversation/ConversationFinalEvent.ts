@@ -16,7 +16,7 @@ export class ConversationFinalEvent extends AbstractID<ConversationEventType, Co
   }
 
   getSemanticTokens(): SemanticToken[] {
-    const semanticTokens: SemanticToken[] = super.getSemanticTokens();
+    const semanticTokens: SemanticToken[] = [];
     semanticTokens.push({
       offsetStart: this.offsetStart + (this.withExclamationMark ? 1 : 0), 
       offsetEnd: this.offsetEnd,

@@ -65,7 +65,7 @@ export class ObjectiveListSection extends Document<ObjectiveListSectionType> {
   getPublishDiagnosticsParams() {
     return {
       uri: this.document.uri,
-      diagnostics: this.children.flatMap(e => e.getDiagnostics())
+      diagnostics: this.children.flatMap(e => e._getDiagnostics())
     } as PublishDiagnosticsParams;
   }
 

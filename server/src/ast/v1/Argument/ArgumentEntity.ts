@@ -55,7 +55,7 @@ export class ArgumentEntity extends AbstractNodeV1<ArgumentEntityType> {
         DiagnosticCode.ArgumentValueMissing
       ));
     }
-    return super.getDiagnostics().concat(diagnostics);
+    return diagnostics;
   }
 
 }

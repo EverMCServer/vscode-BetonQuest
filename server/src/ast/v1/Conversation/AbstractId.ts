@@ -117,7 +117,7 @@ export abstract class AbstractID<T extends NodeType, PT extends ConversationFina
   };
 
   getDiagnostics(): Diagnostic[] {
-    const diagnostics = super.getDiagnostics();
+    const diagnostics = [];
     if (this.getTargetNodes().length < 1) {
       diagnostics.push(this.generateDiagnostic(
         [this.offsetStart, this.offsetEnd],

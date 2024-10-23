@@ -36,10 +36,7 @@ export class ArgumentFloat extends AbstractNodeV2<ArgumentFloatType> {
         DiagnosticCode.ArgumentValueInvalid
       ));
     }
-    return [
-      ...diagnostics,
-      ...super.getDiagnostics()
-    ];
+    return diagnostics;
   }
 
 }

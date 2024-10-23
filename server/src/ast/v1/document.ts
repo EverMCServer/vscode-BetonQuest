@@ -63,18 +63,18 @@ export abstract class Document<T extends NodeType> extends AbstractNodeV1<T> {
   }
 
   // Get all CodeActions, quick fixes etc
-  getCodeActions(documentUri?: string) {
+  _getCodeActions(documentUri?: string) {
     if (documentUri && documentUri !== this.uri) {
       return [];
     }
-    return super.getCodeActions();
+    return super._getCodeActions();
   }
 
-  getSemanticTokens(documentUri?: string) {
+  _getSemanticTokens(documentUri?: string) {
     if (documentUri && documentUri !== this.uri) {
       return [];
     }
-    return super.getSemanticTokens();
+    return super._getSemanticTokens();
   }
 
   _getHoverInfo(offset: number, documentUri?: string) {

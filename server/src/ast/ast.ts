@@ -62,15 +62,15 @@ export class ASTs {
   }
 
   getDiagnostics(documentUri?: string) {
-    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getDiagnostics(documentUri));
+    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast._getDiagnostics(documentUri));
   }
 
   getCodeActions(documentUri?: string) {
-    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getCodeActions(documentUri));
+    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast._getCodeActions(documentUri));
   }
 
   getSemanticTokens(documentUri: string) {
-    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast.getSemanticTokens(documentUri));
+    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast._getSemanticTokens(documentUri));
   }
 
   getHoverInfos(offset: number, documentUri: string) {
@@ -273,7 +273,7 @@ export class AST {
   }
 
   // Get all diagnostics from parser
-  getDiagnostics(documentUri?: string) {
+  _getDiagnostics(documentUri?: string) {
     return [
       ...this.packagesV1.filter(p => !documentUri || documentUri.startsWith(p.uri)).flatMap(p => p.getPublishDiagnosticsParams(documentUri)),
       ...this.packagesV2.filter(p => !documentUri || documentUri.startsWith(p.uri)).flatMap(p => p.getPublishDiagnosticsParams(documentUri))
@@ -281,18 +281,18 @@ export class AST {
   }
 
   // Get all CodeActions
-  getCodeActions(documentUri?: string) {
+  _getCodeActions(documentUri?: string) {
     return [
-      ...this.packagesV1.filter(p => !documentUri || documentUri.startsWith(p.uri)).flatMap(p => p.getCodeActions(documentUri)),
-      ...this.packagesV2.filter(p => !documentUri || documentUri.startsWith(p.uri)).flatMap(p => p.getCodeActions(documentUri))
+      ...this.packagesV1.filter(p => !documentUri || documentUri.startsWith(p.uri)).flatMap(p => p._getCodeActions(documentUri)),
+      ...this.packagesV2.filter(p => !documentUri || documentUri.startsWith(p.uri)).flatMap(p => p._getCodeActions(documentUri))
     ];
   }
 
   // Get semantic tokens for embeded betonquest's instructions
-  getSemanticTokens(documentUri: string) {
+  _getSemanticTokens(documentUri: string) {
     return [
-      ...this.packagesV1.filter(p => documentUri.startsWith(p.uri)).flatMap(p => p.getSemanticTokens(documentUri)),
-      ...this.packagesV2.filter(p => documentUri.startsWith(p.uri)).flatMap(p => p.getSemanticTokens(documentUri))
+      ...this.packagesV1.filter(p => documentUri.startsWith(p.uri)).flatMap(p => p._getSemanticTokens(documentUri)),
+      ...this.packagesV2.filter(p => documentUri.startsWith(p.uri)).flatMap(p => p._getSemanticTokens(documentUri))
     ];
   }
 
@@ -301,13 +301,6 @@ export class AST {
     return [
       ...this.packagesV1.flatMap(p => p._getHoverInfo(offset, documentUri)),
       ...this.packagesV2.flatMap(p => p._getHoverInfo(offset, documentUri))
-    ];
-  }
-
-  getLocations(yamlPath: string[], sourceUri: string) {
-    return [
-      ...this.packagesV1.flatMap(p => p.getLocations(yamlPath, sourceUri)),
-      ...this.packagesV2.flatMap(p => p.getLocations(yamlPath, sourceUri))
     ];
   }
 
@@ -329,6 +322,13 @@ export class AST {
     return [
       ...this.packagesV1.flatMap(pkg => pkg._getCompletions(offset, uri)),
       ...this.packagesV2.flatMap(pkg => pkg._getCompletions(offset, uri))
+    ];
+  }
+
+  getLocations(yamlPath: string[], sourceUri: string) {
+    return [
+      ...this.packagesV1.flatMap(p => p.getLocations(yamlPath, sourceUri)),
+      ...this.packagesV2.flatMap(p => p.getLocations(yamlPath, sourceUri))
     ];
   }
 
