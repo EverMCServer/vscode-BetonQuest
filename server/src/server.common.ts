@@ -245,7 +245,7 @@ export function server(connection: Connection): void {
     //     }
     //   ]
     // };
-    console.log("Completion triggered:", params);
+    // console.log("Completion triggered:", params);
     // params.context?.triggerKind
     // params.context?.triggerCharacter
     // params.partialResultToken

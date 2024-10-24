@@ -26,7 +26,7 @@ export class ArgumentValue extends AbstractNodeV2<ArgumentValueType> {
   readonly offsetEnd?: number;
   readonly parent: ConditionArgumentMandatory | ConditionArgumentOptional | EventArgumentMandatory | EventArgumentOptional | ObjectiveArgumentMandatory | ObjectiveArgumentOptional;
 
-  private valueStr: string;
+  readonly valueStr: string;
   private pattern?: ArgumentsPatternMandatory | ArgumentsPatternOptional;
 
   constructor(

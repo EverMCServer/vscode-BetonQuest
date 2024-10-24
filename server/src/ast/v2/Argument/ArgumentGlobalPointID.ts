@@ -2,6 +2,7 @@ import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
 
 import { ArgumentType } from "betonquest-utils/betonquest/Arguments";
 
+import { LocationLinkOffset } from "../../../utils/location";
 import { ArgumentGlobalPointIdType } from "../../node";
 import { ConditionArgumentMandatory } from "../Condition/ConditionArgumentMandatory";
 import { ConditionArgumentOptional } from "../Condition/ConditionArgumentOptional";
@@ -26,9 +27,8 @@ export class ArgumentGlobalPointID extends ArgumentAbstractID<ArgumentGlobalPoin
     super(argumentStr, offsets, parent);
   }
 
-  private getAllGlobalPointIDs() {
-    const result: Map<string, [string, string, string, string]> = new Map();
-    [
+  private getAllGlobalPointArguments() {
+    return [
       // Iterate all element lists
       this.getAllConditionEntries(),
       this.getAllEventEntries(),
@@ -43,19 +43,44 @@ export class ArgumentGlobalPointID extends ArgumentAbstractID<ArgumentGlobalPoin
       .flatMap(e => e.getChildren<ConditionArgumentMandatory | EventArgumentMandatory | ObjectiveArgumentMandatory | ConditionArgumentOptional | EventArgumentOptional | ObjectiveArgumentOptional>(["ConditionArgumentMandatory", "EventArgumentMandatory", "ObjectiveArgumentMandatory", "ConditionArgumentOptional", "EventArgumentOptional", "ObjectiveArgumentOptional"]))
       // Filter all argument by type  
       .filter(e => e.pattern?.type === ArgumentType.globalPointID)
-      .forEach(e => {
-        // Ignore the entering id
-        if (e.getPackagePath() !== this.getPackagePath() || e.parent.parent.keyString !== this.parent.parent.parent.parent.keyString) {
-          // Assign GlobalPointID string to result
-          result.set(e.argumentStr, [
-            e.argumentStr,
-            e.getPackagePath().join("-"),
-            e.parent.type,
-            e.parent.parent.keyString
-          ]);
-        }
-      });
+      .flat()
+      .map(e => e.getChild<ArgumentValue>("ArgumentValue")!).filter(e => e);
+  }
+
+  private getAllGlobalPointIDs() {
+    const result: Map<string, [string, string, string, string]> = new Map();
+    this.getAllGlobalPointArguments().forEach(e => {
+      // Assign GlobalPointID string to result
+      result.set(e.valueStr, [
+        e.valueStr,
+        e.getPackagePath().join("-"),
+        e.parent.type,
+        e.parent.parent.parent.keyString
+      ]);
+    });
     return [...result.values()];
+  }
+
+  getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
+    // Return self so VSCode will show its References instead
+    return [{
+      originSelectionRange: [this.offsetStart, this.offsetEnd],
+      targetUri: this.getUri(),
+      targetRange: [this.offsetStart, this.offsetEnd],
+      targetSelectionRange: [this.offsetStart, this.offsetEnd],
+    }];
+  }
+
+  // Trace all GlobalPoints
+  getReferences(offset: number, documentUri?: string): LocationLinkOffset[] {
+    return this.getAllGlobalPointArguments()
+      .filter(e => e.valueStr === this.id)
+      .map(e => ({
+        originSelectionRange: [this.offsetStart, this.offsetEnd],
+        targetUri: e.getUri(),
+        targetRange: [e.offsetStart!, e.offsetEnd!],
+        targetSelectionRange: [e.offsetStart!, e.offsetEnd!]
+      }));
   }
 
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
