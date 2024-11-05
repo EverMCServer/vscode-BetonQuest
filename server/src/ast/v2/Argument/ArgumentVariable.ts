@@ -26,7 +26,7 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
     this.parent = parent;
 
     // Parse variable ID
-    const match = /^%([^\.]+)\.(.*)%$/g.exec(argumentStr);
+    const match = /^%([^\.\s]+)\.?(\S*)%$/gm.exec(argumentStr);
     if (match) {
       if (this.getPackageUri(match[1])) {
         // TODO
@@ -68,12 +68,33 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
       }
     } else {
       // Invalid variable format
-      this.addDiagnostic(
-        [this.offsetStart, this.offsetEnd],
-        `Invalid variable string: missing "."`,
-        DiagnosticSeverity.Error,
-        DiagnosticCode.ArgumentValueInvalid,
-      );
+      if (argumentStr.match(/\s/g)) {
+        this.addDiagnostic(
+          [this.offsetStart, this.offsetEnd],
+          `Invalid variable string: Empty characters are not allowed.`,
+          DiagnosticSeverity.Error,
+          DiagnosticCode.ArgumentValueInvalid,
+          [
+            {
+              title: `Remove empty spaces`,
+              text: argumentStr.replace(/\s/gm, "")
+            }
+          ]
+        );
+      } else {
+        this.addDiagnostic(
+          [this.offsetStart, this.offsetEnd],
+          `Invalid variable string: Missing "%...%" quotes.`,
+          DiagnosticSeverity.Error,
+          DiagnosticCode.ArgumentValueInvalid,
+          [
+            {
+              title: `Add "%...%" quotes`,
+              text: `%${argumentStr}%`, 
+            }
+          ]
+        );
+      }
     }
 
   }

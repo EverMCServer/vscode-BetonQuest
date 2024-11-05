@@ -57,7 +57,7 @@ export class ArgumentValue extends AbstractNodeV2<ArgumentValueType> {
     // Parse value
     let pos1 = this.offsetStart;
     if (this.pattern && this.pattern?.format !== "boolean") {
-      if (pattern?.allowVariable && this.valueStr[0] === "%" && this.valueStr[this.valueStr.length - 1] === "%") {
+      if (this.pattern.type === ArgumentType.variableQuoted || pattern?.allowVariable && this.valueStr[0] === "%" && this.valueStr[this.valueStr.length - 1] === "%" && this.valueStr.length !== 1) {
         // Parse as variable
         this.addChild(new ArgumentVariable(this.valueStr, [this.offsetStart, this.offsetEnd], this));
       } else {
