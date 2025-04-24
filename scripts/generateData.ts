@@ -58,8 +58,7 @@ async function generateEntityTypeList(savePath: string) {
         // Cache matched results
         const cache: {
             bukkitId: string,
-            minecraftId: string,
-            legacyIds: string[]
+            minecraftId: string
         }[] = [];
 
         // RegExp to extract all Bukkit's EntityType IDs
@@ -67,23 +66,12 @@ async function generateEntityTypeList(savePath: string) {
         let array1: RegExpExecArray | null;
         while ((array1 = patternExtract.exec(text)) !== null) {
             if (array1[1] && array1[2]) {
-                cache.push({ bukkitId: array1[1], minecraftId: array1[2], legacyIds: [] });
-            }
-        }
-
-        // RegExp to extract legacy IDs
-        const patternExtractLegacy = /(?:^|;)\s*NAME_MAP\s*\.\s*put\s*\(\s*"([a-z_]+)"\s*,\s*([a-z_]+)\s*\)\s*;/gmi;
-        let array2: RegExpExecArray | null;
-        while ((array2 = patternExtractLegacy.exec(text)) !== null) {
-            if (array2[1] && array2[2]) {
-                cache
-                    .find(e => e.bukkitId === array2![2])
-                    ?.legacyIds.push(array2[1]);
+                cache.push({ bukkitId: array1[1], minecraftId: array1[2] });
             }
         }
 
         // Create the EntityType list
-        const entityTypeList: EntityType[] = cache.map(v => new EntityType(v.bukkitId, v.minecraftId, v.legacyIds));
+        const entityTypeList: EntityType[] = cache.map(v => new EntityType(v.bukkitId, v.minecraftId));
 
         if (entityTypeList.length < 1) {
             throw new Error(`Unexpeted error while parsing Bukkit's EntityType with url: ${BUKKIT_ENTITY_TYPE_SOURCE} body: ${text}.`);
@@ -172,8 +160,7 @@ async function generateEnchantmentList(savePath: string) {
         // Cache matched results
         const cache: {
             bukkitId: string,
-            minecraftId: string,
-            legacyIds: string[]
+            minecraftId: string
         }[] = [];
 
         // RegExp to extract all Bukkit's Enchantment IDs
@@ -181,23 +168,12 @@ async function generateEnchantmentList(savePath: string) {
         let array1: RegExpExecArray | null;
         while ((array1 = patternExtract.exec(text)) !== null) {
             if (array1[1] && array1[2]) {
-                cache.push({ bukkitId: array1[1], minecraftId: array1[2], legacyIds: [] });
-            }
-        }
-
-        // RegExp to extract legacy IDs
-        const patternExtractLegacy = /(?:^|;)\s*case\s*"([a-z_]+)"\s*:\s*return\s*"([a-z_]+)"\s*;/gmi;
-        let array2: RegExpExecArray | null;
-        while ((array2 = patternExtractLegacy.exec(text)) !== null) {
-            if (array2[1] && array2[2]) {
-                cache
-                    .find(e => e.minecraftId === array2![2])
-                    ?.legacyIds.push(array2[1]);
+                cache.push({ bukkitId: array1[1], minecraftId: array1[2] });
             }
         }
 
         // Create the Enchantment list
-        const enchantmentList: Enchantment[] = cache.map(v => new Enchantment(v.bukkitId, v.minecraftId, v.legacyIds));
+        const enchantmentList: Enchantment[] = cache.map(v => new Enchantment(v.bukkitId, v.minecraftId));
 
         if (enchantmentList.length < 1) {
             throw new Error(`Unexpeted error while parsing Bukkit's Enchantment with url: ${BUKKIT_ENCHANTMENT_SOURCE} body: ${text}.`);
@@ -290,7 +266,7 @@ async function generateBiomeList(savePath: string) {
         }[] = [];
 
         // RegExp to extract all Bukkit's Biome names
-        const patternExtract = /^\s*([A-Z_]+)\s*(?:,|;)/gm;
+        const patternExtract = /^\s*Biome\s+([A-Z_]+).*;/gm;
         let array1: RegExpExecArray | null;
         while ((array1 = patternExtract.exec(text)) !== null) {
             if (array1[1]) {

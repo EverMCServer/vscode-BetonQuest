@@ -4,12 +4,10 @@
 export default class Enchantment {
     private bukkitId: string; // e.g. PROTECTION_FALL
     private minecraftId?: string; // e.g. efficiency
-    private legacyIds?: string[]; // e.g. ['dig_speed']
 
-    constructor(bukkitId: string, minecraftId?: string, legacyIds?: string[]) {
+    constructor(bukkitId: string, minecraftId?: string) {
         this.bukkitId = bukkitId.toUpperCase();
         this.minecraftId = minecraftId?.toLowerCase();
-        this.legacyIds = legacyIds?.map(v => v.toLowerCase());
     }
 
     getBukkitId() {
@@ -20,17 +18,12 @@ export default class Enchantment {
         return this.minecraftId;
     }
 
-    getLegacyId() {
-        return this.legacyIds;
-    }
-
     // Match if the EntityType contains the given pattern
     isIdMatched(pattern: string): boolean {
         const regexp = new RegExp(`${pattern}`, 'i');
 
         return regexp.test(this.bukkitId)
-            || (this.minecraftId ? regexp.test(this.minecraftId) : false)
-            || (this.legacyIds ? this.legacyIds.some(v => regexp.test(v)) : false);
+            || (this.minecraftId ? regexp.test(this.minecraftId) : false);
     }
 
 }
