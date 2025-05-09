@@ -1,5 +1,6 @@
 import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import MATERIAL_LIST from "betonquest-utils/bukkit/Data/MaterialList";
 
 import { ArgumentBlockIdType } from "../../node";

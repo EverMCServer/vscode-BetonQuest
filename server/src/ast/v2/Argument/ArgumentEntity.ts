@@ -1,5 +1,6 @@
 import { CompletionItem, CompletionItemKind, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import ENTITY_TYPE_LIST from "betonquest-utils/bukkit/Data/EntityTypeList";
 
 import { DiagnosticCode } from "../../../utils/diagnostics";

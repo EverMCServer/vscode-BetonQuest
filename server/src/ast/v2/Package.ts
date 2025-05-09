@@ -182,6 +182,9 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
     // Update file versions
     this.documentVersions = new Map();
     documents.forEach(newDoc => this.documentVersions.set(newDoc.uri, newDoc.version));
+
+    // Run extra proccesses after node created 
+    this._init();
   }
 
   // Get absolute Package path

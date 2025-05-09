@@ -158,6 +158,21 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
    */
   abstract getAst(): AST;
 
+  /**
+   * Run extra proccesses after node created 
+   */
+  _init() {
+    this.children.forEach(c => {
+      c._init();
+      c.init();
+    });
+  }
+
+  /**
+   * Extra proccesses after node created 
+   */
+  init() { }
+
   _getDiagnostics(): Diagnostic[] {
     return [
       ...this.diagnostics,

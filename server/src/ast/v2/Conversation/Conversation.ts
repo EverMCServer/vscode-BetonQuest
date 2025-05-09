@@ -196,18 +196,21 @@ export class ConversationSection extends Document<ConversationSectionType> {
           break;
       }
     });
+  }
 
+  init() {
     // Check missing elements from the Package
     if (!this.parent.getChildren().some(c => c.getChild('ConversationQuester')) && !this.diagnostics.some(d => d.code === DiagnosticCode.ConversationMissingQuester)) {
       this.addDiagnostic(
-        [(this.yml.value?.range?.[0] || 0), (this.yml.value?.range?.[0] || 0)],
+        [(this.yml.key.range?.[0] || 0), (this.yml.key.range?.[1] || 0)],
         `Missing element "quester".`,
         DiagnosticSeverity.Error,
         DiagnosticCode.ConversationMissingQuester,
         [
           {
             title: `Add element "quester"`,
-            text: `quester: ${getFilename(this.document.uri, true)}\n` + ` `.repeat(this.yml.value?.srcToken?.type === "block-map" ? this.yml.value.srcToken.indent : 0)
+            text: `quester: ${this.yml.key.value}\n` + ` `.repeat(this.yml.value?.srcToken?.type === "block-map" ? this.yml.value.srcToken.indent : 0),
+            range: [(this.yml.value?.range?.[0] || 0), (this.yml.value?.range?.[0] || 0)]
           }
         ]
       );
