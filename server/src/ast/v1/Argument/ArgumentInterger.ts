@@ -22,7 +22,7 @@ export class ArgumentInterger extends AbstractNodeV1<ArgumentIntergerType> {
 
     // Check value
     // TODO: move it to getDiagnostic() for speed optimization
-    if (argumentStr.match(/[^0-9]/gm)) {
+    if (argumentStr.length > 0 && argumentStr.match(/[^0-9]/gm)) {
       this.addDiagnostic(
         [this.offsetStart, this.offsetEnd],
         "Invalid interger",

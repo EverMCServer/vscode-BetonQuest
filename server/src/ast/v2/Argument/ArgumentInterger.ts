@@ -27,7 +27,7 @@ export class ArgumentInterger extends AbstractNodeV2<ArgumentIntergerType> {
 
   getDiagnostics(): Diagnostic[] {
     const diagnostics: Diagnostic[] = [];
-    if (!this.argumentStr.match(/^(?:\+|-)?\d+$/gm)) {
+    if (this.argumentStr.length > 0 && !this.argumentStr.match(/^(?:\+|-)?\d+$/gm)) {
       diagnostics.push(this.generateDiagnostic(
         [this.offsetStart, this.offsetEnd],
         "Invalid interger",
