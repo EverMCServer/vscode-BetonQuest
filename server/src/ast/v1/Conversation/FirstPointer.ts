@@ -33,7 +33,7 @@ export class FirstPointer extends AbstractNodeV1<ConversationFirstPointerType> {
       str = str.substring(1);
     }
     // Check illigal characters
-    if (str.match(/\s/)) {
+    if (str.trim().match(/\s/)) {
       this.addDiagnostic(
         [this.offsetStart + (this.withExclamationMark ? 1 : 0), this.offsetEnd],
         "An ID cannot contains any spaces",
@@ -41,7 +41,7 @@ export class FirstPointer extends AbstractNodeV1<ConversationFirstPointerType> {
         DiagnosticCode.ValueIdContainsSpace,
         [
           {
-            title: "Remove spaces",
+            title: "Remove all spaces",
             text: str.replace(/\s/g, "")
           }
         ]

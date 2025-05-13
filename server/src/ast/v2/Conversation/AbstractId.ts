@@ -41,7 +41,7 @@ export abstract class AbstractID<T extends NodeType, PT extends ConversationFina
       str = str.substring(1);
     }
     // Check illigal characters
-    if (str.match(/\s/)) {
+    if (str.trim().match(/\s/)) {
       this.addDiagnostic(
         [this.offsetStart + (this.withExclamationMark ? 1 : 0), this.offsetEnd],
         "An ID cannot contains any spaces...",
@@ -49,7 +49,7 @@ export abstract class AbstractID<T extends NodeType, PT extends ConversationFina
         DiagnosticCode.ValueIdContainsSpace,
         [
           {
-            title: "Remove spaces",
+            title: "Remove all spaces",
             text: str.replace(/\s/g, "")
           }
         ]
