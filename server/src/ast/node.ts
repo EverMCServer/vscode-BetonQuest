@@ -164,8 +164,8 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
   _init() {
     this.children.forEach(c => {
       c._init();
-      c.init();
     });
+    this.init();
   }
 
   /**
@@ -175,9 +175,9 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
 
   _getDiagnostics(): Diagnostic[] {
     return [
-      ...this.diagnostics,
+      ...this.children.flatMap(c => c._getDiagnostics()),
       ...this.getDiagnostics(),
-      ...this.children.flatMap(c => c._getDiagnostics())
+      ...this.diagnostics
     ];
   }
 

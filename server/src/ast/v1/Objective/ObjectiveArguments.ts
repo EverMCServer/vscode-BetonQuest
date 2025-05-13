@@ -252,13 +252,6 @@ export class ObjectiveArguments extends AbstractNodeV1<ObjectiveArgumentsType> {
     return this.getChildren<ObjectiveArgumentOptional>('ObjectiveArgumentOptional');
   }
 
-  getDiagnostics(): Diagnostic[] {
-    const diagnostics: Diagnostic[] = this.diagnostics;
-    // From Child arguments
-    diagnostics.push(...this.children.flatMap(a => a.getDiagnostics()));
-    return diagnostics;
-  }
-
   getSemanticTokens(): SemanticToken[] {
     if (this.offsetStart === undefined || this.offsetEnd === undefined) {
       return [];
