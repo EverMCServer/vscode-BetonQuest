@@ -5,6 +5,7 @@ import { ArgumentVariableType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
 import { ArgumentValue } from "./ArgumentValue";
 import { ArgumentVariableGlobalPoint } from "./Variable/ArgumentVariableGlobalPoint";
+import { ArgumentVariableKind } from "./ArgumentVariableKind";
 
 export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
   readonly type: ArgumentVariableType = 'ArgumentVariable';
@@ -12,7 +13,9 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
   readonly offsetEnd: number;
   readonly parent: ArgumentValue;
 
-  readonly variableType?: string;
+  readonly argumentStr: string;
+
+  readonly variableKind?: string;
   readonly variableInstructions?: string;
 
   constructor(
@@ -24,16 +27,18 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
     this.offsetStart = offsets[0];
     this.offsetEnd = offsets[1];
     this.parent = parent;
+    this.argumentStr = argumentStr;
 
     // Parse variable ID
-    const match = /^%([^\.\s]+)\.?(\S*)%$/gm.exec(argumentStr);
+    const match = /^(%?)([^\.\s%]*)\.?([^\s%]*)(%?)$/gm.exec(this.argumentStr);
     if (match) {
-      if (this.getPackageUri(match[1])) {
+      if (this.getPackageUri(match[2])) {
         // TODO
       }
-      this.variableType = match[1];
-      this.variableInstructions = match[2];
-      switch (this.variableType) {
+      this.variableKind = match[2];
+      this.variableInstructions = match[3];
+      this.addChild(new ArgumentVariableKind(this.variableKind, [this.offsetStart + 1, this.offsetStart + 1 + this.variableKind.length], this));
+      switch (this.variableKind) {
         case 'objective':
           break;
         case 'condition':
@@ -41,7 +46,7 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
         case 'point':
           break;
         case 'globalpoint':
-          this.addChild(new ArgumentVariableGlobalPoint(this.variableInstructions, [this.offsetStart + this.variableType.length + 2, this.offsetEnd - 1], this));
+          this.addChild(new ArgumentVariableGlobalPoint(this.variableInstructions, [this.offsetStart + this.variableKind.length + 2, this.offsetEnd - 1], this));
           break;
         case 'tag':
           break;
@@ -65,10 +70,14 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
           break;
         case 'version':
           break;
+        default:
+          // Custom Text Variable
+          break;
       }
-    } else {
+
       // Invalid variable format
-      if (argumentStr.match(/\s/g)) {
+      // Contains empty characters
+      if (this.argumentStr.match(/\s/g)) {
         this.addDiagnostic(
           [this.offsetStart, this.offsetEnd],
           `Invalid variable string: Empty characters are not allowed.`,
@@ -77,11 +86,13 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
           [
             {
               title: `Remove empty spaces`,
-              text: argumentStr.replace(/\s/gm, "")
+              text: this.argumentStr.replace(/\s/gm, "")
             }
           ]
         );
-      } else {
+      }
+      // Missing "%"
+      if (!match[1] || !match[4]) {
         this.addDiagnostic(
           [this.offsetStart, this.offsetEnd],
           `Invalid variable string: Missing "%...%" quotes.`,
@@ -90,7 +101,7 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
           [
             {
               title: `Add "%...%" quotes`,
-              text: `%${argumentStr}%`, 
+              text: match[1] ? `${this.argumentStr}%` : match[4] ? `%${this.argumentStr}` : `%${this.argumentStr}%`,
             }
           ]
         );
@@ -98,12 +109,5 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
     }
 
   }
-
-  private parseVariable(argumentStr: string) {
-  };
-
-  // getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
-  //   return [];
-  // }
 
 }
