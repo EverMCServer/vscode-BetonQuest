@@ -29,7 +29,7 @@ export class ConditionList extends SectionCollection<ConditionListType> {
     return this.children.map(section => (section as ConditionListSection).getLocations(yamlPath, sourceUri));
   }
 
-  getConditionEntries(id: string, packageUri?: string): ConditionEntry[] {
+  getConditionEntries(id?: string, packageUri?: string): ConditionEntry[] {
     if (!packageUri || this.parent.isPackageUri(packageUri)) {
       return this.children
         .flatMap(section => (section as ConditionListSection).getConditionEntries(id));
@@ -82,7 +82,7 @@ export class ConditionListSection extends Document<ConditionListSectionType> {
     return result;
   }
 
-  getConditionEntries(id: string, packageUri?: string): ConditionEntry[] {
+  getConditionEntries(id?: string, packageUri?: string): ConditionEntry[] {
     if (!packageUri || this.parent.parent.isPackageUri(packageUri)) {
       return this._getConditionEntries(id);
     } else {

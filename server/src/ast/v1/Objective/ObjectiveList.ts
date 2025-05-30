@@ -42,9 +42,9 @@ export class ObjectiveList extends Document<ObjectiveListType> {
     return result;
   }
 
-  getObjectiveEntries(id: string, packageUri: string): ObjectiveEntry[] { // TODO: optimize let packageUri be optional
-    if (this.parent.isPackageUri(packageUri)) {
-      return this.getChildren<ObjectiveEntry>('ObjectiveEntry', e => e.getChild<ObjectiveKey>('ObjectiveKey')?.value === id);
+  getObjectiveEntries(id?: string, packageUri?: string): ObjectiveEntry[] { // TODO: optimize let packageUri be optional
+    if (!packageUri || this.parent.isPackageUri(packageUri)) {
+      return this._getObjectiveEntries(id);
     } else {
       return this.parent.getObjectiveEntries(id, packageUri);
     }

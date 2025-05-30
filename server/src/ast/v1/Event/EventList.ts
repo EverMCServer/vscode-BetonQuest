@@ -42,9 +42,9 @@ export class EventList extends Document<EventListType> {
     return result;
   }
 
-  getEventEntries(id: string, packageUri: string): EventEntry[] { // TODO: optimize let packageUri be optional
-    if (this.parent.isPackageUri(packageUri)) {
-      return this.getChildren<EventEntry>('EventEntry', e => e.getChild<EventKey>('EventKey')?.value === id);
+  getEventEntries(id?: string, packageUri?: string): EventEntry[] { // TODO: optimize let packageUri be optional
+    if (!packageUri || this.parent.isPackageUri(packageUri)) {
+      return this._getEventEntries(id);
     } else {
       return this.parent.getEventEntries(id, packageUri);
     }

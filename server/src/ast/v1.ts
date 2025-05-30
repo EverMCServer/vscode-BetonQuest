@@ -90,27 +90,30 @@ export abstract class AbstractNodeV1<T extends NodeType> extends AbstractNode<T,
 
   // Get all target package's Condition entries.
   // This method must be overrided / hijacked by the top-level class.
-  getConditionEntries(id: string, packageUri: string): ConditionEntry[] {
+  getConditionEntries(id?: string, packageUri?: string): ConditionEntry[] {
     return this.parent.getConditionEntries(id, packageUri);
   }
+  // Get all Condition entries from all packages
   getAllConditionEntries(): ConditionEntry[] {
     return this.parent.getAllConditionEntries();
   }
 
   // Get all target package's Event entries.
   // This method must be overrided / hijacked by the top-level class.
-  getEventEntries(id: string, packageUri: string): EventEntry[] {
+  getEventEntries(id?: string, packageUri?: string): EventEntry[] {
     return this.parent.getEventEntries(id, packageUri);
   }
+  // Get all Event entries from all packages
   getAllEventEntries(): EventEntry[] {
     return this.parent.getAllEventEntries();
   }
 
   // Get all target package's Objective entries.
   // This method must be overrided / hijacked by the top-level class.
-  getObjectiveEntries(id: string, packageUri: string): ObjectiveEntry[] {
+  getObjectiveEntries(id?: string, packageUri?: string): ObjectiveEntry[] {
     return this.parent.getObjectiveEntries(id, packageUri);
   }
+  // Get all Objective entries from all packages
   getAllObjectiveEntries(): ObjectiveEntry[] {
     return this.parent.getAllObjectiveEntries();
   }

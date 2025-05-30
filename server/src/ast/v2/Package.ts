@@ -241,8 +241,10 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
   }
 
   // Get Condition entries from child or parent
-  getConditionEntries(id: string, packageUri: string): ConditionEntry[] {
-    if (this.isPackageUri(packageUri)) {
+  getConditionEntries(id?: string, packageUri?: string): ConditionEntry[] {
+    if (!id) {
+      return this.getConditionList().getChildren<ConditionListSection>("ConditionListSection").flatMap(e => e.getChildren<ConditionEntry>("ConditionEntry"));
+    } else if (!packageUri || this.isPackageUri(packageUri)) {
       return this.getConditionList().getConditionEntries(id);
     } else {
       return this.parentAst.getV2ConditionEntry(id, packageUri);
@@ -253,8 +255,10 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
   }
 
   // Get Event entries from child or parent
-  getEventEntries(id: string, packageUri: string): EventEntry[] {
-    if (this.isPackageUri(packageUri)) {
+  getEventEntries(id?: string, packageUri?: string): EventEntry[] {
+    if (!id) {
+      return this.getEventList().getChildren<EventListSection>("EventListSection").flatMap(e => e.getChildren<EventEntry>("EventEntry"));
+    } else if (!packageUri || this.isPackageUri(packageUri)) {
       return this.getEventList().getEventEntries(id, packageUri);
     } else {
       return this.parentAst.getV2EventEntry(id, packageUri);
@@ -265,8 +269,10 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
   }
 
   // Get Objective entries from child or parent
-  getObjectiveEntries(id: string, packageUri: string): ObjectiveEntry[] {
-    if (this.isPackageUri(packageUri)) {
+  getObjectiveEntries(id?: string, packageUri?: string): ObjectiveEntry[] {
+    if (!id) {
+      return this.getObjectiveList().getChildren<ObjectiveListSection>("ObjectiveListSection").flatMap(e => e.getChildren<ObjectiveEntry>("ObjectiveEntry"));
+    } else if (!packageUri || this.isPackageUri(packageUri)) {
       return this.getObjectiveList().getObjectiveEntries(id, packageUri);
     } else {
       return this.parentAst.getV2ObjectiveEntry(id, packageUri);

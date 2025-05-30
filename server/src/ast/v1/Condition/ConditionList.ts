@@ -42,9 +42,9 @@ export class ConditionList extends Document<ConditionListType> {
     return result;
   }
 
-  getConditionEntries(id: string, packageUri: string): ConditionEntry[] { // TODO: optimize let packageUri be optional
-    if (this.parent.isPackageUri(packageUri)) {
-      return this.getChildren<ConditionEntry>('ConditionEntry', e => e.getChild<ConditionKey>('ConditionKey')?.value === id);
+  getConditionEntries(id?: string, packageUri?: string): ConditionEntry[] { // TODO: optimize let packageUri be optional
+    if (!packageUri || this.parent.isPackageUri(packageUri)) {
+      return this._getConditionEntries(id);
     } else {
       return this.parent.getConditionEntries(id, packageUri);
     }

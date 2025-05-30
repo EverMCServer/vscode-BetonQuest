@@ -133,8 +133,10 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
   }
 
   // Get Condition entries from child or parent
-  getConditionEntries(id: string, packageUri: string): ConditionEntry[] {
-    if (this.isPackageUri(packageUri)) {
+  getConditionEntries(id?: string, packageUri?: string): ConditionEntry[] {
+    if (!id) {
+      return this.getConditionList()?.getChildren<ConditionEntry>("ConditionEntry") || [];
+    } else if (!packageUri || this.isPackageUri(packageUri)) {
       return this.getChild('ConditionList')?.getConditionEntries(id, packageUri) ?? [];
     } else {
       return this.parentAst.getV1ConditionEntry(id, packageUri);
@@ -145,8 +147,10 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
   }
 
   // Get Event entries from child or parent
-  getEventEntries(id: string, packageUri: string): EventEntry[] {
-    if (this.isPackageUri(packageUri)) {
+  getEventEntries(id?: string, packageUri?: string): EventEntry[] {
+    if (!id) {
+      return this.getEventList()?.getChildren<EventEntry>("EventEntry") || [];
+    } else if (!packageUri || this.isPackageUri(packageUri)) {
       return this.getChild('EventList')?.getEventEntries(id, packageUri) ?? [];
     } else {
       return this.parentAst.getV1EventEntry(id, packageUri);
@@ -157,8 +161,10 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
   }
 
   // Get Objective entries from child or parent
-  getObjectiveEntries(id: string, packageUri: string): ObjectiveEntry[] {
-    if (this.isPackageUri(packageUri)) {
+  getObjectiveEntries(id?: string, packageUri?: string): ObjectiveEntry[] {
+    if (!id) {
+      return this.getObjectiveList()?.getChildren<ObjectiveEntry>("ObjectiveEntry") || [];
+    } else if (!packageUri || this.isPackageUri(packageUri)) {
       const t = this.getChild<ObjectiveList>('ObjectiveList');
       return this.getChild('ObjectiveList')?.getObjectiveEntries(id, packageUri) ?? [];
     } else {

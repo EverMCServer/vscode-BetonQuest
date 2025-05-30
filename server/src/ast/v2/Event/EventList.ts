@@ -29,7 +29,7 @@ export class EventList extends SectionCollection<EventListType> {
     return this.children.map(section => (section as EventListSection).getLocations(yamlPath, sourceUri));
   }
 
-  getEventEntries(id: string, packageUri?: string): EventEntry[] {
+  getEventEntries(id?: string, packageUri?: string): EventEntry[] {
     if (!packageUri || this.parent.isPackageUri(packageUri)) {
       return this.children
         .flatMap(section => (section as EventListSection).getEventEntries(id));
@@ -82,7 +82,7 @@ export class EventListSection extends Document<EventListSectionType> {
     return result;
   }
 
-  getEventEntries(id: string, packageUri?: string): EventEntry[] {
+  getEventEntries(id?: string, packageUri?: string): EventEntry[] {
     if (!packageUri || this.parent.parent.isPackageUri(packageUri)) {
       return this._getEventEntries(id);
     } else {

@@ -29,7 +29,7 @@ export class ObjectiveList extends SectionCollection<ObjectiveListType> {
     return this.children.map(section => (section as ObjectiveListSection).getLocations(yamlPath, sourceUri));
   }
 
-  getObjectiveEntries(id: string, packageUri?: string): ObjectiveEntry[] {
+  getObjectiveEntries(id?: string, packageUri?: string): ObjectiveEntry[] {
     if (!packageUri || this.parent.isPackageUri(packageUri)) {
       return this.children
         .flatMap(section => (section as ObjectiveListSection).getObjectiveEntries(id));
@@ -82,7 +82,7 @@ export class ObjectiveListSection extends Document<ObjectiveListSectionType> {
     return result;
   }
 
-  getObjectiveEntries(id: string, packageUri?: string): ObjectiveEntry[] {
+  getObjectiveEntries(id?: string, packageUri?: string): ObjectiveEntry[] {
     if (!packageUri || this.parent.parent.isPackageUri(packageUri)) {
       return this._getObjectiveEntries(id);
     } else {
