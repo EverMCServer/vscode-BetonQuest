@@ -37,39 +37,12 @@ export class ArgumentVariableKind extends AbstractNodeV2<ArgumentVariableKindTyp
     this.argumentStr = argumentStr;
   }
 
-  private getAllVariableArguments() {
-    return [
-      // Iterate all element lists
-      this.getAllConditionEntries(),
-      this.getAllEventEntries(),
-      this.getAllObjectiveEntries()
-    ].flat()
-      .filter(e =>
-        // Speed up searching by filtering all entries contains type = ArgumentType.globalPointID only
-        e.kindConfig?.argumentsPatterns.mandatory.some(e => e.type === ArgumentType.variableQuoted) ||
-        e.kindConfig?.argumentsPatterns.optional?.some(e => e.type === ArgumentType.variableQuoted)
-      )
-      .flatMap(e => e.getChildren<ConditionArguments | EventArguments | ObjectiveArguments>(["ConditionArguments", "EventArguments", "ObjectiveArguments"]))
-      .flatMap(e => e.getChildren<ConditionArgumentMandatory | EventArgumentMandatory | ObjectiveArgumentMandatory | ConditionArgumentOptional | EventArgumentOptional | ObjectiveArgumentOptional>(["ConditionArgumentMandatory", "EventArgumentMandatory", "ObjectiveArgumentMandatory", "ConditionArgumentOptional", "EventArgumentOptional", "ObjectiveArgumentOptional"]))
-      // Filter all argument by type  
-      .filter(e => e.pattern?.type === ArgumentType.variableQuoted)
-      .flatMap(e => e.getChild<ArgumentValue>("ArgumentValue")!).filter(e => e);
-  }
-
-  // Get all variables by iterating the whole ast
-  private getAllVariableIDs(): string[] {
-    return this.getAllVariableArguments()
-      .flatMap(e => e.getChild<ArgumentVariable>("ArgumentVariable")).filter(e => e)
-      .flatMap(e => e!.getChildren<ArgumentVariableKind>("ArgumentVariableKind")).filter(e => e)
-      .map(e => e!.argumentStr).filter(e => e);
-  }
-
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
     const completionItems: CompletionItem[] = [];
 
     // Prompt built-in variable kinds
     [
-      "objective",
+      "objective.",
       "condition",
       "point",
       "globalpoint",
@@ -88,20 +61,9 @@ export class ArgumentVariableKind extends AbstractNodeV2<ArgumentVariableKindTyp
       completionItems.push({
         label: kind,
         kind: CompletionItemKind.Variable,
-        detail: kind,
+        detail: "built-in",
         // documentation: "",
         insertText: kind
-      });
-    });
-
-    // Get all custom variable IDs
-    this.getAllVariableIDs().map(id => {
-      completionItems.push({
-        label: id,
-        kind: CompletionItemKind.Variable,
-        detail: id,
-        // documentation: "",
-        insertText: id
       });
     });
 

@@ -13,12 +13,12 @@ import { AST } from "../ast";
 import { ConversationOptionType, PackageV2Type } from "../node";
 import { AbstractNodeV2, NodeV2 } from "../v2";
 import { ConditionEntry } from "./Condition/ConditionEntry";
-import { ConditionList } from "./Condition/ConditionList";
+import { ConditionList, ConditionListSection } from "./Condition/ConditionList";
 import { Conversation } from "./Conversation/Conversation";
 import { EventEntry } from "./Event/EventEntry";
-import { EventList } from "./Event/EventList";
+import { EventList, EventListSection } from "./Event/EventList";
 import { ObjectiveEntry } from "./Objective/ObjectiveEntry";
-import { ObjectiveList } from "./Objective/ObjectiveList";
+import { ObjectiveList, ObjectiveListSection } from "./Objective/ObjectiveList";
 
 export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
   readonly type: PackageV2Type = "PackageV2";

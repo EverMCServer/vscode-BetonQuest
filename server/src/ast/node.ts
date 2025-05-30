@@ -96,6 +96,9 @@ export type ArgumentTypes = ArgumentKeyType | ArgumentKeyProxyType | ArgumentVal
 
 export type ArgumentVariableType = 'ArgumentVariable';
 export type ArgumentVariableKindType = 'ArgumentVariableKind';
+export type ArgumentVariableObjectivePropertyType = 'ArgumentVariableObjectiveVariableProperty';
+export type ArgumentVariableObjectivePropertyObjectiveIdType = 'ArgumentVariableObjectivePropertyObjectiveID';
+export type ArgumentVariableObjectivePropertyVariableNameType = 'ArgumentVariableObjectivePropertyVariableName';
 export type ArgumentVariableGlobalPointType = 'ArgumentVariableGlobalPoint';
 export type ArgumentIntergerType = 'ArgumentInterger';
 export type ArgumentFloatType = 'ArgumentFloat';
@@ -108,6 +111,9 @@ export type ArgumentObjectiveIdType = 'ArgumentObjectiveID';
 export type ArgumentValueTypes =
   ArgumentVariableType |
   ArgumentVariableKindType |
+  ArgumentVariableObjectivePropertyType |
+  ArgumentVariableObjectivePropertyObjectiveIdType |
+  ArgumentVariableObjectivePropertyVariableNameType |
   ArgumentVariableGlobalPointType |
   ArgumentIntergerType |
   ArgumentFloatType |
