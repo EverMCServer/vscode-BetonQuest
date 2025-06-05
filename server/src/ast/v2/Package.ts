@@ -298,7 +298,7 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
     return this.parentAst.getV2ConversationEventPointers(eventID, packageUri);
   }
 
-  getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
+  getPublishDiagnosticsParams(): PublishDiagnosticsParams[] {
     const diagnostics: Map<string, PublishDiagnosticsParams> = new Map();
     const cb = (d: PublishDiagnosticsParams) => {
       if (diagnostics.has(d.uri)) {
@@ -308,11 +308,11 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
         diagnostics.set(d.uri, d);
       }
     };
-    this.getConditionList().getPublishDiagnosticsParams(documentUri).forEach(cb);
-    this.getEventList().getPublishDiagnosticsParams(documentUri).forEach(cb);
-    this.getObjectiveList().getPublishDiagnosticsParams(documentUri).forEach(cb);
+    this.getConditionList().getPublishDiagnosticsParams().forEach(cb);
+    this.getEventList().getPublishDiagnosticsParams().forEach(cb);
+    this.getObjectiveList().getPublishDiagnosticsParams().forEach(cb);
     this.getConversations().forEach(conversation => {
-      conversation.getPublishDiagnosticsParams(documentUri).forEach(cb);
+      conversation.getPublishDiagnosticsParams().forEach(cb);
     });
     return Array.from(diagnostics, ([_, d]) => d);
   }

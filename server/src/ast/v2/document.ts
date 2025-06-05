@@ -24,7 +24,7 @@ export abstract class SectionCollection<T extends NodeType> extends AbstractNode
     this.children = this.children.filter(e => uris.includes(e.getUri()));
   }
 
-  abstract getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[];
+  abstract getPublishDiagnosticsParams(): PublishDiagnosticsParams[];
 
   abstract getLocations(yamlPath: string[], sourceUri: string): LocationsResponse[];
 }

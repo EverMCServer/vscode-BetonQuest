@@ -178,7 +178,7 @@ export function server(connection: Connection): void {
     // 2. Update the AST
     asts.updateDocuments(allDocuments);
     // Send Diagnostics
-    asts.getDiagnostics(e.document.uri).forEach(diag => connection.sendDiagnostics(diag));
+    asts.getDiagnostics().forEach(diag => connection.sendDiagnostics(diag));
   });
 
   // Listen on semantic tokens requests

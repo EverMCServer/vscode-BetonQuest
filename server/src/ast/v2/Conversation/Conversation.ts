@@ -38,8 +38,8 @@ export class Conversation extends SectionCollection<ConversationType> {
     return this.getChildren<ConversationSection>('ConversationSection');
   }
 
-  getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
-    return this.children.filter(c => !documentUri || c.getUri() === documentUri).flatMap(c => ({
+  getPublishDiagnosticsParams(): PublishDiagnosticsParams[] {
+    return this.children.flatMap(c => ({
       uri: c.getUri(),
       diagnostics: c._getDiagnostics()
     }));

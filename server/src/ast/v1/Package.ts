@@ -195,8 +195,8 @@ export class PackageV1 extends AbstractNodeV1<PackageV1Type> {
     return this.parentAst.getV1ConversationEventPointers(eventID, packageUri);
   }
 
-  getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
-    return this.children.filter(c => !documentUri || c.getUri() === documentUri).flatMap(c => {
+  getPublishDiagnosticsParams(): PublishDiagnosticsParams[] {
+    return this.children.flatMap(c => {
       return {
         uri: c.getUri(),
         diagnostics: c._getDiagnostics()

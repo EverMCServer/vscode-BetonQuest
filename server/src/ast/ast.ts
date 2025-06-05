@@ -61,8 +61,8 @@ export class ASTs {
     return this.asts.flatMap(([uri, ast]) => ast && (!documentUri || documentUri.startsWith(uri)) ? ast : []);
   }
 
-  getDiagnostics(documentUri?: string) {
-    return this.getAllAstByDocumentUri(documentUri).flatMap(ast => ast._getDiagnostics(documentUri));
+  getDiagnostics() {
+    return this.getAllAstByDocumentUri().flatMap(ast => ast._getDiagnostics());
   }
 
   getCodeActions(documentUri?: string) {
@@ -273,10 +273,10 @@ export class AST {
   }
 
   // Get all diagnostics from parser
-  _getDiagnostics(documentUri?: string) {
+  _getDiagnostics() {
     return [
-      ...this.packagesV1.filter(p => !documentUri || documentUri.startsWith(p.uri)).flatMap(p => p.getPublishDiagnosticsParams(documentUri)),
-      ...this.packagesV2.filter(p => !documentUri || documentUri.startsWith(p.uri)).flatMap(p => p.getPublishDiagnosticsParams(documentUri))
+      ...this.packagesV1.flatMap(p => p.getPublishDiagnosticsParams()),
+      ...this.packagesV2.flatMap(p => p.getPublishDiagnosticsParams())
     ];
   }
 

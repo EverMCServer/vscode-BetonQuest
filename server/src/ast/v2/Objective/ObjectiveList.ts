@@ -21,8 +21,8 @@ export class ObjectiveList extends SectionCollection<ObjectiveListType> {
     this.children.push(new ObjectiveListSection(uri, document, yml, this));
   }
 
-  getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
-    return this.getChildren<ObjectiveListSection>('ObjectiveListSection', section => !documentUri || section.getUri() === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
+  getPublishDiagnosticsParams(): PublishDiagnosticsParams[] {
+    return this.getChildren<ObjectiveListSection>('ObjectiveListSection').flatMap(section => section.getPublishDiagnosticsParams());
   }
 
   getLocations(yamlPath: string[], sourceUri: string) {

@@ -21,8 +21,8 @@ export class EventList extends SectionCollection<EventListType> {
     this.children.push(new EventListSection(uri, document, yml, this));
   }
 
-  getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
-    return this.getChildren<EventListSection>('EventListSection', section => !documentUri || section.getUri() === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
+  getPublishDiagnosticsParams(): PublishDiagnosticsParams[] {
+    return this.getChildren<EventListSection>('EventListSection').flatMap(section => section.getPublishDiagnosticsParams());
   }
 
   getLocations(yamlPath: string[], sourceUri: string) {

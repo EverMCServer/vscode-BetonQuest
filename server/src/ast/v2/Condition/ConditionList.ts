@@ -21,8 +21,8 @@ export class ConditionList extends SectionCollection<ConditionListType> {
     this.children.push(new ConditionListSection(uri, document, yml, this));
   }
 
-  getPublishDiagnosticsParams(documentUri?: string): PublishDiagnosticsParams[] {
-    return this.getChildren<ConditionListSection>('ConditionListSection', section => !documentUri || section.getUri() === documentUri).flatMap(section => section.getPublishDiagnosticsParams());
+  getPublishDiagnosticsParams(): PublishDiagnosticsParams[] {
+    return this.getChildren<ConditionListSection>('ConditionListSection').flatMap(section => section.getPublishDiagnosticsParams());
   }
 
   getLocations(yamlPath: string[], sourceUri: string) {
