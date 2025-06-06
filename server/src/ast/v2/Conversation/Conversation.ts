@@ -198,10 +198,10 @@ export class ConversationSection extends Document<ConversationSectionType> {
     });
   }
 
-  init() {
+  initDiagnosticsAndCodeActions(addDiagnostic: (offsets: [offsetStart?: number, offsetEnd?: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode, codeActions?: { title: string; text: string; range?: [offsetStart: number, offsetEnd: number]; }[]) => void): void {
     // Check missing elements from the Package
     if (!this.parent.getChildren().some(c => c.getChild('ConversationQuester')) && !this.diagnostics.some(d => d.code === DiagnosticCode.ConversationMissingQuester)) {
-      this.addDiagnostic(
+      addDiagnostic(
         [(this.yml.key.range?.[0] || 0), (this.yml.key.range?.[1] || 0)],
         `Missing element "quester".`,
         DiagnosticSeverity.Error,

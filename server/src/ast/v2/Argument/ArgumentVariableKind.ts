@@ -42,7 +42,7 @@ export class ArgumentVariableKind extends AbstractNodeV2<ArgumentVariableKindTyp
 
     // Prompt built-in variable kinds
     [
-      "objective.",
+      "objective",
       "condition",
       "point",
       "globalpoint",

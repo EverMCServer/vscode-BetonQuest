@@ -247,17 +247,4 @@ export class ObjectiveArguments extends AbstractNodeV2<ObjectiveArgumentsType> {
     return this.getChildren<ObjectiveArgumentOptional>('ObjectiveArgumentOptional');
   }
 
-  getSemanticTokens(): SemanticToken[] {
-    if (this.offsetStart === undefined || this.offsetEnd === undefined) {
-      return [];
-    }
-    const semanticTokens: SemanticToken[] = [{
-      offsetStart: this.offsetStart,
-      offsetEnd: this.offsetEnd,
-      tokenType: SemanticTokenType.InstructionArguments
-    }];
-    semanticTokens.push(...this.children.flatMap(a => a.getSemanticTokens()));
-    return semanticTokens;
-  }
-
 }

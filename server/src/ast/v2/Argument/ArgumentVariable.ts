@@ -76,11 +76,20 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
           break;
         case 'version':
           break;
-        default:
-          // Unknow Variable
+        case '':
+          // Missing Variable Kind
           this.addDiagnostic(
             [this.offsetStart, this.offsetEnd],
-            `Invalid variable kind: "${this.variableKind}" is unknown.`,
+            `Missing Variable kind.`,
+            DiagnosticSeverity.Error,
+            DiagnosticCode.ArgumentValueMissing
+          );
+          break;
+        default:
+          // Unknow Variable Kind
+          this.addDiagnostic(
+            [this.offsetStart, this.offsetEnd],
+            `Invalid Variable kind: "${this.variableKind}" is unknown.`,
             DiagnosticSeverity.Error,
             DiagnosticCode.ArgumentValueInvalid
           );
@@ -120,11 +129,6 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
       }
     }
 
-  }
-
-  // DEBUG
-  getCompletions(offset: number, documentUri?: string): CompletionItem[] {
-    return [];
   }
 
 }

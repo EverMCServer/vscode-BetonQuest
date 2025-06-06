@@ -247,17 +247,4 @@ export class EventArguments extends AbstractNodeV2<EventArgumentsType> {
     return this.getChildren<EventArgumentOptional>('EventArgumentOptional');
   }
 
-  getSemanticTokens(): SemanticToken[] {
-    if (this.offsetStart === undefined || this.offsetEnd === undefined) {
-      return [];
-    }
-    const semanticTokens: SemanticToken[] = [{
-      offsetStart: this.offsetStart,
-      offsetEnd: this.offsetEnd,
-      tokenType: SemanticTokenType.InstructionArguments
-    }];
-    semanticTokens.push(...this.children.flatMap(a => a.getSemanticTokens()));
-    return semanticTokens;
-  }
-
 }

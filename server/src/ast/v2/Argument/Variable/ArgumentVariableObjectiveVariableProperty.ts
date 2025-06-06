@@ -1,4 +1,4 @@
-import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
+import { CodeAction, CompletionItem, CompletionItemKind, Diagnostic, DiagnosticSeverity, MarkupKind } from "vscode-languageserver";
 
 import { ArgumentType } from "betonquest-utils/betonquest/Arguments";
 
@@ -15,6 +15,11 @@ import { ObjectiveArgumentOptional } from "../../Objective/ObjectiveArgumentOpti
 import { ObjectiveArguments } from "../../Objective/ObjectiveArguments";
 import { ArgumentValue } from "../ArgumentValue";
 import { ArgumentVariable } from "../ArgumentVariable";
+import { HoverInfo } from "../../../../utils/hover";
+import { LocationLinkOffset } from "../../../../utils/location";
+import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
+import { ObjectiveEntry } from "../../Objective/ObjectiveEntry";
+import { DiagnosticCode } from "../../../../utils/diagnostics";
 
 export class ArgumentVariableObjectiveProperty extends AbstractNodeV2<ArgumentVariableObjectivePropertyType> {
   readonly type: ArgumentVariableObjectivePropertyType = 'ArgumentVariableObjectiveVariableProperty';
@@ -43,12 +48,14 @@ export class ArgumentVariableObjectiveProperty extends AbstractNodeV2<ArgumentVa
     this.addChild(new ArgumentVariableObjectivePropertyObjectiveID(parts[0], [this.offsetStart, this.offsetStart + parts[0].length], this));
     if (parts.length > 1) {
       this.addChild(new ArgumentVariableObjectivePropertyVariableName(parts[1], [this.offsetStart + parts[0].length + 1, this.offsetEnd], this));
+    } else {
+      this.addDiagnostic(
+        [this.offsetEnd, this.offsetEnd],
+        `Missing property name`,
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ArgumentVariableObjectivePropertyNameMissing
+      );
     }
-  }
-
-  // DEBUG
-  getCompletions(offset: number, documentUri?: string): CompletionItem[] {
-    return [];
   }
 
 }
@@ -72,25 +79,32 @@ export class ArgumentVariableObjectivePropertyObjectiveID extends AbstractNodeV2
     this.parent = parent;
 
     this.argumentStr = argumentStr;
+
+    if (this.argumentStr.length < 1) {
+      this.addDiagnostic(
+        [this.offsetEnd, this.offsetEnd],
+        `Missing Objective ID`,
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ArgumentVariableObjectiveIdMissing
+      );
+    }
   }
 
-  private getAllVariableArguments() {
-    return [
-      // Iterate all element lists
-      this.getAllConditionEntries(),
-      this.getAllEventEntries(),
-      this.getAllObjectiveEntries()
-    ].flat()
-      .filter(e =>
-        // Speed up searching by filtering all entries contains type = ArgumentType.globalPointID only
-        e.kindConfig?.argumentsPatterns.mandatory.some(e => e.type === ArgumentType.variableQuoted) ||
-        e.kindConfig?.argumentsPatterns.optional?.some(e => e.type === ArgumentType.variableQuoted)
-      )
-      .flatMap(e => e.getChildren<ConditionArguments | EventArguments | ObjectiveArguments>(["ConditionArguments", "EventArguments", "ObjectiveArguments"]))
-      .flatMap(e => e.getChildren<ConditionArgumentMandatory | EventArgumentMandatory | ObjectiveArgumentMandatory | ConditionArgumentOptional | EventArgumentOptional | ObjectiveArgumentOptional>(["ConditionArgumentMandatory", "EventArgumentMandatory", "ObjectiveArgumentMandatory", "ConditionArgumentOptional", "EventArgumentOptional", "ObjectiveArgumentOptional"]))
-      // Filter all argument by type  
-      .filter(e => e.pattern?.type === ArgumentType.variableQuoted)
-      .flatMap(e => e.getChild<ArgumentValue>("ArgumentValue")!).filter(e => e);
+  getObjectiveEntry() {
+    return this.getObjectiveEntries(this.argumentStr).shift();
+  }
+
+  getDiagnostics(): Diagnostic[] {
+    // Check if objective ID exists
+    if (!this.getObjectiveEntry()) {
+      return [this.generateDiagnostic(
+        [this.offsetStart, this.offsetEnd],
+        `Objective not found`,
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ArgumentVariableObjectiveIdNotFound,
+      )];
+    }
+    return [];
   }
 
   // Get all variables by iterating the whole ast
@@ -102,7 +116,7 @@ export class ArgumentVariableObjectivePropertyObjectiveID extends AbstractNodeV2
         e.kindConfig?.variableProperties &&
         e.kindConfig.variableProperties.length > 0
       )
-      .forEach(e => e.kindConfig?.variableProperties?.forEach(p => result.push([e.keyString + "." + p.name, p.type, p.description])));
+      .forEach(e => e.kindConfig?.variableProperties?.forEach(p => result.push([e.keyString + "." + p.name, p.type, p.description + "  \n`" + e.yml.value?.value + "`"])));
     return result;
   }
 
@@ -115,12 +129,47 @@ export class ArgumentVariableObjectivePropertyObjectiveID extends AbstractNodeV2
         label: id[0],
         kind: CompletionItemKind.Variable,
         detail: id[1],
-        documentation: id[2],
+        documentation: {
+          kind: MarkupKind.Markdown,
+          value: id[2]
+        },
         insertText: id[0]
       });
     });
 
     return completionItems;
+  }
+
+  getSemanticTokens(documentUri?: string): SemanticToken[] {
+    return [{
+      offsetStart: this.offsetStart,
+      offsetEnd: this.offsetEnd,
+      tokenType: SemanticTokenType.ObjectiveID
+    }];
+  }
+
+  getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
+    const objective = this.getObjectiveEntry();
+    if (objective) {
+      return [{
+        content: "(Objective) " + objective.kindConfig?.value + "\n\n" + objective.kindConfig?.description,
+        offset: [this.offsetStart, this.offsetEnd]
+      }];
+    }
+    return [];
+  }
+
+  getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
+    const objective = this.getObjectiveEntry();
+    if (objective) {
+      return [{
+        originSelectionRange: [this.offsetStart, this.offsetEnd],
+        targetUri: objective.getUri(),
+        targetRange: [objective.offsetStart!, objective.offsetEnd!],
+        targetSelectionRange: [objective.offsetStart!, objective.offsetEnd!]
+      }];
+    }
+    return [];
   }
 }
 
@@ -143,5 +192,53 @@ export class ArgumentVariableObjectivePropertyVariableName extends AbstractNodeV
     this.parent = parent;
 
     this.argumentStr = argumentStr;
+  }
+
+  initDiagnosticsAndCodeActions(addDiagnostic: (offsets: [offsetStart?: number, offsetEnd?: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode, codeActions?: { title: string; text: string; range?: [offsetStart: number, offsetEnd: number]; }[]) => void): void {
+    // Check Objective Property kind and provide fix suggestions
+    const objectiveEntry = this.getObjectiveEntry();
+    if (!objectiveEntry?.kindConfig?.variableProperties?.find(e => e.name.toLowerCase() === this.argumentStr.toLowerCase())) {
+      addDiagnostic(
+        [this.offsetStart, this.offsetEnd],
+        `Invalid Objective Property kind`,
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ArgumentVariableObjectivePropertyNameInvalid,
+        objectiveEntry?.kindConfig?.variableProperties?.map(e => ({
+          title: `Change to "${e.name}"`,
+          text: e.name
+        }))
+      );
+    }
+  }
+
+  /**
+   * Get Objective's Entry of this Objective Variable.
+   */
+  getObjectiveEntry() {
+    return this.parent.getChild<ArgumentVariableObjectivePropertyObjectiveID>("ArgumentVariableObjectivePropertyObjectiveID")!.getObjectiveEntry();
+  }
+
+  getHoverInfo(offset: number, documentUri?: string): HoverInfo[] {
+    const description = this.getObjectiveEntry()?.kindConfig?.variableProperties?.find(e => e.name.toLowerCase() === this.argumentStr.toLowerCase())?.description;
+    if (description) {
+      return [{
+        content: description,
+        offset: [this.offsetStart, this.offsetEnd]
+      }];
+    }
+    return [];
+  }
+
+  getCompletions(offset: number, documentUri?: string): CompletionItem[] {
+    return this.getObjectiveEntry()?.kindConfig?.variableProperties?.map(e => ({
+      label: e.name,
+      kind: CompletionItemKind.Property,
+      detail: e.type,
+      documentation: {
+        kind: MarkupKind.Markdown,
+        value: e.description
+      },
+      insertText: e.name
+    })) || [];
   }
 }

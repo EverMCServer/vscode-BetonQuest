@@ -7,10 +7,10 @@ export type ElementKind<T extends ListElement> = {
   display: string,
   description: React.ReactNode,
   argumentsPatterns: ArgumentsPatterns,
-  variableProperties?: VariableProperties[]
+  variableProperties?: VariableProperty[]
 };
 
-type VariableProperties = {
+type VariableProperty = {
   name: string,
   type: ArgumentType,
   description: string

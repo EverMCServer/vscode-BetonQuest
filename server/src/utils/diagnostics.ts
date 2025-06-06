@@ -107,6 +107,26 @@ export enum DiagnosticCode {
   ArgumentValueMissing = "BQ-2006",
 
   /**
+   * Variable Objective ID is missing
+   */
+  ArgumentVariableObjectiveIdMissing = "BQ-2011",
+
+  /**
+   * Argument linked Objective ID not exists.
+   */
+  ArgumentVariableObjectiveIdNotFound = "BQ-2011",
+
+  /**
+   * Argument Objective Property name is missing.
+   */
+  ArgumentVariableObjectivePropertyNameMissing = "BQ-2012",
+
+  /**
+   * Argument Objective Property name is invalid.
+   */
+  ArgumentVariableObjectivePropertyNameInvalid = "BQ-2012",
+
+  /**
    * The "quester" section is missing.
    */
   ConversationMissingQuester = "BQ-3011",
