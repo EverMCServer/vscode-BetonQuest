@@ -184,7 +184,7 @@ export class PackageV2 extends AbstractNodeV2<PackageV2Type> {
     documents.forEach(newDoc => this.documentVersions.set(newDoc.uri, newDoc.version));
 
     // Run extra proccesses after node created 
-    this._init();
+    this._initDiagnosticsAndCodeActions();
   }
 
   // Get absolute Package path

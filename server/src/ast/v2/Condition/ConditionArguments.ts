@@ -27,7 +27,7 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
   readonly argumentOptionalStrs: string[] = [];
 
   /**
-   * Cache the key offsets of each devided argument
+   * Cache the key offsets of each devided argument.  
    * `<offsetStart>argument_string<stringEnd>(empty_spaces)<offsetEnd>`
    */
   private keyOffsets: [offsetStart: number, stringEnd: number, offsetEnd: number][] = [];
@@ -245,19 +245,6 @@ export class ConditionArguments extends AbstractNodeV2<ConditionArgumentsType> {
 
   private _getArgumentOptionals() {
     return this.getChildren<ConditionArgumentOptional>('ConditionArgumentOptional');
-  }
-
-  getSemanticTokens(): SemanticToken[] {
-    if (this.offsetStart === undefined || this.offsetEnd === undefined) {
-      return [];
-    }
-    const semanticTokens: SemanticToken[] = [{
-      offsetStart: this.offsetStart,
-      offsetEnd: this.offsetEnd,
-      tokenType: SemanticTokenType.InstructionArguments
-    }];
-    semanticTokens.push(...this.children.flatMap(a => a.getSemanticTokens()));
-    return semanticTokens;
   }
 
 }

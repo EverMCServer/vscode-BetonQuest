@@ -135,6 +135,8 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
   protected children: N[] = [];
   protected diagnostics: Diagnostic[] = [];
   protected codeActions: CodeAction[] = [];
+  private diagnosticsBuffer: Diagnostic[] = [];
+  private codeActionsBuffer: CodeAction[] = [];
   protected semanticTokens: SemanticToken[] = [];
 
   getUri(): string {
@@ -162,31 +164,53 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
   }
 
   /**
-   * Get the root AST node
+   * Get the root AST node.
    */
   abstract getAst(): AST;
 
   /**
-   * Run extra proccesses after node created 
+   * Run Diagnostics And CodeActions generation after node created.
    */
-  _init() {
+  _initDiagnosticsAndCodeActions() {
     this.children.forEach(c => {
-      c._init();
+      c._initDiagnosticsAndCodeActions();
     });
-    this.init();
+    // Clear buffer
+    this.diagnosticsBuffer = [];
+    this.codeActionsBuffer = [];
+    // Call Diagnostics init
+    this.initDiagnosticsAndCodeActions(this.writeDiagnosticBuffer);
   }
 
+  private writeDiagnosticBuffer = (offsets: [offsetStart?: number, offsetEnd?: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode, codeActions?: {
+    title: string;
+    text: string;
+    range?: [offsetStart: number, offsetEnd: number];
+  }[]) => {
+    if (offsets[0] === undefined || offsets[1] === undefined) {
+      return;
+    }
+    const diagnostic = this.generateDiagnostic([offsets[0], offsets[1]], message, severity, code);
+    const actions = this.generateCodeActions(diagnostic, codeActions);
+    this.diagnosticsBuffer.push(diagnostic);
+    this.codeActionsBuffer.push(...actions);
+  };
+
   /**
-   * Extra proccesses after node created 
+   * Extra Diagnostics And CodeActions generation after node created.  
+   * This method is called when documents CREATED or UPDATED.  
+   * You must call addDiagnostic(), NOT this.addDiagnostic(), within initDiagnosticsAndCodeActions() to save Diagnostics and CodeActions.
    */
-  init() { }
+  initDiagnosticsAndCodeActions(addDiagnostic: typeof this.writeDiagnosticBuffer) { }
 
   _getDiagnostics(): Diagnostic[] {
-    return [
+    const results = [
       ...this.children.flatMap(c => c._getDiagnostics()),
       ...this.getDiagnostics(),
-      ...this.diagnostics
+      ...this.diagnostics,
+      ...this.diagnosticsBuffer,
     ];
+    return results;
   }
 
   getDiagnostics(): Diagnostic[] {
@@ -214,11 +238,13 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
   }
 
   _getCodeActions(documentUri?: string): CodeAction[] {
-    return [
-      ...this.codeActions,
+    const results = [
+      ...this.children.flatMap(c => c._getCodeActions(documentUri)),
       ...this.getCodeActions(documentUri),
-      ...this.children.flatMap(c => c._getCodeActions(documentUri))
+      ...this.codeActions,
+      ...this.codeActionsBuffer
     ];
+    return results;
   }
 
   getCodeActions(documentUri?: string): CodeAction[] {
@@ -321,14 +347,18 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
     return [];
   }
 
-  // Get range by offset.
-  // This method must be overrided / hijacked by the top-level class.
+  /**
+   * Get range by offset.
+   * This method must be overrided / hijacked by the top-level class.
+   */
   getRangeByOffset(offsetStart: number, offsetEnd: number): Range {
     return this.parent.getRangeByOffset(offsetStart, offsetEnd);
   }
 
-  // Get target package's uri by package path.
-  // This method must be overrided / hijacked by the top-level class.
+  /**
+   * Get target package's uri by package path.
+   * This method must be overrided / hijacked by the top-level class.
+   */
   getPackageUri(targetPackagePath?: string): string {
     return this.parent.getPackageUri(targetPackagePath);
   }

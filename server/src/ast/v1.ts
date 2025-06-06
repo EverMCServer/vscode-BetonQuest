@@ -82,62 +82,84 @@ export abstract class AbstractNodeV1<T extends NodeType> extends AbstractNode<T,
     return this.getAst().getV1Packages(packageUri);
   }
 
-  // Get absolute Package path.
-  // This method must be overrided / hijacked by the top-level class.
+  /**
+   * Get absolute Package path.  
+   * This method must be overrided / hijacked by the top-level class.
+   */
   getPackagePath(): string[] {
     return this._packagePath ?? (this._packagePath = this.parent.getPackagePath());
   }
 
-  // Get all target package's Condition entries.
-  // This method must be overrided / hijacked by the top-level class.
+  /**
+   * Get all target package's Condition entries.  
+   * This method must be overrided / hijacked by the top-level class.
+   */
   getConditionEntries(id?: string, packageUri?: string): ConditionEntry[] {
     return this.parent.getConditionEntries(id, packageUri);
   }
-  // Get all Condition entries from all packages
+  /**
+   * Get all Condition entries from all packages.
+   */
   getAllConditionEntries(): ConditionEntry[] {
     return this.parent.getAllConditionEntries();
   }
 
-  // Get all target package's Event entries.
-  // This method must be overrided / hijacked by the top-level class.
+  /**
+   * Get all target package's Event entries.  
+   * This method must be overrided / hijacked by the top-level class.
+   */
   getEventEntries(id?: string, packageUri?: string): EventEntry[] {
     return this.parent.getEventEntries(id, packageUri);
   }
-  // Get all Event entries from all packages
+  /**
+   * Get all Event entries from all packages.
+   */
   getAllEventEntries(): EventEntry[] {
     return this.parent.getAllEventEntries();
   }
 
-  // Get all target package's Objective entries.
-  // This method must be overrided / hijacked by the top-level class.
+  /**
+   * Get all target package's Objective entries.  
+   * This method must be overrided / hijacked by the top-level class.
+   */
   getObjectiveEntries(id?: string, packageUri?: string): ObjectiveEntry[] {
     return this.parent.getObjectiveEntries(id, packageUri);
   }
-  // Get all Objective entries from all packages
+  /**
+   * Get all Objective entries from all packages.
+   */
   getAllObjectiveEntries(): ObjectiveEntry[] {
     return this.parent.getAllObjectiveEntries();
   }
 
-  // Get all target package's conversation options.
-  // This method must be overrided / hijacked by the top-level class.
+  /**
+   * Get all target package's conversation options.  
+   * This method must be overrided / hijacked by the top-level class.
+   */
   getConversationOptions<T extends ConversationOptionType>(type: T, optionID?: string, conversationID?: string, packageUri?: string): NpcOption[] | PlayerOption[] {
     return this.parent.getConversationOptions<T>(type, optionID, conversationID, packageUri);
   }
 
-  // Get all target package's conversation option pointers.
-  // This method must be overrided / hijacked by the top-level class.
+  /**
+   * Get all target package's conversation option pointers.  
+   * This method must be overrided / hijacked by the top-level class.
+   */
   getConversationOptionPointers(type: ConversationOptionType, optionID: string, conversationID?: string, packageUri?: string): (FirstPointer | NpcPointer | PlayerPointer)[] {
     return this.parent.getConversationOptionPointers(type, optionID, conversationID, packageUri);
   }
 
-  // Get all target package's conversation condition pointers.
-  // This method must be overrided / hijacked by the top-level class.
+  /**
+   * Get all target package's conversation condition pointers.  
+   * This method must be overrided / hijacked by the top-level class.
+   */
   getConversationConditionPointers(conditionID?: string, packageUri?: string): (NpcCondition | PlayerCondition)[] {
     return this.parent.getConversationConditionPointers(conditionID, packageUri);
   }
 
-  // Get all target package's conversation event pointers.
-  // This method must be overrided / hijacked by the top-level class.
+  /**
+   * Get all target package's conversation event pointers.  
+   * This method must be overrided / hijacked by the top-level class.
+   */
   getConversationEventPointers(eventID?: string, packageUri?: string): (ConversationFinalEvent | NpcEvent | PlayerEvent)[] {
     return this.parent.getConversationEventPointers(eventID, packageUri);
   }
