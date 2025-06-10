@@ -113,6 +113,12 @@ export enum ArgumentType {
     /** Language ID list */
     languageIdList = "languageIdList",
 
+    /** Date */
+    date = "date",
+
+    /** Time Duration */
+    duration = "duration",
+
     /** Minecraft's Advancement */
     advancement = "advancement",
 

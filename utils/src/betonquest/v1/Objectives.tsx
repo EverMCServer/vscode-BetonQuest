@@ -74,7 +74,14 @@ export class Kinds {
                         { jsx: Checkbox, name: L("betonquest.v1.objective.action.optional.exactMatch.name"), type: ArgumentType.constant, key: 'exactMatch', format: 'boolean', tooltip: L("betonquest.v1.objective.action.optional.exactMatch.tooltip") },
                         { jsx: Checkbox, name: L("betonquest.v1.objective.action.optional.cancel.name"), type: ArgumentType.constant, key: 'cancel', format: 'boolean', tooltip: L("betonquest.v1.objective.action.optional.cancel.tooltip") },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "location",
+                        type: ArgumentType.location,
+                        description: L("betonquest.v1.objective.action.property.location.description")
+                    },
+                ]
             },
             {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/ArrowShootObjective.java
@@ -105,7 +112,19 @@ export class Kinds {
                         { jsx: Number, name: L("betonquest.v1.objective.block.optional.notify.name"), type: ArgumentType.interger, key: 'notify', format: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v1.objective.block.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
                         // { jsx: OptionalNumber, name: 'Notify', key: 'notify', type: 'int', placeholder: '1', tooltip: 'Displays messages to the player each time they progress the objective, with interval', config: { min: 0, setMinToNull: true } },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "amount",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.block.property.amount.description")
+                    },
+                    {
+                        name: "left",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.block.property.left.description")
+                    },
+                ]
             },
             {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/BreedObjective.java
@@ -121,7 +140,19 @@ export class Kinds {
                     optional: [
                         { jsx: Checkbox, name: L("betonquest.v1.objective.breed.optional.notify.name"), type: ArgumentType.interger, key: 'notify', format: 'boolean', tooltip: L("betonquest.v1.objective.breed.optional.notify.tooltip") },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "amount",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.breed.property.amount.description")
+                    },
+                    {
+                        name: "left",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.breed.property.left.description")
+                    },
+                ]
             },
             {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/ChestPutObjective.java
@@ -165,7 +196,24 @@ export class Kinds {
                     optional: [
                         { jsx: Number, name: L("betonquest.v1.objective.craft.optional.notify.name"), type: ArgumentType.interger, key: 'notify', format: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v1.objective.craft.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "amount",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.craft.property.amount.description")
+                    },
+                    {
+                        name: "left",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.craft.property.left.description")
+                    },
+                    {
+                        name: "total",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.craft.property.total.description")
+                    },
+                ]
             },
             {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/EnchantObjective.java
@@ -213,7 +261,19 @@ export class Kinds {
                         { jsx: Checkbox, name: L("betonquest.v1.objective.delay.optional.minutes.name"), type: ArgumentType.constant, key: 'minutes', format: 'boolean', tooltip: L("betonquest.v1.objective.delay.optional.minutes.tooltip") },
                         { jsx: Number, name: L("betonquest.v1.objective.delay.optional.interval.name"), type: ArgumentType.interger, key: 'interval', format: 'int', placeholder: '200', tooltip: L("betonquest.v1.objective.delay.optional.interval.tooltip"), config: { min: 0, undefinedValue: 0 } },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "left",
+                        type: ArgumentType.duration,
+                        description: L("betonquest.v1.objective.delay.property.left.description")
+                    },
+                    {
+                        name: "date",
+                        type: ArgumentType.date,
+                        description: L("betonquest.v1.objective.delay.property.date.description")
+                    },
+                ]
             },
             {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/DieObjective.java
@@ -243,7 +303,24 @@ export class Kinds {
                     optional: [
                         { jsx: Number, name: L("betonquest.v1.objective.fish.optional.notify.name"), type: ArgumentType.interger, key: 'notify', format: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v1.objective.fish.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "amount",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.fish.property.amount.description")
+                    },
+                    {
+                        name: "left",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.fish.property.left.description")
+                    },
+                    {
+                        name: "total",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.fish.property.total.description")
+                    },
+                ]
             },
             {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/EntityInteractObjective.java
@@ -274,7 +351,24 @@ export class Kinds {
                         { jsx: Number, name: L("betonquest.v1.objective.interact.optional.range.name"), type: ArgumentType.float, key: 'range', format: 'float', tooltip: L("betonquest.v1.objective.interact.optional.range.tooltip"), config: { min: 0 }, allowVariable: true },
                         { jsx: Number, name: L("betonquest.v1.objective.interact.optional.notify.name"), type: ArgumentType.interger, key: 'notify', format: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v1.objective.interact.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "amount",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.interact.property.amount.description")
+                    },
+                    {
+                        name: "left",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.interact.property.left.description")
+                    },
+                    {
+                        name: "total",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.interact.property.total.description")
+                    },
+                ]
             },
             {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/KillPlayerObjective.java
@@ -291,7 +385,24 @@ export class Kinds {
                         { jsx: InputList, name: L("betonquest.v1.objective.kill.optional.required.name"), type: ArgumentType.conditionIdList, key: 'required', format: 'string[,]', placeholder: L("(none)"), tooltip: L("betonquest.v1.objective.kill.optional.required.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                         { jsx: Number, name: L("betonquest.v1.objective.kill.optional.notify.name"), type: ArgumentType.interger, key: 'notify', format: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v1.objective.kill.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "amount",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.kill.property.amount.description")
+                    },
+                    {
+                        name: "left",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.kill.property.left.description")
+                    },
+                    {
+                        name: "total",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.kill.property.total.description")
+                    },
+                ]
             },
             {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/LocationObjective.java
@@ -304,7 +415,14 @@ export class Kinds {
                         { jsx: BaseLocation, name: L("betonquest.v1.objective.location.mandatory.location.name"), type: ArgumentType.location, format: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
                         { jsx: Number, name: L("betonquest.v1.objective.location.mandatory.radius.name"), type: ArgumentType.float, format: 'float', defaultValue: 1.0, tooltip: L("betonquest.v1.objective.location.mandatory.radius.tooltip"), config: { min: 0 }, allowVariable: true },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "location",
+                        type: ArgumentType.location,
+                        description: L("betonquest.v1.objective.location.property.location.description")
+                    }
+                ]
             },
             {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/LoginObjective.java
@@ -359,7 +477,19 @@ export class Kinds {
                         { jsx: Number, name: L("betonquest.v1.objective.pickup.optional.amount.name"), type: ArgumentType.interger, key: 'amount', format: 'int', placeholder: '1', tooltip: L("betonquest.v1.objective.pickup.optional.amount.tooltip"), config: { min: 0, undefinedValue: 0 } },
                         { jsx: Checkbox, name: L("betonquest.v1.objective.pickup.optional.notify.name"), type: ArgumentType.interger, key: 'notify', format: 'boolean', tooltip: L("betonquest.v1.objective.pickup.optional.notify.tooltip") },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "amount",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.pickup.property.amount.description")
+                    },
+                    {
+                        name: "left",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.pickup.property.left.description")
+                    },
+                ]
             },
             {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/MobKillObjective.java
@@ -377,7 +507,19 @@ export class Kinds {
                         { jsx: Input, name: L("betonquest.v1.objective.mobkill.optional.marked.name"), type: ArgumentType.entityMark, key: 'marked', format: 'string', placeholder: 'e.g. quest_mob', tooltip: L("betonquest.v1.objective.mobkill.optional.marked.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                         { jsx: Number, name: L("betonquest.v1.objective.mobkill.optional.notify.name"), type: ArgumentType.interger, key: 'notify', format: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v1.objective.mobkill.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "amount",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.mobkill.property.amount.description")
+                    },
+                    {
+                        name: "left",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.mobkill.property.left.description")
+                    },
+                ]
             },
             {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/FishObjective.java
@@ -393,7 +535,24 @@ export class Kinds {
                     optional: [
                         { jsx: Number, name: L("betonquest.v1.objective.brew.optional.notify.name"), type: ArgumentType.interger, key: 'notify', format: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v1.objective.brew.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "amount",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.brew.property.amount.description")
+                    },
+                    {
+                        name: "left",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.brew.property.left.description")
+                    },
+                    {
+                        name: "total",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.brew.property.total.description")
+                    },
+                ]
             },
             {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/ShearObjective.java
@@ -411,7 +570,19 @@ export class Kinds {
                         { jsx: DyeColor, name: L("betonquest.v1.objective.shear.optional.color.name"), type: ArgumentType.dyeColor, key: 'color', format: 'string', placeholder: 'e.g. "black"', config: { allowClear: true } },
                         { jsx: Number, name: L("betonquest.v1.objective.shear.optional.notify.name"), type: ArgumentType.interger, key: 'notify', format: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v1.objective.shear.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "amount",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.shear.property.amount.description")
+                    },
+                    {
+                        name: "left",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.shear.property.left.description")
+                    },
+                ]
             },
             {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/SmeltingObjective.java
@@ -427,7 +598,24 @@ export class Kinds {
                     optional: [
                         { jsx: Number, name: L("betonquest.v1.objective.smelt.optional.notify.name"), type: ArgumentType.interger, key: 'notify', format: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v1.objective.smelt.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "amount",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.smelt.property.amount.description")
+                    },
+                    {
+                        name: "left",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.smelt.property.left.description")
+                    },
+                    {
+                        name: "total",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.smelt.property.total.description")
+                    },
+                ]
             },
             {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/StepObjective.java
@@ -439,7 +627,14 @@ export class Kinds {
                     mandatory: [
                         { jsx: BaseLocation, name: L("betonquest.v1.objective.step.mandatory.location.name"), type: ArgumentType.location, format: 'string', defaultValue: '0.5;64;0.5;world', allowVariable: true },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "location",
+                        type: ArgumentType.location,
+                        description: L("betonquest.v1.objective.step.property.location.description")
+                    },
+                ]
             },
             {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/TameObjective.java
@@ -452,7 +647,19 @@ export class Kinds {
                         { jsx: EntityType, name: L("betonquest.v1.objective.tame.mandatory.type.name"), type: ArgumentType.entity, format: 'string', defaultValue: 'WOLF' },
                         { jsx: Number, name: L("betonquest.v1.objective.tame.mandatory.amount.name"), type: ArgumentType.interger, format: 'int', defaultValue: 1, tooltip: L("betonquest.v1.objective.tame.mandatory.amount.tooltip"), config: { min: 1 } },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "amount",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.tame.property.amount.description")
+                    },
+                    {
+                        name: "left",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.tame.property.left.description")
+                    },
+                ]
             },
             {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/JumpObjective.java
@@ -464,7 +671,19 @@ export class Kinds {
                     mandatory: [
                         { jsx: Number, name: L("betonquest.v1.objective.jump.mandatory.amount.name"), type: ArgumentType.interger, format: 'int', defaultValue: 1, tooltip: L("betonquest.v1.objective.jump.mandatory.amount.tooltip"), config: { min: 1 } },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "amount",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.jump.property.amount.description")
+                    },
+                    {
+                        name: "left",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.jump.property.left.description")
+                    },
+                ]
             },
             {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/VehicleObjective.java
@@ -494,8 +713,9 @@ export class Kinds {
 
             // Third-party Plugins Integrations
 
-            // Citizens - https://betonquest.org/2.1/Documentation/Scripting/Building-Blocks/Integration-List/#citizens
+            // Citizens - https://betonquest.org/1.12/User-Documentation/Compatibility/#npcs-using-citizens
             {
+                // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/compatibility/citizens/NPCInteractObjective.java
                 value: 'npcinteract',
                 display: L("betonquest.v1.objective.npcinteract.display"),
                 description: L("betonquest.v1.objective.npcinteract.description"),
@@ -518,6 +738,7 @@ export class Kinds {
                 }
             },
             {
+                // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/compatibility/citizens/NPCKillObjective.java
                 value: 'npckill',
                 display: L("betonquest.v1.objective.npckill.display"),
                 description: L("betonquest.v1.objective.npckill.description"),
@@ -529,9 +750,22 @@ export class Kinds {
                         { jsx: Number, name: L("betonquest.v1.objective.npckill.optional.amount.name"), type: ArgumentType.interger, key: 'amount', format: 'int', placeholder: '1', config: { min: 0, undefinedValue: 0 }, allowVariable: true },
                         { jsx: Number, name: L("betonquest.v1.objective.npckill.optional.notify.name"), type: ArgumentType.interger, key: 'notify', format: 'int', placeholder: L("(none)"), tooltip: L("betonquest.v1.objective.npckill.optional.notify.tooltip"), config: { min: 0, undefinedValue: 0, nullValue: 1 } },
                     ]
-                }
+                },
+                variableProperties: [
+                    {
+                        name: "amount",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.npckill.property.amount.description")
+                    },
+                    {
+                        name: "left",
+                        type: ArgumentType.interger,
+                        description: L("betonquest.v1.objective.npckill.property.left.description")
+                    },
+                ]
             },
             {
+                // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/compatibility/citizens/NPCRangeObjective.java
                 value: 'npcrange',
                 display: L("betonquest.v1.objective.npcrange.display"),
                 description: L("betonquest.v1.objective.npcrange.description"),
