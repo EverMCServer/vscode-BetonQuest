@@ -701,7 +701,7 @@ export class Kinds {
                 // https://github.com/BetonQuest/BetonQuest/blob/v1.12.11/src/main/java/pl/betoncraft/betonquest/objectives/VariableObjective.java
                 value: 'variable',
                 display: L("betonquest.v1.objective.variable.display"),
-                description: `<div>tores custom variables. It also allows the player to set custom variables typed in chat with format "key: value".</div><div>For more details, please refer to the <a href="https://betonquest.org/1.12/User-Documentation/Objectives-List/#variable-variable" target="_blank">documentation</a>.</div>`,
+                description: L("betonquest.v1.objective.variable.description"),
                 // e.g. variable
                 argumentsPatterns: {
                     mandatory: [],

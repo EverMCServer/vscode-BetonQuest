@@ -48,13 +48,6 @@ export class ArgumentVariableObjectiveProperty extends AbstractNodeV2<ArgumentVa
     this.addChild(new ArgumentVariableObjectivePropertyObjectiveID(parts[0], [this.offsetStart, this.offsetStart + parts[0].length], this));
     if (parts.length > 1) {
       this.addChild(new ArgumentVariableObjectivePropertyVariableName(parts[1], [this.offsetStart + parts[0].length + 1, this.offsetEnd], this));
-    } else {
-      this.addDiagnostic(
-        [this.offsetEnd, this.offsetEnd],
-        `Missing property name`,
-        DiagnosticSeverity.Error,
-        DiagnosticCode.ArgumentVariableObjectivePropertyNameMissing
-      );
     }
   }
 
@@ -94,17 +87,40 @@ export class ArgumentVariableObjectivePropertyObjectiveID extends AbstractNodeV2
     return this.getObjectiveEntries(this.argumentStr).shift();
   }
 
-  getDiagnostics(): Diagnostic[] {
-    // Check if objective ID exists
-    if (!this.getObjectiveEntry()) {
-      return [this.generateDiagnostic(
+  initDiagnosticsAndCodeActions(addDiagnostic: (offsets: [offsetStart?: number, offsetEnd?: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode, codeActions?: { title: string; text: string; range?: [offsetStart: number, offsetEnd: number]; }[]) => void): void {
+    const objective = this.getObjectiveEntry();
+    if (!objective) {
+      // Check if objective ID exists
+      addDiagnostic(
         [this.offsetStart, this.offsetEnd],
-        `Objective not found`,
+        `Objective ID not found`,
         DiagnosticSeverity.Error,
         DiagnosticCode.ArgumentVariableObjectiveIdNotFound,
-      )];
+      );
+    } else if (objective.kindConfig?.value !== "variable") {
+      if (!objective.kindConfig?.variableProperties || objective.kindConfig.variableProperties?.length === 0) {
+        // Check Objective properties / "Variable Objective"
+        addDiagnostic(
+          [this.offsetStart, this.offsetEnd],
+          `Target Objective does not have any property, or it is not a "Variable Objective".`,
+          DiagnosticSeverity.Error,
+          DiagnosticCode.ArgumentVariableObjectiveIdNotFound,
+        );
+      } else if (!this.parent.getChild<ArgumentVariableObjectivePropertyVariableName>("ArgumentVariableObjectivePropertyVariableName")) {
+        // Missing property
+        addDiagnostic(
+          [this.offsetEnd, this.offsetEnd],
+          `Missing property name`,
+          DiagnosticSeverity.Error,
+          DiagnosticCode.ArgumentVariableObjectivePropertyNameMissing,
+          objective.kindConfig?.variableProperties?.map(e => ({
+            title: `Add property "${e.name}"`,
+            text: `.${e.name}`,
+            range: [this.offsetEnd, this.offsetEnd]
+          }))
+        );
+      }
     }
-    return [];
   }
 
   // Get all variables by iterating the whole ast
@@ -123,11 +139,26 @@ export class ArgumentVariableObjectivePropertyObjectiveID extends AbstractNodeV2
   getCompletions(offset: number, documentUri?: string): CompletionItem[] {
     const completionItems: CompletionItem[] = [];
 
+    // Get all "variable" Objectives
+    this.getAllObjectiveEntries()
+      .filter(e => e.kindConfig?.value === "variable").forEach(e => {
+        completionItems.push({
+          label: e.keyString,
+          kind: CompletionItemKind.Variable,
+          detail: "Variable Objective",
+          documentation: {
+            kind: MarkupKind.Markdown,
+            value: e.kindConfig!.description!.toString()
+          },
+          insertText: e.keyString
+        });
+      });
+
     // Get all custom variable IDs
     this.getAllObjectiveVariableProperties().map(id => {
       completionItems.push({
         label: id[0],
-        kind: CompletionItemKind.Variable,
+        kind: CompletionItemKind.Property,
         detail: id[1],
         documentation: {
           kind: MarkupKind.Markdown,
@@ -152,7 +183,10 @@ export class ArgumentVariableObjectivePropertyObjectiveID extends AbstractNodeV2
     const objective = this.getObjectiveEntry();
     if (objective) {
       return [{
-        content: "(Objective) " + objective.kindConfig?.value + "\n\n" + objective.kindConfig?.description,
+        content:
+          "(Objective) " + objective.kindConfig?.value + "\n\n"
+          + objective.kindConfig?.description
+          + "\n\n```yaml\n" + objective.yml.key.value + ": " + objective.yml.value?.value + "\n```",
         offset: [this.offsetStart, this.offsetEnd]
       }];
     }

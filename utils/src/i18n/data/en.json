@@ -897,7 +897,7 @@
     "betonquest.v1.objective.riding.mandatory.type.name": "Type",
     "betonquest.v1.objective.riding.mandatory.type.tooltip": "\"any\" means any entities are ok",
     "betonquest.v1.objective.variable.display": "Variable",
-    "betonquest.v1.objective.variable.description": "<div>tores custom variables. It also allows the player to set custom variables typed in chat with format \"key: value\".</div><div>For more details, please refer to the <a href=\"https://betonquest.org/1.12/User-Documentation/Objectives-List/#variable-variable\" target=\"_blank\">documentation</a>.</div>",
+    "betonquest.v1.objective.variable.description": "<div>Stores custom variables. It also allows the player to set custom variables typed in chat with format \"key: value\".</div><div>For more details, please refer to the <a href=\"https://betonquest.org/1.12/User-Documentation/Objectives-List/#variable-variable\" target=\"_blank\">documentation</a>.</div>",
     "betonquest.v1.objective.variable.optional.no-chat.name": "Through Events Only",
     "betonquest.v1.objective.variable.optional.no-chat.tooltip": "Prevent players from changing variables through chat. All variales must be changed with a `variable` Event.",
     "betonquest.v1.objective.npcinteract.display": "NPC Interact",
