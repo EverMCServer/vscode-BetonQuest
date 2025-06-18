@@ -1,7 +1,9 @@
 import { CompletionItem, CompletionItemKind, DiagnosticSeverity } from "vscode-languageserver";
 import { Pair, Scalar } from "yaml";
 
+import Event from "betonquest-utils/betonquest/Event";
 import { Kinds } from "betonquest-utils/betonquest/v1/Events";
+import { ElementKind } from "betonquest-utils/betonquest/v1/Element";
 
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getScalarSourceAndRange } from "../../../utils/yaml";
@@ -11,6 +13,7 @@ import { EventArguments } from "./EventArguments";
 import { EventKey } from "./EventKey";
 import { EventKind } from "./EventKind";
 import { EventList } from "./EventList";
+import { html2markdown } from "../../../utils/html2markdown";
 
 export class EventEntry extends AbstractNodeV1<EventEntryType> {
   readonly type: EventEntryType = "EventEntry";
@@ -23,6 +26,7 @@ export class EventEntry extends AbstractNodeV1<EventEntryType> {
   private offsetKindStart?: number;
   private offsetKindEnd?: number;
   private kindString: string = "";
+  readonly kindConfig?: ElementKind<Event>;
   private argumentsString: string = "";
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: EventList) {
@@ -70,16 +74,16 @@ export class EventEntry extends AbstractNodeV1<EventEntryType> {
     }
     this.kindString = matched[1];
     const kinds = Kinds.get();
-    const kind = kinds.find(k => k.value.toLocaleLowerCase() === this.kindString.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
+    this.kindConfig = kinds.find(k => k.value.toLocaleLowerCase() === this.kindString.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
     this.offsetKindStart = offsetStart + matched.index;
     this.offsetKindEnd = this.offsetKindStart + this.kindString.length;
-    this.addChild(new EventKind(this.kindString, [this.offsetKindStart, this.offsetKindEnd], kind, this));
+    this.addChild(new EventKind(this.kindString, [this.offsetKindStart, this.offsetKindEnd], this.kindConfig, this));
 
     // Parse Arguments
     this.argumentsString = matched[2];
     const offsetArgumentsStart = this.offsetKindEnd;
     // Parse each individual arguments
-    this.addChild(new EventArguments(this.argumentsString, [offsetArgumentsStart, offsetEnd], indent, kind, this));
+    this.addChild(new EventArguments(this.argumentsString, [offsetArgumentsStart, offsetEnd], indent, this.kindConfig, this));
   }
 
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
@@ -99,8 +103,11 @@ export class EventEntry extends AbstractNodeV1<EventEntryType> {
           label: k.value,
           kind: CompletionItemKind.Constructor, // TODO: move it onto SemanticTokenType etc.
           detail: k.display,
-          documentation: k.description?.toString()
-        }))
+          documentation: k.description ? {
+            kind: 'markdown',
+            value: html2markdown(k.description.toString())
+          } : undefined
+        } as CompletionItem))
       );
     }
     return completionItems;

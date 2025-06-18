@@ -186,7 +186,7 @@ export class ArgumentVariableObjectivePropertyObjectiveID extends AbstractNodeV2
         content:
           "(Objective) " + objective.kindConfig?.value + "\n\n"
           + objective.kindConfig?.description
-          + "\n\n```yaml\n" + objective.yml.key.value + ": " + objective.yml.value?.value + "\n```",
+          + "\n\n```\n" + objective.yml.value?.value + "\n```",
         offset: [this.offsetStart, this.offsetEnd]
       }];
     }
@@ -234,13 +234,19 @@ export class ArgumentVariableObjectivePropertyVariableName extends AbstractNodeV
     if (!objectiveEntry?.kindConfig?.variableProperties?.find(e => e.name.toLowerCase() === this.argumentStr.toLowerCase())) {
       addDiagnostic(
         [this.offsetStart, this.offsetEnd],
-        `Invalid Objective Property kind`,
+        `Invalid Objective Property`,
         DiagnosticSeverity.Error,
         DiagnosticCode.ArgumentVariableObjectivePropertyNameInvalid,
         objectiveEntry?.kindConfig?.variableProperties?.map(e => ({
           title: `Change to "${e.name}"`,
           text: e.name
         }))
+        ||
+        [{
+          title: `Remove`,
+          text: ``,
+          range: [this.offsetStart - 1, this.offsetEnd]
+        }]
       );
     }
   }

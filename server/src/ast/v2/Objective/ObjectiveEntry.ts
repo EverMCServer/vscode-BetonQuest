@@ -13,6 +13,7 @@ import { ObjectiveArguments } from "./ObjectiveArguments";
 import { ObjectiveKey } from "./ObjectiveKey";
 import { ObjectiveKind } from "./ObjectiveKind";
 import { ObjectiveListSection } from "./ObjectiveList";
+import { html2markdown } from "../../../utils/html2markdown";
 
 export class ObjectiveEntry extends AbstractNodeV2<ObjectiveEntryType> {
   readonly type: ObjectiveEntryType = "ObjectiveEntry";
@@ -24,9 +25,9 @@ export class ObjectiveEntry extends AbstractNodeV2<ObjectiveEntryType> {
   private offsetValueStart?: number;
   private offsetKindStart?: number;
   private offsetKindEnd?: number;
-  readonly kindConfig?: ElementKind<Objective>;
   readonly keyString: string;
   private kindString: string = "";
+  readonly kindConfig?: ElementKind<Objective>;
   private argumentsString: string = "";
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: ObjectiveListSection) {
@@ -108,8 +109,11 @@ export class ObjectiveEntry extends AbstractNodeV2<ObjectiveEntryType> {
           label: k.value,
           kind: CompletionItemKind.Constructor, // TODO: move it onto SemanticTokenType etc.
           detail: k.display,
-          documentation: k.description?.toString()
-        }))
+          documentation: k.description ? {
+            kind: 'markdown',
+            value: html2markdown(k.description.toString())
+          } : undefined
+        } as CompletionItem))
       );
     }
     return completionItems;

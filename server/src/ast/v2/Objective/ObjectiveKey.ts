@@ -40,12 +40,12 @@ export class ObjectiveKey extends AbstractNodeV2<ObjectiveKeyType> {
 
   getHoverInfo(offset?: number): HoverInfo[] {
     const hoverInfo: HoverInfo[] = [{
-      content: "Full path: " + this.getPackagePath().join("-") + "." + this.value,
+      content: `(Objective) ${this.parent.kindConfig?.display}\n\nPackage path: ` + this.getPackagePath().join("-") + "." + this.value,
       offset: [this.offsetStart, this.offsetEnd]
     }];
-    if (this.comment) {
-      hoverInfo.unshift({
-        content: this.comment,
+    if (this.comment && !this.comment.endsWith("\n")) {
+      hoverInfo.push({
+        content: this.comment.replace("\n", "\n\n"),
         offset: [this.offsetStart!, this.offsetEnd!]
       });
     }

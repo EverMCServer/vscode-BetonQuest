@@ -39,12 +39,12 @@ export class EventKey extends AbstractNodeV1<EventKeyType> {
 
   getHoverInfo(offset?: number): HoverInfo[] {
     const hoverInfo: HoverInfo[] = [{
-      content: "Full path: " + this.getPackagePath().join("-") + "." + this.value,
+      content: `(Event) ${this.parent.kindConfig?.display}\n\nPackage path: ` + this.getPackagePath().join("-") + "." + this.value,
       offset: [this.offsetStart, this.offsetEnd]
     }];
-    if (this.comment) {
-      hoverInfo.unshift({
-        content: this.comment,
+    if (this.comment && !this.comment.endsWith("\n")) {
+      hoverInfo.push({
+        content: this.comment.replace("\n", "\n\n"),
         offset: [this.offsetStart!, this.offsetEnd!]
       });
     }

@@ -143,8 +143,8 @@ export abstract class AbstractID<T extends NodeType, PT extends ConversationFina
           })
       ];
       if (n.yml.value) {
-        hoverInfo.unshift({
-          content: n.yml.value.value,
+        hoverInfo.push({
+          content: "```\n" + n.yml.value.value + "\n```",
           offset: [this.offsetStart, this.offsetEnd]
         });
       }

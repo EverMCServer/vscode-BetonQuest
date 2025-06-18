@@ -13,6 +13,7 @@ import { EventArguments } from "./EventArguments";
 import { EventKey } from "./EventKey";
 import { EventKind } from "./EventKind";
 import { EventListSection } from "./EventList";
+import { html2markdown } from "../../../utils/html2markdown";
 
 export class EventEntry extends AbstractNodeV2<EventEntryType> {
   readonly type: EventEntryType = "EventEntry";
@@ -24,9 +25,9 @@ export class EventEntry extends AbstractNodeV2<EventEntryType> {
   private offsetValueStart?: number;
   private offsetKindStart?: number;
   private offsetKindEnd?: number;
-  readonly kindConfig?: ElementKind<Event>;
   readonly keyString: string;
   private kindString: string = "";
+  readonly kindConfig?: ElementKind<Event>;
   private argumentsString: string = "";
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: EventListSection) {
@@ -108,8 +109,11 @@ export class EventEntry extends AbstractNodeV2<EventEntryType> {
           label: k.value,
           kind: CompletionItemKind.Constructor, // TODO: move it onto SemanticTokenType etc.
           detail: k.display,
-          documentation: k.description?.toString()
-        }))
+          documentation: k.description ? {
+            kind: 'markdown',
+            value: html2markdown(k.description.toString())
+          } : undefined
+        } as CompletionItem))
       );
     }
     return completionItems;

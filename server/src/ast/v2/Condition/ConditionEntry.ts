@@ -13,6 +13,7 @@ import { ConditionArguments } from "./ConditionArguments";
 import { ConditionKey } from "./ConditionKey";
 import { ConditionKind } from "./ConditionKind";
 import { ConditionListSection } from "./ConditionList";
+import { html2markdown } from "../../../utils/html2markdown";
 
 export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
   readonly type: ConditionEntryType = "ConditionEntry";
@@ -24,9 +25,9 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
   private offsetValueStart?: number;
   private offsetKindStart?: number;
   private offsetKindEnd?: number;
-  readonly kindConfig?: ElementKind<Condition>;
   readonly keyString: string;
   private kindString: string = "";
+  readonly kindConfig?: ElementKind<Condition>;
   private argumentsString: string = "";
 
   constructor(pair: Pair<Scalar<string>, Scalar<string>>, parent: ConditionListSection) {
@@ -108,8 +109,11 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
           label: k.value,
           kind: CompletionItemKind.Constructor, // TODO: move it onto SemanticTokenType etc.
           detail: k.display,
-          documentation: k.description?.toString()
-        }))
+          documentation: k.description ? {
+            kind: 'markdown',
+            value: html2markdown(k.description.toString())
+          } : undefined
+        } as CompletionItem))
       );
     }
     return completionItems;

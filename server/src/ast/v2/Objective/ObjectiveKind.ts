@@ -1,5 +1,6 @@
 import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { HoverInfo } from "../../../utils/hover";
+import { html2markdown } from "../../../utils/html2markdown";
 import { ObjectiveKindType } from "../../node";
 import { AbstractNodeV2 } from "../../v2";
 import { ObjectiveEntry } from "./ObjectiveEntry";
@@ -43,7 +44,7 @@ export class ObjectiveKind extends AbstractNodeV2<ObjectiveKindType> {
         info.content = `(${this.type}) ${this.parent.kindConfig?.value}`;
         if (this.parent.kindConfig.description) {
           // TODO: Remove html tag from this.kindConfig.description
-          info.content += "\n\n---\n\n" + this.parent.kindConfig.display.toString() + "\n\n" + this.parent.kindConfig.description;
+          info.content += "\n\n---\n\n" + this.parent.kindConfig.display + "\n\n" + html2markdown(this.parent.kindConfig.description.toString());
         }
       }
       infos.push(info);
