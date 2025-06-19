@@ -212,4 +212,24 @@ export enum SemanticTokenType {
    * Conversation Player option's ID.
    */
   ConversationOptionPlayerID = SemanticTokenTypes.class,
+
+  /**
+   * Tag ID
+   */
+  TagID = SemanticTokenTypes.keyword,
+
+  /**
+   * Global Tag ID
+   */
+  GlobalTagID = SemanticTokenTypes.keyword,
+
+  /**
+   * Global Point ID
+   */
+  GlobalPointID = SemanticTokenTypes.keyword,
+
+  /**
+   * Point ID
+   */
+  PointID = SemanticTokenTypes.keyword,
 };

@@ -1,4 +1,4 @@
-import { CompletionItem, DiagnosticSeverity } from "vscode-languageserver";
+import { DiagnosticSeverity } from "vscode-languageserver";
 
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { ArgumentVariableType } from "../../node";
@@ -6,7 +6,7 @@ import { AbstractNodeV2 } from "../../v2";
 import { ArgumentValue } from "./ArgumentValue";
 import { ArgumentVariableGlobalPoint } from "./Variable/ArgumentVariableGlobalPoint";
 import { ArgumentVariableKind } from "./ArgumentVariableKind";
-import { ArgumentVariableObjectiveProperty } from "./Variable/ArgumentVariableObjectiveVariableProperty";
+import { ArgumentVariableObjectiveProperty } from "./Variable/ArgumentVariableObjectiveProperty";
 
 export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
   readonly type: ArgumentVariableType = 'ArgumentVariable';

@@ -13,7 +13,7 @@ import { ArgumentValue } from "./v2/Argument/ArgumentValue";
 import { ArgumentVariable } from "./v2/Argument/ArgumentVariable";
 import { ArgumentVariableKind } from "./v2/Argument/ArgumentVariableKind";
 import { ArgumentVariableGlobalPoint } from "./v2/Argument/Variable/ArgumentVariableGlobalPoint";
-import { ArgumentVariableObjectiveProperty, ArgumentVariableObjectivePropertyObjectiveID, ArgumentVariableObjectivePropertyVariableName } from "./v2/Argument/Variable/ArgumentVariableObjectiveVariableProperty";
+import { ArgumentVariableObjectiveProperty, ArgumentVariableObjectivePropertyObjectiveID, ArgumentVariableObjectivePropertyVariableName } from "./v2/Argument/Variable/ArgumentVariableObjectiveProperty";
 import { ConditionArgumentMandatory } from "./v2/Condition/ConditionArgumentMandatory";
 import { ConditionArgumentOptional } from "./v2/Condition/ConditionArgumentOptional";
 import { ConditionArguments } from "./v2/Condition/ConditionArguments";

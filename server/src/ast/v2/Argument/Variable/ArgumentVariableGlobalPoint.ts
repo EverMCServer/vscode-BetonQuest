@@ -1,4 +1,4 @@
-import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
+import { CompletionItem, CompletionItemKind, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 import { ArgumentType } from "betonquest-utils/betonquest/Arguments";
 
@@ -16,6 +16,8 @@ import { ObjectiveArgumentOptional } from "../../Objective/ObjectiveArgumentOpti
 import { ObjectiveArguments } from "../../Objective/ObjectiveArguments";
 import { ArgumentValue } from "../ArgumentValue";
 import { ArgumentVariable } from "../ArgumentVariable";
+import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
+import { DiagnosticCode } from "../../../../utils/diagnostics";
 
 export class ArgumentVariableGlobalPoint extends AbstractNodeV2<ArgumentVariableGlobalPointType> {
   readonly type: ArgumentVariableGlobalPointType = 'ArgumentVariableGlobalPoint';
@@ -38,7 +40,7 @@ export class ArgumentVariableGlobalPoint extends AbstractNodeV2<ArgumentVariable
     this.argumentStr = argumentStr;
   }
 
-  private getAllGlobalPointArguments() {
+  private getAllGlobalPointDefinitions(additionalCheck?: ((child: ArgumentValue) => any | boolean)) {
     return [
       // Iterate all element lists
       this.getAllConditionEntries(),
@@ -55,12 +57,16 @@ export class ArgumentVariableGlobalPoint extends AbstractNodeV2<ArgumentVariable
       // Filter all argument by type  
       .filter(e => e.pattern?.type === ArgumentType.globalPointID)
       .flat()
-      .map(e => e.getChild<ArgumentValue>("ArgumentValue")!).filter(e => e);
+      .map(e => e.getChild<ArgumentValue>("ArgumentValue", additionalCheck)!).filter(e => e);
+  }
+
+  private getTargetGlobalPointIdDefinitions() {
+    return this.getAllGlobalPointDefinitions(e => e.valueStr === this.argumentStr);
   }
 
   private getAllGlobalPointIDs() {
     const result: Map<string, [string, string, string, string]> = new Map();
-    this.getAllGlobalPointArguments().forEach(e => {
+    this.getAllGlobalPointDefinitions().forEach(e => {
       // Assign GlobalPointID string to result
       result.set(e.valueStr, [
         e.valueStr,
@@ -72,10 +78,29 @@ export class ArgumentVariableGlobalPoint extends AbstractNodeV2<ArgumentVariable
     return [...result.values()];
   }
 
-  // Trace all GlobalPoints
+  getDiagnostics(): Diagnostic[] {
+    // Check if id exists
+    if (this.argumentStr.length === 0) {
+      return [this.generateDiagnostic(
+        [this.offsetStart, this.offsetEnd],
+        `Global Point ID is missing`,
+        DiagnosticSeverity.Error,
+        DiagnosticCode.ArgumentVariableGlobalPointIdMissing
+      )];
+    } else if (this.getTargetGlobalPointIdDefinitions().length === 0) {
+      return [this.generateDiagnostic(
+        [this.offsetStart, this.offsetEnd],
+        `Global Point ID not found`,
+        DiagnosticSeverity.Warning,
+        DiagnosticCode.ArgumentVariableGlobalPointIdNotFound
+      )];
+    }
+    return [];
+  }
+
+  // Trace all GlobalPoints ID definitions
   getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
-    return this.getAllGlobalPointArguments()
-      .filter(e => e.valueStr === this.argumentStr)
+    return this.getAllGlobalPointDefinitions(e => e.valueStr === this.argumentStr)
       .map(e => ({
         originSelectionRange: [this.offsetStart, this.offsetEnd],
         targetUri: e.getUri(),
@@ -84,7 +109,6 @@ export class ArgumentVariableGlobalPoint extends AbstractNodeV2<ArgumentVariable
       }));
   }
 
-  // TOOD: move it into sub-class
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
     return this.getAllGlobalPointIDs().map(e => {
       let typeStr = e[2];
@@ -99,10 +123,22 @@ export class ArgumentVariableGlobalPoint extends AbstractNodeV2<ArgumentVariable
         label: e[0],
         kind: CompletionItemKind.EnumMember,
         detail: e[0],
-        documentation: "Package: " + e[1] + ", Type: " + typeStr + ", EntryID:" + e[3],
+        documentation: "(" + typeStr + ") " + e[3] + ", Package: " + e[1],
         insertText: e[0]
       };
     });
+  }
+
+  getSemanticTokens(documentUri?: string): SemanticToken[] {
+    const targetDefs = this.getTargetGlobalPointIdDefinitions();
+    if (targetDefs.length > 0) {
+      return [{
+        offsetStart: this.offsetStart,
+        offsetEnd: this.offsetEnd,
+        tokenType: SemanticTokenType.GlobalPointID
+      }];
+    }
+    return [];
   }
 
 }

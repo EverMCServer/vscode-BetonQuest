@@ -1,24 +1,11 @@
-import { CodeAction, CompletionItem, CompletionItemKind, Diagnostic, DiagnosticSeverity, MarkupKind } from "vscode-languageserver";
-
-import { ArgumentType } from "betonquest-utils/betonquest/Arguments";
+import { CompletionItem, CompletionItemKind, DiagnosticSeverity, MarkupKind } from "vscode-languageserver";
 
 import { ArgumentVariableObjectivePropertyObjectiveIdType, ArgumentVariableObjectivePropertyType, ArgumentVariableObjectivePropertyVariableNameType } from "../../../node";
 import { AbstractNodeV2 } from "../../../v2";
-import { ConditionArgumentMandatory } from "../../Condition/ConditionArgumentMandatory";
-import { ConditionArgumentOptional } from "../../Condition/ConditionArgumentOptional";
-import { ConditionArguments } from "../../Condition/ConditionArguments";
-import { EventArgumentMandatory } from "../../Event/EventArgumentMandatory";
-import { EventArgumentOptional } from "../../Event/EventArgumentOptional";
-import { EventArguments } from "../../Event/EventArguments";
-import { ObjectiveArgumentMandatory } from "../../Objective/ObjectiveArgumentMandatory";
-import { ObjectiveArgumentOptional } from "../../Objective/ObjectiveArgumentOptional";
-import { ObjectiveArguments } from "../../Objective/ObjectiveArguments";
-import { ArgumentValue } from "../ArgumentValue";
 import { ArgumentVariable } from "../ArgumentVariable";
 import { HoverInfo } from "../../../../utils/hover";
 import { LocationLinkOffset } from "../../../../utils/location";
 import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
-import { ObjectiveEntry } from "../../Objective/ObjectiveEntry";
 import { DiagnosticCode } from "../../../../utils/diagnostics";
 
 export class ArgumentVariableObjectiveProperty extends AbstractNodeV2<ArgumentVariableObjectivePropertyType> {
@@ -43,11 +30,12 @@ export class ArgumentVariableObjectiveProperty extends AbstractNodeV2<ArgumentVa
 
     // Parse
     // this.argumentStr = `objective_id` + `.` + `property_name`
-    const parts = this.argumentStr.split(".", 2);
+    const [objectiveIdStr, ..._propertyNameStr] = this.argumentStr.split(".");
 
-    this.addChild(new ArgumentVariableObjectivePropertyObjectiveID(parts[0], [this.offsetStart, this.offsetStart + parts[0].length], this));
-    if (parts.length > 1) {
-      this.addChild(new ArgumentVariableObjectivePropertyVariableName(parts[1], [this.offsetStart + parts[0].length + 1, this.offsetEnd], this));
+    this.addChild(new ArgumentVariableObjectivePropertyObjectiveID(objectiveIdStr, [this.offsetStart, this.offsetStart + objectiveIdStr.length], this));
+    if (_propertyNameStr.length > 0) {
+      const propertyNameStr = _propertyNameStr.join(".");
+      this.addChild(new ArgumentVariableObjectivePropertyVariableName(propertyNameStr, [this.offsetStart + objectiveIdStr.length + 1, this.offsetEnd], this));
     }
   }
 
@@ -270,6 +258,11 @@ export class ArgumentVariableObjectivePropertyVariableName extends AbstractNodeV
   }
 
   getCompletions(offset: number, documentUri?: string): CompletionItem[] {
+    // Skip completion promption if it is prompted with an extra "."
+    if (this.argumentStr.includes(".")) {
+      return [];
+    }
+
     return this.getObjectiveEntry()?.kindConfig?.variableProperties?.map(e => ({
       label: e.name,
       kind: CompletionItemKind.Property,
