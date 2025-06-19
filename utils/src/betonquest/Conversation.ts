@@ -345,7 +345,7 @@ export default class Conversation {
             return;
         }
 
-        const str = new Scalar(stringArray.join(", "));
+        const str = new Scalar(stringArray.join(","));
         this.yaml.setIn(yamlPath.map(e => new Scalar(e)), str);
     }
 
@@ -612,7 +612,7 @@ export class Option {
             return;
         }
 
-        const str = new Scalar(stringArray.join(", "));
+        const str = new Scalar(stringArray.join(","));
         this.yaml.setIn(yamlPath.map(e => new Scalar(e)), str);
     }
 
