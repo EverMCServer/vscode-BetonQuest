@@ -99,6 +99,7 @@ export type ArgumentVariableKindType = 'ArgumentVariableKind';
 export type ArgumentVariableObjectivePropertyType = 'ArgumentVariableObjectiveVariableProperty';
 export type ArgumentVariableObjectivePropertyObjectiveIdType = 'ArgumentVariableObjectivePropertyObjectiveID';
 export type ArgumentVariableObjectivePropertyVariableNameType = 'ArgumentVariableObjectivePropertyVariableName';
+export type ArgumentVariableConditionType = 'ArgumentVariableCondition';
 export type ArgumentVariableGlobalPointType = 'ArgumentVariableGlobalPoint';
 export type ArgumentIntergerType = 'ArgumentInterger';
 export type ArgumentFloatType = 'ArgumentFloat';
@@ -114,6 +115,7 @@ export type ArgumentValueTypes =
   ArgumentVariableObjectivePropertyType |
   ArgumentVariableObjectivePropertyObjectiveIdType |
   ArgumentVariableObjectivePropertyVariableNameType |
+  ArgumentVariableConditionType |
   ArgumentVariableGlobalPointType |
   ArgumentIntergerType |
   ArgumentFloatType |

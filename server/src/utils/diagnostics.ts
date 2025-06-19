@@ -127,14 +127,29 @@ export enum DiagnosticCode {
   ArgumentVariableObjectivePropertyNameInvalid = "BQ-2014",
 
   /**
+   * Argument Condition ID is missing.
+   */
+  ArgumentVariableConditionIdMissing = "BQ-2015",
+
+  /**
+   * Argument Condition ID not exists.
+   */
+  ArgumentVariableConditionIdNotFound = "BQ-2016",
+
+  /**
+   * Argument Condition ID is refering to itself.
+   */
+  ArgumentVariableConditionLoopedReference = "BQ-2017",
+
+  /**
    * Argument Global Point ID is missing.
    */
-  ArgumentVariableGlobalPointIdMissing = "BQ-2015",
+  ArgumentVariableGlobalPointIdMissing = "BQ-2018",
 
   /**
    * Argument Global Point ID not exists.
    */
-  ArgumentVariableGlobalPointIdNotFound = "BQ-2016",
+  ArgumentVariableGlobalPointIdNotFound = "BQ-2019",
 
   /**
    * The "quester" section is missing.

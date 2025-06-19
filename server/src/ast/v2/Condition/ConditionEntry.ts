@@ -26,7 +26,7 @@ export class ConditionEntry extends AbstractNodeV2<ConditionEntryType> {
   private offsetKindStart?: number;
   private offsetKindEnd?: number;
   readonly keyString: string;
-  private kindString: string = "";
+  readonly kindString: string = "";
   readonly kindConfig?: ElementKind<Condition>;
   private argumentsString: string = "";
 

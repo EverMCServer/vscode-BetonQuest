@@ -110,6 +110,11 @@ export class ArgumentVariableGlobalPoint extends AbstractNodeV2<ArgumentVariable
   }
 
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
+    // Skip completion promption if it is prompted with an extra "."
+    if (this.argumentStr.includes(".")) {
+      return [];
+    }
+
     return this.getAllGlobalPointIDs().map(e => {
       let typeStr = e[2];
       if (typeStr.startsWith("Condition")) {
