@@ -87,7 +87,7 @@ export class ObjectiveArgumentMandatory extends AbstractNodeV1<ObjectiveArgument
 
     // Prompt key suggestions
     if (this.pattern.key && (this.offsets[0] < offset && offset < this.offsets[1] || offset === this.offsets[2])) {
-      this.parent.kindConfig.argumentsPatterns
+      this.parent.parent.kindConfig?.argumentsPatterns
         .mandatory.filter(o => !this.parent.argumentMandatoryStrs.some(s => !o.key || s.trimStart().startsWith(o.key)))
         .forEach(pattern => completionItems.push({
           label: pattern.key!,

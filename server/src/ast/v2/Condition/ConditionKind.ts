@@ -41,9 +41,8 @@ export class ConditionKind extends AbstractNodeV2<ConditionKindType> {
         offset: [this.offsetStart, this.offsetEnd]
       };
       if (this.parent.kindConfig) {
-        info.content = `(${this.type}) ${this.parent.kindConfig?.value}`;
+        info.content = `(${this.type}) ${this.parent.kindConfig.value}`;
         if (this.parent.kindConfig.description) {
-          // TODO: Remove html tag from this.kindConfig.description
           info.content += "\n\n---\n\n" + this.parent.kindConfig.display + "\n\n" + html2markdown(this.parent.kindConfig.description.toString());
         }
       }

@@ -1,13 +1,9 @@
 
-import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
+import { DiagnosticSeverity } from "vscode-languageserver";
 
 import { ArgumentsPatternMandatory, ArgumentsPatternOptional, ArgumentsPatterns } from "betonquest-utils/betonquest/Arguments";
-import Event from "betonquest-utils/betonquest/Event";
-import { ElementKind } from "betonquest-utils/betonquest/v1/Element";
 
-import { SemanticToken, SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
-import { HoverInfo } from "../../../utils/hover";
 import { EventArgumentsType } from "../../node";
 import { AbstractNodeV1 } from "../../v1";
 import { EventArgumentMandatory } from "./EventArgumentMandatory";
@@ -22,7 +18,6 @@ export class EventArguments extends AbstractNodeV1<EventArgumentsType> {
 
   private argumentsStrs: string[] = [];
   private indent: number;
-  readonly kindConfig: ElementKind<Event>;
 
   private isMandatoryArgumentIncomplete: boolean = false;
 
@@ -36,13 +31,12 @@ export class EventArguments extends AbstractNodeV1<EventArgumentsType> {
    */
   private keyOffsets: [offsetStart: number, stringEnd: number, offsetEnd: number][] = [];
 
-  constructor(argumentsSourceStr: string, range: [number?, number?], indent: number, kindConfig: ElementKind<Event>, parent: EventEntry) {
+  constructor(argumentsSourceStr: string, range: [number?, number?], indent: number, parent: EventEntry) {
     super();
     this.offsetStart = range[0];
     this.offsetEnd = range[1];
     this.parent = parent;
     this.indent = indent;
-    this.kindConfig = kindConfig;
 
     // Split argumentsStr by whitespaces, with respect to quotes ("")
     // const regex = /(?:\"[^\"]*?\"|\'[^\']*?\')\s*|\S+\s*/g; // keep quotes and tailing whitespaces
@@ -57,8 +51,8 @@ export class EventArguments extends AbstractNodeV1<EventArgumentsType> {
       this.argumentsStrs.push(matched[0]);
     }
 
-    // Search ArgumentsPatterns from V2 Element List
-    const argumentsPatterns: ArgumentsPatterns = this.kindConfig.argumentsPatterns ?? { mandatory: [{ name: 'unspecified', format: '*', defaultValue: '' }] };
+    // Search ArgumentsPatterns from V1 Element List
+    const argumentsPatterns: ArgumentsPatterns = this.parent.kindConfig?.argumentsPatterns ?? { mandatory: [{ name: 'unspecified', format: '*', defaultValue: '' }] } as ArgumentsPatterns;
 
     if (argumentsPatterns.optional && argumentsPatterns.optional.length > 0) {
       // With optional args
@@ -112,9 +106,9 @@ export class EventArguments extends AbstractNodeV1<EventArgumentsType> {
           } else {
             // No need to keep whitespaces
             // Only put the required amount of  arguments into the mandatory array, the rest goes to optional array
-            if (pos + 1 > this.kindConfig.argumentsPatterns.mandatory.length) {
-              this.argumentMandatoryStrs = this.argumentsStrs.slice(0, this.kindConfig.argumentsPatterns.mandatory.length);
-              this.argumentOptionalStrs.unshift(...this.argumentsStrs.slice(this.kindConfig.argumentsPatterns.mandatory.length, pos + 1));
+            if (pos + 1 > argumentsPatterns.mandatory.length) {
+              this.argumentMandatoryStrs = this.argumentsStrs.slice(0, argumentsPatterns.mandatory.length);
+              this.argumentOptionalStrs.unshift(...this.argumentsStrs.slice(argumentsPatterns.mandatory.length, pos + 1));
             } else {
               this.argumentMandatoryStrs = this.argumentsStrs.slice(0, pos + 1);
             }
@@ -158,7 +152,7 @@ export class EventArguments extends AbstractNodeV1<EventArgumentsType> {
   }
 
   private assignArgumentsMandatory(argumentMandatoryStrs: string[], offsetStart: number, patterns: ArgumentsPatternMandatory[]) {
-    this.kindConfig.argumentsPatterns.mandatory.some((pattern, i) => {
+    this.parent.kindConfig?.argumentsPatterns.mandatory.some((pattern, i) => {
       const argStr = argumentMandatoryStrs[i] || undefined;
       if (argStr && argStr.trimStart()) {
         const str = argStr.trimStart();
@@ -175,7 +169,7 @@ export class EventArguments extends AbstractNodeV1<EventArgumentsType> {
         const pos2 = offsetStart + (argStr?.length || 0);
         const offsets: [offsetStart: number, stringStart: number, offsetEnd: number] = [offsetStart, pos2, pos2];
         // Add Diagnotistics for all the rest of mandatory arguments
-        this.kindConfig.argumentsPatterns.mandatory.slice(i).forEach(pattern =>
+        this.parent.kindConfig?.argumentsPatterns.mandatory.slice(i).forEach(pattern =>
           this.addDiagnostic(
             [offsets[0], offsets[2]],
             `Missing mandatory argument: ${pattern.name}.\nExample value: ${pattern.defaultValue}`,
@@ -250,19 +244,6 @@ export class EventArguments extends AbstractNodeV1<EventArgumentsType> {
 
   private _getArgumentOptionals() {
     return this.getChildren<EventArgumentOptional>('EventArgumentOptional');
-  }
-
-  getSemanticTokens(): SemanticToken[] {
-    if (this.offsetStart === undefined || this.offsetEnd === undefined) {
-      return [];
-    }
-    const semanticTokens: SemanticToken[] = [{
-      offsetStart: this.offsetStart,
-      offsetEnd: this.offsetEnd,
-      tokenType: SemanticTokenType.InstructionArguments
-    }];
-    semanticTokens.push(...this.children.flatMap(a => a.getSemanticTokens()));
-    return semanticTokens;
   }
 
 }

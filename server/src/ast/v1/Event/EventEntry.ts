@@ -77,13 +77,13 @@ export class EventEntry extends AbstractNodeV1<EventEntryType> {
     this.kindConfig = kinds.find(k => k.value.toLocaleLowerCase() === this.kindString.toLowerCase()) ?? kinds.find(k => k.value === "*")!;
     this.offsetKindStart = offsetStart + matched.index;
     this.offsetKindEnd = this.offsetKindStart + this.kindString.length;
-    this.addChild(new EventKind(this.kindString, [this.offsetKindStart, this.offsetKindEnd], this.kindConfig, this));
+    this.addChild(new EventKind(this.kindString, [this.offsetKindStart, this.offsetKindEnd], this));
 
     // Parse Arguments
     this.argumentsString = matched[2];
     const offsetArgumentsStart = this.offsetKindEnd;
     // Parse each individual arguments
-    this.addChild(new EventArguments(this.argumentsString, [offsetArgumentsStart, offsetEnd], indent, this.kindConfig, this));
+    this.addChild(new EventArguments(this.argumentsString, [offsetArgumentsStart, offsetEnd], indent, this));
   }
 
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
