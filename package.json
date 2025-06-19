@@ -3,7 +3,7 @@
   "publisher": "EverMC",
   "displayName": "BetonQuest",
   "description": "IntelliSense and GUI editor for BetonQuest",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "icon": "assets/icon-256.png",
   "engines": {
     "vscode": "^1.80.0"

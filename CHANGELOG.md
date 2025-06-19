@@ -4,6 +4,14 @@ All notable changes to the "BetonQuest" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.5.5 pre-release] - 2025-06-19
+
+### Added
+- Add Variable intellisence support (wip)
+
+### Changed
+- Remove extra spaces when adding new pointers / conditions / events through GUI
+
 ## [0.5.4 pre-release] - 2024-09-10
 
 ### Added

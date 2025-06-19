@@ -11,18 +11,20 @@ IntelliSense and GUI editor for [BetonQuest](https://github.com/BetonQuest/Beton
 
 ## How to use
 
+<b>>> !! You MUST open the whole `./plugins/BetonQuest` folder with VSCode !! <<</b>
+
 ### Local installation
 It is the recommended setup for daily developments.
 1. Download and install [VSCode](https://code.visualstudio.com/).
 1. Install this extension from [Marketplace](https://marketplace.visualstudio.com/items?itemName=EverMC.betonquest).
-1. Open the whole `BetonQuest` folder with VSCode.
+1. <b>Open the whole `BetonQuest` folder with VSCode.</b>
 
 ### Web editing
-For a quick trial. It works on your tablet and even a cellphone!
+Yes! You can work on your scripts with a browser. It works on your tablet and even a cellphone!
 1. Goto [https://vscode.dev](https://vscode.dev).
 1. Click on the Extensions tab on the left.
 1. Search `EverMC.betonquest` and install it
-1. Open the whole `BetonQuest` folder with VSCode.
+1. <b>Open the whole `BetonQuest` folder with VSCode.</b>
 
 ## IntelliSense Showcase
 (See the screenshot above)
@@ -140,8 +142,10 @@ Helps on translating this extension are welcomed. Please consider submitting you
 - Add Code Completions (wip)
 - Add Citizens integrations
 - Add some missing translation
+- Add Variable intellisence support (wip)
 - Fit modal and radio styles
 - Set default new conversation multilingual mode to false
+- Remove extra spaces when adding new pointers / conditions / events through GUI
 - Fix various bugs
 
 ### 0.4.1
