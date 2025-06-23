@@ -3,8 +3,12 @@ import { CompletionItem, CompletionItemKind, Diagnostic, DiagnosticSeverity } fr
 import { ArgumentType } from "betonquest-utils/betonquest/Arguments";
 
 import { LocationLinkOffset } from "../../../../utils/location";
-import { ArgumentVariableGlobalPointType } from "../../../node";
+import { ArgumentVariablePointType } from "../../../node";
 import { AbstractNodeV2 } from "../../../v2";
+import { ArgumentVariable } from "../ArgumentVariable";
+import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
+import { DiagnosticCode } from "../../../../utils/diagnostics";
+import { html2markdown } from "../../../../utils/html2markdown";
 import { ConditionArgumentMandatory } from "../../Condition/ConditionArgumentMandatory";
 import { ConditionArgumentOptional } from "../../Condition/ConditionArgumentOptional";
 import { ConditionArguments } from "../../Condition/ConditionArguments";
@@ -15,12 +19,9 @@ import { ObjectiveArgumentMandatory } from "../../Objective/ObjectiveArgumentMan
 import { ObjectiveArgumentOptional } from "../../Objective/ObjectiveArgumentOptional";
 import { ObjectiveArguments } from "../../Objective/ObjectiveArguments";
 import { ArgumentValue } from "../ArgumentValue";
-import { ArgumentVariable } from "../ArgumentVariable";
-import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
-import { DiagnosticCode } from "../../../../utils/diagnostics";
 
-export class ArgumentVariableGlobalPoint extends AbstractNodeV2<ArgumentVariableGlobalPointType> {
-  readonly type: ArgumentVariableGlobalPointType = 'ArgumentVariableGlobalPoint';
+export class ArgumentVariablePoint extends AbstractNodeV2<ArgumentVariablePointType> {
+  readonly type: ArgumentVariablePointType = 'ArgumentVariablePoint';
   readonly offsetStart: number;
   readonly offsetEnd: number;
   readonly parent: ArgumentVariable;
@@ -40,34 +41,34 @@ export class ArgumentVariableGlobalPoint extends AbstractNodeV2<ArgumentVariable
     this.argumentStr = argumentStr;
   }
 
-  private getAllGlobalPointDefinitions(additionalCheck?: ((child: ArgumentValue) => any | boolean)) {
+  private getAllPointDefinitions(additionalCheck?: ((child: ArgumentValue) => any | boolean)) {
     return [
       // Iterate all element lists
-      this.getAllConditionEntries(),
-      this.getAllEventEntries(),
-      this.getAllObjectiveEntries()
+      this.getConditionEntries(),
+      this.getEventEntries(),
+      this.getObjectiveEntries()
     ].flat()
       .filter(e =>
-        // Speed up searching by filtering all entries contains type = ArgumentType.globalPointCategory only
-        e.kindConfig?.argumentsPatterns.mandatory.some(e => e.type === ArgumentType.globalPointCategory) ||
-        e.kindConfig?.argumentsPatterns.optional?.some(e => e.type === ArgumentType.globalPointCategory)
+        // Speed up searching by filtering all entries contains type = ArgumentType.pointCategory only
+        e.kindConfig?.argumentsPatterns.mandatory.some(e => e.type === ArgumentType.pointCategory) ||
+        e.kindConfig?.argumentsPatterns.optional?.some(e => e.type === ArgumentType.pointCategory)
       )
       .flatMap(e => e.getChildren<ConditionArguments | EventArguments | ObjectiveArguments>(["ConditionArguments", "EventArguments", "ObjectiveArguments"]))
       .flatMap(e => e.getChildren<ConditionArgumentMandatory | EventArgumentMandatory | ObjectiveArgumentMandatory | ConditionArgumentOptional | EventArgumentOptional | ObjectiveArgumentOptional>(["ConditionArgumentMandatory", "EventArgumentMandatory", "ObjectiveArgumentMandatory", "ConditionArgumentOptional", "EventArgumentOptional", "ObjectiveArgumentOptional"]))
       // Filter all argument by type  
-      .filter(e => e.pattern?.type === ArgumentType.globalPointCategory)
+      .filter(e => e.pattern?.type === ArgumentType.pointCategory)
       .flat()
       .map(e => e.getChild<ArgumentValue>("ArgumentValue", additionalCheck)!).filter(e => e);
   }
 
-  private getTargetGlobalPointCategoryDefinitions() {
-    return this.getAllGlobalPointDefinitions(e => e.valueStr === this.argumentStr);
+  private getTargetPointCategoryDefinitions() {
+    return this.getAllPointDefinitions(e => e.valueStr === this.argumentStr);
   }
 
-  private getAllGlobalPointCategories() {
+  private getAllPointCategories() {
     const result: Map<string, [string, string, string, string]> = new Map();
-    this.getAllGlobalPointDefinitions().forEach(e => {
-      // Assign GlobalPointCategory string to result
+    this.getAllPointDefinitions().forEach(e => {
+      // Assign PointCategory string to result
       result.set(e.valueStr, [
         e.valueStr,
         e.getPackagePath().join("-"),
@@ -83,24 +84,24 @@ export class ArgumentVariableGlobalPoint extends AbstractNodeV2<ArgumentVariable
     if (this.argumentStr.length === 0) {
       return [this.generateDiagnostic(
         [this.offsetStart, this.offsetEnd],
-        `Global Point Category is missing`,
+        `Point Category is missing`,
         DiagnosticSeverity.Error,
-        DiagnosticCode.ArgumentVariableGlobalPointCategoryMissing
+        DiagnosticCode.ArgumentVariablePointCategoryMissing
       )];
-    } else if (this.getTargetGlobalPointCategoryDefinitions().length === 0) {
+    } else if (this.getTargetPointCategoryDefinitions().length === 0) {
       return [this.generateDiagnostic(
         [this.offsetStart, this.offsetEnd],
-        `Global Point Category not found`,
+        `Point Category not found`,
         DiagnosticSeverity.Warning,
-        DiagnosticCode.ArgumentVariableGlobalPointCategoryNotFound
+        DiagnosticCode.ArgumentVariablePointCategoryNotFound
       )];
     }
     return [];
   }
 
-  // Trace all GlobalPoints Category definitions
+  // Trace all Points Category definitions
   getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
-    return this.getTargetGlobalPointCategoryDefinitions()
+    return this.getTargetPointCategoryDefinitions()
       .map(e => ({
         originSelectionRange: [this.offsetStart, this.offsetEnd],
         targetUri: e.getUri(),
@@ -115,7 +116,7 @@ export class ArgumentVariableGlobalPoint extends AbstractNodeV2<ArgumentVariable
       return [];
     }
 
-    return this.getAllGlobalPointCategories().map(e => {
+    return this.getAllPointCategories().map(e => {
       let typeStr = e[2];
       if (typeStr.startsWith("Condition")) {
         typeStr = "Condition";
@@ -135,12 +136,12 @@ export class ArgumentVariableGlobalPoint extends AbstractNodeV2<ArgumentVariable
   }
 
   getSemanticTokens(documentUri?: string): SemanticToken[] {
-    const targetDefs = this.getTargetGlobalPointCategoryDefinitions();
+    const targetDefs = this.getTargetPointCategoryDefinitions();
     if (targetDefs.length > 0) {
       return [{
         offsetStart: this.offsetStart,
         offsetEnd: this.offsetEnd,
-        tokenType: SemanticTokenType.GlobalPointCategory
+        tokenType: SemanticTokenType.PointCategory
       }];
     }
     return [];
