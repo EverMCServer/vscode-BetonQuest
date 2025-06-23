@@ -142,14 +142,24 @@ export enum DiagnosticCode {
   ArgumentVariableConditionLoopedReference = "BQ-2017",
 
   /**
-   * Argument Global Point ID is missing.
+   * Argument Point Category is missing.
    */
-  ArgumentVariableGlobalPointIdMissing = "BQ-2018",
+  ArgumentVariablePointCategoryMissing = "BQ-2018",
 
   /**
-   * Argument Global Point ID not exists.
+   * Argument Point Category not exists.
    */
-  ArgumentVariableGlobalPointIdNotFound = "BQ-2019",
+  ArgumentVariablePointCategoryNotFound = "BQ-2019",
+
+  /**
+   * Argument Global Point Category is missing.
+   */
+  ArgumentVariableGlobalPointCategoryMissing = "BQ-2020",
+
+  /**
+   * Argument Global Point Category not exists.
+   */
+  ArgumentVariableGlobalPointCategoryNotFound = "BQ-2021",
 
   /**
    * The "quester" section is missing.

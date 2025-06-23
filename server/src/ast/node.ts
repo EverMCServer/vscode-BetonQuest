@@ -100,13 +100,25 @@ export type ArgumentVariableObjectivePropertyType = 'ArgumentVariableObjectiveVa
 export type ArgumentVariableObjectivePropertyObjectiveIdType = 'ArgumentVariableObjectivePropertyObjectiveID';
 export type ArgumentVariableObjectivePropertyVariableNameType = 'ArgumentVariableObjectivePropertyVariableName';
 export type ArgumentVariableConditionType = 'ArgumentVariableCondition';
+export type ArgumentVariablePointType = 'ArgumentVariablePoint';
 export type ArgumentVariableGlobalPointType = 'ArgumentVariableGlobalPoint';
+export type ArgumentVariableTagType = 'ArgumentVariableTag';
+export type ArgumentVariableGlobalTagType = 'ArgumentVariableGlobalTag';
+export type ArgumentVariableEvalType = 'ArgumentVariableEval';
+export type ArgumentVariableItemType = 'ArgumentVariableItem';
+export type ArgumentVariableItemDurabilityType = 'ArgumentVariableItemDurability';
+export type ArgumentVariableLocationType = 'ArgumentVariableLocation';
+export type ArgumentVariableMathType = 'ArgumentVariableMath';
+export type ArgumentVariableNpcType = 'ArgumentVariableNpc';
+export type ArgumentVariablePlayerType = 'ArgumentVariablePlayer';
+export type ArgumentVariableRandomNumberType = 'ArgumentVariableRandomNumber';
+export type ArgumentVariableVersionType = 'ArgumentVariableVersion';
 export type ArgumentIntergerType = 'ArgumentInterger';
 export type ArgumentFloatType = 'ArgumentFloat';
 export type ArgumentBlockIdType = 'ArgumentBlockID';
 export type ArgumentEntityType = 'ArgumentEntity';
 export type ArgumentConditionIdType = 'ArgumentConditionID';
-export type ArgumentGlobalPointIdType = 'ArgumentGlobalPointID';
+export type ArgumentGlobalPointCategoryType = 'ArgumentGlobalPointCategory';
 export type ArgumentEventIdType = 'ArgumentEventID';
 export type ArgumentObjectiveIdType = 'ArgumentObjectiveID';
 export type ArgumentValueTypes =
@@ -116,13 +128,26 @@ export type ArgumentValueTypes =
   ArgumentVariableObjectivePropertyObjectiveIdType |
   ArgumentVariableObjectivePropertyVariableNameType |
   ArgumentVariableConditionType |
+  ArgumentVariablePointType |
   ArgumentVariableGlobalPointType |
+  ArgumentVariableTagType |
+  ArgumentVariableGlobalTagType |
+  ArgumentVariableEvalType |
+  ArgumentVariableEvalType |
+  ArgumentVariableItemType |
+  ArgumentVariableItemDurabilityType |
+  ArgumentVariableLocationType |
+  ArgumentVariableMathType |
+  ArgumentVariableNpcType |
+  ArgumentVariablePlayerType |
+  ArgumentVariableRandomNumberType |
+  ArgumentVariableVersionType |
   ArgumentIntergerType |
   ArgumentFloatType |
   ArgumentBlockIdType |
   ArgumentEntityType |
   ArgumentConditionIdType |
-  ArgumentGlobalPointIdType |
+  ArgumentGlobalPointCategoryType |
   ArgumentEventIdType |
   ArgumentObjectiveIdType;
 

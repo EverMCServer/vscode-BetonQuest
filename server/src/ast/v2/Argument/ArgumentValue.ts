@@ -16,7 +16,7 @@ import { ArgumentConditionID } from "./ArgumentConditionID";
 import { ArgumentEntity } from "./ArgumentEntity";
 import { ArgumentEventID } from "./ArgumentEventID";
 import { ArgumentFloat } from "./ArgumentFloat";
-import { ArgumentGlobalPointID } from "./ArgumentGlobalPointID";
+import { ArgumentGlobalPointCategory } from "./ArgumentGlobalPointCategory";
 import { ArgumentInterger } from "./ArgumentInterger";
 import { ArgumentVariable } from "./ArgumentVariable";
 
@@ -106,8 +106,8 @@ export class ArgumentValue extends AbstractNodeV2<ArgumentValueType> {
             });
             break;
 
-          case ArgumentType.globalPointID:
-            this.addChild(new ArgumentGlobalPointID(this.valueStr, [this.offsetStart, this.offsetEnd], this));
+          case ArgumentType.globalPointCategory:
+            this.addChild(new ArgumentGlobalPointCategory(this.valueStr, [this.offsetStart, this.offsetEnd], this));
             break;
 
           case ArgumentType.blockID:

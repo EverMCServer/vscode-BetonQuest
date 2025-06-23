@@ -53,17 +53,17 @@ export enum ArgumentType {
     /** Multiple BetonQuest's Item ID seprated by `,` with amount */
     itemIdListWithAmount = "itemIdListWithAmount",
 
-    /** Tag ID */
-    tagID = "tagID",
+    /** Tag Name */
+    tagName = "tagName",
 
-    /** Global Point ID */
-    globalTagID = "globalTagID",
+    /** Global Point Category */
+    globalTagCategory = "globalTagCategory",
 
-    /** Point ID */
-    pointID = "pointID",
+    /** Point Category */
+    pointCategory = "pointCategory",
 
-    /** Global Point ID */
-    globalPointID = "globalPointID",
+    /** Global Point Category */
+    globalPointCategory = "globalPointCategory",
 
     /** Journal ID */
     journalID = "journalID",

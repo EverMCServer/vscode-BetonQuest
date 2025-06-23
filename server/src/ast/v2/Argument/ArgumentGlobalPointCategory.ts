@@ -3,7 +3,7 @@ import { CompletionItem, CompletionItemKind } from "vscode-languageserver";
 import { ArgumentType } from "betonquest-utils/betonquest/Arguments";
 
 import { LocationLinkOffset } from "../../../utils/location";
-import { ArgumentGlobalPointIdType } from "../../node";
+import { ArgumentGlobalPointCategoryType } from "../../node";
 import { ConditionArgumentMandatory } from "../Condition/ConditionArgumentMandatory";
 import { ConditionArgumentOptional } from "../Condition/ConditionArgumentOptional";
 import { ConditionArguments } from "../Condition/ConditionArguments";
@@ -16,8 +16,8 @@ import { ObjectiveArguments } from "../Objective/ObjectiveArguments";
 import { ArgumentAbstractID } from "./ArgumentAbstractID";
 import { ArgumentValue } from "./ArgumentValue";
 
-export class ArgumentGlobalPointID extends ArgumentAbstractID<ArgumentGlobalPointIdType> {
-  readonly type: ArgumentGlobalPointIdType = 'ArgumentGlobalPointID';
+export class ArgumentGlobalPointCategory extends ArgumentAbstractID<ArgumentGlobalPointCategoryType> {
+  readonly type: ArgumentGlobalPointCategoryType = 'ArgumentGlobalPointCategory';
 
   constructor(
     argumentStr: string,
@@ -35,22 +35,22 @@ export class ArgumentGlobalPointID extends ArgumentAbstractID<ArgumentGlobalPoin
       this.getAllObjectiveEntries()
     ].flat()
       .filter(e =>
-        // Speed up searching by filtering all entries contains type = ArgumentType.globalPointID only
-        e.kindConfig?.argumentsPatterns.mandatory.some(e => e.type === ArgumentType.globalPointID) ||
-        e.kindConfig?.argumentsPatterns.optional?.some(e => e.type === ArgumentType.globalPointID)
+        // Speed up searching by filtering all entries contains type = ArgumentType.globalPointCategory only
+        e.kindConfig?.argumentsPatterns.mandatory.some(e => e.type === ArgumentType.globalPointCategory) ||
+        e.kindConfig?.argumentsPatterns.optional?.some(e => e.type === ArgumentType.globalPointCategory)
       )
       .flatMap(e => e.getChildren<ConditionArguments | EventArguments | ObjectiveArguments>(["ConditionArguments", "EventArguments", "ObjectiveArguments"]))
       .flatMap(e => e.getChildren<ConditionArgumentMandatory | EventArgumentMandatory | ObjectiveArgumentMandatory | ConditionArgumentOptional | EventArgumentOptional | ObjectiveArgumentOptional>(["ConditionArgumentMandatory", "EventArgumentMandatory", "ObjectiveArgumentMandatory", "ConditionArgumentOptional", "EventArgumentOptional", "ObjectiveArgumentOptional"]))
       // Filter all argument by type  
-      .filter(e => e.pattern?.type === ArgumentType.globalPointID)
+      .filter(e => e.pattern?.type === ArgumentType.globalPointCategory)
       .flat()
       .map(e => e.getChild<ArgumentValue>("ArgumentValue")!).filter(e => e);
   }
 
-  private getAllGlobalPointIDs() {
+  private getAllGlobalPointCategories() {
     const result: Map<string, [string, string, string, string]> = new Map();
     this.getAllGlobalPointArguments().forEach(e => {
-      // Assign GlobalPointID string to result
+      // Assign GlobalPointCategory string to result
       result.set(e.valueStr, [
         e.valueStr,
         e.getPackagePath().join("-"),
@@ -84,9 +84,9 @@ export class ArgumentGlobalPointID extends ArgumentAbstractID<ArgumentGlobalPoin
   }
 
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
-    // return ArgumentGlobalPointID.getCompletions();
+    // return ArgumentGlobalPointCategory.getCompletions();
     const packagePath = this.getPackagePath().join("-");
-    return this.getAllGlobalPointIDs().map(e => {
+    return this.getAllGlobalPointCategories().map(e => {
       let typeStr = e[2];
       if (typeStr.startsWith("Condition")) {
         typeStr = "Condition";

@@ -48,26 +48,26 @@ export class ArgumentVariableGlobalPoint extends AbstractNodeV2<ArgumentVariable
       this.getAllObjectiveEntries()
     ].flat()
       .filter(e =>
-        // Speed up searching by filtering all entries contains type = ArgumentType.globalPointID only
-        e.kindConfig?.argumentsPatterns.mandatory.some(e => e.type === ArgumentType.globalPointID) ||
-        e.kindConfig?.argumentsPatterns.optional?.some(e => e.type === ArgumentType.globalPointID)
+        // Speed up searching by filtering all entries contains type = ArgumentType.globalPointCategory only
+        e.kindConfig?.argumentsPatterns.mandatory.some(e => e.type === ArgumentType.globalPointCategory) ||
+        e.kindConfig?.argumentsPatterns.optional?.some(e => e.type === ArgumentType.globalPointCategory)
       )
       .flatMap(e => e.getChildren<ConditionArguments | EventArguments | ObjectiveArguments>(["ConditionArguments", "EventArguments", "ObjectiveArguments"]))
       .flatMap(e => e.getChildren<ConditionArgumentMandatory | EventArgumentMandatory | ObjectiveArgumentMandatory | ConditionArgumentOptional | EventArgumentOptional | ObjectiveArgumentOptional>(["ConditionArgumentMandatory", "EventArgumentMandatory", "ObjectiveArgumentMandatory", "ConditionArgumentOptional", "EventArgumentOptional", "ObjectiveArgumentOptional"]))
       // Filter all argument by type  
-      .filter(e => e.pattern?.type === ArgumentType.globalPointID)
+      .filter(e => e.pattern?.type === ArgumentType.globalPointCategory)
       .flat()
       .map(e => e.getChild<ArgumentValue>("ArgumentValue", additionalCheck)!).filter(e => e);
   }
 
-  private getTargetGlobalPointIdDefinitions() {
+  private getTargetGlobalPointCategoryDefinitions() {
     return this.getAllGlobalPointDefinitions(e => e.valueStr === this.argumentStr);
   }
 
-  private getAllGlobalPointIDs() {
+  private getAllGlobalPointCategories() {
     const result: Map<string, [string, string, string, string]> = new Map();
     this.getAllGlobalPointDefinitions().forEach(e => {
-      // Assign GlobalPointID string to result
+      // Assign GlobalPointCategory string to result
       result.set(e.valueStr, [
         e.valueStr,
         e.getPackagePath().join("-"),
@@ -83,22 +83,22 @@ export class ArgumentVariableGlobalPoint extends AbstractNodeV2<ArgumentVariable
     if (this.argumentStr.length === 0) {
       return [this.generateDiagnostic(
         [this.offsetStart, this.offsetEnd],
-        `Global Point ID is missing`,
+        `Global Point Category is missing`,
         DiagnosticSeverity.Error,
-        DiagnosticCode.ArgumentVariableGlobalPointIdMissing
+        DiagnosticCode.ArgumentVariableGlobalPointCategoryMissing
       )];
-    } else if (this.getTargetGlobalPointIdDefinitions().length === 0) {
+    } else if (this.getTargetGlobalPointCategoryDefinitions().length === 0) {
       return [this.generateDiagnostic(
         [this.offsetStart, this.offsetEnd],
-        `Global Point ID not found`,
+        `Global Point Category not found`,
         DiagnosticSeverity.Warning,
-        DiagnosticCode.ArgumentVariableGlobalPointIdNotFound
+        DiagnosticCode.ArgumentVariableGlobalPointCategoryNotFound
       )];
     }
     return [];
   }
 
-  // Trace all GlobalPoints ID definitions
+  // Trace all GlobalPoints Category definitions
   getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
     return this.getAllGlobalPointDefinitions(e => e.valueStr === this.argumentStr)
       .map(e => ({
@@ -115,7 +115,7 @@ export class ArgumentVariableGlobalPoint extends AbstractNodeV2<ArgumentVariable
       return [];
     }
 
-    return this.getAllGlobalPointIDs().map(e => {
+    return this.getAllGlobalPointCategories().map(e => {
       let typeStr = e[2];
       if (typeStr.startsWith("Condition")) {
         typeStr = "Condition";
@@ -135,12 +135,12 @@ export class ArgumentVariableGlobalPoint extends AbstractNodeV2<ArgumentVariable
   }
 
   getSemanticTokens(documentUri?: string): SemanticToken[] {
-    const targetDefs = this.getTargetGlobalPointIdDefinitions();
+    const targetDefs = this.getTargetGlobalPointCategoryDefinitions();
     if (targetDefs.length > 0) {
       return [{
         offsetStart: this.offsetStart,
         offsetEnd: this.offsetEnd,
-        tokenType: SemanticTokenType.GlobalPointID
+        tokenType: SemanticTokenType.GlobalPointCategory
       }];
     }
     return [];

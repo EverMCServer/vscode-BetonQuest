@@ -265,7 +265,7 @@ export class Kinds {
                 description: L("betonquest.v2.condition.globalpoint.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Input, name: L("betonquest.v2.condition.globalpoint.mandatory.name.name"), type: ArgumentType.globalPointID, format: 'string', defaultValue: 'a_global_point_1', placeholder: 'e.g. a_global_point_1', tooltip: L("betonquest.v2.condition.globalpoint.mandatory.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Input, name: L("betonquest.v2.condition.globalpoint.mandatory.name.name"), type: ArgumentType.globalPointCategory, format: 'string', defaultValue: 'a_global_point_1', placeholder: 'e.g. a_global_point_1', tooltip: L("betonquest.v2.condition.globalpoint.mandatory.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                         { jsx: Number, name: L("betonquest.v2.condition.globalpoint.mandatory.point.name"), type: ArgumentType.interger, format: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
                     ],
                     optional: [
@@ -279,7 +279,7 @@ export class Kinds {
                 description: L("betonquest.v2.condition.globaltag.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Input, name: L("betonquest.v2.condition.globaltag.mandatory.name.name"), type: ArgumentType.globalTagID, format: 'string', defaultValue: 'a_global_tag_1', placeholder: 'e.g. a_global_tag_1', tooltip: L("betonquest.v2.condition.globaltag.mandatory.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Input, name: L("betonquest.v2.condition.globaltag.mandatory.name.name"), type: ArgumentType.globalTagCategory, format: 'string', defaultValue: 'a_global_tag_1', placeholder: 'e.g. a_global_tag_1', tooltip: L("betonquest.v2.condition.globaltag.mandatory.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                     ]
                 }
             },
@@ -528,7 +528,7 @@ export class Kinds {
                 description: L("betonquest.v2.condition.point.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Input, name: L("betonquest.v2.condition.point.mandatory.name.name"), type: ArgumentType.pointID, format: 'string', defaultValue: 'a_point_1', placeholder: 'e.g. a_point_1', tooltip: L("betonquest.v2.condition.point.mandatory.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Input, name: L("betonquest.v2.condition.point.mandatory.name.name"), type: ArgumentType.pointCategory, format: 'string', defaultValue: 'a_point_1', placeholder: 'e.g. a_point_1', tooltip: L("betonquest.v2.condition.point.mandatory.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                         { jsx: Number, name: L("betonquest.v2.condition.point.mandatory.point.name"), type: ArgumentType.interger, format: 'int', defaultValue: 0, config: { min: 0 }, allowVariable: true },
                     ],
                     optional: [
@@ -628,7 +628,7 @@ export class Kinds {
                 description: L("betonquest.v2.condition.tag.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Input, name: L("betonquest.v2.condition.tag.mandatory.tag.name"), type: ArgumentType.tagID, format: 'string', defaultValue: 'a_tag_1', placeholder: 'e.g. a_tag_1', tooltip: L("betonquest.v2.condition.tag.mandatory.tag.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Input, name: L("betonquest.v2.condition.tag.mandatory.tag.name"), type: ArgumentType.tagName, format: 'string', defaultValue: 'a_tag_1', placeholder: 'e.g. a_tag_1', tooltip: L("betonquest.v2.condition.tag.mandatory.tag.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                     ]
                 }
             },

@@ -205,7 +205,7 @@ export class Kinds {
                 // e.g. deletepoint npc_attitude
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Input, name: L("betonquest.v2.event.deletepoint.mandatory.pointCategory.name"), type: ArgumentType.pointID, format: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. npc_attitude', tooltip: L("betonquest.v2.event.deletepoint.mandatory.pointCategory.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Input, name: L("betonquest.v2.event.deletepoint.mandatory.pointCategory.name"), type: ArgumentType.pointCategory, format: 'string', defaultValue: 'a_point_category_1', placeholder: 'e.g. npc_attitude', tooltip: L("betonquest.v2.event.deletepoint.mandatory.pointCategory.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                     ]
                 }
             },
@@ -217,7 +217,7 @@ export class Kinds {
                 // e.g. deleteglobalpoint bonus
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Input, name: L("betonquest.v2.event.deleteglobalpoint.mandatory.pointCategory.name"), type: ArgumentType.globalPointID, format: 'string', defaultValue: 'a_global_point_id_1', placeholder: 'e.g. bonus', tooltip: L("betonquest.v2.event.deleteglobalpoint.mandatory.pointCategory.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Input, name: L("betonquest.v2.event.deleteglobalpoint.mandatory.pointCategory.name"), type: ArgumentType.globalPointCategory, format: 'string', defaultValue: 'a_global_point_category_1_1', placeholder: 'e.g. bonus', tooltip: L("betonquest.v2.event.deleteglobalpoint.mandatory.pointCategory.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                     ]
                 }
             },
@@ -463,7 +463,7 @@ export class Kinds {
                 // e.g. global_knownusers 1 action:add
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Input, name: L("betonquest.v2.event.globalpoint.mandatory.pointCategory.name"), type: ArgumentType.globalPointID, format: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. bonus', tooltip: L("betonquest.v2.event.globalpoint.mandatory.pointCategory.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Input, name: L("betonquest.v2.event.globalpoint.mandatory.pointCategory.name"), type: ArgumentType.globalPointCategory, format: 'string', defaultValue: 'a_point_category_1', placeholder: 'e.g. bonus', tooltip: L("betonquest.v2.event.globalpoint.mandatory.pointCategory.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                         // TODO: multiplication prefix - '*'
                         { jsx: Number, name: L("betonquest.v2.event.globalpoint.mandatory.amount.name"), type: ArgumentType.float, format: 'float', defaultValue: 0, tooltip: L("betonquest.v2.event.globalpoint.mandatory.amount.tooltip"), allowVariable: true },
                         {
@@ -513,7 +513,7 @@ export class Kinds {
                                 ] as DefaultOptionType[]
                             }
                         },
-                        { jsx: Input, name: L("betonquest.v2.event.globaltag.mandatory.tagName.name"), type: ArgumentType.globalTagID, format: 'string', defaultValue: 'a_global_tag_id_1', placeholder: 'e.g. reward_claimed', tooltip: L("betonquest.v2.event.globaltag.mandatory.tagName.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Input, name: L("betonquest.v2.event.globaltag.mandatory.tagName.name"), type: ArgumentType.globalTagCategory, format: 'string', defaultValue: 'a_global_tag_id_1', placeholder: 'e.g. reward_claimed', tooltip: L("betonquest.v2.event.globaltag.mandatory.tagName.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                     ]
                 }
             },
@@ -885,7 +885,7 @@ export class Kinds {
                 // e.g. point points 1.25 action:multiply notify
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Input, name: L("betonquest.v2.event.point.mandatory.pointCategory.name"), type: ArgumentType.pointID, format: 'string', defaultValue: 'a_point_id_1', placeholder: 'e.g. bonus', tooltip: L("betonquest.v2.event.point.mandatory.pointCategory.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Input, name: L("betonquest.v2.event.point.mandatory.pointCategory.name"), type: ArgumentType.pointCategory, format: 'string', defaultValue: 'a_point_category_1', placeholder: 'e.g. bonus', tooltip: L("betonquest.v2.event.point.mandatory.pointCategory.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                         // TODO: multiplication prefix - '*'
                         { jsx: Number, name: L("betonquest.v2.event.point.mandatory.amount.name"), type: ArgumentType.float, format: 'float', defaultValue: 0, tooltip: L("betonquest.v2.event.point.mandatory.amount.tooltip"), allowVariable: true },
                     ],
@@ -1129,7 +1129,7 @@ export class Kinds {
                                 ] as DefaultOptionType[]
                             }
                         },
-                        { jsx: InputList, name: L("betonquest.v2.event.tag.mandatory.tagNames.name"), type: ArgumentType.tagID, format: 'string[,]', defaultValue: ['a_tag_1'], config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: InputList, name: L("betonquest.v2.event.tag.mandatory.tagNames.name"), type: ArgumentType.tagName, format: 'string[,]', defaultValue: ['a_tag_1'], config: { allowedPatterns: [/^\S*$/] } },
                     ]
                 }
             },
