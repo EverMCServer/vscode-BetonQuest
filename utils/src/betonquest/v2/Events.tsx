@@ -513,7 +513,7 @@ export class Kinds {
                                 ] as DefaultOptionType[]
                             }
                         },
-                        { jsx: Input, name: L("betonquest.v2.event.globaltag.mandatory.tagName.name"), type: ArgumentType.globalTagCategory, format: 'string', defaultValue: 'a_global_tag_id_1', placeholder: 'e.g. reward_claimed', tooltip: L("betonquest.v2.event.globaltag.mandatory.tagName.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Input, name: L("betonquest.v2.event.globaltag.mandatory.tagName.name"), type: ArgumentType.globalTagName, format: 'string', defaultValue: 'a_global_tag_id_1', placeholder: 'e.g. reward_claimed', tooltip: L("betonquest.v2.event.globaltag.mandatory.tagName.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                     ]
                 }
             },

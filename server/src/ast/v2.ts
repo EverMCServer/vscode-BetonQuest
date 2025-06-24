@@ -14,8 +14,10 @@ import { ArgumentVariable } from "./v2/Argument/ArgumentVariable";
 import { ArgumentVariableKind } from "./v2/Argument/ArgumentVariableKind";
 import { ArgumentVariableCondition } from "./v2/Argument/Variable/ArgumentVariableCondition";
 import { ArgumentVariableGlobalPoint } from "./v2/Argument/Variable/ArgumentVariableGlobalPoint";
+import { ArgumentVariableGlobalTag } from "./v2/Argument/Variable/ArgumentVariableGlobalTag";
 import { ArgumentVariableObjectiveProperty, ArgumentVariableObjectivePropertyObjectiveID, ArgumentVariableObjectivePropertyVariableName } from "./v2/Argument/Variable/ArgumentVariableObjectiveProperty";
 import { ArgumentVariablePoint } from "./v2/Argument/Variable/ArgumentVariablePoint";
+import { ArgumentVariableTag } from "./v2/Argument/Variable/ArgumentVariableTag";
 import { ConditionArgumentMandatory } from "./v2/Condition/ConditionArgumentMandatory";
 import { ConditionArgumentOptional } from "./v2/Condition/ConditionArgumentOptional";
 import { ConditionArguments } from "./v2/Condition/ConditionArguments";
@@ -67,7 +69,19 @@ import { PackageV2 } from "./v2/Package";
 type TConditionList = ConditionList | ConditionListSection | ConditionEntry | ConditionKey | ConditionKind | ConditionArguments | ConditionArgumentMandatory | ConditionArgumentOptional;
 type TEventListList = EventList | EventListSection | EventEntry | EventKey | EventKind | EventArguments | EventArgumentMandatory | EventArgumentOptional;
 type TObjectiveList = ObjectiveList | ObjectiveListSection | ObjectiveEntry | ObjectiveKey | ObjectiveKind | ObjectiveArguments | ObjectiveArgumentMandatory | ObjectiveArgumentOptional;
-type TArgumentVariables = ArgumentVariable | ArgumentVariableKind | ArgumentVariableObjectiveProperty | ArgumentVariableObjectivePropertyObjectiveID | ArgumentVariableObjectivePropertyVariableName | ArgumentVariableObjectivePropertyObjectiveID | ArgumentVariableCondition | ArgumentVariableGlobalPoint | ArgumentVariablePoint;
+type TArgumentVariables =
+  ArgumentVariable |
+  ArgumentVariableKind |
+  ArgumentVariableObjectiveProperty |
+  ArgumentVariableObjectivePropertyObjectiveID |
+  ArgumentVariableObjectivePropertyVariableName |
+  ArgumentVariableObjectivePropertyObjectiveID |
+  ArgumentVariableCondition |
+  ArgumentVariableGlobalPoint |
+  ArgumentVariablePoint |
+  ArgumentVariableTag |
+  ArgumentVariableGlobalTag
+  ;
 type TArguments = ArgumentKey | ArgumentValue | TArgumentVariables | ArgumentConditionID | ArgumentEventID | ArgumentGlobalPointCategory | ArgumentObjectiveID | ArgumentBlockID | ArgumentEntity | ArgumentInterger | ArgumentFloat;
 type TConversationNpcOption = NpcOption | NpcConditions | NpcCondition | NpcEvents | NpcEvent | NpcPointers | NpcPointer | NpcText;
 type TConversationPlayerOption = PlayerOption | PlayerConditions | PlayerCondition | PlayerEvents | PlayerEvent | PlayerPointers | PlayerPointer | PlayerText;

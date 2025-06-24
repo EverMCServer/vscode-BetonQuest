@@ -162,6 +162,26 @@ export enum DiagnosticCode {
   ArgumentVariableGlobalPointCategoryNotFound = "BQ-2021",
 
   /**
+   * Argument Point Category is missing.
+   */
+  ArgumentVariableTagNameMissing = "BQ-2022",
+
+  /**
+   * Argument Point Category not exists.
+   */
+  ArgumentVariableTagNameNotFound = "BQ-2023",
+
+  /**
+   * Argument Global Point Category is missing.
+   */
+  ArgumentVariableGlobalTagNameMissing = "BQ-2024",
+
+  /**
+   * Argument Global Point Category not exists.
+   */
+  ArgumentVariableGlobalTagNameNotFound = "BQ-2025",
+
+  /**
    * The "quester" section is missing.
    */
   ConversationMissingQuester = "BQ-3011",

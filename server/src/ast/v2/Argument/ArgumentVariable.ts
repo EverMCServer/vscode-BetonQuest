@@ -9,6 +9,8 @@ import { ArgumentVariableKind } from "./ArgumentVariableKind";
 import { ArgumentVariableObjectiveProperty } from "./Variable/ArgumentVariableObjectiveProperty";
 import { ArgumentVariableCondition } from "./Variable/ArgumentVariableCondition";
 import { ArgumentVariablePoint } from "./Variable/ArgumentVariablePoint";
+import { ArgumentVariableTag } from "./Variable/ArgumentVariableTag";
+import { ArgumentVariableGlobalTag } from "./Variable/ArgumentVariableGlobalTag";
 
 export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
   readonly type: ArgumentVariableType = 'ArgumentVariable';
@@ -59,8 +61,10 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
           this.addChild(new ArgumentVariableGlobalPoint(this.variableInstructions, [offArgStart, offArgEnd], this));
           break;
         case 'tag':
+          this.addChild(new ArgumentVariableTag(this.variableInstructions, [offArgStart, offArgEnd], this));
           break;
         case 'globaltag':
+          this.addChild(new ArgumentVariableGlobalTag(this.variableInstructions, [offArgStart, offArgEnd], this));
           break;
         case 'eval':
           break;

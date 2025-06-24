@@ -3,7 +3,7 @@ import { CompletionItem, CompletionItemKind, Diagnostic, DiagnosticSeverity } fr
 import { ArgumentType } from "betonquest-utils/betonquest/Arguments";
 
 import { LocationLinkOffset } from "../../../../utils/location";
-import { ArgumentVariablePointType } from "../../../node";
+import { ArgumentVariableGlobalTagType } from "../../../node";
 import { AbstractNodeV2 } from "../../../v2";
 import { ArgumentVariable } from "../ArgumentVariable";
 import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
@@ -19,8 +19,8 @@ import { ObjectiveArgumentOptional } from "../../Objective/ObjectiveArgumentOpti
 import { ObjectiveArguments } from "../../Objective/ObjectiveArguments";
 import { ArgumentValue } from "../ArgumentValue";
 
-export class ArgumentVariablePoint extends AbstractNodeV2<ArgumentVariablePointType> {
-  readonly type: ArgumentVariablePointType = 'ArgumentVariablePoint';
+export class ArgumentVariableGlobalTag extends AbstractNodeV2<ArgumentVariableGlobalTagType> {
+  readonly type: ArgumentVariableGlobalTagType = 'ArgumentVariableGlobalTag';
   readonly offsetStart: number;
   readonly offsetEnd: number;
   readonly parent: ArgumentVariable;
@@ -40,7 +40,7 @@ export class ArgumentVariablePoint extends AbstractNodeV2<ArgumentVariablePointT
     this.argumentStr = argumentStr;
   }
 
-  private getAllPointDefinitions(additionalCheck?: ((child: ArgumentValue) => any | boolean)) {
+  private getAllGlobalTagDefinitions(additionalCheck?: ((child: ArgumentValue) => any | boolean)) {
     return [
       // Iterate all element lists
       this.getConditionEntries(),
@@ -48,26 +48,26 @@ export class ArgumentVariablePoint extends AbstractNodeV2<ArgumentVariablePointT
       this.getObjectiveEntries()
     ].flat()
       .filter(e =>
-        // Speed up searching by filtering all entries contains type = ArgumentType.pointCategory only
-        e.kindConfig?.argumentsPatterns.mandatory.some(e => e.type === ArgumentType.pointCategory) ||
-        e.kindConfig?.argumentsPatterns.optional?.some(e => e.type === ArgumentType.pointCategory)
+        // Speed up searching by filtering all entries contains type = ArgumentType.globalTagName only
+        e.kindConfig?.argumentsPatterns.mandatory.some(e => e.type === ArgumentType.globalTagName) ||
+        e.kindConfig?.argumentsPatterns.optional?.some(e => e.type === ArgumentType.globalTagName)
       )
       .flatMap(e => e.getChildren<ConditionArguments | EventArguments | ObjectiveArguments>(["ConditionArguments", "EventArguments", "ObjectiveArguments"]))
       .flatMap(e => e.getChildren<ConditionArgumentMandatory | EventArgumentMandatory | ObjectiveArgumentMandatory | ConditionArgumentOptional | EventArgumentOptional | ObjectiveArgumentOptional>(["ConditionArgumentMandatory", "EventArgumentMandatory", "ObjectiveArgumentMandatory", "ConditionArgumentOptional", "EventArgumentOptional", "ObjectiveArgumentOptional"]))
       // Filter all argument by type  
-      .filter(e => e.pattern?.type === ArgumentType.pointCategory)
+      .filter(e => e.pattern?.type === ArgumentType.tagName)
       .flat()
       .map(e => e.getChild<ArgumentValue>("ArgumentValue", additionalCheck)!).filter(e => e);
   }
 
-  private getTargetPointCategoryDefinitions() {
-    return this.getAllPointDefinitions(e => e.valueStr === this.argumentStr);
+  private getTargetGlobalTagNameDefinitions() {
+    return this.getAllGlobalTagDefinitions(e => e.valueStr === this.argumentStr);
   }
 
-  private getAllPointCategories() {
+  private getAllGlobalTagNames() {
     const result: Map<string, [string, string, string, string]> = new Map();
-    this.getAllPointDefinitions().forEach(e => {
-      // Assign PointCategory string to result
+    this.getAllGlobalTagDefinitions().forEach(e => {
+      // Assign GlobalTagName string to result
       result.set(e.valueStr, [
         e.valueStr,
         e.getPackagePath().join("-"),
@@ -83,24 +83,24 @@ export class ArgumentVariablePoint extends AbstractNodeV2<ArgumentVariablePointT
     if (this.argumentStr.length === 0) {
       return [this.generateDiagnostic(
         [this.offsetStart, this.offsetEnd],
-        `Point Category is missing`,
+        `GlobalTag Name is missing`,
         DiagnosticSeverity.Error,
-        DiagnosticCode.ArgumentVariablePointCategoryMissing
+        DiagnosticCode.ArgumentVariableGlobalTagNameMissing
       )];
-    } else if (this.getTargetPointCategoryDefinitions().length === 0) {
+    } else if (this.getTargetGlobalTagNameDefinitions().length === 0) {
       return [this.generateDiagnostic(
         [this.offsetStart, this.offsetEnd],
-        `Point Category not found`,
+        `GlobalTag Name not found`,
         DiagnosticSeverity.Warning,
-        DiagnosticCode.ArgumentVariablePointCategoryNotFound
+        DiagnosticCode.ArgumentVariableGlobalTagNameNotFound
       )];
     }
     return [];
   }
 
-  // Trace all Points Category definitions
+  // Trace all GlobalTags Name definitions
   getDefinitions(offset: number, documentUri?: string): LocationLinkOffset[] {
-    return this.getTargetPointCategoryDefinitions()
+    return this.getTargetGlobalTagNameDefinitions()
       .map(e => ({
         originSelectionRange: [this.offsetStart, this.offsetEnd],
         targetUri: e.getUri(),
@@ -115,7 +115,7 @@ export class ArgumentVariablePoint extends AbstractNodeV2<ArgumentVariablePointT
       return [];
     }
 
-    return this.getAllPointCategories().map(e => {
+    return this.getAllGlobalTagNames().map(e => {
       let typeStr = e[2];
       if (typeStr.startsWith("Condition")) {
         typeStr = "Condition";
@@ -135,12 +135,12 @@ export class ArgumentVariablePoint extends AbstractNodeV2<ArgumentVariablePointT
   }
 
   getSemanticTokens(documentUri?: string): SemanticToken[] {
-    const targetDefs = this.getTargetPointCategoryDefinitions();
+    const targetDefs = this.getTargetGlobalTagNameDefinitions();
     if (targetDefs.length > 0) {
       return [{
         offsetStart: this.offsetStart,
         offsetEnd: this.offsetEnd,
-        tokenType: SemanticTokenType.PointCategory
+        tokenType: SemanticTokenType.GlobalTagName
       }];
     }
     return [];

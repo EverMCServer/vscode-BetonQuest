@@ -56,8 +56,8 @@ export enum ArgumentType {
     /** Tag Name */
     tagName = "tagName",
 
-    /** Global Point Category */
-    globalTagCategory = "globalTagCategory",
+    /** Global Tag Name */
+    globalTagName = "globalTagName",
 
     /** Point Category */
     pointCategory = "pointCategory",

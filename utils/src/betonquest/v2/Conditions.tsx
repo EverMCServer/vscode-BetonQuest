@@ -279,7 +279,7 @@ export class Kinds {
                 description: L("betonquest.v2.condition.globaltag.description"),
                 argumentsPatterns: {
                     mandatory: [
-                        { jsx: Input, name: L("betonquest.v2.condition.globaltag.mandatory.name.name"), type: ArgumentType.globalTagCategory, format: 'string', defaultValue: 'a_global_tag_1', placeholder: 'e.g. a_global_tag_1', tooltip: L("betonquest.v2.condition.globaltag.mandatory.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
+                        { jsx: Input, name: L("betonquest.v2.condition.globaltag.mandatory.name.name"), type: ArgumentType.globalTagName, format: 'string', defaultValue: 'a_global_tag_1', placeholder: 'e.g. a_global_tag_1', tooltip: L("betonquest.v2.condition.globaltag.mandatory.name.tooltip"), config: { allowedPatterns: [/^\S*$/] } },
                     ]
                 }
             },
