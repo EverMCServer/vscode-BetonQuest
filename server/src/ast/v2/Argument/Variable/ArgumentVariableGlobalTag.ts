@@ -64,20 +64,6 @@ export class ArgumentVariableGlobalTag extends AbstractNodeV2<ArgumentVariableGl
     return this.getAllGlobalTagDefinitions(e => e.valueStr === this.argumentStr);
   }
 
-  private getAllGlobalTagNames() {
-    const result: Map<string, [string, string, string, string]> = new Map();
-    this.getAllGlobalTagDefinitions().forEach(e => {
-      // Assign GlobalTagName string to result
-      result.set(e.valueStr, [
-        e.valueStr,
-        e.getPackagePath().join("-"),
-        e.parent.type,
-        e.parent.parent.parent.keyString
-      ]);
-    });
-    return [...result.values()];
-  }
-
   getDiagnostics(): Diagnostic[] {
     // Check if id exists
     if (this.argumentStr.length === 0) {
@@ -115,8 +101,10 @@ export class ArgumentVariableGlobalTag extends AbstractNodeV2<ArgumentVariableGl
       return [];
     }
 
-    return this.getAllGlobalTagNames().map(e => {
-      let typeStr = e[2];
+    // Get definitions info
+    const list = new Map<string, [string, string, string, string]>(); // label => [label, detail, document, insertText]
+    this.getAllGlobalTagDefinitions().forEach(e => {
+      let typeStr = e.parent.type as string;
       if (typeStr.startsWith("Condition")) {
         typeStr = "Condition";
       } else if (typeStr.startsWith("Event")) {
@@ -124,12 +112,32 @@ export class ArgumentVariableGlobalTag extends AbstractNodeV2<ArgumentVariableGl
       } else if (typeStr.startsWith("Objective")) {
         typeStr = "Objective";
       }
+
+      // Consolidate completion description
+      const d = list.get(e.valueStr);
+      if (d) {
+        d[2] += "\n\n(" + typeStr + ") " + e.parent.parent.parent.keyString + ": `" + e.parent.parent.parent.yml.value?.value + "`";
+        list.set(e.valueStr, d);
+      } else {
+        list.set(e.valueStr, [
+          e.valueStr,
+          e.valueStr,
+          "(" + typeStr + ") " + e.parent.parent.parent.keyString + ": `" + e.parent.parent.parent.yml.value?.value + "`",
+          e.valueStr
+        ]);
+      }
+    });
+
+    return [...list.values()].map(e => {
       return {
         label: e[0],
         kind: CompletionItemKind.EnumMember,
-        detail: e[0],
-        documentation: "(" + typeStr + ") " + e[3] + ", Package: " + e[1],
-        insertText: e[0]
+        detail: e[1],
+        documentation: {
+          kind: 'markdown',
+          value: e[2]
+        },
+        insertText: e[3]
       };
     });
   }
