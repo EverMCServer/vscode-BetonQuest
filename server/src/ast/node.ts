@@ -100,10 +100,13 @@ export type ArgumentVariableObjectivePropertyType = 'ArgumentVariableObjectiveVa
 export type ArgumentVariableObjectivePropertyObjectiveIdType = 'ArgumentVariableObjectivePropertyObjectiveID';
 export type ArgumentVariableObjectivePropertyVariableNameType = 'ArgumentVariableObjectivePropertyVariableName';
 export type ArgumentVariableConditionType = 'ArgumentVariableCondition';
+export type ArgumentVariableConditionIdType = 'ArgumentVariableConditionID';
 export type ArgumentVariablePointType = 'ArgumentVariablePoint';
 export type ArgumentVariableGlobalPointType = 'ArgumentVariableGlobalPoint';
 export type ArgumentVariableTagType = 'ArgumentVariableTag';
+export type ArgumentVariableTagNameType = 'ArgumentVariableTagName';
 export type ArgumentVariableGlobalTagType = 'ArgumentVariableGlobalTag';
+export type ArgumentVariableGlobalTagNameType = 'ArgumentVariableGlobalTagName';
 export type ArgumentVariableEvalType = 'ArgumentVariableEval';
 export type ArgumentVariableItemType = 'ArgumentVariableItem';
 export type ArgumentVariableItemDurabilityType = 'ArgumentVariableItemDurability';
@@ -113,6 +116,7 @@ export type ArgumentVariableNpcType = 'ArgumentVariableNpc';
 export type ArgumentVariablePlayerType = 'ArgumentVariablePlayer';
 export type ArgumentVariableRandomNumberType = 'ArgumentVariableRandomNumber';
 export type ArgumentVariableVersionType = 'ArgumentVariableVersion';
+export type ArgumentVariableSectionPapiType = 'ArgumentVariableSectionPapi';
 export type ArgumentIntergerType = 'ArgumentInterger';
 export type ArgumentFloatType = 'ArgumentFloat';
 export type ArgumentBlockIdType = 'ArgumentBlockID';
@@ -128,10 +132,13 @@ export type ArgumentValueTypes =
   ArgumentVariableObjectivePropertyObjectiveIdType |
   ArgumentVariableObjectivePropertyVariableNameType |
   ArgumentVariableConditionType |
+  ArgumentVariableConditionIdType |
   ArgumentVariablePointType |
   ArgumentVariableGlobalPointType |
   ArgumentVariableTagType |
+  ArgumentVariableTagNameType |
   ArgumentVariableGlobalTagType |
+  ArgumentVariableGlobalTagNameType |
   ArgumentVariableEvalType |
   ArgumentVariableEvalType |
   ArgumentVariableItemType |
@@ -142,6 +149,7 @@ export type ArgumentValueTypes =
   ArgumentVariablePlayerType |
   ArgumentVariableRandomNumberType |
   ArgumentVariableVersionType |
+  ArgumentVariableSectionPapiType |
   ArgumentIntergerType |
   ArgumentFloatType |
   ArgumentBlockIdType |

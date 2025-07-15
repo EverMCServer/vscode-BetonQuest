@@ -12,12 +12,13 @@ import { ArgumentObjectiveID } from "./v2/Argument/ArgumentObjectiveID";
 import { ArgumentValue } from "./v2/Argument/ArgumentValue";
 import { ArgumentVariable } from "./v2/Argument/ArgumentVariable";
 import { ArgumentVariableKind } from "./v2/Argument/ArgumentVariableKind";
-import { ArgumentVariableCondition } from "./v2/Argument/Variable/ArgumentVariableCondition";
+import { ArgumentVariableCondition, ArgumentVariableConditionID } from "./v2/Argument/Variable/ArgumentVariableCondition";
 import { ArgumentVariableGlobalPoint } from "./v2/Argument/Variable/ArgumentVariableGlobalPoint";
-import { ArgumentVariableGlobalTag } from "./v2/Argument/Variable/ArgumentVariableGlobalTag";
+import { ArgumentVariableGlobalTag, ArgumentVariableGlobalTagName } from "./v2/Argument/Variable/ArgumentVariableGlobalTag";
 import { ArgumentVariableObjectiveProperty, ArgumentVariableObjectivePropertyObjectiveID, ArgumentVariableObjectivePropertyVariableName } from "./v2/Argument/Variable/ArgumentVariableObjectiveProperty";
 import { ArgumentVariablePoint } from "./v2/Argument/Variable/ArgumentVariablePoint";
-import { ArgumentVariableTag } from "./v2/Argument/Variable/ArgumentVariableTag";
+import { ArgumentVariableTag, ArgumentVariableTagName } from "./v2/Argument/Variable/ArgumentVariableTag";
+import { ArgumentVariableSectionPapi } from "./v2/Argument/Variable/Section/ArgumentVariableSectionPapi";
 import { ConditionArgumentMandatory } from "./v2/Condition/ConditionArgumentMandatory";
 import { ConditionArgumentOptional } from "./v2/Condition/ConditionArgumentOptional";
 import { ConditionArguments } from "./v2/Condition/ConditionArguments";
@@ -77,10 +78,14 @@ type TArgumentVariables =
   ArgumentVariableObjectivePropertyVariableName |
   ArgumentVariableObjectivePropertyObjectiveID |
   ArgumentVariableCondition |
+  ArgumentVariableConditionID |
   ArgumentVariableGlobalPoint |
   ArgumentVariablePoint |
   ArgumentVariableTag |
-  ArgumentVariableGlobalTag
+  ArgumentVariableTagName |
+  ArgumentVariableGlobalTag |
+  ArgumentVariableGlobalTagName |
+  ArgumentVariableSectionPapi
   ;
 type TArguments = ArgumentKey | ArgumentValue | TArgumentVariables | ArgumentConditionID | ArgumentEventID | ArgumentGlobalPointCategory | ArgumentObjectiveID | ArgumentBlockID | ArgumentEntity | ArgumentInterger | ArgumentFloat;
 type TConversationNpcOption = NpcOption | NpcConditions | NpcCondition | NpcEvents | NpcEvent | NpcPointers | NpcPointer | NpcText;

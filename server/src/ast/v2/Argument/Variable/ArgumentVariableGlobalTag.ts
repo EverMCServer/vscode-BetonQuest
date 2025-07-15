@@ -3,7 +3,7 @@ import { CompletionItem, CompletionItemKind, Diagnostic, DiagnosticSeverity } fr
 import { ArgumentType } from "betonquest-utils/betonquest/Arguments";
 
 import { LocationLinkOffset } from "../../../../utils/location";
-import { ArgumentVariableGlobalTagType } from "../../../node";
+import { ArgumentVariableGlobalTagNameType, ArgumentVariableGlobalTagType } from "../../../node";
 import { AbstractNodeV2 } from "../../../v2";
 import { ArgumentVariable } from "../ArgumentVariable";
 import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
@@ -18,6 +18,7 @@ import { ObjectiveArgumentMandatory } from "../../Objective/ObjectiveArgumentMan
 import { ObjectiveArgumentOptional } from "../../Objective/ObjectiveArgumentOptional";
 import { ObjectiveArguments } from "../../Objective/ObjectiveArguments";
 import { ArgumentValue } from "../ArgumentValue";
+import { ArgumentVariableSectionPapi } from "./Section/ArgumentVariableSectionPapi";
 
 export class ArgumentVariableGlobalTag extends AbstractNodeV2<ArgumentVariableGlobalTagType> {
   readonly type: ArgumentVariableGlobalTagType = 'ArgumentVariableGlobalTag';
@@ -25,12 +26,41 @@ export class ArgumentVariableGlobalTag extends AbstractNodeV2<ArgumentVariableGl
   readonly offsetEnd: number;
   readonly parent: ArgumentVariable;
 
-  readonly argumentStr: string;
+  // readonly argumentStr: string;
 
   constructor(
     argumentStr: string,
     offsets: [offsetStart: number, offsetEnd: number],
     parent: ArgumentVariable,
+  ) {
+    super();
+    this.offsetStart = offsets[0];
+    this.offsetEnd = offsets[1];
+    this.parent = parent;
+
+    // this.argumentStr = argumentStr;
+    const parts = argumentStr.split(".");
+    this.addChild(new ArgumentVariableGlobalTagName(parts[0], [this.offsetStart, this.offsetStart + parts[0].length], this));
+    // Parse ".papi" suffix
+    if (parts.length > 1) {
+      const papiString = parts.slice(1).join(".");
+      this.addChild(new ArgumentVariableSectionPapi(papiString, [this.offsetStart + parts[0].length + 1, this.offsetEnd], this));
+    }
+  }
+}
+
+export class ArgumentVariableGlobalTagName extends AbstractNodeV2<ArgumentVariableGlobalTagNameType> {
+  readonly type: ArgumentVariableGlobalTagNameType = 'ArgumentVariableGlobalTagName';
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: ArgumentVariableGlobalTag;
+
+  readonly argumentStr: string;
+
+  constructor(
+    argumentStr: string,
+    offsets: [offsetStart: number, offsetEnd: number],
+    parent: ArgumentVariableGlobalTag,
   ) {
     super();
     this.offsetStart = offsets[0];
@@ -55,7 +85,7 @@ export class ArgumentVariableGlobalTag extends AbstractNodeV2<ArgumentVariableGl
       .flatMap(e => e.getChildren<ConditionArguments | EventArguments | ObjectiveArguments>(["ConditionArguments", "EventArguments", "ObjectiveArguments"]))
       .flatMap(e => e.getChildren<ConditionArgumentMandatory | EventArgumentMandatory | ObjectiveArgumentMandatory | ConditionArgumentOptional | EventArgumentOptional | ObjectiveArgumentOptional>(["ConditionArgumentMandatory", "EventArgumentMandatory", "ObjectiveArgumentMandatory", "ConditionArgumentOptional", "EventArgumentOptional", "ObjectiveArgumentOptional"]))
       // Filter all argument by type  
-      .filter(e => e.pattern?.type === ArgumentType.tagName)
+      .filter(e => e.pattern?.type === ArgumentType.globalTagName)
       .flat()
       .map(e => e.getChild<ArgumentValue>("ArgumentValue", additionalCheck)!).filter(e => e);
   }
@@ -96,11 +126,6 @@ export class ArgumentVariableGlobalTag extends AbstractNodeV2<ArgumentVariableGl
   }
 
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
-    // Skip completion promption if it is prompted with an extra "."
-    if (this.argumentStr.includes(".")) {
-      return [];
-    }
-
     // Get definitions info
     const list = new Map<string, [string, string, string, string]>(); // label => [label, detail, document, insertText]
     this.getAllGlobalTagDefinitions().forEach(e => {

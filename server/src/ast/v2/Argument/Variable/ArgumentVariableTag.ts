@@ -3,7 +3,7 @@ import { CompletionItem, CompletionItemKind, Diagnostic, DiagnosticSeverity } fr
 import { ArgumentType } from "betonquest-utils/betonquest/Arguments";
 
 import { LocationLinkOffset } from "../../../../utils/location";
-import { ArgumentVariableTagType } from "../../../node";
+import { ArgumentVariableTagNameType, ArgumentVariableTagType } from "../../../node";
 import { AbstractNodeV2 } from "../../../v2";
 import { ArgumentVariable } from "../ArgumentVariable";
 import { SemanticToken, SemanticTokenType } from "../../../../service/semanticTokens";
@@ -18,6 +18,7 @@ import { ObjectiveArgumentMandatory } from "../../Objective/ObjectiveArgumentMan
 import { ObjectiveArgumentOptional } from "../../Objective/ObjectiveArgumentOptional";
 import { ObjectiveArguments } from "../../Objective/ObjectiveArguments";
 import { ArgumentValue } from "../ArgumentValue";
+import { ArgumentVariableSectionPapi } from "./Section/ArgumentVariableSectionPapi";
 
 export class ArgumentVariableTag extends AbstractNodeV2<ArgumentVariableTagType> {
   readonly type: ArgumentVariableTagType = 'ArgumentVariableTag';
@@ -25,12 +26,41 @@ export class ArgumentVariableTag extends AbstractNodeV2<ArgumentVariableTagType>
   readonly offsetEnd: number;
   readonly parent: ArgumentVariable;
 
-  readonly argumentStr: string;
+  // readonly argumentStr: string;
 
   constructor(
     argumentStr: string,
     offsets: [offsetStart: number, offsetEnd: number],
     parent: ArgumentVariable,
+  ) {
+    super();
+    this.offsetStart = offsets[0];
+    this.offsetEnd = offsets[1];
+    this.parent = parent;
+
+    // this.argumentStr = argumentStr;
+    const parts = argumentStr.split(".");
+    this.addChild(new ArgumentVariableTagName(parts[0], [this.offsetStart, this.offsetStart + parts[0].length], this));
+    // Parse ".papi" suffix
+    if (parts.length > 1) {
+      const papiString = parts.slice(1).join(".");
+      this.addChild(new ArgumentVariableSectionPapi(papiString, [this.offsetStart + parts[0].length + 1, this.offsetEnd], this));
+    }
+  }
+}
+
+export class ArgumentVariableTagName extends AbstractNodeV2<ArgumentVariableTagNameType> {
+  readonly type: ArgumentVariableTagNameType = 'ArgumentVariableTagName';
+  readonly offsetStart: number;
+  readonly offsetEnd: number;
+  readonly parent: ArgumentVariableTag;
+
+  readonly argumentStr: string;
+
+  constructor(
+    argumentStr: string,
+    offsets: [offsetStart: number, offsetEnd: number],
+    parent: ArgumentVariableTag,
   ) {
     super();
     this.offsetStart = offsets[0];
@@ -96,11 +126,6 @@ export class ArgumentVariableTag extends AbstractNodeV2<ArgumentVariableTagType>
   }
 
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
-    // Skip completion promption if it is prompted with an extra "."
-    if (this.argumentStr.includes(".")) {
-      return [];
-    }
-
     // Get definitions info
     const list = new Map<string, [string, string, string, string]>(); // label => [label, detail, document, insertText]
     this.getAllTagDefinitions().forEach(e => {
