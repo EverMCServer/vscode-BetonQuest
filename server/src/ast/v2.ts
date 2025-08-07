@@ -9,6 +9,7 @@ import { ArgumentGlobalPointCategory } from "./v2/Argument/ArgumentGlobalPointCa
 import { ArgumentInterger } from "./v2/Argument/ArgumentInterger";
 import { ArgumentKey } from "./v2/Argument/ArgumentKey";
 import { ArgumentObjectiveID } from "./v2/Argument/ArgumentObjectiveID";
+import { ArgumentTagName } from "./v2/Argument/ArgumentTagName";
 import { ArgumentValue } from "./v2/Argument/ArgumentValue";
 import { ArgumentVariable } from "./v2/Argument/ArgumentVariable";
 import { ArgumentVariableKind } from "./v2/Argument/ArgumentVariableKind";
@@ -87,7 +88,7 @@ type TArgumentVariables =
   ArgumentVariableGlobalTagName |
   ArgumentVariableSectionPapi
   ;
-type TArguments = ArgumentKey | ArgumentValue | TArgumentVariables | ArgumentConditionID | ArgumentEventID | ArgumentGlobalPointCategory | ArgumentObjectiveID | ArgumentBlockID | ArgumentEntity | ArgumentInterger | ArgumentFloat;
+type TArguments = ArgumentKey | ArgumentValue | TArgumentVariables | ArgumentConditionID | ArgumentEventID | ArgumentGlobalPointCategory | ArgumentObjectiveID | ArgumentTagName | ArgumentBlockID | ArgumentEntity | ArgumentInterger | ArgumentFloat;
 type TConversationNpcOption = NpcOption | NpcConditions | NpcCondition | NpcEvents | NpcEvent | NpcPointers | NpcPointer | NpcText;
 type TConversationPlayerOption = PlayerOption | PlayerConditions | PlayerCondition | PlayerEvents | PlayerEvent | PlayerPointers | PlayerPointer | PlayerText;
 export type ConversationOption = NpcOption | PlayerOption;

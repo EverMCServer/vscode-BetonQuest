@@ -13,18 +13,20 @@ import { EventArguments } from "../Event/EventArguments";
 import { ObjectiveArgumentMandatory } from "../Objective/ObjectiveArgumentMandatory";
 import { ObjectiveArgumentOptional } from "../Objective/ObjectiveArgumentOptional";
 import { ObjectiveArguments } from "../Objective/ObjectiveArguments";
-import { ArgumentAbstractID } from "./ArgumentAbstractID";
+import { AbstractID } from "./AbstractID";
 import { ArgumentValue } from "./ArgumentValue";
 
-export class ArgumentGlobalPointCategory extends ArgumentAbstractID<ArgumentGlobalPointCategoryType> {
+export class ArgumentGlobalPointCategory extends AbstractID<ArgumentGlobalPointCategoryType> {
   readonly type: ArgumentGlobalPointCategoryType = 'ArgumentGlobalPointCategory';
+  readonly parent: ArgumentValue;
 
   constructor(
     argumentStr: string,
     offsets: [offsetStart: number, offsetEnd: number],
     parent: ArgumentValue,
   ) {
-    super(argumentStr, offsets, parent);
+    super(argumentStr, offsets);
+    this.parent = parent;
   }
 
   private getAllGlobalPointArguments() {

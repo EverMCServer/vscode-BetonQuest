@@ -19,6 +19,7 @@ import { ArgumentFloat } from "./ArgumentFloat";
 import { ArgumentGlobalPointCategory } from "./ArgumentGlobalPointCategory";
 import { ArgumentInterger } from "./ArgumentInterger";
 import { ArgumentVariable } from "./ArgumentVariable";
+import { ArgumentTagName } from "./ArgumentTagName";
 
 export class ArgumentValue extends AbstractNodeV2<ArgumentValueType> {
   readonly type: ArgumentValueType = "ArgumentValue";
@@ -108,6 +109,10 @@ export class ArgumentValue extends AbstractNodeV2<ArgumentValueType> {
 
           case ArgumentType.globalPointCategory:
             this.addChild(new ArgumentGlobalPointCategory(this.valueStr, [this.offsetStart, this.offsetEnd], this));
+            break;
+
+          case ArgumentType.tagName:
+            this.addChild(new ArgumentTagName(this.valueStr, [this.offsetStart, this.offsetEnd], this));
             break;
 
           case ArgumentType.blockID:

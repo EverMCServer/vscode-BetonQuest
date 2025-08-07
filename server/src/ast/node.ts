@@ -125,6 +125,7 @@ export type ArgumentConditionIdType = 'ArgumentConditionID';
 export type ArgumentGlobalPointCategoryType = 'ArgumentGlobalPointCategory';
 export type ArgumentEventIdType = 'ArgumentEventID';
 export type ArgumentObjectiveIdType = 'ArgumentObjectiveID';
+export type ArgumentTagNameType = 'ArgumentTagName';
 export type ArgumentValueTypes =
   ArgumentVariableType |
   ArgumentVariableKindType |
@@ -157,7 +158,8 @@ export type ArgumentValueTypes =
   ArgumentConditionIdType |
   ArgumentGlobalPointCategoryType |
   ArgumentEventIdType |
-  ArgumentObjectiveIdType;
+  ArgumentObjectiveIdType|
+  ArgumentTagNameType;
 
 export type NodeType = PackageTypes | ConversationTypes | EventTypes | ConditionTypes | ObjectiveTypes | ArgumentTypes | ArgumentValueTypes;
 

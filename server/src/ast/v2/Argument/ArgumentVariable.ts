@@ -54,6 +54,8 @@ export class ArgumentVariable extends AbstractNodeV2<ArgumentVariableType> {
         case 'condition':
           this.addChild(new ArgumentVariableCondition(this.variableInstructions, [offArgStart, offArgEnd], this));
           break;
+        case 'constant':
+          break;
         case 'point':
           this.addChild(new ArgumentVariablePoint(this.variableInstructions, [offArgStart, offArgEnd], this));
           break;
