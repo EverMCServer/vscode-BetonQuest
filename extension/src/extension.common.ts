@@ -1,6 +1,5 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as path from 'path';
 import * as vscode from "vscode";
 import { BaseLanguageClient } from 'vscode-languageclient/lib/common/client';
 
@@ -89,12 +88,14 @@ export async function _activate(context: vscode.ExtensionContext, lspClient: Bas
     vscode.commands.executeCommand('setContext', 'canActivateObjectivesEditor', false);
     vscode.commands.executeCommand('setContext', 'canActivatePackageEditor', false);
 
+    const docUri = editor.document.uri;
+
     // Show Conversation Editor activation button only when it is appropriate
-    if (editor.document.fileName.match(/[\/\\]conversations[\/\\].+\.yml$/gi)) {
-      const dir = path.resolve(path.dirname(editor.document.fileName), "..");
+    if (docUri.path.match(/[\/\\]conversations[\/\\].+\.yml$/gi)) {
+      const dir = vscode.Uri.joinPath(docUri, '..', '..'); // parent of conversations dir
 
       // Check for main.yml
-      const mainFile = vscode.Uri.file(path.join(dir, 'main.yml'));
+      const mainFile = vscode.Uri.joinPath(dir, 'main.yml');
       checkIfFileExists(mainFile).then(mainExists => {
         if (mainExists) {
           // Set the context variable based on the result
@@ -105,15 +106,15 @@ export async function _activate(context: vscode.ExtensionContext, lspClient: Bas
 
     // Show Events, Conditions, Objectives, Items Editor activation button only when it is appropriate
     if (
-      editor.document.fileName.match(/[\/\\]events\.yml$/) ||
-      editor.document.fileName.match(/[\/\\]conditions\.yml$/) ||
-      editor.document.fileName.match(/[\/\\]objectives\.yml$/) ||
-      editor.document.fileName.match(/[\/\\]items\.yml$/)
+      docUri.path.match(/[\/\\]events\.yml$/) ||
+      docUri.path.match(/[\/\\]conditions\.yml$/) ||
+      docUri.path.match(/[\/\\]objectives\.yml$/) ||
+      docUri.path.match(/[\/\\]items\.yml$/)
     ) {
-      const dir = path.dirname(editor.document.fileName);
+      const dir = vscode.Uri.joinPath(docUri, '..');
 
       // Check for main.yml
-      const mainFile = vscode.Uri.file(path.join(dir, 'main.yml'));
+      const mainFile = vscode.Uri.joinPath(dir, 'main.yml');
       checkIfFileExists(mainFile).then(mainExists => {
         if (mainExists) {
           // Set the context variable based on the result
@@ -125,9 +126,9 @@ export async function _activate(context: vscode.ExtensionContext, lspClient: Bas
     }
 
     // Show Package Editor activation button only when it is appropriate
-    if (editor.document.fileName.match(/[^\/\\]+\.yml$/gi)) {
+    if (docUri.path.match(/[^\/\\]+\.yml$/gi)) {
       // Iterate all parents dir to find "package.yml"
-      checkIfFileExistsInAllParents(path.dirname(editor.document.fileName), 'package.yml').then(packageExists => {
+      checkIfFileExistsInAllParents(vscode.Uri.joinPath(docUri, '..'), 'package.yml').then(packageExists => {
         // Set the context variable based on the result
         vscode.commands.executeCommand('setContext', 'canActivatePackageEditor', packageExists);
       });
@@ -256,23 +257,23 @@ async function checkIfFileExists(filePath: vscode.Uri): Promise<boolean> {
   }
 }
 
-function checkIfFileExistsInAllParents(filePath: string, fileName: string): Promise<boolean> {
-  let d = filePath;
-
-  return checkIfFileExists(vscode.Uri.file(path.join(d, fileName))).then(file => {
+function checkIfFileExistsInAllParents(dirUri: vscode.Uri, fileName: string): Promise<boolean> {
+  return checkIfFileExists(vscode.Uri.joinPath(dirUri, fileName)).then(file => {
     if (file) {
       // Set the context variable based on the result
       return true;
     } else if (vscode.workspace.workspaceFolders?.find(base => {
-      const u = base.uri.fsPath.toString();
+      const u = base.uri.toString();
+      const d = dirUri.toString();
       return u === d || u.length >= d.length;
     })) {
       // Break out recursion if all parent path are iterated
       return false;
     } else {
       // Check parent
-      d = path.resolve(d, "..");
-      return checkIfFileExistsInAllParents(d, fileName);
+      const parentDir = vscode.Uri.joinPath(dirUri, '..');
+      if (parentDir.toString() === dirUri.toString()) return false;
+      return checkIfFileExistsInAllParents(parentDir, fileName);
     }
   });
 }
