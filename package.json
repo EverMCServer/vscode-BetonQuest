@@ -191,7 +191,7 @@
     "webpack:compile": "webpack --config webpack.prod.js",
     "watch:all": "tsc -b -watch ./extension/ ./webview/ ./server/",
     "webpack:watch": "webpack --watch --config webpack.dev.js",
-    "open-in-browser": "vscode-test-web --browserOption=--remote-debugging-port=9221 --quality=stable --extensionDevelopmentPath=."
+    "open-in-browser": "vscode-test-web --browserOption=--remote-debugging-port=9221 --browserOption=--remote-allow-origins=* --quality=stable --extensionDevelopmentPath=."
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
@@ -201,8 +201,8 @@
     "@types/webpack-env": "^1.18.4",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
-    "@vscode/test-electron": "^2.3.9",
-    "@vscode/test-web": "^0.0.56",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/test-web": "^0.0.79",
     "assert": "^2.1.0",
     "copy-webpack-plugin": "^12.0.2",
     "css-loader": "^6.10.0",

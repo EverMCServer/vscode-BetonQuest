@@ -370,9 +370,12 @@ export abstract class ArgumentsAbstract {
             let newArgStrs = [this.getArgumentString()];
             if (pattern.optional && pattern.optional.length) {
                 // With optional args
-                if (pattern!.optionalAtFirst) {
+                const optionalKeysRegex = new RegExp(`^(?:${pattern.optional.map((optionalArgument) => 
+                    optionalArgument.key
+                ).join("|")}):`, 'g');
+                if (pattern.optionalAtFirst) {
                     argStrs.every((v, i) => {
-                        if (/(?<!\\):/g.test(v)) {
+                        if (optionalKeysRegex.test(v)) {
                             newArgStrs = [
                                 ...argStrs.slice(0, i + pattern!.mandatory.length).map(value => value.replace(/\s$/, "")),
                                 argStrs.slice(i + pattern!.mandatory.length).join('')
@@ -383,7 +386,7 @@ export abstract class ArgumentsAbstract {
                     });
                 } else {
                     argStrs.some((v, i) => {
-                        if (/(?<!\\):/g.test(v)) {
+                        if (optionalKeysRegex.test(v)) {
                             newArgStrs = [
                                 ...argStrs.slice(0, pattern!.mandatory.length - 1).map(value => value.replace(/\s$/, "")),
                                 argStrs.slice(pattern!.mandatory.length - 1, i).join('').replace(/\s$/, ""),
