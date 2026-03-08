@@ -91,7 +91,7 @@ export default function (props: InputProps) {
                 placeholder="minecraft"
                 onChange={(e) => {
                     // Filter illigal characters
-                    if (e.target.value.match(/[^a-z0-9_\[\]\{\}\(\)\<\>\?\:\=\!\.\*\+\^\$\\,]/i)) {
+                    if (e.target.value.match(/[^a-z0-9_]/i)) {
                         return;
                     }
                     // Update namespace
@@ -107,7 +107,7 @@ export default function (props: InputProps) {
                 placeholder=""
                 onChange={(e) => {
                     // Filter illigal characters
-                    if (e.target.value.match(/[^a-z0-9_\/\[\]\{\}\(\)\<\>\?\:\=\!\.\*\+\^\$\\,]/i)) {
+                    if (e.target.value.match(/[^a-z0-9_]/i)) {
                         return;
                     }
                     // Update tag
