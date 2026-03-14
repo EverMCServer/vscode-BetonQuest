@@ -2,7 +2,15 @@
 
 All notable changes to the "BetonQuest" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## [0.5.6 pre-release] - 2026-02-27
+
+### Added
+- Add BlockSelector
+
+### Fixed
+- Fix could not type ":" into editor on command Events
+- Fix "Open with ... Editor" button not show up on web
+- Fix special characters checking in Block Selector
 
 ## [0.5.5 pre-release] - 2025-06-19
 
