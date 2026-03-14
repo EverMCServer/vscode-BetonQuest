@@ -1,6 +1,6 @@
 import { AST } from "./ast";
 import { AbstractNode, ConversationOptionType, NodeType } from "./node";
-import { ArgumentBlockID } from "./v1/Argument/ArgumentBlockID";
+import { ArgumentBlockSelector } from "./v1/Argument/ArgumentBlockSelector";
 import { ArgumentConditionID } from "./v1/Argument/ArgumentConditionID";
 import { ArgumentEntity } from "./v1/Argument/ArgumentEntity";
 import { ArgumentEventID } from "./v1/Argument/ArgumentEventID";
@@ -59,7 +59,7 @@ import { PackageV1 } from "./v1/Package";
 type TConditionList = ConditionList | ConditionEntry | ConditionKey | ConditionKind | ConditionArguments | ConditionArgumentMandatory | ConditionArgumentOptional;
 type TEventListList = EventList | EventEntry | EventKey | EventKind | EventArguments | EventArgumentMandatory | EventArgumentOptional;
 type TObjectiveList = ObjectiveList | ObjectiveEntry | ObjectiveKey | ObjectiveKind | ObjectiveArguments | ObjectiveArgumentMandatory | ObjectiveArgumentOptional;
-type TArguments = ArgumentKey | ArgumentValue | ArgumentConditionID | ArgumentEventID | ArgumentObjectiveID | ArgumentBlockID | ArgumentEntity | ArgumentInterger;
+type TArguments = ArgumentKey | ArgumentValue | ArgumentConditionID | ArgumentEventID | ArgumentObjectiveID | ArgumentBlockSelector | ArgumentEntity | ArgumentInterger;
 type TConversationNpcOption = NpcOption | NpcConditions | NpcCondition | NpcEvents | NpcEvent | NpcPointers | NpcPointer | NpcText;
 type TConversationPlayerOption = PlayerOption | PlayerConditions | PlayerCondition | PlayerEvents | PlayerEvent | PlayerPointers | PlayerPointer | PlayerText;
 type TConversation = Conversation | ConversationQuester | ConversationQuesterTranslations | First | FirstPointer | ConversationStop | ConversationFinalEvents | ConversationFinalEvent | ConversationInterceptor | TConversationNpcOption | TConversationPlayerOption;

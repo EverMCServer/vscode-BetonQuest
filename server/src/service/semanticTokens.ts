@@ -143,6 +143,8 @@ export enum SemanticTokenType {
    */
   Operator = SemanticTokenTypes.operator,
 
+  Bracket = SemanticTokenTypes.struct,
+
   /**
    * For V2 top level keywords. e.g.
    * ```yaml

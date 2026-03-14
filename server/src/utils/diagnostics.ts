@@ -107,6 +107,11 @@ export enum DiagnosticCode {
   ArgumentValueMissing = "BQ-2006",
 
   /**
+   * Invalid Regular Expression pattern.
+   */
+  ArgumentValueInvalidRegexp = "BQ-2007",
+
+  /**
    * Variable Objective ID is missing.
    */
   ArgumentVariableObjectiveIdMissing = "BQ-2011",
@@ -180,6 +185,16 @@ export enum DiagnosticCode {
    * Argument Global Point Category not exists.
    */
   ArgumentVariableGlobalTagNameNotFound = "BQ-2025",
+
+  /**
+   * Argument Block Selector Invalid.
+   */
+  ArgumentBlockSelectorInvalid = "BQ-2102",
+
+  /**
+   * Block Selector could not find such a block.
+   */
+  ArgumentBlockSelectorCouldNotFindBlock = "BQ-2103",
 
   /**
    * The "quester" section is missing.

@@ -15,6 +15,26 @@ const bukkitOptions = MATERIAL_LIST.filter(e => e.isBlock()).map(e => {
     };
 });
 
+const STATE_SPECIAL_CHARS = new Set(["\\", "=", ","]);
+
+function escapeStateComponent(raw: string): string {
+    let result = "";
+    for (const ch of raw) {
+        if (STATE_SPECIAL_CHARS.has(ch)) {
+            result += "\\" + ch;
+        } else {
+            result += ch;
+        }
+    }
+    return result;
+}
+
+function unescapeStateComponent(raw: string): string {
+    return raw.replace(/\\([\S])?/g, (_, captured) => {
+        return captured !== undefined ? captured : '';
+    });
+}
+
 // https://docs.betonquest.org/2.0-DEV/Documentation/Scripting/Data-Formats/#block-selectors
 
 export default function (props: InputProps) {
@@ -49,9 +69,9 @@ export default function (props: InputProps) {
 
         if (mStateStr) {
             const state: [string, string][] = [];
-            const pairs = mStateStr.split(",");
+            const pairs = mStateStr.split(/(?<!\\),/i);
             for (const pair of pairs) {
-                const [key, value] = pair.split("=");
+                const [key, value] = pair.split(/(?<!\\)=/i);
                 state.push([key, value]);
             }
             setState(state);
@@ -172,16 +192,16 @@ export default function (props: InputProps) {
             {state.map(([key, value], index) =>
                 <Space.Compact block key={index} style={{ width: '100%' }}>
                     <Input
-                        value={key}
+                        value={unescapeStateComponent(key)}
                         defaultValue={""}
                         onChange={(e) => {
                             // Filter illigal characters
-                            if (e.target.value.match(/[^a-z0-9_\[\]\{\}\(\)\<\>\?\:\=\!\.\*\+\^\$\\,]/i)) {
+                            if (e.target.value.match(/[\[\]]/i)) {
                                 return;
                             }
                             // Update key
                             const newState = [...state];
-                            newState[index][0] = e.target.value;
+                            newState[index][0] = escapeStateComponent(e.target.value);
                             setState(newState);
                             setValue(namespace, tag, blockId, newState);
                         }}
@@ -200,16 +220,16 @@ export default function (props: InputProps) {
                         size="small"
                     />
                     <Input
-                        value={value}
+                        value={unescapeStateComponent(value)}
                         defaultValue={""}
                         onChange={(e) => {
                             // Filter illigal characters
-                            if (e.target.value.match(/[^a-z0-9_\[\]\{\}\(\)\<\>\?\:\=\!\.\*\+\^\$\\,]/i)) {
+                            if (e.target.value.match(/[\[\]]/i)) {
                                 return;
                             }
                             // Update value
                             const newState = [...state];
-                            newState[index][1] = e.target.value;
+                            newState[index][1] = escapeStateComponent(e.target.value);
                             setState(newState);
                             setValue(namespace, tag, blockId, newState);
                         }}

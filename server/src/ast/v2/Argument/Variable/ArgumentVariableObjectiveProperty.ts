@@ -1,6 +1,6 @@
 import { CompletionItem, CompletionItemKind, DiagnosticSeverity, MarkupKind } from "vscode-languageserver";
 
-import { ArgumentVariableObjectivePropertyObjectiveIdType, ArgumentVariableObjectivePropertyType, ArgumentVariableObjectivePropertyVariableNameType } from "../../../node";
+import { AddDiagnosticType, ArgumentVariableObjectivePropertyObjectiveIdType, ArgumentVariableObjectivePropertyType, ArgumentVariableObjectivePropertyVariableNameType } from "../../../node";
 import { AbstractNodeV2 } from "../../../v2";
 import { ArgumentVariable } from "../ArgumentVariable";
 import { HoverInfo } from "../../../../utils/hover";
@@ -75,7 +75,7 @@ export class ArgumentVariableObjectivePropertyObjectiveID extends AbstractNodeV2
     return this.getObjectiveEntries(this.argumentStr).shift();
   }
 
-  initDiagnosticsAndCodeActions(addDiagnostic: (offsets: [offsetStart?: number, offsetEnd?: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode, codeActions?: { title: string; text: string; range?: [offsetStart: number, offsetEnd: number]; }[]) => void): void {
+  initDiagnosticsAndCodeActions(addDiagnostic: AddDiagnosticType): void {
     const objective = this.getObjectiveEntry();
     if (!objective) {
       // Check if objective ID exists
@@ -216,7 +216,7 @@ export class ArgumentVariableObjectivePropertyVariableName extends AbstractNodeV
     this.argumentStr = argumentStr;
   }
 
-  initDiagnosticsAndCodeActions(addDiagnostic: (offsets: [offsetStart?: number, offsetEnd?: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode, codeActions?: { title: string; text: string; range?: [offsetStart: number, offsetEnd: number]; }[]) => void): void {
+  initDiagnosticsAndCodeActions(addDiagnostic: AddDiagnosticType): void {
     // Check Objective Property kind and provide fix suggestions
     const objectiveEntry = this.getObjectiveEntry();
     if (!objectiveEntry?.kindConfig?.variableProperties?.find(e => e.name.toLowerCase() === this.argumentStr.toLowerCase())) {

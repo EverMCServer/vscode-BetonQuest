@@ -11,7 +11,7 @@ import { EventArgumentMandatory } from "../Event/EventArgumentMandatory";
 import { EventArgumentOptional } from "../Event/EventArgumentOptional";
 import { ObjectiveArgumentMandatory } from "../Objective/ObjectiveArgumentMandatory";
 import { ObjectiveArgumentOptional } from "../Objective/ObjectiveArgumentOptional";
-import { ArgumentBlockID } from "./ArgumentBlockID";
+import { ArgumentBlockSelector } from "./ArgumentBlockSelector";
 import { ArgumentConditionID } from "./ArgumentConditionID";
 import { ArgumentEntity } from "./ArgumentEntity";
 import { ArgumentEventID } from "./ArgumentEventID";
@@ -83,7 +83,7 @@ export class ArgumentValue extends AbstractNodeV1<ArgumentValueType> {
           break;
 
         case ArgumentType.blockID:
-          parent.addChild(new ArgumentBlockID(valueStr, [this.offsetStart, this.offsetEnd], this));
+          parent.addChild(new ArgumentBlockSelector(valueStr, [this.offsetStart, this.offsetEnd], this));
           break;
 
         case ArgumentType.entity:
@@ -123,7 +123,7 @@ export class ArgumentValue extends AbstractNodeV1<ArgumentValueType> {
   static getCompletionsByType(type: ArgumentType) {
     switch (type) {
       case ArgumentType.blockID:
-        return ArgumentBlockID.getCompletions();
+        return ArgumentBlockSelector.getCompletions();
 
       case ArgumentType.entity:
       case ArgumentType.entityList:

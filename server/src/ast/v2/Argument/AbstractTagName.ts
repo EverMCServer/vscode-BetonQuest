@@ -85,6 +85,12 @@ export abstract class AbstractTagName<T extends NodeType> extends AbstractID<T> 
       }));
   }
 
+  // Get references from Variable etc
+  getReferences(offset: number, documentUri?: string): LocationLinkOffset[] {
+    // TODO
+    return [];
+  }
+
   getCompletions(offset: number, documentUri?: string | undefined): CompletionItem[] {
     // Get definitions info
     const list = new Map<string, [string, string, string, string]>(); // label => [label, detail, document, insertText]

@@ -119,7 +119,10 @@ export type ArgumentVariableVersionType = 'ArgumentVariableVersion';
 export type ArgumentVariableSectionPapiType = 'ArgumentVariableSectionPapi';
 export type ArgumentIntergerType = 'ArgumentInterger';
 export type ArgumentFloatType = 'ArgumentFloat';
-export type ArgumentBlockIdType = 'ArgumentBlockID';
+export type ArgumentBlockSelectorType = 'ArgumentBlockSelector';
+export type ArgumentBlockSelectorNamespaceType = 'ArgumentBlockSelectorNamespace';
+export type ArgumentBlockSelectorMaterialType = 'ArgumentBlockSelectorMaterial';
+export type ArgumentBlockSelectorStateType = 'ArgumentBlockSelectorState';
 export type ArgumentEntityType = 'ArgumentEntity';
 export type ArgumentConditionIdType = 'ArgumentConditionID';
 export type ArgumentGlobalPointCategoryType = 'ArgumentGlobalPointCategory';
@@ -153,7 +156,10 @@ export type ArgumentValueTypes =
   ArgumentVariableSectionPapiType |
   ArgumentIntergerType |
   ArgumentFloatType |
-  ArgumentBlockIdType |
+  ArgumentBlockSelectorType |
+  ArgumentBlockSelectorNamespaceType |
+  ArgumentBlockSelectorMaterialType |
+  ArgumentBlockSelectorStateType |
   ArgumentEntityType |
   ArgumentConditionIdType |
   ArgumentGlobalPointCategoryType |
@@ -162,6 +168,12 @@ export type ArgumentValueTypes =
   ArgumentTagNameType;
 
 export type NodeType = PackageTypes | ConversationTypes | EventTypes | ConditionTypes | ObjectiveTypes | ArgumentTypes | ArgumentValueTypes;
+
+export type AddDiagnosticType = (offsets: [offsetStart?: number, offsetEnd?: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode, codeActions?: {
+    title: string;
+    text: string;
+    range?: [offsetStart: number, offsetEnd: number];
+  }[]) => void;
 
 export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2> {
   readonly abstract type: T;
@@ -219,7 +231,7 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
     this.initDiagnosticsAndCodeActions(this.writeDiagnosticBuffer);
   }
 
-  private writeDiagnosticBuffer = (offsets: [offsetStart?: number, offsetEnd?: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode, codeActions?: {
+  private writeDiagnosticBuffer: AddDiagnosticType = (offsets: [offsetStart?: number, offsetEnd?: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode, codeActions?: {
     title: string;
     text: string;
     range?: [offsetStart: number, offsetEnd: number];
@@ -238,7 +250,7 @@ export abstract class AbstractNode<T extends NodeType, N extends NodeV1 | NodeV2
    * This method is called when documents CREATED or UPDATED.  
    * You must call addDiagnostic(), NOT this.addDiagnostic(), within initDiagnosticsAndCodeActions() to save Diagnostics and CodeActions.
    */
-  initDiagnosticsAndCodeActions(addDiagnostic: typeof this.writeDiagnosticBuffer) { }
+  initDiagnosticsAndCodeActions(addDiagnostic: AddDiagnosticType) { }
 
   _getDiagnostics(): Diagnostic[] {
     const results = [

@@ -8,7 +8,7 @@ import { SemanticTokenType } from "../../../service/semanticTokens";
 import { DiagnosticCode } from "../../../utils/diagnostics";
 import { getFilename } from "../../../utils/url";
 import { isStringScalarPair, isYamlMapPair } from "../../../utils/yaml";
-import { ConversationSectionType, ConversationType } from "../../node";
+import { AddDiagnosticType, ConversationSectionType, ConversationType } from "../../node";
 import { PackageV2 } from "../Package";
 import { Document, SectionCollection } from "../document";
 import { ConversationFinalEvents } from "./ConversationFinalEvents";
@@ -198,7 +198,7 @@ export class ConversationSection extends Document<ConversationSectionType> {
     });
   }
 
-  initDiagnosticsAndCodeActions(addDiagnostic: (offsets: [offsetStart?: number, offsetEnd?: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode, codeActions?: { title: string; text: string; range?: [offsetStart: number, offsetEnd: number]; }[]) => void): void {
+  initDiagnosticsAndCodeActions(addDiagnostic:AddDiagnosticType): void {
     // Check missing elements from the Package
     if (!this.parent.getChildren().some(c => c.getChild('ConversationQuester')) && !this.diagnostics.some(d => d.code === DiagnosticCode.ConversationMissingQuester)) {
       addDiagnostic(

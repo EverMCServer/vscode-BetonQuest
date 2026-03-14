@@ -11,7 +11,7 @@ import { EventArgumentMandatory } from "../Event/EventArgumentMandatory";
 import { EventArgumentOptional } from "../Event/EventArgumentOptional";
 import { ObjectiveArgumentMandatory } from "../Objective/ObjectiveArgumentMandatory";
 import { ObjectiveArgumentOptional } from "../Objective/ObjectiveArgumentOptional";
-import { ArgumentBlockID } from "./ArgumentBlockID";
+import { ArgumentBlockSelector } from "./ArgumentBlockSelector";
 import { ArgumentConditionID } from "./ArgumentConditionID";
 import { ArgumentEntity } from "./ArgumentEntity";
 import { ArgumentEventID } from "./ArgumentEventID";
@@ -116,11 +116,11 @@ export class ArgumentValue extends AbstractNodeV2<ArgumentValueType> {
             break;
 
           case ArgumentType.blockID:
-            this.addChild(new ArgumentBlockID(valueStr, [this.offsetStart, this.offsetEnd], this));
+            this.addChild(new ArgumentBlockSelector(this.valueStr, [this.offsetStart, this.offsetEnd], this));
             break;
 
           case ArgumentType.entity:
-            this.addChild(new ArgumentEntity(valueStr, [this.offsetStart, this.offsetEnd], this));
+            this.addChild(new ArgumentEntity(this.valueStr, [this.offsetStart, this.offsetEnd], this));
             break;
 
           case ArgumentType.entityList:

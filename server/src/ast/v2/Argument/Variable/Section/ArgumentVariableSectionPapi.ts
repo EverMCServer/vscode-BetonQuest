@@ -1,6 +1,6 @@
 import { CompletionItem, CompletionItemKind, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
-import { ArgumentVariableSectionPapiType } from "../../../../node";
+import { AddDiagnosticType, ArgumentVariableSectionPapiType } from "../../../../node";
 import { AbstractNodeV2 } from "../../../../v2";
 import { ArgumentVariableCondition } from "../ArgumentVariableCondition";
 import { DiagnosticCode } from "../../../../../utils/diagnostics";
@@ -28,7 +28,7 @@ export class ArgumentVariableSectionPapi extends AbstractNodeV2<ArgumentVariable
     this.argumentStr = argumentStr;
   }
 
-  initDiagnosticsAndCodeActions(addDiagnostic: (offsets: [offsetStart?: number, offsetEnd?: number], message: string, severity: DiagnosticSeverity, code: DiagnosticCode, codeActions?: { title: string; text: string; range?: [offsetStart: number, offsetEnd: number]; }[]) => void): void {
+  initDiagnosticsAndCodeActions(addDiagnostic: AddDiagnosticType): void {
     // Check string
     if (this.argumentStr !== "papiMode") {
       addDiagnostic(

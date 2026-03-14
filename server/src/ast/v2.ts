@@ -1,6 +1,6 @@
 import { AST } from "./ast";
 import { AbstractNode, ConversationOptionType, NodeType } from "./node";
-import { ArgumentBlockID } from "./v2/Argument/ArgumentBlockID";
+import { ArgumentBlockSelector, ArgumentBlockSelectorMaterial, ArgumentBlockSelectorNamespace, ArgumentBlockSelectorState } from "./v2/Argument/ArgumentBlockSelector";
 import { ArgumentConditionID } from "./v2/Argument/ArgumentConditionID";
 import { ArgumentEntity } from "./v2/Argument/ArgumentEntity";
 import { ArgumentEventID } from "./v2/Argument/ArgumentEventID";
@@ -88,7 +88,7 @@ type TArgumentVariables =
   ArgumentVariableGlobalTagName |
   ArgumentVariableSectionPapi
   ;
-type TArguments = ArgumentKey | ArgumentValue | TArgumentVariables | ArgumentConditionID | ArgumentEventID | ArgumentGlobalPointCategory | ArgumentObjectiveID | ArgumentTagName | ArgumentBlockID | ArgumentEntity | ArgumentInterger | ArgumentFloat;
+type TArguments = ArgumentKey | ArgumentValue | TArgumentVariables | ArgumentConditionID | ArgumentEventID | ArgumentGlobalPointCategory | ArgumentObjectiveID | ArgumentTagName | ArgumentBlockSelector | ArgumentBlockSelectorNamespace | ArgumentBlockSelectorMaterial | ArgumentBlockSelectorState | ArgumentEntity | ArgumentInterger | ArgumentFloat;
 type TConversationNpcOption = NpcOption | NpcConditions | NpcCondition | NpcEvents | NpcEvent | NpcPointers | NpcPointer | NpcText;
 type TConversationPlayerOption = PlayerOption | PlayerConditions | PlayerCondition | PlayerEvents | PlayerEvent | PlayerPointers | PlayerPointer | PlayerText;
 export type ConversationOption = NpcOption | PlayerOption;

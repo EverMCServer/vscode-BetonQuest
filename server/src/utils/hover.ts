@@ -1,5 +1,12 @@
 
 export type HoverInfo = {
-  content: string
+  /**
+   * Markdown string
+   */
+  content: string,
+
+  /**
+   * Offset range
+   */
   offset: [start: number, end: number]
 };
