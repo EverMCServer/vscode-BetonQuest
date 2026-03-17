@@ -192,16 +192,16 @@ export default function (props: InputProps) {
             {state.map(([key, value], index) =>
                 <Space.Compact block key={index} style={{ width: '100%' }}>
                     <Input
-                        value={unescapeStateComponent(key)}
+                        value={key}
                         defaultValue={""}
                         onChange={(e) => {
                             // Filter illigal characters
-                            if (e.target.value.match(/[\[\]]/i)) {
+                            if (e.target.value.match(/[\[\]=:,\\\s]/i)) {
                                 return;
                             }
                             // Update key
                             const newState = [...state];
-                            newState[index][0] = escapeStateComponent(e.target.value);
+                            newState[index][0] = e.target.value;
                             setState(newState);
                             setValue(namespace, tag, blockId, newState);
                         }}
@@ -220,16 +220,16 @@ export default function (props: InputProps) {
                         size="small"
                     />
                     <Input
-                        value={unescapeStateComponent(value)}
+                        value={value}
                         defaultValue={""}
                         onChange={(e) => {
                             // Filter illigal characters
-                            if (e.target.value.match(/[\[\]]/i)) {
+                            if (e.target.value.match(/[\[\]=:,\\\s]/i)) {
                                 return;
                             }
                             // Update value
                             const newState = [...state];
-                            newState[index][1] = escapeStateComponent(e.target.value);
+                            newState[index][1] = e.target.value;
                             setState(newState);
                             setValue(namespace, tag, blockId, newState);
                         }}
