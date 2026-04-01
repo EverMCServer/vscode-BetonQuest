@@ -1,3 +1,5 @@
+import BlockState from "./BlockState";
+
 /**
  * Bukkit's Material
  */
@@ -25,6 +27,8 @@ export default class Material {
     private craftingRemainingItem?: Material;
     private equipmentSlot?: string;
 
+    private blockStates?: BlockState[];
+
 
     constructor(
         bukkitId: string,
@@ -43,7 +47,8 @@ export default class Material {
             gravity?: boolean,
             item?: boolean,
             interactable?: boolean,
-        }
+        },
+        blockStates?: BlockState[]
         ) {
         this.bukkitId = bukkitId.toUpperCase();
         this.numberId = numberId;
@@ -63,6 +68,10 @@ export default class Material {
             this.item = flags.item;
             this.interactable = flags.interactable;
         }
+
+        if (blockStates) {
+            this.blockStates = blockStates;
+        }
     }
 
     getBukkitId() {
@@ -71,6 +80,10 @@ export default class Material {
 
     getNumberId() {
         return this.numberId;
+    }
+
+    getBlockStates() {
+        return this.blockStates;
     }
 
     // Match if the Material contains the given pattern

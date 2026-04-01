@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Divider, Input, Select, Space, Tooltip } from "antd";
 import { VscClose } from "react-icons/vsc";
 import { compile as compileJavaRegex } from "java-regex-js";
@@ -44,6 +44,55 @@ export default function (props: InputProps) {
     const [tag, setTag] = useState<string>("");
     const [blockId, setBlockId] = useState<string>("");
     const [state, setState] = useState<[string, string][]>([]);
+    const [stateValueCustomOptions, setStateValueCustomOptions] = useState<Record<number, { value: string, label: string }>>({});
+
+    const selectedMaterial = useMemo(() => {
+        return MATERIAL_LIST.find(e => {
+            try {
+                const regexp = compileJavaRegex(blockId);
+                return regexp(e.getBukkitId());
+            } catch {
+                return e.getBukkitId() === blockId.toUpperCase();
+            }
+        });
+    }, [blockId]);
+
+    const blockStates = useMemo(() => selectedMaterial?.getBlockStates() ?? [], [selectedMaterial]);
+
+    const blockStateKeyOptions = useMemo(() => {
+        return blockStates.map(s => ({
+            value: s.getName(),
+            label: s.getName()
+        }));
+    }, [blockStates]);
+
+    const getBlockStateValueOptions = useCallback((stateKey: string) => {
+        const blockState = blockStates.find(s => s.getName() === stateKey);
+        if (!blockState) {
+            return [];
+        }
+
+        const values = blockState.getValues();
+        if (values && values.length > 0) {
+            return values.map(v => {
+                const value = String(v);
+                return {
+                    value,
+                    label: value
+                };
+            });
+        }
+
+        if (blockState.getType() === "bool") {
+            return [
+                { value: "true", label: "true" },
+                { value: "false", label: "false" }
+            ];
+        }
+
+        return [];
+    }, [blockStates]);
+
     useEffect(() => {
         if (!props.value) {
             setNamespace("");
@@ -189,23 +238,46 @@ export default function (props: InputProps) {
             />
             <div style={{marginTop: 8}}>{L("betonquest.*.input.blockSelector.states")}</div>
             {/* <Space direction="vertical"> */}
-            {state.map(([key, value], index) =>
-                <Space.Compact block key={index} style={{ width: '100%' }}>
-                    <Input
+            {state.map(([key, value], index) => {
+                const defaultStateValueOptions = getBlockStateValueOptions(key);
+                const customStateValueOption = stateValueCustomOptions[index];
+                const blockStateValueOptions = [
+                    ...(customStateValueOption ? [customStateValueOption] : []),
+                    ...defaultStateValueOptions
+                ];
+
+                const stateValueOptions =
+                    value && !blockStateValueOptions.some(option => option.value === value)
+                        ? [{ value, label: value }, ...blockStateValueOptions]
+                        : blockStateValueOptions;
+
+                return <Space.Compact block key={index} style={{ width: '100%' }}>
+                    <Select
                         value={key}
-                        defaultValue={""}
-                        onChange={(e) => {
-                            // Filter illigal characters
-                            if (e.target.value.match(/[\[\]=:,\\\s]/i)) {
-                                return;
-                            }
-                            // Update key
+                        onChange={(newKey) => {
                             const newState = [...state];
-                            newState[index][0] = e.target.value;
+                            newState[index][0] = newKey;
                             setState(newState);
                             setValue(namespace, tag, blockId, newState);
+                            setStateValueCustomOptions(prev => {
+                                if (!prev[index]) {
+                                    return prev;
+                                }
+
+                                const next = { ...prev };
+                                delete next[index];
+                                return next;
+                            });
                         }}
+                        options={
+                            key && !blockStateKeyOptions.some(option => option.value === key)
+                                ? [{ value: key, label: key }, ...blockStateKeyOptions]
+                                : blockStateKeyOptions
+                        }
+                        showSearch
+                        optionFilterProp="label"
                         size="small"
+                        style={{ width: '100%' }}
                     />
                     <Input
                         // className="site-input-split"
@@ -219,21 +291,63 @@ export default function (props: InputProps) {
                         disabled
                         size="small"
                     />
-                    <Input
+                    <Select
                         value={value}
-                        defaultValue={""}
-                        onChange={(e) => {
-                            // Filter illigal characters
-                            if (e.target.value.match(/[\[\]=:,\\\s]/i)) {
-                                return;
-                            }
-                            // Update value
+                        onChange={(newValue) => {
                             const newState = [...state];
-                            newState[index][1] = e.target.value;
+                            newState[index][1] = newValue;
                             setState(newState);
                             setValue(namespace, tag, blockId, newState);
                         }}
+                        options={stateValueOptions}
+                        showSearch
+                        onSearch={searchString => {
+                            if (
+                                searchString.length > 0
+                                && searchString.match(/^[a-z0-9_\[\]\{\}\(\)\<\>\?\:\!\.\*\+\^\$\\]+$/mi)
+                                && !stateValueOptions.some(option => option.value === searchString)
+                            ) {
+                                try {
+                                    compileJavaRegex(searchString);
+                                    setStateValueCustomOptions(prev => ({
+                                        ...prev,
+                                        [index]: { value: searchString, label: searchString }
+                                    }));
+                                } catch {
+                                    setStateValueCustomOptions(prev => {
+                                        if (!prev[index]) {
+                                            return prev;
+                                        }
+
+                                        const next = { ...prev };
+                                        delete next[index];
+                                        return next;
+                                    });
+                                }
+                            } else {
+                                setStateValueCustomOptions(prev => {
+                                    if (!prev[index]) {
+                                        return prev;
+                                    }
+
+                                    const next = { ...prev };
+                                    delete next[index];
+                                    return next;
+                                });
+                            }
+                        }}
+                        filterOption={(input, option) => {
+                            try {
+                                const regexp = compileJavaRegex(input);
+                                return option?.label ? regexp(option.value) || regexp(option.label) || option.value.includes(input) || option.value === input : false;
+                            } catch {
+                                return false;
+                            }
+                        }}
+                        notFoundContent={null}
+                        optionFilterProp="label"
                         size="small"
+                        style={{ width: '100%' }}
                     />
                     <Tooltip title={L("remove")}>
                         <Button
@@ -242,6 +356,18 @@ export default function (props: InputProps) {
                                 const newState = [...state.slice(0, index), ...state.slice(index + 1)];
                                 setState(newState);
                                 setValue(namespace, tag, blockId, newState);
+                                setStateValueCustomOptions(prev => {
+                                    const next: Record<number, { value: string, label: string }> = {};
+                                    for (const [key, option] of Object.entries(prev)) {
+                                        const row = Number(key);
+                                        if (row < index) {
+                                            next[row] = option;
+                                        } else if (row > index) {
+                                            next[row - 1] = option;
+                                        }
+                                    }
+                                    return next;
+                                });
                             }}
                             style={{
                                 background: 'none',
@@ -258,8 +384,8 @@ export default function (props: InputProps) {
                             />
                         </Button>
                     </Tooltip>
-                </Space.Compact>
-            )}
+                </Space.Compact>;
+            })}
             {/* </Space> */}
             <div>
                 <Button

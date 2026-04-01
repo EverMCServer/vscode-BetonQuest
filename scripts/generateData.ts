@@ -1,6 +1,7 @@
 // Script to generate all available DataType lists
 
 import * as fs from "fs";
+import minecraftData from "minecraft-data";
 
 import EntityType from "../utils/src/bukkit/DataType/EntityType";
 import Material from "../utils/src/bukkit/DataType/Material";
@@ -9,8 +10,11 @@ import PotionEffectType from "../utils/src/bukkit/DataType/PotionEffectType";
 import DyeColor from "../utils/src/bukkit/DataType/DyeColor";
 import path from "path";
 import Biome from "../utils/src/bukkit/DataType/Biome";
+import BlockState from "../utils/src/bukkit/DataType/BlockState";
 
 // Config
+// Minecraft Java version to use for block states
+const MINECRAFT_DATA_VERSION = "1.21.11";
 const OUTPUT_DIR = path.join(path.dirname(__dirname), "./utils/src/bukkit/Data");
 console.log("OUTPUT_DIR:", OUTPUT_DIR);
 
@@ -86,6 +90,23 @@ async function generateEntityTypeList(savePath: string) {
 // Bukkit's Materials
 // https://hub.spigotmc.org/stash/projects/SPIGOT/repos/bukkit/browse/src/main/java/org/bukkit/Material.java
 async function generateMaterialList(savePath: string) {
+    function getMinecraftBlockStatesForMaterial(bukkitId: string) {
+        // Bukkit material names are typically the same as block ids but uppercased,
+        // e.g. STONE -> "stone", OAK_PLANKS -> "oak_planks".
+        const mcName = bukkitId.toLowerCase();
+
+        const mc = minecraftData(MINECRAFT_DATA_VERSION as any);
+        const blocksByName: Record<string, any> = (mc as any).blocksByName || {};
+
+        const block = blocksByName[mcName];
+        if (!block || !block.states) {
+            return undefined;
+        }
+
+        // Keep the structure as provided by minecraft-data
+        return block.states as BlockState[];
+    }
+
     try {
         const response = await fetch(BUKKIT_MATERIAL_SOURCE);
         const text = await response.text();
@@ -109,7 +130,9 @@ async function generateMaterialList(savePath: string) {
                 item?: boolean,
                 interactable?: boolean,
                 [key: string]: any
-            }
+            },
+
+            blockStates?: BlockState[]
         }[] = [];
 
         // RegExp to extract all Bukkit's MATERIAL IDs
@@ -138,8 +161,23 @@ async function generateMaterialList(savePath: string) {
             }
         }
 
+        // Attach block states from minecraft-data to each block material
+        console.log("  Attaching block states from minecraft-data ...");
+        for (const entry of cache) {
+            // Optionally only attach for materials that are blocks
+            if (!entry.flags.block) {
+                continue;
+            }
+
+            const states = getMinecraftBlockStatesForMaterial(entry.bukkitId);
+            if (states) {
+                entry.blockStates = states;
+            }
+        }
+
+
         // Create the Material list
-        const materialList: Material[] = cache.map(v => new Material(v.bukkitId, v.bukkitNumberId, v.flags));
+        const materialList: Material[] = cache.map(v => new Material(v.bukkitId, v.bukkitNumberId, v.flags, v.blockStates));
 
         if (materialList.length < 1) {
             throw new Error(`Unexpeted error while parsing Bukkit's Material with url: ${BUKKIT_MATERIAL_SOURCE} body: ${text}.`);

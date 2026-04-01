@@ -191,7 +191,7 @@
     "webpack:compile": "webpack --config webpack.prod.js",
     "watch:all": "tsc -b -watch ./extension/ ./webview/ ./server/",
     "webpack:watch": "webpack --watch --config webpack.dev.js",
-    "open-in-browser": "vscode-test-web --browserOption=--remote-debugging-port=9221 --browserOption=--remote-allow-origins=* --quality=stable --extensionDevelopmentPath=. D:/mc/survival7/plugins/BetonQuest"
+    "open-in-browser": "vscode-test-web --browserOption=--remote-debugging-port=9221 --browserOption=--remote-allow-origins=* --quality=stable --extensionDevelopmentPath=."
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
@@ -209,6 +209,7 @@
     "css-modules-typescript-loader": "^4.0.1",
     "eslint": "^8.56.0",
     "glob": "^10.3.10",
+    "minecraft-data": "^3.105.0",
     "mocha": "^10.3.0",
     "npm-run-all": "^4.1.5",
     "path-browserify": "^1.0.1",
