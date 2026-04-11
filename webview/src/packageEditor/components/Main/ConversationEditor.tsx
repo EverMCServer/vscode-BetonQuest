@@ -670,16 +670,72 @@ function ConversationFlowView(props: ConversationEditorProps) {
         setEdges(getEdges().map(edge => { edge.selected = false; return edge; }));
     }, [props.conversationName, getNodes]);
 
+    // Defer centering until this tab is active and pane layout is ready.
+    const deferredCenterRafRef = useRef<number>();
+    const deferredCenterTimeoutRef = useRef<number>();
+
+    const clearDeferredCenter = useCallback(() => {
+        if (deferredCenterRafRef.current !== undefined) {
+            window.cancelAnimationFrame(deferredCenterRafRef.current);
+            deferredCenterRafRef.current = undefined;
+        }
+        if (deferredCenterTimeoutRef.current !== undefined) {
+            window.clearTimeout(deferredCenterTimeoutRef.current);
+            deferredCenterTimeoutRef.current = undefined;
+        }
+    }, []);
+
+    const scheduleCenterWhenActive = useCallback((yamlPath: string[], retry: number = 20) => {
+        clearDeferredCenter();
+
+        const tryCenter = (remaining: number) => {
+            const rect = flowWrapper.current?.getBoundingClientRect();
+            const isTabActive = globalThis.activeTabKey === props.conversationName;
+            const isPaneVisible = (rect?.width || 0) > 0 && (rect?.height || 0) > 0;
+
+            if (isTabActive && isPaneVisible) {
+                centerAndSelectNode(yamlPath);
+                return;
+            }
+
+            if (remaining <= 0) {
+                return;
+            }
+
+            deferredCenterRafRef.current = window.requestAnimationFrame(() => {
+                deferredCenterTimeoutRef.current = window.setTimeout(() => {
+                    tryCenter(remaining - 1);
+                }, 16);
+            });
+        };
+
+        // Always defer at least one frame, to allow tab switch + layout update.
+        deferredCenterRafRef.current = window.requestAnimationFrame(() => {
+            deferredCenterTimeoutRef.current = window.setTimeout(() => {
+                tryCenter(retry);
+            }, 16);
+        });
+    }, [clearDeferredCenter, centerAndSelectNode, props.conversationName]);
+
+    useEffect(() => {
+        return () => {
+            clearDeferredCenter();
+        };
+    }, [clearDeferredCenter]);
+
     /* VSCode messages */
 
     const handleVscodeMessage = (message: any) => {
         switch (message.type) {
 
             // Center a node when cursor changed in Text Editor
-            case "cursor-yaml-path":
-                if (globalThis.activeTabKey === props.conversationName) { // Center only when the tab is active
-                    centerAndSelectNode(message.content as string[]);
+            case "cursor-yaml-path": {
+                const yamlPath = message.content as string[];
+                if (yamlPath?.[0] === "conversations" && yamlPath?.[1] === props.conversationName) {
+                    scheduleCenterWhenActive(yamlPath);
                 }
+                break;
+            }
         }
     };
 

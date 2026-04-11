@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Input, Modal, Radio, Select, Space, Tabs } from "antd";
 import type { Tab } from 'rc-tabs/lib/interface';
 import { VscTrash } from "react-icons/vsc";
@@ -8,6 +8,7 @@ import L, { allLanguages } from "betonquest-utils/i18n/i18n";
 import ConversationEditor from "./Main/ConversationEditor";
 import ConversationTabLabel from "./Main/ConversationTabLabel";
 import Package from "betonquest-utils/betonquest/Package";
+import { YamlPathPointer } from "betonquest-utils/yaml/yamlPathPointer";
 
 import "./Main.css";
 
@@ -213,6 +214,19 @@ export default function main(props: MainProps) {
     useEffect(() => {
         globalThis.activeTabKey = activeTabKey;
     }, [activeTabKey]);
+
+    // Switch to the related conversation tab when cursor path points to it.
+    const { editorPathPointer } = useContext(YamlPathPointer);
+    useEffect(() => {
+        if (editorPathPointer.length < 2 || editorPathPointer[0] !== "conversations") {
+            return;
+        }
+
+        const targetConversation = editorPathPointer[1];
+        if (tabsItems.some(tabItem => tabItem.key === targetConversation)) {
+            setActiveTabKey(targetConversation);
+        }
+    }, [editorPathPointer, tabsItems]);
 
     return (
         <>
