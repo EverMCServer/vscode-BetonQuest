@@ -4,6 +4,7 @@ import { BaseLanguageClient } from 'vscode-languageclient/lib/common/client';
 import findYamlNodeByOffset from 'betonquest-utils/yaml/findYamlNodeByOffset';
 import findOffestByYamlNode from 'betonquest-utils/yaml/findOffestByYamlNode';
 import { LocationsResponse, LocationsParams } from 'betonquest-utils/lsp/file';
+import { handlePackageEntriesRequest } from './packageEntriesHandler';
 
 export interface InitialConfig {
     translationSelection?: string, // Conversation YAML's translation selection
@@ -175,6 +176,30 @@ export class PackageEditorProvider implements vscode.CustomTextEditorProvider {
                     console.log("got betonquest-translationSelection from webview:", e.content);
                     vscode.workspace.getConfiguration('betonquest.setting').update('translationSelection', e.content, vscode.ConfigurationTarget.Global);
                     return;
+
+                // Request package-scoped condition names
+                case 'request-package-conditions': {
+                    await handlePackageEntriesRequest(
+                        this.lspClient,
+                        webviewPanel.webview,
+                        document.uri.toString(),
+                        e.packagePath,
+                        'conditions'
+                    );
+                    return;
+                }
+
+                // Request package-scoped event names
+                case 'request-package-events': {
+                    await handlePackageEntriesRequest(
+                        this.lspClient,
+                        webviewPanel.webview,
+                        document.uri.toString(),
+                        e.packagePath,
+                        'events'
+                    );
+                    return;
+                }
 
                 // Move cursor on text editor.
                 // @ts-ignore

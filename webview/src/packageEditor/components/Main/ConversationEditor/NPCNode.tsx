@@ -128,6 +128,8 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         </div>
         <DraggableList
           items={conditionsGet()}
+          itemSource={data.conditionItemSource}
+          onDropdownOpen={data.requestPackageEntries}
           onAdd={(v, i) => conditionUpdate(i, v)}
           onRemove={(_, i) => conditionDel(i)}
           onSort={e => conditionsSet(e)}
@@ -153,6 +155,8 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
         </div>
         <DraggableList
           items={eventsGet()}
+          itemSource={data.eventItemSource}
+          onDropdownOpen={data.requestPackageEntries}
           onAdd={(v, i) => eventUpdate(i, v)}
           onRemove={(_, i) => eventDel(i)}
           onSort={e => eventsSet(e)}

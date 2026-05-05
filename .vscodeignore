@@ -14,3 +14,4 @@ webpack.*.js
 **/*.map
 **/*.ts
 assets/screenshot-*
+.claude/

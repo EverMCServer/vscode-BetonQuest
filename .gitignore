@@ -8,5 +8,7 @@ node_modules/
 *.code-workspace
 *.tsbuildinfo
 
+/.claude/
+
 .DS_Store
 __MACOSX/

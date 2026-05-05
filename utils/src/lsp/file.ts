@@ -31,3 +31,21 @@ export type LocationsResponse = {
    */
   offset?: number
 }[];
+
+export type PackageEntriesParams = {
+  /**
+   * The URI of the source document. It is used to determine the source package.
+   */
+  sourceUri: string,
+  /**
+   * Optional package path from the source package.
+   */
+  packagePath?: string,
+};
+
+export type PackageEntriesResponse = {
+  /**
+   * Condition/Event names in the resolved package.
+   */
+  names: string[]
+};

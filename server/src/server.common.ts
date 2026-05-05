@@ -2,12 +2,14 @@ import { CodeAction, Command, Connection, DidChangeConfigurationNotification, Fi
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
 import { setLocale } from 'betonquest-utils/i18n/i18n';
-import { FilesResponse, LocationsParams } from 'betonquest-utils/lsp/file';
+import { FilesResponse, LocationsParams, PackageEntriesParams } from 'betonquest-utils/lsp/file';
 
 import { ASTs } from './ast/ast';
 import { legend } from './semantics/legend';
 import { hoverHandler } from './service/hover';
 import { locationsHandler } from './service/locations';
+import { packageConditionsHandler } from './service/packageConditions';
+import { packageEventsHandler } from './service/packageEvents';
 import { semanticTokensHandler } from './service/semanticTokens';
 import { AllDocuments, getAllDocuments } from './utils/document';
 
@@ -283,6 +285,14 @@ export function server(connection: Connection): void {
   // Register custom handlers
   connection.onRequest("custom/locations", (params: LocationsParams) => {
     return locationsHandler(allDocuments, asts, params);
+  });
+
+  connection.onRequest("custom/packageConditions", (params: PackageEntriesParams) => {
+    return packageConditionsHandler(asts, params);
+  });
+
+  connection.onRequest("custom/packageEvents", (params: PackageEntriesParams) => {
+    return packageEventsHandler(asts, params);
   });
 
   // Make the text document manager listen on the connection

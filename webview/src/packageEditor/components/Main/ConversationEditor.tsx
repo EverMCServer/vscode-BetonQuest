@@ -34,7 +34,9 @@ import "./ConversationEditor.css";
 import AsyncLock from "async-lock";
 
 import Conversation from "betonquest-utils/betonquest/Conversation";
+import { DefaultOptionType } from "antd/es/select";
 import { NodeData } from "./ConversationEditor/Nodes";
+
 import NPCNode from "./ConversationEditor/NPCNode";
 import PlayerNode from "./ConversationEditor/PlayerNode";
 import StartNode from "./ConversationEditor/StartNode";
@@ -114,6 +116,8 @@ function ConversationFlowView(props: ConversationEditorProps) {
     }, [props.conversation]);
     // Cache translation selection
     const [translationSelection, setTranslationSelection] = useState(props.translationSelection || translations[0]);
+    const [conditionItemSource, setConditionItemSource] = useState<DefaultOptionType[]>([]);
+    const [eventItemSource, setEventItemSource] = useState<DefaultOptionType[]>([]);
 
     const flowWrapper = useRef<HTMLDivElement>(null);
     const [nodes, setNodes, onNodesChange] = useNodesState<NodeData>([]);
@@ -142,7 +146,14 @@ function ConversationFlowView(props: ConversationEditorProps) {
         // async (conversation: Conversation, syncYaml: (delay?: number | undefined) => void, translationSelection: string, viewport?: Viewport) => {
         //     let y = conversationToFlow(conversation, syncYaml, translationSelection);
         async (viewport?: Viewport) => {
-            let flow = conversationToFlow(props.conversation, props.syncYaml, translationSelection);
+            let flow = conversationToFlow(
+                props.conversation,
+                props.syncYaml,
+                translationSelection,
+                conditionItemSource,
+                eventItemSource,
+                requestPackageEntries
+            );
             const formatedFlow = autoLayout(flow.nodes, flow.edges);
             if (formatedFlow) {
                 flow.nodes = formatedFlow.nodes;
@@ -157,13 +168,22 @@ function ConversationFlowView(props: ConversationEditorProps) {
             //     window.requestAnimationFrame(() => fitView());
             // }
         },
-        [fitView, setEdges, setNodes, props.conversation, props.syncYaml, translationSelection]
+        [
+            fitView,
+            setEdges,
+            setNodes,
+            props.conversation,
+            props.syncYaml,
+            translationSelection,
+            conditionItemSource,
+            eventItemSource,
+        ]
     );
 
-    // Update nodes and edges when props.conversation / translationSelection is udpated
+    // Update nodes and edges when flow data is udpated
     useEffect(() => {
         resetFlow();
-    }, [props.conversation, translationSelection]);
+    }, [resetFlow]);
 
     // Async/await lock, for VSCode message handling, etc
     const lock = new AsyncLock();
@@ -443,6 +463,9 @@ function ConversationFlowView(props: ConversationEditorProps) {
             conversation: props.conversation,
             syncYaml: props.syncYaml,
             translationSelection: translationSelection,
+            conditionItemSource,
+            eventItemSource,
+            requestPackageEntries,
         };
         if (type === "npcNode") {
             data.option = props.conversation.createNpcOption(newNodeName);
@@ -725,8 +748,33 @@ function ConversationFlowView(props: ConversationEditorProps) {
 
     /* VSCode messages */
 
+    const requestPackageEntries = useCallback(() => {
+        vscode.postMessage({
+            type: "request-package-conditions",
+        });
+        vscode.postMessage({
+            type: "request-package-events",
+        });
+    }, []);
+
+    useEffect(() => {
+        requestPackageEntries();
+    }, [requestPackageEntries]);
+
     const handleVscodeMessage = (message: any) => {
         switch (message.type) {
+            case "response-package-conditions": {
+                setConditionItemSource(
+                    (message.names || []).map((name: string) => ({ value: name, label: name }))
+                );
+                break;
+            }
+            case "response-package-events": {
+                setEventItemSource(
+                    (message.names || []).map((name: string) => ({ value: name, label: name }))
+                );
+                break;
+            }
 
             // Center a node when cursor changed in Text Editor
             case "cursor-yaml-path": {

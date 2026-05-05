@@ -8,3 +8,27 @@
     color: var(--vscode-badge-foreground);
     background-color: var(--vscode-badge-background);
 }
+
+.tagRow {
+    min-height: 24px;
+}
+
+.tagRowEditing {
+    padding: 0;
+}
+
+.select {
+    width: 100%;
+}
+
+.select :global(.ant-select-selector) {
+    min-height: 24px;
+    border-radius: 2px;
+}
+
+.text {
+    display: block;
+    width: 100%;
+    min-height: 20px;
+    line-height: 20px;
+}

@@ -98,8 +98,15 @@ export class ASTs {
     return this.getAllAstByDocumentUri(sourceUri).flatMap(ast => ast.getLocations(yamlPath, sourceUri));
   }
 
-}
+  getPackageConditionNames(sourceUri: string, packagePath?: string) {
+    return this.getAllAstByDocumentUri(sourceUri).flatMap(ast => ast.getPackageConditionNames(sourceUri, packagePath));
+  }
 
+  getPackageEventNames(sourceUri: string, packagePath?: string) {
+    return this.getAllAstByDocumentUri(sourceUri).flatMap(ast => ast.getPackageEventNames(sourceUri, packagePath));
+  }
+
+}
 // AST structure for BetonQuest V1 & V2
 export class AST {
   readonly wsFolderUri: string; // The dir of the workspace folder
@@ -330,6 +337,76 @@ export class AST {
       ...this.packagesV1.flatMap(p => p.getLocations(yamlPath, sourceUri)),
       ...this.packagesV2.flatMap(p => p.getLocations(yamlPath, sourceUri))
     ];
+  }
+
+  private getSourcePackageV1(sourceUri: string) {
+    return this.packagesV1
+      .filter(pkg => sourceUri.startsWith(pkg.uri))
+      .sort((a, b) => b.uri.length - a.uri.length)[0];
+  }
+
+  private getSourcePackageV2(sourceUri: string) {
+    return this.packagesV2
+      .filter(pkg => sourceUri.startsWith(pkg.uri))
+      .sort((a, b) => b.uri.length - a.uri.length)[0];
+  }
+
+  private getConditionEntryName(entry: any) {
+    return entry?.keyString ?? entry?.getChild?.("ConditionKey")?.value ?? entry?.yml?.key?.value;
+  }
+
+  private getEventEntryName(entry: any) {
+    return entry?.keyString ?? entry?.getChild?.("EventKey")?.value ?? entry?.yml?.key?.value;
+  }
+
+  private uniqueNames(names: (string | undefined)[]) {
+    return [...new Set(names.filter((name): name is string => !!name))].sort((a, b) => a.localeCompare(b));
+  }
+
+  getPackageConditionNames(sourceUri: string, packagePath?: string) {
+    const sourceV2 = this.getSourcePackageV2(sourceUri);
+    if (sourceV2) {
+      const targetPackageUri = sourceV2.getPackageUri(packagePath);
+      const targetPackage = this.packagesV2.find(pkg => pkg.isPackageUri(targetPackageUri));
+      const conditionEntries = targetPackage ? targetPackage.getConditionEntries() : sourceV2.getAllConditionEntries();
+      return this.uniqueNames(conditionEntries.map(entry => this.getConditionEntryName(entry)));
+    }
+
+    const sourceV1 = this.getSourcePackageV1(sourceUri);
+    if (sourceV1) {
+      const targetPackageUri = sourceV1.getPackageUri(packagePath);
+      const targetPackage = this.packagesV1.find(pkg => pkg.isPackageUri(targetPackageUri));
+      const conditionEntries = targetPackage ? targetPackage.getConditionEntries() : sourceV1.getAllConditionEntries();
+      return this.uniqueNames(conditionEntries.map(entry => this.getConditionEntryName(entry)));
+    }
+
+    return this.uniqueNames([
+      ...this.getV1AllConditionEntries().map(entry => this.getConditionEntryName(entry)),
+      ...this.getV2AllConditionEntries().map(entry => this.getConditionEntryName(entry)),
+    ]);
+  }
+
+  getPackageEventNames(sourceUri: string, packagePath?: string) {
+    const sourceV2 = this.getSourcePackageV2(sourceUri);
+    if (sourceV2) {
+      const targetPackageUri = sourceV2.getPackageUri(packagePath);
+      const targetPackage = this.packagesV2.find(pkg => pkg.isPackageUri(targetPackageUri));
+      const eventEntries = targetPackage ? targetPackage.getEventEntries() : sourceV2.getAllEventEntries();
+      return this.uniqueNames(eventEntries.map(entry => this.getEventEntryName(entry)));
+    }
+
+    const sourceV1 = this.getSourcePackageV1(sourceUri);
+    if (sourceV1) {
+      const targetPackageUri = sourceV1.getPackageUri(packagePath);
+      const targetPackage = this.packagesV1.find(pkg => pkg.isPackageUri(targetPackageUri));
+      const eventEntries = targetPackage ? targetPackage.getEventEntries() : sourceV1.getAllEventEntries();
+      return this.uniqueNames(eventEntries.map(entry => this.getEventEntryName(entry)));
+    }
+
+    return this.uniqueNames([
+      ...this.getV1AllEventEntries().map(entry => this.getEventEntryName(entry)),
+      ...this.getV2AllEventEntries().map(entry => this.getEventEntryName(entry)),
+    ]);
   }
 
   getV1Packages(packageUri?: string) {

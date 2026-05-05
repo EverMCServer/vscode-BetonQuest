@@ -1,4 +1,5 @@
 import { MarkerType, Node, Edge } from "reactflow";
+import { DefaultOptionType } from "antd/es/select";
 import { arrayAppend } from "./commonUtils";
 import { NodeData } from "../ConversationEditor/Nodes";
 import Conversation from "betonquest-utils/betonquest/Conversation";
@@ -11,7 +12,10 @@ export interface YamlReaderOutput {
 export function conversationToFlow(
     conversation: Conversation,
     syncYaml: (delay?: number) => void,
-    translationSelection?: string
+    translationSelection?: string,
+    conditionItemSource?: DefaultOptionType[],
+    eventItemSource?: DefaultOptionType[],
+    requestPackageEntries?: () => void
 ): YamlReaderOutput {
     // Load
     const npcOptions = conversation.getAllNpcOptions();
@@ -35,7 +39,10 @@ export function conversationToFlow(
         data: {
             syncYaml: syncYaml,
             translationSelection: translationSelection,
-            conversation: conversation
+            conversation: conversation,
+            conditionItemSource,
+            eventItemSource,
+            requestPackageEntries,
         },
     };
     const startNodes: Record<string, Node<NodeData>> = { startNodeID: startNode };
@@ -58,7 +65,10 @@ export function conversationToFlow(
             data: {
                 syncYaml: syncYaml,
                 translationSelection: translationSelection,
-                option: option
+                option: option,
+                conditionItemSource,
+                eventItemSource,
+                requestPackageEntries,
             },
         };
         npcNodes[idKey] = dict;
@@ -82,7 +92,10 @@ export function conversationToFlow(
             data: {
                 syncYaml: syncYaml,
                 translationSelection: translationSelection,
-                option: option
+                option: option,
+                conditionItemSource,
+                eventItemSource,
+                requestPackageEntries,
             },
         };
         playerNodes[idKey] = dict;

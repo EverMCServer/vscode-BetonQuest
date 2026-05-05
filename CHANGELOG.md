@@ -2,6 +2,11 @@
 
 All notable changes to the "BetonQuest" extension will be documented in this file.
 
+## [0.5.7 pre-release] - 2026-05-05
+
+### Added
+- Add Conditions and Events dropdown on flowchart
+
 ## [0.5.6 pre-release] - 2026-02-27
 
 ### Added

@@ -129,6 +129,8 @@ export default memo(({ data, selected }: NodeProps<NodeData>) => {
           {L("*.conversation.startNode.finalEvents")}:&nbsp;
           <DraggableList
             items={getFinalEvents()}
+            itemSource={data.eventItemSource}
+            onDropdownOpen={data.requestPackageEntries}
             onAdd={(_, __, e) => setFinalEvents(e)}
             onRemove={(_, __, e) => setFinalEvents(e)}
             onSort={e => setFinalEvents(e)}
