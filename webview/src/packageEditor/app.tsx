@@ -22,13 +22,14 @@ declare global {
 
 // Cache of the Package's YAML
 let cachedYaml = "";
+let cachedYamlParsed = ""; // Parsed by Package().getYamlText()
 
 // Handler for delayed YAML update
 let syncYamlTimeoutHandler: number;
 
 export default function app() {
     // Get initial content data from vscode
-    const [pkg, _setPkg] = useState(new Package(cachedYaml));
+    const [pkg, _setPkg] = useState(() => new Package(cachedYaml));
     const [yamlErrors, setYamlErrors] = useState<YAMLError[]>();
     // const [translationSelection, setTranslationSelection] = useState(globalThis.initialConfig.translationSelection || "en");
 
@@ -37,10 +38,10 @@ export default function app() {
 
     // Prevent unnecessary rendering
     const setPkg = (newPkg: Package) => {
-        const newYaml = newPkg.getYamlText();
-        if (newYaml !== cachedYaml) {
+        const newYamlParsed = newPkg.getYamlText();
+        if (newYamlParsed !== cachedYamlParsed) {
             _setPkg(newPkg);
-            cachedYaml = newYaml;
+            cachedYamlParsed = newYamlParsed;
         }
     };
 
@@ -57,7 +58,7 @@ export default function app() {
 
             switch (message.type) {
                 case 'update':
-                    if (message.content !== pkg) { // Avoid duplicated update
+                    if (message.content !== cachedYaml) { // Avoid duplicated update
                         // Update Package
                         const p = new Package(message.content);
                         // Check if parse error
@@ -69,6 +70,7 @@ export default function app() {
                         setYamlErrors(undefined);
                         // Update Package
                         setPkg(p);
+                        cachedYaml = message.content;
                         // Handle for initial document update
                         if (message.isInit) {
                             // Fully expand the sider if there is no conversation.
