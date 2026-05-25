@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ConfigProvider, Layout } from "antd";
 import { YAMLError } from "yaml";
 import { vscode } from "./vscode";
@@ -30,6 +30,8 @@ let syncYamlTimeoutHandler: number;
 export default function app() {
     // Get initial content data from vscode
     const [pkg, _setPkg] = useState(() => new Package(cachedYaml));
+    const pkgRef = useRef(pkg);
+    pkgRef.current = pkg;
     const [yamlErrors, setYamlErrors] = useState<YAMLError[]>();
     // const [translationSelection, setTranslationSelection] = useState(globalThis.initialConfig.translationSelection || "en");
 
@@ -59,6 +61,8 @@ export default function app() {
             switch (message.type) {
                 case 'update':
                     if (message.content !== cachedYaml) { // Avoid duplicated update
+                        // Prevent stale sync from overwriting external changes
+                        window.clearTimeout(syncYamlTimeoutHandler);
                         // Update Package
                         const p = new Package(message.content);
                         // Check if parse error
@@ -92,6 +96,10 @@ export default function app() {
                 // setTranslationSelection(message.content);
             }
         });
+
+        return () => {
+            window.clearTimeout(syncYamlTimeoutHandler);
+        };
     }, []);
 
     // Sync package's YAML back to VSCode, delay in ms
@@ -102,7 +110,8 @@ export default function app() {
         // Delayed YAML update.
         syncYamlTimeoutHandler = window.setTimeout(() => {
             // Update
-            cachedYaml = pkg.getYamlText(); // Prevent duplicated update
+            cachedYaml = pkgRef.current.getYamlText(); // Prevent duplicated update
+            cachedYamlParsed = cachedYaml; // Keep parsed cache in sync for undo comparison
             vscode.postMessage({
                 type: "edit",
                 content: cachedYaml,

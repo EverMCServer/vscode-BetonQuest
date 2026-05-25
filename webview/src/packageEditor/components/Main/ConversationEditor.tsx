@@ -360,9 +360,13 @@ function ConversationFlowView(props: ConversationEditorProps) {
             }
         });
 
-        // update yaml
+    }, [edges, props.conversation]);
+
+    // Wrapper for ReactFlow's onEdgesDelete prop — syncs YAML after edge deletion
+    const handleEdgesDelete = useCallback((deletedEdges: Edge[]) => {
+        onEdgesDelete(deletedEdges);
         props.syncYaml();
-    }, [edges, props.conversation, props.syncYaml]);
+    }, [onEdgesDelete, props.syncYaml]);
 
     // Auto create new node and edge
 
@@ -555,7 +559,8 @@ function ConversationFlowView(props: ConversationEditorProps) {
         };
         setEdges(addEdge(edge, edges.filter(edge => conflictEdges.every(e => edge.id !== e.id)))); // update UI
 
-    }, [edges, getNewLineID, getNode, setEdges]);
+        props.syncYaml();
+    }, [edges, getNewLineID, getNode, setEdges, props.syncYaml]);
 
     /* Handle nodes deletion */
 
@@ -787,11 +792,14 @@ function ConversationFlowView(props: ConversationEditorProps) {
         }
     };
 
+    const handleVscodeMessageRef = useRef(handleVscodeMessage);
+    handleVscodeMessageRef.current = handleVscodeMessage;
+
     // Handle VSCode messages
     useEffect(() => {
         const handlerFn = (event: MessageEvent<any>) => {
             lock.acquire("message", () => { // Lock message handling to single "thread", prevent various race conditions
-                handleVscodeMessage(event.data);
+                handleVscodeMessageRef.current(event.data);
             });
         };
 
@@ -871,7 +879,7 @@ function ConversationFlowView(props: ConversationEditorProps) {
                     onNodesChange={onNodesChange}
                     onEdgesChange={onEdgesChange}
                     onNodesDelete={onNodesDelete}
-                    onEdgesDelete={onEdgesDelete}
+                    onEdgesDelete={handleEdgesDelete}
                     deleteKeyCode={["Delete", "Backspace"]}
                     onEdgeUpdate={onEdgeUpdate}
                     onEdgeUpdateStart={onEdgeUpdateStart}
